@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <script>window.CAMPUS_STATIC_ONLY = true;</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>找不到這棟建築 · 開心學園</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#1d6b57">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E">
+  <style>
+    :root { --ink: #3b2f25; --muted: #6b5a4a; --line: #eadfcd; --brand: #1d6b57; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: var(--font); color: var(--ink); background: #f3ead7; display: flex; align-items: center; justify-content: center; padding: 22px 14px; }
+    [hidden] { display: none !important; }
+    .nf { width: min(640px, 100%); background: #fffdf8; border: 1.5px solid #e2d3b4; border-radius: 24px; box-shadow: 0 22px 60px rgba(59, 47, 37, .16); overflow: hidden; }
+    .nf-art { display: block; width: 100%; height: auto; background: #d5e7bb; }
+    .nf-body { padding: 20px 26px 26px; }
+    h1 { margin: 0 0 6px; font-size: 25px; }
+    p { margin: 6px 0; line-height: 1.7; color: #4f3f31; font-size: 15px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #f6efe1; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: .92em; word-break: break-all; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; padding: 0 18px; border-radius: 13px; border: 1.5px solid #dccdb2; background: #fff; color: var(--ink); font: inherit; font-weight: 800; font-size: 15px; text-decoration: none; cursor: pointer; }
+    .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .sug { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .sug a { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 999px; background: #eef7f3; border: 1px solid #cfe3da; color: var(--brand); font-weight: 800; text-decoration: none; font-size: 14px; }
+    details { margin-top: 18px; border-top: 1px dashed var(--line); padding-top: 12px; }
+    summary { cursor: pointer; font-weight: 800; color: var(--muted); font-size: 14px; }
+    .all { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 14px; }
+    .all a { color: var(--ink); text-decoration: none; font-weight: 700; font-size: 14px; }
+    .all small { display: block; color: var(--muted); font-weight: 500; font-size: 12px; }
+    .going { font-size: 17px; font-weight: 800; }
+    .muted { color: var(--muted); font-size: 13.5px; }
+    @media (max-width: 480px) { .nf-body { padding: 16px 18px 20px; } h1 { font-size: 22px; } .btn { width: 100%; } }
+  </style>
+  <script>/* js/registry_data.js */
+/* registry.json → window.CAMPUS_REGISTRY（自動產生；要改內容請改 registry.json） */
+window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy Campus","icon":"🏫","tagline":"一張校園地圖，走進每一間學院與實戰館"},"campus":{"repo":"okayell.github.io","public_url":"https://okayell.github.io/","backend_port":8918,"local_port":8919},"districts":[{"id":"language","name":"語言學區","en":"Language Quarter","icon":"🌏","color":"#0284c7","soft":"#e0f2fe","desc":"聽、說、讀、單字一次練齊：英語、日語都依程度分級，從零開始也跟得上。"},{"id":"finance","name":"財經學區","en":"Finance Quarter","icon":"💹","color":"#d97706","soft":"#fef3c7","desc":"財經學院與四大分院：技術分析、基本面、籌碼面、消息面。學完直接到實戰區的台股智慧選股驗證。"},{"id":"games","name":"博弈學區","en":"Strategy & Games Quarter","icon":"🎲","color":"#7c3aed","soft":"#ede9fe","desc":"用數學與機率做決策：GTO 撲克學院從規則一路教到 GTO 範圍、底池賠率與 EV。"},{"id":"arena","name":"實戰區","en":"Practice Arena","icon":"🏟️","color":"#dc2626","soft":"#fee2e2","desc":"不是上課，是上場：每天自動更新真實數據的台股選股，以及 NBA／英超／F1 運彩分析。"},{"id":"arts","name":"藝能生活學區","en":"Arts & Life Skills Quarter","icon":"🎨","color":"#db2777","soft":"#fce7f3","status":"planned","desc":"建設中：烹飪、音樂等各種生活技能學院，陸續開張。"}],"buildings":[{"id":"english","district":"language","kind":"academy","name":"英語學院","en":"English Academy","icon":"🇬🇧","art":"clock-tower","status":"live","repo":"english-speak-listen","url":"https://okayell.github.io/english-speak-listen/","local_port":8911,"aliases":["english","en"],"tagline":"A1–C2 分級：聽力、口說、單字一次學齊","desc":"72+ 篇分級生活對話，逐句朗讀、跟讀發音評分、角色扮演、聽寫與理解測驗；新增分級單字學習，搭配 SM-2 間隔複習的個人單字本。","features":["🔤 A1–C2 分級單字學習","🎧 男女聲分角色朗讀・盲聽","🗣️ 跟讀發音評分・角色扮演","🧠 單字卡間隔複習（SM-2）"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"🔤 單字學習","hash":"#/words"},{"label":"📚 分級文章","hash":"#/library"},{"label":"🧠 複習","hash":"#/review"}]},{"id":"japanese","district":"language","kind":"academy","name":"日語學院","en":"Japanese Academy","icon":"🇯🇵","art":"pagoda","status":"new","repo":"okayell.github.io","path":"japanese/","url":"https://okayell.github.io/japanese/","local_port":8923,"aliases":["japanese","ja","jp"],"tagline":"從五十音開始：A1–C2 分級，真人語速發音","desc":"平假名、片假名五十音（清音・濁音・拗音）點字即發音與測驗，A1–C2（對應 JLPT N5–N1）分級對話課程、文法重點與分級單字，跟讀口說評分與間隔複習。","features":["あ 五十音表・點字發音・認字測驗","🗣️ 日語朗讀與跟讀評分","📚 A1–C2 分級對話與文法","🔤 分級單字・間隔複習"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"あ 五十音","hash":"#/kana"},{"label":"📚 分級課程","hash":"#/library"},{"label":"🔤 單字學習","hash":"#/words"}]},{"id":"finance","district":"finance","kind":"academy","name":"財經學院","en":"Finance Academy","icon":"🏛️","art":"classical-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/","local_port":8925,"aliases":["finance","fin"],"tagline":"台股投資四大分析，一次系統化學會","desc":"財經學院本部：技術分析、基本面、籌碼面、消息面四大分院的圖解課程、互動圖表、隨堂測驗與術語百科，課程直接連到台股智慧選股實戰練習。","features":["📈 技術分析學院","📊 基本面學院","🧮 籌碼面學院","📰 消息面學院"],"links":[{"label":"🏛️ 學院首頁","hash":"#/home"},{"label":"📖 術語百科","hash":"#/glossary"}]},{"id":"finance-ta","district":"finance","kind":"department","parent":"finance","name":"技術分析學院","en":"Technical Analysis","icon":"📈","art":"chart-tower","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/ta","local_port":8925,"local_hash":"#/track/ta","aliases":["ta"],"tagline":"K 線、均線、量價、KD／RSI／MACD 與型態","desc":"從 K 線與均線讀懂趨勢，再學量價關係、支撐壓力、型態學與常用指標，每課都有可操作的互動圖表。","features":["🕯️ K 線與型態","〰️ 均線・趨勢線・支撐壓力","📉 KD／RSI／MACD","🔊 量價關係"],"links":[{"label":"📈 進入分院","hash":"#/track/ta"}]},{"id":"finance-fa","district":"finance","kind":"department","parent":"finance","name":"基本面學院","en":"Fundamental Analysis","icon":"📊","art":"ledger-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/fa","local_port":8925,"local_hash":"#/track/fa","aliases":["fa"],"tagline":"財報三表、EPS、ROE、本益比與殖利率","desc":"看懂損益表、資產負債表、現金流量表，學會用月營收、毛利率、ROE、本益比、殖利率評估一家公司值不值得買。","features":["🧾 財報三表","💰 EPS・ROE・毛利率","⚖️ 本益比・股價淨值比・殖利率","📅 月營收與產業分析"],"links":[{"label":"📊 進入分院","hash":"#/track/fa"}]},{"id":"finance-chip","district":"finance","kind":"department","parent":"finance","name":"籌碼面學院","en":"Chip Analysis","icon":"🧮","art":"vault","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/chip","local_port":8925,"local_hash":"#/track/chip","aliases":["chip"],"tagline":"三大法人、融資融券、主力分點與股權分散","desc":"追蹤錢的流向：外資、投信、自營商買賣超，融資融券與券資比，主力券商分點，集保股權分散與大戶持股比例。","features":["🏦 三大法人買賣超","💳 融資融券・券資比","🕵️ 主力分點・當沖比","👥 集保股權分散"],"links":[{"label":"🧮 進入分院","hash":"#/track/chip"}]},{"id":"finance-news","district":"finance","kind":"department","parent":"finance","name":"消息面學院","en":"News & Macro","icon":"📰","art":"broadcast","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/news","local_port":8925,"local_hash":"#/track/news","aliases":["news"],"tagline":"重大訊息、法說會、總經數據與市場情緒","desc":"學會解讀公司重大訊息與法說會、CPI／非農／FOMC 等總經數據、產業新聞與國際股市連動，並辨識假消息與市場情緒。","features":["📢 重大訊息・法說會","🌐 總經數據・央行利率","🔗 國際股市與產業連動","🧯 假消息與情緒判讀"],"links":[{"label":"📰 進入分院","hash":"#/track/news"}]},{"id":"poker","district":"games","kind":"academy","name":"GTO 撲克學院","en":"GTO Poker Academy","icon":"♠️","art":"card-hall","status":"live","repo":"poker-gto","url":"https://okayell.github.io/poker-gto/","local_port":8899,"aliases":["poker","gto"],"tagline":"從零學會德州撲克：圖解課程與 GTO 範圍表","desc":"完全新手也能學會的德州撲克 GTO 學習工具：54 堂圖解課程、6 人桌 40 組翻前範圍表、11 種無限隨機練習、200+ 術語百科與計算工具。","features":["🎓 54 堂圖解課程","📊 6-Max GTO 翻前範圍表","🎯 11 種無限隨機練習","📖 200+ 術語百科"],"links":[{"label":"🎓 學習","hash":"#/learn"},{"label":"📊 範圍表","hash":"#/ranges"},{"label":"🎯 練習","hash":"#/quiz"},{"label":"📖 百科","hash":"#/wiki"}]},{"id":"stock","district":"arena","kind":"arena","name":"台股智慧選股","en":"TW Stock Insight","icon":"📈","art":"exchange","status":"live","repo":"tw-stock-insight","url":"https://okayell.github.io/tw-stock-insight/","local_port":8905,"aliases":["stock","tw"],"tagline":"全上市櫃每日推薦、選股器、K 線一鍵技術分析","desc":"每天收盤後自動更新：大盤與三大法人、今日推薦 20 檔、約 2,000 檔即時選股器、個股 K 線與一鍵技術分析、產業鏈、ETF 專區與盤前戰情。","features":["🎯 每日推薦 20 檔","🔎 2,000 檔選股器","🧠 K 線一鍵技術分析","🌅 盤前戰情・ETF 專區"],"links":[{"label":"🎯 今日推薦","hash":"#/"},{"label":"🌅 盤前戰情","hash":"#/morning"},{"label":"🔎 選股器","hash":"#/screener"},{"label":"🧠 個股分析","hash":"#/stock/2330"}]},{"id":"nba","district":"arena","kind":"arena","name":"NBA 運彩智庫","en":"NBA Betting IQ","icon":"🏀","art":"arena","status":"live","repo":"nba-betting-iq","url":"https://okayell.github.io/nba-betting-iq/","local_port":8913,"aliases":["nba"],"tagline":"讓分／大小分解盤、跨場串關、傷兵雷達","desc":"每日讓分與大小分盤口分析、跨場串關推薦、傷兵出賽雷達，賽後自動對獎、檢討並調整模型權重。","features":["🎯 每日解盤","🎰 跨場串關","🏥 傷兵出賽雷達","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"📊 過盤紀錄","hash":"#/results"}]},{"id":"epl","district":"arena","kind":"arena","name":"英超運彩智庫","en":"EPL Odds IQ","icon":"⚽","art":"stadium","status":"live","repo":"epl-odds-iq","url":"https://okayell.github.io/epl-odds-iq/","local_port":8917,"aliases":["epl"],"tagline":"亞洲讓球、2.5 球大小、1X2 和局防雷","desc":"英超每輪亞洲讓球與 2.5 球大小盤分析、1X2 和局防雷、跨場串關，整合官方 FPL xG 與傷停資訊，賽後自動檢討。","features":["🎯 本輪解盤","🎰 英超串關","📈 FPL xG・傷停","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏆 積分排行","hash":"#/stats"}]},{"id":"f1","district":"arena","kind":"arena","name":"F1 運彩智庫","en":"F1 Odds IQ","icon":"🏎️","art":"circuit","status":"live","repo":"f1-odds-iq","url":"https://okayell.github.io/f1-odds-iq/","local_port":8915,"aliases":["f1"],"tagline":"車手配對 H2H、奪冠與頒獎台價值、罰退雷達","desc":"每站車手配對盤 H2H、奪冠與頒獎台價值分析、引擎罰退雷達與分站串關，逐站自動檢討進化。","features":["🎯 本站解盤","🏁 車手 H2H","🔧 罰退雷達","🧠 逐站檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏎️ 車隊車手","hash":"#/team"}]},{"id":"cooking","district":"arts","kind":"academy","name":"烹飪學院","en":"Culinary Academy","icon":"🍳","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：從刀工、火候到家常菜與甜點的分級料理課程。","features":[],"links":[]},{"id":"music","district":"arts","kind":"academy","name":"音樂學院","en":"Music Academy","icon":"🎵","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：樂理、節奏、視唱聽音與樂器入門。","features":[],"links":[]}]};
+
+</script>
+  <script>/* js/core.js */
+/* 開心學園 · core.js — 共用核心：registry、執行環境、網址組裝、最近造訪、搜尋、IME 安全 Enter、提示訊息
+ *
+ * registry 來源：window.CAMPUS_REGISTRY（本機 server 由 /js/registry_data.js 產生；單一檔建置時內嵌）。
+ * 執行環境：
+ *   - github：*.github.io      → 公開網址
+ *   - file：file:// 單一檔     → 公開網址
+ *   - cloudtop：:8918 / :8919  → http://<location.hostname>:<local_port>/<local_hash|hash>
+ */
+(function () {
+  'use strict';
+  var C = (window.CAMPUS = window.CAMPUS || {});
+  var VISITS_KEY = 'okayell.campus.visits.v1';
+  var CAMPUS_PORTS = ['8918', '8919'];
+
+  /* ------------------------------------------------------------ 小工具 */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function qs(name, search) {
+    try { return new URLSearchParams(search == null ? location.search : search).get(name); }
+    catch (e) { return null; }
+  }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function stripHash(u) { var i = String(u || '').indexOf('#'); return i >= 0 ? u.slice(0, i) : String(u || ''); }
+  function normHash(h) {
+    h = String(h || '').trim();
+    if (!h) return '';
+    if (h.charAt(0) === '#') return h;
+    if (h.charAt(0) !== '/') h = '/' + h;
+    return '#' + h;
+  }
+
+  /* ------------------------------------------------------------ registry */
+  var raw = window.CAMPUS_REGISTRY;
+  var reg = { brand: {}, campus: {}, districts: [], buildings: [] };
+  if (raw && typeof raw === 'object') {
+    reg.brand = raw.brand || {};
+    reg.campus = raw.campus || {};
+    reg.districts = Array.isArray(raw.districts) ? raw.districts.filter(function (d) { return d && d.id; }) : [];
+    reg.buildings = Array.isArray(raw.buildings) ? raw.buildings.filter(function (b) { return b && b.id; }) : [];
+  }
+  reg.buildings.forEach(function (b) {
+    b.features = Array.isArray(b.features) ? b.features : [];
+    b.links = Array.isArray(b.links) ? b.links : [];
+    b.aliases = Array.isArray(b.aliases) ? b.aliases : [];
+    b.status = b.status || 'live';
+    b.kind = b.kind || 'academy';
+  });
+  var byId = {};
+  var districtById = {};
+  reg.buildings.forEach(function (b) { byId[b.id] = b; });
+  reg.districts.forEach(function (d) { districtById[d.id] = d; });
+
+  // 別名表（小寫）：id、aliases、repo 名稱、子資料夾名稱 → 建築 id
+  var aliasMap = {};
+  // id 優先（強），aliases / repo / 子資料夾為弱別名：不覆蓋已存在的對應
+  function addAlias(k, id, weak) {
+    k = String(k || '').toLowerCase().replace(/^\/+|\/+$/g, '');
+    if (!k) return;
+    if (weak && aliasMap[k]) return;
+    aliasMap[k] = id;
+  }
+  reg.buildings.forEach(function (b) { addAlias(b.id, b.id); });
+  reg.buildings.forEach(function (b) { b.aliases.forEach(function (a) { addAlias(a, b.id, true); }); });
+  reg.buildings.forEach(function (b) {
+    if (b.repo && b.repo !== reg.campus.repo) addAlias(b.repo, b.id, true);
+    if (b.path) addAlias(b.path, b.id, true);
+  });
+
+  function building(idOrAlias) {
+    if (!idOrAlias) return null;
+    var k = String(idOrAlias).toLowerCase().trim().replace(/^\/+|\/+$/g, '');
+    if (byId[k]) return byId[k];
+    var id = aliasMap[k];
+    return id ? byId[id] : null;
+  }
+  function districtOf(b) { return b ? districtById[b.district] || null : null; }
+  function district(id) {
+    if (!id) return null;
+    var k = String(id).toLowerCase().trim();
+    if (districtById[k]) return districtById[k];
+    // 也接受中文名稱（例：語言學區 / 語言）
+    for (var i = 0; i < reg.districts.length; i++) {
+      var d = reg.districts[i];
+      if (d.name === id || String(d.name || '').replace('學區', '') === id) return d;
+    }
+    return null;
+  }
+
+  /* ------------------------------------------------------------ 執行環境與網址 */
+  function detectEnv() {
+    var loc = window.location;
+    var host = loc.hostname || '';
+    if (loc.protocol === 'file:') return { mode: 'file' };
+    if (/(^|\.)github\.io$/i.test(host)) return { mode: 'github' };
+    if (loc.protocol === 'http:' || loc.protocol === 'https:') {
+      return { mode: 'cloudtop', host: host, proto: loc.protocol };
+    }
+    return { mode: 'other' };
+  }
+  var env = detectEnv();
+
+  function isLive(b) { return !!(b && b.status !== 'planned' && b.url); }
+  function localBase(b) {
+    if (env.mode !== 'cloudtop' || !b || !b.local_port) return '';
+    return env.proto + '//' + env.host + ':' + b.local_port + '/';
+  }
+  function publicUrl(b) { return b && b.url ? b.url : ''; }
+  // 主要入口：Local (cloudtop) 版一律使用 Local 網址；GitHub / file 版一律使用 GitHub 公開網址
+  function primaryUrl(b) {
+    if (!isLive(b)) return '';
+    var lb = localBase(b);
+    if (lb) return lb + (b.local_hash || '');
+    return publicUrl(b);
+  }
+  function linkUrl(b, hash) {
+    if (!isLive(b)) return '';
+    var h = normHash(hash);
+    var lb = localBase(b);
+    if (lb) return lb + h;
+    return stripHash(publicUrl(b)) + h;
+  }
+  function localUrl(b) {
+    var lb = localBase(b);
+    return lb ? lb + (b.local_hash || '') : '';
+  }
+  // 校園首頁網址（404 頁、分享用）
+  function campusHome() {
+    if (env.mode === 'file') return 'index.html';
+    if (env.mode === 'github') return window.location.origin + '/';
+    if (env.mode === 'cloudtop') {
+      var p = window.location.port;
+      if (p && CAMPUS_PORTS.indexOf(p) >= 0) return window.location.origin + '/';
+      return env.proto + '//' + env.host + ':' + CAMPUS_PORTS[0] + '/';
+    }
+    return reg.campus.public_url || 'https://okayell.github.io/';
+  }
+  function shortUrl(b) {
+    var a = b && (b.aliases[0] || b.id);
+    if (env.mode === 'cloudtop') {
+      return a ? window.location.host + '/' + a : '';
+    }
+    var base = String(reg.campus.public_url || 'https://okayell.github.io/').replace(/^https?:\/\//, '');
+    return a ? base + a : '';
+  }
+
+  /* Cloudtop 即時服務狀態（/api/status，伺服器端 ≤5 秒快取） */
+  var status = { ports: null, at: 0, inflight: null };
+  C.portUp = function (b) {
+    if (!b || !b.local_port || !status.ports) return null;
+    var v = status.ports[String(b.local_port)];
+    return v == null ? null : !!v;
+  };
+  C.refreshStatus = function (force) {
+    if (env.mode !== 'cloudtop') return Promise.resolve(null);
+    if (status.inflight) return status.inflight;
+    if (!force && status.ports && Date.now() - status.at < 8000) return Promise.resolve(status.ports);
+    status.inflight = fetch('/api/status', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        status.inflight = null;
+        if (j && j.ports) {
+          status.ports = j.ports;
+          status.at = Date.now();
+          C.emit('status', status.ports);
+        }
+        return status.ports;
+      })
+      .catch(function () { status.inflight = null; return null; });
+    return status.inflight;
+  };
+
+  /* ------------------------------------------------------------ 最近造訪（campus_nav.js 也寫同一個 key） */
+  function readVisits() {
+    try {
+      var v = JSON.parse(window.localStorage.getItem(VISITS_KEY) || '{}');
+      return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+    } catch (e) { return {}; }
+  }
+  function recentVisits(limit) {
+    var v = readVisits();
+    return Object.keys(v)
+      .filter(function (id) { return byId[id] && isLive(byId[id]) && typeof v[id] === 'number'; })
+      .sort(function (a, b) { return v[b] - v[a]; })
+      .slice(0, limit || 6)
+      .map(function (id) { return { b: byId[id], at: v[id] }; });
+  }
+  function recordVisit(id) {
+    if (!id || !byId[id]) return;
+    try {
+      var v = readVisits();
+      v[id] = Date.now();
+      window.localStorage.setItem(VISITS_KEY, JSON.stringify(v));
+    } catch (e) { /* 無痕模式：略過 */ }
+  }
+  function timeAgo(ts) {
+    var s = Math.max(0, (Date.now() - ts) / 1000);
+    if (s < 60) return '剛剛';
+    if (s < 3600) return Math.floor(s / 60) + ' 分鐘前';
+    if (s < 86400) return Math.floor(s / 3600) + ' 小時前';
+    if (s < 86400 * 30) return Math.floor(s / 86400) + ' 天前';
+    return new Date(ts).toLocaleDateString('zh-TW');
+  }
+
+  /* ------------------------------------------------------------ 搜尋 */
+  function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  var searchIndex = reg.buildings.map(function (b) {
+    var d = districtById[b.district] || {};
+    return {
+      b: b,
+      name: norm(b.name), en: norm(b.en), aliases: b.aliases.map(norm).concat([norm(b.id)]),
+      district: norm((d.name || '') + ' ' + (d.en || '')),
+      meta: norm([b.tagline].concat(b.features, b.links.map(function (l) { return l.label; })).join(' ')),
+      desc: norm(b.desc),
+    };
+  });
+  function scoreToken(e, t) {
+    var s = 0;
+    if (e.aliases.indexOf(t) >= 0) s = Math.max(s, 100);
+    if (e.name === t) s = Math.max(s, 100);
+    else if (e.name.indexOf(t) === 0) s = Math.max(s, 90);
+    else if (e.name.indexOf(t) >= 0) s = Math.max(s, 80);
+    if (e.en.indexOf(t) >= 0) s = Math.max(s, e.en.indexOf(t) === 0 ? 70 : 60);
+    if (e.aliases.some(function (a) { return a.indexOf(t) === 0; })) s = Math.max(s, 65);
+    if (e.district.indexOf(t) >= 0) s = Math.max(s, 45);
+    if (e.meta.indexOf(t) >= 0) s = Math.max(s, 35);
+    if (e.desc.indexOf(t) >= 0) s = Math.max(s, 18);
+    return s;
+  }
+  function search(q) {
+    var tokens = norm(q).split(' ').filter(Boolean);
+    if (!tokens.length) return [];
+    var res = [];
+    searchIndex.forEach(function (e, i) {
+      var total = 0;
+      for (var k = 0; k < tokens.length; k++) {
+        var s = scoreToken(e, tokens[k]);
+        if (!s) return;
+        total += s;
+      }
+      if (e.b.status === 'planned') total -= 5;
+      res.push({ b: e.b, score: total, order: i });
+    });
+    res.sort(function (a, b) { return b.score - a.score || a.order - b.order; });
+    return res;
+  }
+
+  /* ------------------------------------------------------------ IME 安全 Enter（注音／倉頡選字時的 Enter 不送出） */
+  var ime = { composing: false, endAt: 0 };
+  document.addEventListener('compositionstart', function () { ime.composing = true; }, true);
+  document.addEventListener('compositionend', function () { ime.composing = false; ime.endAt = Date.now(); }, true);
+  function isEnterSend(ev) {
+    return ev.key === 'Enter' && !ev.isComposing && ev.keyCode !== 229 && !ime.composing && Date.now() - ime.endAt >= 150;
+  }
+
+  /* ------------------------------------------------------------ 事件、提示、複製 */
+  var listeners = {};
+  C.on = function (name, fn) { (listeners[name] = listeners[name] || []).push(fn); };
+  C.emit = function (name, data) { (listeners[name] || []).forEach(function (fn) { try { fn(data); } catch (e) { /* 單一監聽失敗不影響其他 */ } }); };
+
+  var toastTimer = 0;
+  function toast(msg, kind) {
+    var el = document.getElementById('toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'toast';
+      el.className = 'toast';
+      el.setAttribute('role', 'status');
+      el.setAttribute('aria-live', 'polite');
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.className = 'toast show ' + (kind || '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.className = 'toast ' + (kind || ''); }, 2600);
+  }
+  function copyText(text) {
+    function fallback() {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return Promise.resolve(ok);
+      } catch (e) { return Promise.resolve(false); }
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, fallback);
+    }
+    return fallback();
+  }
+
+  /* ------------------------------------------------------------ ?go= 立即轉址（盡早執行，地圖不必畫） */
+  function goTarget(search) {
+    var go = qs('go', search);
+    if (!go) return null;
+    var b = building(go);
+    if (!b) return { error: go };
+    if (!isLive(b)) return { planned: b };
+    var to = qs('to', search);
+    return { b: b, url: to ? linkUrl(b, to) : primaryUrl(b) };
+  }
+
+  C.VERSION_KEY = 'okayell.campus';
+  C.reg = reg;
+  C.aliases = aliasMap;
+  C.env = env;
+  C.util = { esc: esc, qs: qs, clamp: clamp, normHash: normHash, stripHash: stripHash, timeAgo: timeAgo };
+  C.building = building;
+  C.district = district;
+  C.districtOf = districtOf;
+  C.isLive = isLive;
+  C.primaryUrl = primaryUrl;
+  C.publicUrl = publicUrl;
+  C.linkUrl = linkUrl;
+  C.localUrl = localUrl;
+  C.campusHome = campusHome;
+  C.shortUrl = shortUrl;
+  C.recentVisits = recentVisits;
+  C.recordVisit = recordVisit;
+  C.search = search;
+  C.isEnterSend = isEnterSend;
+  C.toast = toast;
+  C.copyText = copyText;
+  C.goTarget = goTarget;
+  C.registryError = window.CAMPUS_REGISTRY_ERROR || (raw ? '' : '找不到校園資料（registry）');
+
+  var go = goTarget();
+  if (go && go.url) {
+    C.redirecting = go;
+    document.documentElement.className += ' redirecting';
+    recordVisit(go.b.id);
+    window.location.replace(go.url);
+  }
+})();
+
+</script>
+</head>
+<body>
+  <main class="nf">
+    <svg class="nf-art" viewBox="0 0 640 200" role="img" aria-label="校園裡的路標" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="200" fill="#e8f1e0"/>
+      <path d="M0,120 C90,90 170,110 260,96 C360,80 450,104 540,92 C590,86 620,92 640,96 V200 H0 Z" fill="#cfe3b4"/>
+      <path d="M0,150 C120,132 230,150 330,140 C440,128 540,146 640,136 V200 H0 Z" fill="#bfd9a0"/>
+      <path d="M262,200 C292,170 330,160 380,150 C420,142 470,140 520,136" fill="none" stroke="#efe3c9" stroke-width="22" stroke-linecap="round"/>
+      <g stroke="#4a3b2f" stroke-width="1.4" stroke-linejoin="round">
+        <rect x="314" y="58" width="9" height="112" fill="#a0784f"/>
+        <path d="M232,66 H318 V90 H232 L220,78 Z" fill="#fffaf0"/>
+        <path d="M320,96 H412 L424,108 L412,120 H320 Z" fill="#fffaf0"/>
+        <path d="M244,128 H318 V150 H244 L232,139 Z" fill="#ffedd5"/>
+        <circle cx="318" cy="56" r="6" fill="#e3a72f"/>
+      </g>
+      <g font-family="-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif" font-weight="800" font-size="13" fill="#3b2f25">
+        <text x="270" y="83" text-anchor="middle">← 校門</text>
+        <text x="366" y="113" text-anchor="middle">服務中心 →</text>
+        <text x="278" y="144" text-anchor="middle" fill="#9a3412">？？？</text>
+      </g>
+      <g stroke="#4a3b2f" stroke-width="1.2">
+        <rect x="96" y="104" width="6" height="26" fill="#8a6d52"/><circle cx="99" cy="92" r="22" fill="#7fb46a"/>
+        <rect x="150" y="116" width="5" height="20" fill="#8a6d52"/><circle cx="152" cy="106" r="16" fill="#8cc077"/>
+        <rect x="508" y="100" width="6" height="28" fill="#8a6d52"/><circle cx="511" cy="88" r="22" fill="#f6b8cf"/>
+        <rect x="560" y="110" width="5" height="22" fill="#8a6d52"/><circle cx="562" cy="100" r="16" fill="#7fb46a"/>
+      </g>
+      <g fill="#fffdf8" opacity=".9"><ellipse cx="120" cy="36" rx="34" ry="11"/><ellipse cx="146" cy="30" rx="22" ry="10"/><ellipse cx="500" cy="44" rx="30" ry="10"/></g>
+    </svg>
+    <div class="nf-body">
+      <div id="nfGo" hidden>
+        <p class="going">🚌 正在前往 <span id="nfGoName"></span>…</p>
+        <p class="muted">沒有自動跳轉？<a id="nfGoLink" href="#">點這裡前往</a></p>
+      </div>
+      <div id="nfMsg">
+        <h1 id="nfTitle">找不到這棟建築</h1>
+        <p id="nfText">你要找的網址不在校園地圖上，可能打錯字，或這間學院還沒開張。</p>
+        <div class="sug" id="nfSug" hidden></div>
+        <div class="acts">
+          <a class="btn primary" id="nfHome" href="/">🗺️ 回到校園地圖</a>
+          <a class="btn" id="nfSearch" href="/" hidden>🔍 在地圖上搜尋</a>
+        </div>
+        <details>
+          <summary>所有建築與短網址</summary>
+          <ul class="all" id="nfAll"></ul>
+        </details>
+      </div>
+    </div>
+  </main>
+  <script>/* js/notfound.js */
+/* 開心學園 · notfound.js — 404.html（okayell.github.io 使用者網站根目錄）
+ *   依 registry 的 aliases／id／repo 名稱轉址：/nba → /nba-betting-iq/、/ta → /finance/#/track/ta、/english → /english-speak-listen/
+ *   不分大小寫、容許結尾斜線與子路徑（/english/words → #/words）；/<學區> → 校園地圖 ?d=<學區>。
+ *   找不到 → 「找不到這棟建築」頁，附相近建議與全部短網址。
+ *   測試：?path=/nba 指定路徑（file:// 時必用），加 &dry=1 只顯示目標、不跳轉（window.CAMPUS_404 可讀結果）。
+ *   防無限轉址：目標網址與目前頁面相同（例：該 repo 尚未發布），或 8 秒內重複轉往同一目標時停止。
+ */
+(function () {
+  'use strict';
+  var C = window.CAMPUS;
+  if (!C || C.redirecting) return;
+  var esc = C.util.esc;
+  var qs = C.util.qs;
+  var GUARD_KEY = 'okayell.campus.404guard.v1';
+  var dry = qs('dry') === '1';
+
+  function $(id) { return document.getElementById(id); }
+  function dec(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+  function normPath(p) { return String(p || '/').replace(/\/index\.html?$/i, '/').replace(/\/+$/, '').toLowerCase() || '/'; }
+
+  var override = qs('path');
+  var rawPath = override != null ? override : (C.env.mode === 'file' ? '' : window.location.pathname);
+  var segs = String(rawPath).split('/').filter(Boolean).map(dec);
+  if (segs.length && /^(index|404)\.html?$/i.test(segs[segs.length - 1])) segs.pop();
+  var first = (segs[0] || '').toLowerCase().trim();
+  var rest = segs.slice(1);
+  if (first === 'go' && rest.length) { first = rest[0].toLowerCase(); rest = rest.slice(1); }
+
+  var home = C.campusHome();
+  $('nfHome').setAttribute('href', home);
+
+  function samePage(target) {
+    if (override != null) return false;
+    try {
+      var u = new URL(target, window.location.href);
+      return u.origin === window.location.origin && normPath(u.pathname) === normPath(window.location.pathname);
+    } catch (e) { return false; }
+  }
+  function guardHit(target) {
+    try {
+      var g = JSON.parse(window.sessionStorage.getItem(GUARD_KEY) || 'null');
+      var now = Date.now();
+      if (g && g.t === target && now - g.at < 8000 && g.n >= 2) return true;
+      var n = g && g.t === target && now - g.at < 8000 ? g.n + 1 : 1;
+      window.sessionStorage.setItem(GUARD_KEY, JSON.stringify({ t: target, at: now, n: n }));
+    } catch (e) { /* 無痕模式：只靠 samePage 判斷 */ }
+    return false;
+  }
+  function go(target, name) {
+    window.CAMPUS_404 = { target: target, name: name, path: rawPath };
+    $('nfMsg').hidden = true;
+    $('nfGo').hidden = false;
+    $('nfGoName').textContent = name;
+    $('nfGoLink').setAttribute('href', target);
+    document.title = '前往 ' + name + ' · 開心學園';
+    if (dry) { $('nfGoName').textContent = name + '（測試模式：' + target + '）'; return; }
+    window.location.replace(target);
+  }
+  function show(title, html) {
+    $('nfTitle').textContent = title;
+    $('nfText').innerHTML = html;
+  }
+
+  function renderAll() {
+    $('nfAll').innerHTML = C.reg.buildings.filter(C.isLive).map(function (b) {
+      return '<li><a href="' + esc(C.primaryUrl(b)) + '" data-visit="' + esc(b.id) + '">' + esc((b.icon || '') + ' ' + b.name) +
+        '<small>' + esc(C.shortUrl(b)) + '</small></a></li>';
+    }).join('');
+  }
+  function lev(a, b) {
+    if (a === b) return 0;
+    var m = a.length, n = b.length;
+    if (!m || !n) return m || n;
+    var prev = [], cur = [];
+    for (var j = 0; j <= n; j++) prev[j] = j;
+    for (var i = 1; i <= m; i++) {
+      cur = [i];
+      for (var k = 1; k <= n; k++) {
+        cur[k] = Math.min(prev[k] + 1, cur[k - 1] + 1, prev[k - 1] + (a.charAt(i - 1) === b.charAt(k - 1) ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[n];
+  }
+  function suggest(q) {
+    if (!q) return [];
+    var seen = {}, out = [];
+    Object.keys(C.aliases).forEach(function (k) {
+      var id = C.aliases[k];
+      var b = C.building(id);
+      if (!b || !C.isLive(b) || seen[id]) return;
+      var d = lev(q, k);
+      var ok = d <= (k.length <= 3 ? 1 : 2) || (q.length >= 2 && (k.indexOf(q) === 0 || q.indexOf(k) === 0));
+      if (ok) { seen[id] = 1; out.push({ b: b, d: d }); }
+    });
+    C.search(q).slice(0, 3).forEach(function (r) {
+      if (!seen[r.b.id] && C.isLive(r.b)) { seen[r.b.id] = 1; out.push({ b: r.b, d: 9 }); }
+    });
+    out.sort(function (x, y) { return x.d - y.d; });
+    return out.slice(0, 4).map(function (x) { return x.b; });
+  }
+
+  renderAll();
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('[data-visit]') : null;
+    if (t) C.recordVisit(t.getAttribute('data-visit'));
+  });
+
+  var b = first ? C.building(first) : null;
+  var dist = !b && first ? C.district(first) : null;
+  if (b && C.isLive(b)) {
+    var target = C.primaryUrl(b);
+    var to = qs('to');
+    var sub = rest.join('/').replace(/\/+$/, '');
+    if (to) target = C.linkUrl(b, to);
+    else if (sub) {
+      var want = '#/' + sub.toLowerCase();
+      var hit = b.links.filter(function (l) { return String(l.hash || '').toLowerCase() === want; })[0];
+      if (hit) target = C.linkUrl(b, hit.hash);
+    } else if (window.location.hash && window.location.hash.length > 2 && target.indexOf('#') < 0) {
+      target += window.location.hash;
+    }
+    if (samePage(target) || guardHit(target)) {
+      window.CAMPUS_404 = { target: null, blocked: target, path: rawPath };
+      show('🚧 ' + b.name + ' 還沒搬進這個網址', '這間' + (b.kind === 'arena' ? '實戰館' : '學院') + '的網址 <code>' + esc(target) +
+        '</code> 目前還沒有上線（可能還沒發布到 GitHub Pages）。先回校園地圖看看其他建築吧！');
+      $('nfHome').setAttribute('href', home + (home.indexOf('?') >= 0 ? '&' : '?') + 'b=' + encodeURIComponent(b.id));
+    } else {
+      go(target, (b.icon ? b.icon + ' ' : '') + b.name);
+    }
+  } else if (b) {
+    window.CAMPUS_404 = { target: null, planned: b.id, path: rawPath };
+    show('🚧 ' + b.name + ' 建設中', esc(b.desc || b.tagline || '這間學院還在規劃中') + '，敬請期待！');
+    $('nfHome').setAttribute('href', home + (home.indexOf('?') >= 0 ? '&' : '?') + 'b=' + encodeURIComponent(b.id));
+  } else if (dist) {
+    go(home + (home.indexOf('?') >= 0 ? '&' : '?') + 'd=' + encodeURIComponent(dist.id), (dist.icon ? dist.icon + ' ' : '') + dist.name);
+  } else {
+    window.CAMPUS_404 = { target: null, notFound: true, path: rawPath };
+    var label = segs.length ? '/' + segs.join('/') : '';
+    if (label) show('找不到這棟建築', '網址 <code>' + esc(label) + '</code> 不在校園地圖上，可能打錯字，或這間學院還沒開張。');
+    var sug = suggest(first);
+    if (sug.length) {
+      var box = $('nfSug');
+      box.hidden = false;
+      box.innerHTML = '<p class="muted" style="width:100%;margin:0">你是不是要找：</p>' + sug.map(function (x) {
+        return '<a href="' + esc(C.primaryUrl(x)) + '" data-visit="' + esc(x.id) + '">' + esc((x.icon || '') + ' ' + x.name) + '</a>';
+      }).join('');
+    }
+    if (first) {
+      var s = $('nfSearch');
+      s.hidden = false;
+      s.setAttribute('href', home + (home.indexOf('?') >= 0 ? '&' : '?') + 'q=' + encodeURIComponent(first));
+    }
+  }
+})();
+
+</script>
+</body>
+</html>
