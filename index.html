@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>開心學園 · 校園地圖</title>
-  <meta name="description" content="開心學園：一張插畫風校園地圖，走進英語學院、日語學院、財經學院與四大分院、GTO 撲克學院，以及台股、NBA、英超、F1 實戰館。">
+  <meta name="description" content="開心學園：一張插畫風校園地圖，走進英語學院、日語學院、財經學院與四大分院、程式語言學院、智慧生活與物聯網學院、嵌入式與樹莓派學院、GTO 撲克學院，以及台股、NBA、英超、F1 實戰館。">
   <meta name="theme-color" content="#1d6b57">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E">
   <style>/* css/campus.css */
@@ -298,11 +298,15 @@ html.redirecting body::before {
 .pn-feat li { font-size: 13.5px; font-weight: 700; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 11px; }
 .pn-sec { margin: 18px 0 8px; font-size: 12.5px; font-weight: 800; color: var(--soft-ink); letter-spacing: 1px; }
 .pn-links, .pn-kids { display: flex; flex-wrap: wrap; gap: 7px; }
-.pn-links a, .kid {
-  display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px;
-  background: #eef7f3; border: 1px solid #cfe3da; color: var(--brand); font-size: 13px; font-weight: 800; text-decoration: none; cursor: pointer;
+.pn-links a, .pn-links button.pn-rel-btn, .kid {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 4px 12px; border-radius: 999px;
+  background: #eef7f3; border: 1px solid #cfe3da; color: var(--brand); font: inherit; font-size: 13px; font-weight: 800; line-height: 1.35; text-decoration: none; cursor: pointer; max-width: 100%;
 }
-.pn-links a:hover, .kid:hover { background: #e0f0e8; }
+.pn-links a:hover, .pn-links button.pn-rel-btn:hover, .kid:hover { background: #e0f0e8; }
+.pn-related a.pn-rel-link, .pn-related button.pn-rel-btn {
+  background: #fffbeb; border-color: #fcd34d; color: #92400e; border-radius: 16px; text-align: left;
+}
+.pn-related a.pn-rel-link:hover, .pn-related button.pn-rel-btn:hover { background: #fef3c7; }
 .pn-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
 .pn-actions .btn { width: 100%; }
 .pn-ct {
@@ -350,6 +354,10 @@ html.redirecting body::before {
 .card-links { display: flex; flex-wrap: wrap; gap: 6px; }
 .card-links a { font-size: 12.5px; font-weight: 800; color: var(--brand); text-decoration: none; padding: 4px 10px; border-radius: 999px; background: #eef7f3; border: 1px solid #d5e8df; }
 .card-links a:hover { background: #e0f0e8; }
+.card-rels { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; padding-top: 2px; }
+.card-rel-lbl { font-size: 11.5px; font-weight: 800; color: #92400e; margin-right: 2px; }
+.card-rels .card-rel { font: inherit; font-size: 12px; font-weight: 800; color: #92400e; text-decoration: none; padding: 3px 9px; border-radius: 999px; background: #fffbeb; border: 1px solid #fcd34d; cursor: pointer; }
+.card-rels .card-rel:hover { background: #fef3c7; }
 .card-act { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 2px; flex-wrap: wrap; }
 .ct-mini { font-size: 12px; font-weight: 700; color: #475569; margin-left: auto; }
 .card.planned { border-style: dashed; background: #fffdf8; }
@@ -475,7 +483,7 @@ body.modal-open { overflow: hidden; }
 </style>
   <script>/* js/registry_data.js */
 /* registry.json → window.CAMPUS_REGISTRY（自動產生；要改內容請改 registry.json） */
-window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy Campus","icon":"🏫","tagline":"一張校園地圖，走進每一間學院與實戰館"},"campus":{"repo":"okayell.github.io","public_url":"https://okayell.github.io/","backend_port":8918,"local_port":8919},"districts":[{"id":"language","name":"語言學區","en":"Language Quarter","icon":"🌏","color":"#0284c7","soft":"#e0f2fe","desc":"聽、說、讀、單字一次練齊：英語、日語都依程度分級，從零開始也跟得上。"},{"id":"finance","name":"財經學區","en":"Finance Quarter","icon":"💹","color":"#d97706","soft":"#fef3c7","desc":"財經學院與四大分院：技術分析、基本面、籌碼面、消息面。學完直接到實戰區的台股智慧選股驗證。"},{"id":"games","name":"博弈學區","en":"Strategy & Games Quarter","icon":"🎲","color":"#7c3aed","soft":"#ede9fe","desc":"用數學與機率做決策：GTO 撲克學院從規則一路教到 GTO 範圍、底池賠率與 EV。"},{"id":"arena","name":"實戰區","en":"Practice Arena","icon":"🏟️","color":"#dc2626","soft":"#fee2e2","desc":"不是上課，是上場：每天自動更新真實數據的台股選股，以及 NBA／英超／F1 運彩分析。"},{"id":"arts","name":"藝能生活學區","en":"Arts & Life Skills Quarter","icon":"🎨","color":"#db2777","soft":"#fce7f3","status":"planned","desc":"建設中：烹飪、音樂等各種生活技能學院，陸續開張。"}],"buildings":[{"id":"english","district":"language","kind":"academy","name":"英語學院","en":"English Academy","icon":"🇬🇧","art":"clock-tower","status":"live","repo":"english-speak-listen","url":"https://okayell.github.io/english-speak-listen/","local_port":8911,"aliases":["english","en"],"tagline":"A1–C2 分級：聽力、口說、單字一次學齊","desc":"72+ 篇分級生活對話，逐句朗讀、跟讀發音評分、角色扮演、聽寫與理解測驗；新增分級單字學習，搭配 SM-2 間隔複習的個人單字本。","features":["🔤 A1–C2 分級單字學習","🎧 男女聲分角色朗讀・盲聽","🗣️ 跟讀發音評分・角色扮演","🧠 單字卡間隔複習（SM-2）"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"🔤 單字學習","hash":"#/words"},{"label":"📚 分級文章","hash":"#/library"},{"label":"🧠 複習","hash":"#/review"}]},{"id":"japanese","district":"language","kind":"academy","name":"日語學院","en":"Japanese Academy","icon":"🇯🇵","art":"pagoda","status":"new","repo":"okayell.github.io","path":"japanese/","url":"https://okayell.github.io/japanese/","local_port":8923,"aliases":["japanese","ja","jp"],"tagline":"從五十音開始：A1–C2 分級，真人語速發音","desc":"平假名、片假名五十音（清音・濁音・拗音）點字即發音與測驗，A1–C2（對應 JLPT N5–N1）分級對話課程、文法重點與分級單字，跟讀口說評分與間隔複習。","features":["あ 五十音表・點字發音・認字測驗","🗣️ 日語朗讀與跟讀評分","📚 A1–C2 分級對話與文法","🔤 分級單字・間隔複習"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"あ 五十音","hash":"#/kana"},{"label":"📚 分級課程","hash":"#/library"},{"label":"🔤 單字學習","hash":"#/words"}]},{"id":"finance","district":"finance","kind":"academy","name":"財經學院","en":"Finance Academy","icon":"🏛️","art":"classical-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/","local_port":8925,"aliases":["finance","fin"],"tagline":"台股投資四大分析，一次系統化學會","desc":"財經學院本部：技術分析、基本面、籌碼面、消息面四大分院的圖解課程、互動圖表、隨堂測驗與術語百科，課程直接連到台股智慧選股實戰練習。","features":["📈 技術分析學院","📊 基本面學院","🧮 籌碼面學院","📰 消息面學院"],"links":[{"label":"🏛️ 學院首頁","hash":"#/home"},{"label":"📖 術語百科","hash":"#/glossary"}]},{"id":"finance-ta","district":"finance","kind":"department","parent":"finance","name":"技術分析學院","en":"Technical Analysis","icon":"📈","art":"chart-tower","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/ta","local_port":8925,"local_hash":"#/track/ta","aliases":["ta"],"tagline":"K 線、均線、量價、KD／RSI／MACD 與型態","desc":"從 K 線與均線讀懂趨勢，再學量價關係、支撐壓力、型態學與常用指標，每課都有可操作的互動圖表。","features":["🕯️ K 線與型態","〰️ 均線・趨勢線・支撐壓力","📉 KD／RSI／MACD","🔊 量價關係"],"links":[{"label":"📈 進入分院","hash":"#/track/ta"}]},{"id":"finance-fa","district":"finance","kind":"department","parent":"finance","name":"基本面學院","en":"Fundamental Analysis","icon":"📊","art":"ledger-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/fa","local_port":8925,"local_hash":"#/track/fa","aliases":["fa"],"tagline":"財報三表、EPS、ROE、本益比與殖利率","desc":"看懂損益表、資產負債表、現金流量表，學會用月營收、毛利率、ROE、本益比、殖利率評估一家公司值不值得買。","features":["🧾 財報三表","💰 EPS・ROE・毛利率","⚖️ 本益比・股價淨值比・殖利率","📅 月營收與產業分析"],"links":[{"label":"📊 進入分院","hash":"#/track/fa"}]},{"id":"finance-chip","district":"finance","kind":"department","parent":"finance","name":"籌碼面學院","en":"Chip Analysis","icon":"🧮","art":"vault","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/chip","local_port":8925,"local_hash":"#/track/chip","aliases":["chip"],"tagline":"三大法人、融資融券、主力分點與股權分散","desc":"追蹤錢的流向：外資、投信、自營商買賣超，融資融券與券資比，主力券商分點，集保股權分散與大戶持股比例。","features":["🏦 三大法人買賣超","💳 融資融券・券資比","🕵️ 主力分點・當沖比","👥 集保股權分散"],"links":[{"label":"🧮 進入分院","hash":"#/track/chip"}]},{"id":"finance-news","district":"finance","kind":"department","parent":"finance","name":"消息面學院","en":"News & Macro","icon":"📰","art":"broadcast","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/news","local_port":8925,"local_hash":"#/track/news","aliases":["news"],"tagline":"重大訊息、法說會、總經數據與市場情緒","desc":"學會解讀公司重大訊息與法說會、CPI／非農／FOMC 等總經數據、產業新聞與國際股市連動，並辨識假消息與市場情緒。","features":["📢 重大訊息・法說會","🌐 總經數據・央行利率","🔗 國際股市與產業連動","🧯 假消息與情緒判讀"],"links":[{"label":"📰 進入分院","hash":"#/track/news"}]},{"id":"poker","district":"games","kind":"academy","name":"GTO 撲克學院","en":"GTO Poker Academy","icon":"♠️","art":"card-hall","status":"live","repo":"poker-gto","url":"https://okayell.github.io/poker-gto/","local_port":8899,"aliases":["poker","gto"],"tagline":"從零學會德州撲克：圖解課程與 GTO 範圍表","desc":"完全新手也能學會的德州撲克 GTO 學習工具：54 堂圖解課程、6 人桌 40 組翻前範圍表、11 種無限隨機練習、200+ 術語百科與計算工具。","features":["🎓 54 堂圖解課程","📊 6-Max GTO 翻前範圍表","🎯 11 種無限隨機練習","📖 200+ 術語百科"],"links":[{"label":"🎓 學習","hash":"#/learn"},{"label":"📊 範圍表","hash":"#/ranges"},{"label":"🎯 練習","hash":"#/quiz"},{"label":"📖 百科","hash":"#/wiki"}]},{"id":"stock","district":"arena","kind":"arena","name":"台股智慧選股","en":"TW Stock Insight","icon":"📈","art":"exchange","status":"live","repo":"tw-stock-insight","url":"https://okayell.github.io/tw-stock-insight/","local_port":8905,"aliases":["stock","tw"],"tagline":"全上市櫃每日推薦、選股器、K 線一鍵技術分析","desc":"每天收盤後自動更新：大盤與三大法人、今日推薦 20 檔、約 2,000 檔即時選股器、個股 K 線與一鍵技術分析、產業鏈、ETF 專區與盤前戰情。","features":["🎯 每日推薦 20 檔","🔎 2,000 檔選股器","🧠 K 線一鍵技術分析","🌅 盤前戰情・ETF 專區"],"links":[{"label":"🎯 今日推薦","hash":"#/"},{"label":"🌅 盤前戰情","hash":"#/morning"},{"label":"🔎 選股器","hash":"#/screener"},{"label":"🧠 個股分析","hash":"#/stock/2330"}]},{"id":"nba","district":"arena","kind":"arena","name":"NBA 運彩智庫","en":"NBA Betting IQ","icon":"🏀","art":"arena","status":"live","repo":"nba-betting-iq","url":"https://okayell.github.io/nba-betting-iq/","local_port":8913,"aliases":["nba"],"tagline":"讓分／大小分解盤、跨場串關、傷兵雷達","desc":"每日讓分與大小分盤口分析、跨場串關推薦、傷兵出賽雷達，賽後自動對獎、檢討並調整模型權重。","features":["🎯 每日解盤","🎰 跨場串關","🏥 傷兵出賽雷達","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"📊 過盤紀錄","hash":"#/results"}]},{"id":"epl","district":"arena","kind":"arena","name":"英超運彩智庫","en":"EPL Odds IQ","icon":"⚽","art":"stadium","status":"live","repo":"epl-odds-iq","url":"https://okayell.github.io/epl-odds-iq/","local_port":8917,"aliases":["epl"],"tagline":"亞洲讓球、2.5 球大小、1X2 和局防雷","desc":"英超每輪亞洲讓球與 2.5 球大小盤分析、1X2 和局防雷、跨場串關，整合官方 FPL xG 與傷停資訊，賽後自動檢討。","features":["🎯 本輪解盤","🎰 英超串關","📈 FPL xG・傷停","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏆 積分排行","hash":"#/stats"}]},{"id":"f1","district":"arena","kind":"arena","name":"F1 運彩智庫","en":"F1 Odds IQ","icon":"🏎️","art":"circuit","status":"live","repo":"f1-odds-iq","url":"https://okayell.github.io/f1-odds-iq/","local_port":8915,"aliases":["f1"],"tagline":"車手配對 H2H、奪冠與頒獎台價值、罰退雷達","desc":"每站車手配對盤 H2H、奪冠與頒獎台價值分析、引擎罰退雷達與分站串關，逐站自動檢討進化。","features":["🎯 本站解盤","🏁 車手 H2H","🔧 罰退雷達","🧠 逐站檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏎️ 車隊車手","hash":"#/team"}]},{"id":"cooking","district":"arts","kind":"academy","name":"烹飪學院","en":"Culinary Academy","icon":"🍳","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：從刀工、火候到家常菜與甜點的分級料理課程。","features":[],"links":[]},{"id":"music","district":"arts","kind":"academy","name":"音樂學院","en":"Music Academy","icon":"🎵","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：樂理、節奏、視唱聽音與樂器入門。","features":[],"links":[]}]};
+window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy Campus","icon":"🏫","tagline":"一張校園地圖，走進每一間學院與實戰館"},"campus":{"repo":"okayell.github.io","public_url":"https://okayell.github.io/","backend_port":8918,"local_port":8919},"districts":[{"id":"language","name":"語言學區","en":"Language Quarter","icon":"🌏","color":"#0284c7","soft":"#e0f2fe","desc":"聽、說、讀、單字一次練齊：英語、日語都依程度分級，從零開始也跟得上。"},{"id":"finance","name":"財經學區","en":"Finance Quarter","icon":"💹","color":"#d97706","soft":"#fef3c7","desc":"財經學院與四大分院（技術分析、基本面、籌碼面、消息面）＋台股智慧選股實戰館：學完理論直接走過財經廣場實戰驗證。"},{"id":"games","name":"博弈學區","en":"Strategy & Betting Quarter","icon":"🎲","color":"#7c3aed","soft":"#ede9fe","desc":"GTO 撲克學院與 NBA、英超、F1 三大運彩智庫：用機率、期望值（EV）與凱利公式做理性決策。"},{"id":"tech","name":"智慧科技學區","en":"Tech, IoT & Coding Quarter","icon":"🤖","color":"#0e7490","soft":"#ecfeff","status":"planned","desc":"建設中：智慧生活與物聯網、嵌入式與樹莓派兩大硬體實作學院，搭配程式語言學院與四大分院（Python、C、JavaScript、Go），軟硬體跨院連動學習。"},{"id":"arts","name":"藝能生活學區","en":"Arts & Life Skills Quarter","icon":"🎨","color":"#db2777","soft":"#fce7f3","status":"planned","desc":"建設中：烹飪、音樂等各種生活技能學院，陸續開張。"}],"buildings":[{"id":"english","district":"language","kind":"academy","name":"英語學院","en":"English Academy","icon":"🇬🇧","art":"clock-tower","status":"live","repo":"english-speak-listen","url":"https://okayell.github.io/english-speak-listen/","local_port":8911,"aliases":["english","en"],"tagline":"A1–C2 分級：聽力、口說、單字一次學齊","desc":"72+ 篇分級生活對話，逐句朗讀、跟讀發音評分、角色扮演、聽寫與理解測驗；新增分級單字學習，搭配 SM-2 間隔複習的個人單字本。","features":["🔤 A1–C2 分級單字學習","🎧 男女聲分角色朗讀・盲聽","🗣️ 跟讀發音評分・角色扮演","🧠 單字卡間隔複習（SM-2）"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"🔤 單字學習","hash":"#/words"},{"label":"📚 分級文章","hash":"#/library"},{"label":"🧠 複習","hash":"#/review"}]},{"id":"japanese","district":"language","kind":"academy","name":"日語學院","en":"Japanese Academy","icon":"🇯🇵","art":"pagoda","status":"new","repo":"okayell.github.io","path":"japanese/","url":"https://okayell.github.io/japanese/","local_port":8923,"aliases":["japanese","ja","jp"],"tagline":"從五十音開始：A1–C2 分級，真人語速發音","desc":"平假名、片假名五十音（清音・濁音・拗音）點字即發音與測驗，A1–C2（對應 JLPT N5–N1）分級對話課程、文法重點與分級單字，跟讀口說評分與間隔複習。","features":["あ 五十音表・點字發音・認字測驗","🗣️ 日語朗讀與跟讀評分","📚 A1–C2 分級對話與文法","🔤 分級單字・間隔複習"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"あ 五十音","hash":"#/kana"},{"label":"📚 分級課程","hash":"#/library"},{"label":"🔤 單字學習","hash":"#/words"}]},{"id":"finance","district":"finance","kind":"academy","name":"財經學院","en":"Finance Academy","icon":"🏛️","art":"classical-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/","local_port":8925,"aliases":["finance","fin"],"tagline":"台股投資四大分析，一次系統化學會","desc":"財經學院本部：技術分析、基本面、籌碼面、消息面四大分院的圖解課程、互動圖表、隨堂測驗與術語百科，課程直接連到台股智慧選股實戰練習。","features":["📈 技術分析學院","📊 基本面學院","🧮 籌碼面學院","📰 消息面學院"],"links":[{"label":"🏛️ 學院首頁","hash":"#/home"},{"label":"📖 術語百科","hash":"#/glossary"}],"related":[{"id":"stock","label":"📈 台股選股 · 今日推薦","hash":"#/"},{"id":"stock","label":"🔎 2,000 檔選股器","hash":"#/screener"},{"id":"stock","label":"🧠 台積電 K 線一鍵技術分析","hash":"#/stock/2330"},{"id":"stock","label":"🌅 盤前美股與重大事件戰情","hash":"#/morning"}]},{"id":"finance-ta","district":"finance","kind":"department","parent":"finance","name":"技術分析學院","en":"Technical Analysis","icon":"📈","art":"chart-tower","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/ta","local_port":8925,"local_hash":"#/track/ta","aliases":["ta"],"tagline":"K 線、均線、量價、KD／RSI／MACD 與型態","desc":"從 K 線與均線讀懂趨勢，再學量價關係、支撐壓力、型態學與常用指標，每課都有可操作的互動圖表，並可直接開啟台股智慧選股 K 線驗證。","features":["🕯️ K 線與型態","〰️ 均線・趨勢線・支撐壓力","📉 KD／RSI／MACD","🔊 量價關係"],"links":[{"label":"📈 進入分院","hash":"#/track/ta"}],"related":[{"id":"stock","label":"🧠 台積電 K 線一鍵技術分析","hash":"#/stock/2330"},{"id":"stock","label":"🔥 選股器 · 均線強勢多頭","hash":"#/screener?p=strong"},{"id":"stock","label":"🔄 選股器 · KD 低檔黃金交叉","hash":"#/screener?p=rebound"}]},{"id":"finance-fa","district":"finance","kind":"department","parent":"finance","name":"基本面學院","en":"Fundamental Analysis","icon":"📊","art":"ledger-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/fa","local_port":8925,"local_hash":"#/track/fa","aliases":["fa"],"tagline":"財報三表、EPS、ROE、本益比與殖利率","desc":"看懂損益表、資產負債表、現金流量表，學會用月營收、毛利率、ROE、本益比、殖利率評估一家公司值不值得買，並可直接用選股器篩出高殖利率與營收創高股。","features":["🧾 財報三表","💰 EPS・ROE・毛利率","⚖️ 本益比・股價淨值比・殖利率","📅 月營收與產業分析"],"links":[{"label":"📊 進入分院","hash":"#/track/fa"}],"related":[{"id":"stock","label":"🏦 選股器 · 高殖利率存股","hash":"#/screener?p=yield"},{"id":"stock","label":"📈 選股器 · 營收創高成長","hash":"#/screener?p=rev"},{"id":"stock","label":"📊 台積電營收／EPS／股利","hash":"#/stock/2330?tab=revenue"}]},{"id":"finance-chip","district":"finance","kind":"department","parent":"finance","name":"籌碼面學院","en":"Chip Analysis","icon":"🧮","art":"vault","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/chip","local_port":8925,"local_hash":"#/track/chip","aliases":["chip"],"tagline":"三大法人、融資融券、主力分點與股權分散","desc":"追蹤錢的流向：外資、投信、自營商買賣超，融資融券與券資比，主力券商分點，集保股權分散與大戶持股比例，並可直接到選股器篩選法人連買標的。","features":["🏦 三大法人買賣超","💳 融資融券・券資比","🕵️ 主力分點・當沖比","👥 集保股權分散"],"links":[{"label":"🧮 進入分院","hash":"#/track/chip"}],"related":[{"id":"stock","label":"💰 選股器 · 投信外資連買股","hash":"#/screener?p=inst"},{"id":"stock","label":"🏦 台積電三大法人買賣超明細","hash":"#/stock/2330?tab=inst"}]},{"id":"finance-news","district":"finance","kind":"department","parent":"finance","name":"消息面學院","en":"News & Macro","icon":"📰","art":"broadcast","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/news","local_port":8925,"local_hash":"#/track/news","aliases":["news"],"tagline":"重大訊息、法說會、總經數據與市場情緒","desc":"學會解讀公司重大訊息與法說會、CPI／非農／FOMC 等總經數據、產業新聞與國際股市連動，並直接搭配台股智慧選股「盤前戰情室」追蹤隔夜美股與事件催化。","features":["📢 重大訊息・法說會","🌐 總經數據・央行利率","🔗 國際股市與產業連動","🧯 假消息與情緒判讀"],"links":[{"label":"📰 進入分院","hash":"#/track/news"}],"related":[{"id":"stock","label":"🌅 盤前美股與重大事件戰情","hash":"#/morning"},{"id":"stock","label":"🔗 台股產業價值鏈地圖","hash":"#/industry"}]},{"id":"poker","district":"games","kind":"academy","name":"GTO 撲克學院","en":"GTO Poker Academy","icon":"♠️","art":"card-hall","status":"live","repo":"poker-gto","url":"https://okayell.github.io/poker-gto/","local_port":8899,"aliases":["poker","gto"],"tagline":"從零學會德州撲克：圖解課程與 GTO 範圍表","desc":"完全新手也能學會的德州撲克 GTO 學習工具：54 堂圖解課程、6 人桌 40 組翻前範圍表、11 種無限隨機練習、200+ 術語百科與期望值（EV）／資金控管計算工具。","features":["🎓 54 堂圖解課程","📊 6-Max GTO 翻前範圍表","🎯 11 種無限隨機練習","📖 200+ 術語百科"],"links":[{"label":"🎓 學習","hash":"#/learn"},{"label":"📊 範圍表","hash":"#/ranges"},{"label":"🎯 練習","hash":"#/quiz"},{"label":"📖 百科","hash":"#/wiki"}],"related":[{"id":"nba","label":"🏀 NBA 運彩智庫 · 凱利注碼","hash":"#/bankroll"},{"id":"epl","label":"⚽ 英超運彩智庫 · 本輪解盤","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫 · 本站解盤","hash":"#/picks"}]},{"id":"stock","district":"finance","kind":"arena","name":"台股智慧選股","en":"TW Stock Insight","icon":"📈","art":"exchange","status":"live","repo":"tw-stock-insight","url":"https://okayell.github.io/tw-stock-insight/","local_port":8905,"aliases":["stock","tw"],"tagline":"財經實戰館：每日推薦、2,000 檔選股器、K 線一鍵技術分析","desc":"與財經學院深度連動的實戰驗證場！每天收盤後自動更新：大盤與三大法人、今日推薦 20 檔、約 2,000 檔即時選股器、個股 K 線與一鍵技術分析、產業鏈、ETF 專區與盤前戰情；看盤時可隨時一鍵跳回財經學院四大分院對照觀念。","features":["🎯 每日推薦 20 檔","🔎 2,000 檔選股器","🧠 K 線一鍵技術分析","🌅 盤前戰情・ETF 專區"],"links":[{"label":"🎯 今日推薦","hash":"#/"},{"label":"🌅 盤前戰情","hash":"#/morning"},{"label":"🔎 選股器","hash":"#/screener"},{"label":"🧠 個股分析","hash":"#/stock/2330"}],"related":[{"id":"finance-ta","label":"📈 技術分析學院（K線／均線／指標）","hash":"#/track/ta"},{"id":"finance-fa","label":"📊 基本面學院（EPS／本益比／殖利率）","hash":"#/track/fa"},{"id":"finance-chip","label":"🧮 籌碼面學院（三大法人／主力）","hash":"#/track/chip"},{"id":"finance-news","label":"📰 消息面學院（總經／法說／事件）","hash":"#/track/news"},{"id":"finance","label":"📖 財經術語百科","hash":"#/glossary"}]},{"id":"nba","district":"games","kind":"arena","name":"NBA 運彩智庫","en":"NBA Betting IQ","icon":"🏀","art":"arena","status":"live","repo":"nba-betting-iq","url":"https://okayell.github.io/nba-betting-iq/","local_port":8913,"aliases":["nba"],"tagline":"讓分／大小分解盤、跨場串關、傷兵雷達","desc":"每日讓分與大小分盤口分析、跨場串關推薦、傷兵出賽雷達、凱利公式注碼試算，賽後自動對獎、檢討並調整模型權重。","features":["🎯 每日解盤","🎰 跨場串關","🏥 傷兵出賽雷達","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"📊 過盤紀錄","hash":"#/results"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"epl","label":"⚽ 英超運彩智庫","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫","hash":"#/picks"}]},{"id":"epl","district":"games","kind":"arena","name":"英超運彩智庫","en":"EPL Odds IQ","icon":"⚽","art":"stadium","status":"live","repo":"epl-odds-iq","url":"https://okayell.github.io/epl-odds-iq/","local_port":8917,"aliases":["epl"],"tagline":"亞洲讓球、2.5 球大小、1X2 和局防雷","desc":"英超每輪亞洲讓球與 2.5 球大小盤分析、1X2 和局防雷、跨場串關，整合官方 FPL xG 與傷停資訊，賽後自動檢討。","features":["🎯 本輪解盤","🎰 英超串關","📈 FPL xG・傷停","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏆 積分排行","hash":"#/stats"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 運彩智庫","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫","hash":"#/picks"}]},{"id":"f1","district":"games","kind":"arena","name":"F1 運彩智庫","en":"F1 Odds IQ","icon":"🏎️","art":"circuit","status":"live","repo":"f1-odds-iq","url":"https://okayell.github.io/f1-odds-iq/","local_port":8915,"aliases":["f1"],"tagline":"車手配對 H2H、奪冠與頒獎台價值、罰退雷達","desc":"每站車手配對盤 H2H、奪冠與頒獎台價值分析、引擎罰退雷達與分站串關，逐站自動檢討進化。","features":["🎯 本站解盤","🏁 車手 H2H","🔧 罰退雷達","🧠 逐站檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏎️ 車隊車手","hash":"#/team"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 運彩智庫","hash":"#/picks"},{"id":"epl","label":"⚽ 英超運彩智庫","hash":"#/picks"}]},{"id":"coding","district":"tech","kind":"academy","name":"程式語言學院","en":"Coding Academy","icon":"💻","art":"code-hall","status":"planned","aliases":["coding","code","cs","prog"],"tagline":"Python、C、JavaScript、Go 四大語言系統化圖解，直通軟硬體實戰","desc":"規劃中：程式語言學院本部，統整變數、記憶體模型、資料結構與演算法共通觀念，旗下設 Python、C、JavaScript、Go 四大分院，從零基礎互動式練習一路銜接樹莓派腳本、嵌入式韌體、網頁前端與雲端高併發後端。","features":["🐍 Python 學院（自動化・資料處理・樹莓派）","⚙️ C 語言學院（記憶體指標・位元運算・嵌入式韌體）","🌐 JavaScript 學院（互動前端・非同步・中控面板）","🐹 Go 語言學院（Goroutine 高併發・網路服務・閘道器）"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（C 韌體＋Python 硬體實戰）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（JS 面板＋Go 物聯網閘道）"}]},{"id":"coding-python","district":"tech","kind":"department","parent":"coding","name":"Python 學院","en":"Python Department","icon":"🐍","art":"py-lab","status":"planned","aliases":["python","py"],"tagline":"直覺好上手的第一門語言：自動化腳本、API 串接與樹莓派控制","desc":"規劃中：從基礎語法、串列與字典推導式、檔案與 JSON／API 處理、非同步 asyncio 到單元測試，並直接對接樹莓派 GPIO 感測器控制與智慧家庭自動化腳本。","features":["🧱 基礎語法・容器型別與函式設計","🤖 日常自動化腳本・API 與資料清理","⏱️ 非同步 asyncio・模組化與單元測試","🍓 樹莓派 GPIO／MQTT 感測器串接實戰"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（樹莓派 Python 感測與控制）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（智慧家庭自動化與 MQTT）"}]},{"id":"coding-c","district":"tech","kind":"department","parent":"coding","name":"C 語言學院","en":"C Programming","icon":"⚙️","art":"c-lab","status":"planned","aliases":["clang","c"],"tagline":"看懂記憶體與電腦底層：指標、位元運算、結構體與嵌入式韌體","desc":"規劃中：用視覺化記憶體格子徹底搞懂指標（Pointer）、陣列、struct、Stack／Heap 配置與 Bitwise 位元遮罩操作，打通嵌入式單晶片韌體與 Linux 系統程式任督二脈。","features":["🧠 視覺化記憶體模型・Stack 與 Heap","🎯 指標（Pointer）・陣列與函式指標不迷路","🔢 位元運算（Bitwise）・暫存器遮罩操作","🔌 編譯連結流程・Makefile 與嵌入式 C 慣例"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（MCU 暫存器與底層韌體實作）"}]},{"id":"coding-js","district":"tech","kind":"department","parent":"coding","name":"JavaScript 學院","en":"JavaScript & Web","icon":"🌐","art":"js-lab","status":"planned","aliases":["javascript","js"],"tagline":"瀏覽器與即時互動的核心：DOM、Event Loop、Fetch／WebSocket","desc":"規劃中：掌握現代 ES6+ 語法、閉包與原型、Event Loop 非同步 Promise／async-await、DOM 互動介面與 WebSocket 即時通訊，親手打造智慧家電即時監控儀表板。","features":["⚡ 現代 ES6+ 語法・閉包與模組化","🔄 Event Loop・Promise 與 async／await 圖解","🎨 DOM 事件互動・視覺化圖表與狀態管理","📡 Fetch／WebSocket 即時物聯網控制面板"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（即時家電狀態與中控面板）"}]},{"id":"coding-go","district":"tech","kind":"department","parent":"coding","name":"Go 語言學院","en":"Go & Cloud Systems","icon":"🐹","art":"go-lab","status":"planned","aliases":["golang","go"],"tagline":"簡潔高效的高併發系統語言：Goroutine、Channel 與網路服務","desc":"規劃中：從 struct 與 interface 組合哲學出發，圖解 Goroutine 輕量執行緒、Channel 訊息傳遞、Context 生命週期管理與高效能 HTTP／MQTT 閘道器開發。","features":["🧩 簡潔型別系統・struct 與 interface 設計","🚀 Goroutine 併發模型・Channel 與 select","🛡️ Context 控制・錯誤處理與效能調校","☁️ CLI 工具與高併發物聯網裝置閘道器"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（高併發物聯網中樞與服務）"},{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（交叉編譯樹莓派常駐服務）"}]},{"id":"smart-iot","district":"tech","kind":"academy","name":"智慧生活與物聯網學院","en":"Smart Living & IoT Academy","icon":"🏡","art":"smart-home","status":"planned","aliases":["iot","smarthome","smart-iot","matter"],"tagline":"智慧家電、Matter／Thread／MQTT 通訊協定與全屋情境自動化","desc":"規劃中：從智慧照明、智慧門鎖、溫控器與攝影機等智慧家電原理出發，圖解 Wi-Fi、BLE、Thread、Zigbee、MQTT 與 Matter 跨生態系標準，打造 Home Assistant 全屋智慧生活情境與感測自動化。","features":["🏠 智慧家電運作原理・感測器與情境規則","📡 Matter／Thread／Zigbee／BLE／Wi-Fi 協定圖解","🔀 MQTT 發布訂閱・本地中樞與雲端連動","🎛️ Home Assistant 智慧家庭面板與自動化實戰"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（自製樹莓派中樞與感測節點）"},{"id":"coding-python","label":"🐍 Python 學院（自動化腳本與 MQTT 串接）"},{"id":"coding-js","label":"🌐 JavaScript 學院（智慧家庭即時控制面板）"},{"id":"coding-go","label":"🐹 Go 語言學院（高併發物聯網裝置閘道器）"}]},{"id":"embedded-rpi","district":"tech","kind":"academy","name":"嵌入式與樹莓派學院","en":"Embedded & Raspberry Pi Academy","icon":"🍓","art":"rpi-lab","status":"planned","aliases":["rpi","embedded","raspberrypi","mcu"],"tagline":"樹莓派 Linux 單板實作、MCU 單晶片、電子電路與 GPIO 韌體控制","desc":"規劃中：結合 Raspberry Pi 單板電腦與 ESP32／STM32 微控制器，從麵包板基礎電子電路、GPIO／PWM／ADC 到 I2C／SPI／UART 通訊匯流排、中斷與 RTOS 即時系統，動手做出能感知與控制真實世界的硬體專案。","features":["🍓 樹莓派 Raspberry Pi 系統建置與 GPIO 實戰","🔌 基礎電子電路・感測器・馬達與麵包板接線","📟 I2C／SPI／UART 匯流排與數位邏輯波形圖解","⚡ ESP32／MCU 暫存器、中斷處理與 RTOS 韌體"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（把自製感測器接入全屋自動化）"},{"id":"coding-c","label":"⚙️ C 語言學院（指標、位元運算與底層韌體必備）"},{"id":"coding-python","label":"🐍 Python 學院（樹莓派 gpiozero 與感測資料處理）"}]},{"id":"cooking","district":"arts","kind":"academy","name":"烹飪學院","en":"Culinary Academy","icon":"🍳","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：從刀工、火候到家常菜與甜點的分級料理課程。","features":[],"links":[]},{"id":"music","district":"arts","kind":"academy","name":"音樂學院","en":"Music Academy","icon":"🎵","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：樂理、節奏、視唱聽音與樂器入門。","features":[],"links":[]}]};
 
 </script>
   <script>/* js/core.js */
@@ -525,6 +533,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   reg.buildings.forEach(function (b) {
     b.features = Array.isArray(b.features) ? b.features : [];
     b.links = Array.isArray(b.links) ? b.links : [];
+    b.related = Array.isArray(b.related) ? b.related : [];
     b.aliases = Array.isArray(b.aliases) ? b.aliases : [];
     b.status = b.status || 'live';
     b.kind = b.kind || 'academy';
@@ -836,7 +845,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       </div>
       <div class="search" id="searchBox" role="search">
         <span class="s-ic" aria-hidden="true">🔍</span>
-        <input id="q" type="search" placeholder="搜尋學院、實戰館…（例：日語、K 線、NBA）" autocomplete="off" spellcheck="false" enterkeyhint="go" aria-label="搜尋學院與實戰館" aria-controls="qPop">
+        <input id="q" type="search" placeholder="搜尋學院、實戰館…（例：日語、Python、樹莓派、K 線、NBA）" autocomplete="off" spellcheck="false" enterkeyhint="go" aria-label="搜尋學院與實戰館" aria-controls="qPop">
         <button type="button" class="s-clear" id="qClear" aria-label="清除搜尋" hidden>✕</button>
         <div class="s-pop" id="qPop" role="listbox" aria-label="搜尋結果" hidden></div>
       </div>
@@ -858,7 +867,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   <main id="main">
     <section class="map-view" id="mapView" role="tabpanel" aria-labelledby="tabMap">
       <div class="map-wrap" id="mapWrap">
-        <svg class="campus-map" id="campusMap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid meet"
+        <svg class="campus-map" id="campusMap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1220" preserveAspectRatio="xMidYMid meet"
           tabindex="0" role="group" aria-label="開心學園校園地圖。Tab 鍵走訪建築，Enter 開啟介紹，方向鍵平移，加號減號縮放，0 回到全覽"></svg>
         <div class="map-chips" id="mapChips" aria-label="學區快捷"></div>
         <div class="map-zoom" aria-label="縮放">
@@ -1381,6 +1390,151 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     return s;
   }
 
+  // 程式語言學院本部 — modern CS hall crowned by a widescreen terminal (`>_`) + 4 language banners
+  function codeHall(o, ac) {
+    const wall = C.cream, wallS = dk(wall, 0.2);
+    let s = shadow(0, 96, 6);
+    s += box(-86, 0, 158, 56, 12, 7.2, wall, wallS, lt(C.slate, 0.5));
+    s += R(-88, -59, 162, 4, ac, sw(0.8));
+    s += P('M-50 -59V-67M-7 -59V-67M36 -59V-67', 'none', sw(2.2));
+    s += P(pg(48, -115, 53, -118, 53, -69, 48, -66), '#1e293b');
+    s += R(-64, -115, 112, 49, '#334155', ' rx="4"');
+    s += R(-59, -110, 102, 39, '#0f172a', sw(0.8));
+    s += P(cp(-52, -104, 1.8), '#ef4444', NS) + P(cp(-46.5, -104, 1.8), '#f59e0b', NS) + P(cp(-41, -104, 1.8), '#22c55e', NS);
+    s += P('M-53 -94L-46 -90L-53 -86M-43 -86h8', 'none', stk('#38bdf8', 2));
+    s += P('M-28 -94h24M2 -94h18', 'none', stk('#fbbf24', 2.2));
+    s += P('M-24 -86h32M14 -86h20', 'none', stk('#4ade80', 2.2));
+    s += P('M-24 -78h18M0 -78h28', 'none', stk('#f472b6', 2.2));
+    const banners = [[-76, '#3776ab', 'Py'], [-52, '#64748b', 'C'], [22, '#eab308', 'JS'], [46, '#00add8', 'Go']];
+    banners.forEach((b) => {
+      s += P(`M${b[0]} -52h16v22l-8 -4l-8 4Z`, b[1], sw(0.8));
+      s += Tx(b[0] + 8, -38.5, b[2], 7.5, b[2] === 'JS' ? '#1e293b' : '#ffffff');
+    });
+    s += P(rp(-76, -24, 16, 15) + rp(-52, -24, 16, 15) + rp(22, -24, 16, 15) + rp(46, -24, 16, 15), C.glass, sw(0.8));
+    s += R(-24, -34, 34, 34, lt(C.glass, 0.15), sw(0.9)) + P('M-7 -34V0', 'none', sw(0.9));
+    s += R(-29, -39, 44, 5, ac, sw(0.9)) + R(-32, -3, 50, 3, C.stone, sw(0.8));
+    s += skew(72, P(rp(75, -46, 6, 14) + rp(75, -24, 6, 14), dk(C.glass, 0.18), sw(0.7)));
+    return s;
+  }
+
+  // Python 學院 — studio hall with interlocking blue & yellow Python emblem
+  function pyLab(o, ac) {
+    let s = shadow(0, 62, 5.5);
+    s += box(-50, 0, 86, 48, 10, 6, C.cream, dk(C.cream, 0.2), lt(C.slate, 0.55));
+    s += R(-50, -50, 43, 3.6, '#3776ab', sw(0.7)) + R(-7, -50, 43, 3.6, '#ffd343', sw(0.7));
+    s += P(grid(-44, -40, 2, 2, 11, 9, 5, 5) + grid(12, -40, 2, 2, 11, 9, 5, 5), C.glass, sw(0.8));
+    s += R(-14, -22, 16, 22, '#3776ab', sw(0.9)) + R(-18, -26, 24, 4, '#ffd343', sw(0.8));
+    s += P('M-26 -50V-57M12 -50V-57', 'none', sw(1.8));
+    s += R(-36, -93, 58, 36, '#1e293b', ' rx="5"');
+    s += P('M-22 -85h14a5 5 0 0 1 5 5v7h-14a5 5 0 0 1 -5 -5v-7Z', '#3776ab', sw(0.8));
+    s += P('M-16 -77h14a5 5 0 0 1 5 5v7h-14a5 5 0 0 1 -5 -5v-7Z', '#ffd343', sw(0.8));
+    s += Ci(-18, -81.5, 1.4, '#ffffff', NS) + Ci(-1, -68.5, 1.4, '#1e293b', NS);
+    s += Tx(11, -71, 'Py', 11, '#f8fafc');
+    return s;
+  }
+
+  // C 語言學院 — solid engineering hall crowned by an IC microchip with metallic pins & gear
+  function cLab(o, ac) {
+    const st = '#e6dfd3';
+    let s = shadow(0, 62, 5.5);
+    s += box(-50, 0, 86, 48, 10, 6, st, dk(st, 0.2), lt(C.slate, 0.45));
+    s += R(-52, -51, 90, 4, '#64748b', sw(0.8));
+    s += P(grid(-44, -40, 2, 2, 10, 9, 5, 5) + grid(13, -40, 2, 2, 10, 9, 5, 5), C.glass, sw(0.8));
+    s += P(arch(-13, -24, 14, 24), '#475569', sw(0.9));
+    let pins = '';
+    for (let y = -88; y <= -62; y += 7.5) pins += rp(-42, y, 7, 3.2) + rp(21, y, 7, 3.2);
+    s += P(pins, '#cbd5e1', sw(0.7));
+    s += R(-35, -93, 56, 37, '#27323f', ' rx="3"');
+    s += R(-27, -87, 40, 25, '#334155', sw(0.7));
+    s += Tx(-7, -70, 'C *', 13, '#60a5fa');
+    s += Ci(33, -12, 8.5, '#eab308', sw(0.9)) + Ci(33, -12, 3.5, st, sw(0.8));
+    return s;
+  }
+
+  // JavaScript 學院 — modern web studio with a browser billboard & iconic yellow JS badge
+  function jsLab(o, ac) {
+    let s = shadow(0, 62, 5.5);
+    s += box(-50, 0, 86, 48, 10, 6, C.cream, dk(C.cream, 0.2), lt(C.gold, 0.55));
+    s += R(-50, -50, 86, 3.5, '#eab308', sw(0.8));
+    s += P(grid(-44, -40, 5, 1, 11, 12, 5, 0), C.glass, sw(0.8));
+    s += R(-14, -21, 16, 21, lt(C.glass, 0.2), sw(0.9)) + R(-18, -25, 24, 4, ac, sw(0.8));
+    s += P('M-28 -50V-56M14 -50V-56', 'none', sw(1.8));
+    s += R(-44, -94, 74, 38, '#ffffff', ' rx="4"');
+    s += R(-44, -94, 74, 9, '#334155', ' rx="3"');
+    s += P(cp(-38, -89.5, 1.5), '#ef4444', NS) + P(cp(-33.5, -89.5, 1.5), '#f59e0b', NS) + P(cp(-29, -89.5, 1.5), '#22c55e', NS);
+    s += R(-38, -81, 24, 21, '#f7df1e', sw(0.8)) + Tx(-26, -65.5, 'JS', 12, '#1e293b');
+    s += R(-9, -80, 33, 7, '#bae6fd', sw(0.6)) + R(-9, -69, 24, 8, '#fde68a', sw(0.6));
+    return s;
+  }
+
+  // Go 語言學院 — cloud server hall with peeking cyan Gopher mascot & concurrent channels
+  function goLab(o, ac) {
+    const wall = '#eef5f8';
+    let s = shadow(0, 62, 5.5);
+    s += box(-50, 0, 86, 48, 10, 6, wall, dk(wall, 0.2), lt('#00add8', 0.6));
+    s += R(-50, -50, 86, 3.5, '#00add8', sw(0.8));
+    s += R(-44, -40, 24, 30, '#1e293b', ' rx="2"') + P('M-40 -34h16M-40 -26h16M-40 -18h16', 'none', stk('#00add8', 1.6));
+    s += P(grid(10, -40, 2, 2, 9, 10, 4, 5), C.glass, sw(0.8));
+    s += R(-14, -22, 16, 22, '#00add8', sw(0.9));
+    // Peeking cyan Gopher on roof
+    s += Ci(-20, -82, 5, '#00add8', sw(0.9)) + Ci(4, -82, 5, '#00add8', sw(0.9));
+    s += P('M-24 -50V-74A16 15 0 0 1 8 -74V-50Z', '#00add8', sw(1));
+    s += Ci(-14, -73, 5, '#ffffff', sw(0.8)) + Ci(-2, -73, 5, '#ffffff', sw(0.8));
+    s += Ci(-13, -73, 2, '#1e293b', NS) + Ci(-1, -73, 2, '#1e293b', NS);
+    s += El(-8, -65, 3.6, 2.2, '#f5d0a9', sw(0.7)) + R(-10.2, -62.8, 4.4, 3.2, '#ffffff', sw(0.6));
+    s += P('M14 -76h18M18 -69h16M14 -62h14', 'none', stk('#00add8', 2.2));
+    return s;
+  }
+
+  // 智慧生活與物聯網學院 — solar-roofed smart home with Wi-Fi / Matter signal beacon & smart appliances
+  function smartHome(o, ac) {
+    let s = shadow(0, 84, 6);
+    s += box(16, 0, 46, 40, 10, 6, C.cream, dk(C.cream, 0.2), lt(ac, 0.55));
+    s += R(22, -32, 32, 20, C.glass, sw(0.9)) + P('M38 -32v20M22 -22h32', 'none', sw(0.6));
+    s += box(-72, 0, 90, 52, 11, 6.6, C.cream, dk(C.cream, 0.2), false);
+    s += gable(-77, -52, 100, 30, 11, 6.6, lt(C.cream, 0.2), '#2b547e');
+    // Solar panel array on right roof slope & front smart badge
+    s += P(pg(-22, -77, 16, -55, 24, -59.5, -14, -81.5), '#1d4ed8', sw(0.8));
+    s += P('M-13 -76.5L2 -67.5M-4 -71.5L11 -62.5', 'none', stk('#93c5fd', 0.8));
+    s += Ci(-27, -64, 6.5, '#ecfeff', sw(0.9)) + Ci(-27, -64, 3, ac, NS);
+    s += P(rp(-64, -40, 18, 15) + rp(-64, -20, 18, 12) + rp(-6, -40, 16, 15), '#fef9c3', sw(0.9));
+    s += R(-36, -32, 20, 32, '#475569', sw(0.9)) + R(-21, -20, 3.5, 8, '#38bdf8', sw(0.6));
+    s += El(40, -3, 8, 3.2, '#334155', sw(0.8)) + Ci(40, -4.2, 2, '#38bdf8', NS);
+    // Rooftop IoT / Matter wireless mesh beacon
+    const bx = 38, by = -46;
+    s += P(`M${bx} -40V${by - 12}`, 'none', sw(1.8)) + Ci(bx, by - 14, 3.2, ac, sw(0.9));
+    [8, 14, 20].forEach((r) => {
+      const c = 0.78 * r, sn = 0.62 * r;
+      s += P(`M${f(bx - c)} ${f(by - 14 - sn)}A${r} ${r} 0 0 1 ${f(bx + c)} ${f(by - 14 - sn)}`, 'none', stk(ac, 1.7));
+    });
+    return s;
+  }
+
+  // 嵌入式與樹莓派學院 — maker electronics lab crowned by a green Raspberry Pi PCB & 40-pin GPIO
+  function rpiLab(o, ac) {
+    const pcb = '#1f7a4c', pcbD = '#145334';
+    let s = shadow(0, 84, 6);
+    s += box(-72, 0, 134, 50, 11, 6.6, C.stone, dk(C.stone, 0.2), lt(C.slate, 0.5));
+    s += R(-74, -53, 138, 4, pcb, sw(0.8));
+    // Oscilloscope PWM square-wave display on left + entrance + breadboard window on right
+    s += R(-64, -41, 44, 24, '#0f2419', ' rx="2"');
+    s += P('M-60 -25h8v-10h8v10h8v-10h8v10h4', 'none', stk('#4ade80', 1.8));
+    s += R(-12, -30, 22, 30, '#5b4636', sw(0.9)) + R(-16, -34, 30, 4, ac, sw(0.8));
+    s += R(20, -41, 34, 24, C.paper, sw(0.8)) + P('M24 -35h26M24 -29h26M24 -23h26', 'none', stk('#ef4444', 1.2));
+    // Rooftop green Raspberry Pi PCB + golden GPIO pins + USB/Ethernet ports + SoC chip
+    s += P('M-46 -53V-60M28 -53V-60', 'none', sw(2));
+    s += P(pg(44, -108, 49, -111, 49, -63, 44, -60), pcbD);
+    s += R(-58, -108, 102, 48, pcb, ' rx="4"');
+    let gpio = '';
+    for (let x = -50; x <= 14; x += 6.4) gpio += rp(x, -104, 3, 3) + rp(x, -99, 3, 3);
+    s += P(gpio, C.gold, NS);
+    s += R(-24, -89, 24, 22, '#1e293b', ' rx="2"') + Ci(-12, -78, 5.5, '#e11d48', sw(0.7)) + P('M-14 -85l2 2l2 -2', 'none', stk('#4ade80', 1.2));
+    s += R(28, -102, 18, 16, '#cbd5e1', sw(0.8)) + R(28, -82, 18, 18, '#cbd5e1', sw(0.8));
+    s += P('M-50 -80h22l4 -6M-50 -70h22l4 5', 'none', stk('#fbbf24', 1.2));
+    s += Ci(-51, -66, 2.2, '#ef4444', NS) + Ci(-44, -66, 2.2, '#4ade80', NS);
+    return s;
+  }
+
   // unknown key — generic campus hall with a district banner showing o.icon
   function hall(o, ac) {
     const wall = C.cream;
@@ -1483,6 +1637,13 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     arena: { W: 160, H: 110, fn: arena, ac: '#dc2626', fest: [-62, -40, 62, -40, 66, -10] },
     stadium: { W: 230, H: 120, fn: stadium, ac: '#dc2626', fest: [-66, -24, 66, -24, 100, -8] },
     circuit: { W: 240, H: 120, fn: circuit, ac: '#dc2626', fest: [-58, -110, 22, -110, 96, -86] },
+    'code-hall': { W: 190, H: 124, fn: codeHall, ac: '#0e7490', fest: [-84, -54, 70, -54, 72, -14] },
+    'py-lab': { W: 125, H: 100, fn: pyLab, ac: '#0e7490', fest: [-48, -46, 34, -46, 44, -12] },
+    'c-lab': { W: 125, H: 100, fn: cLab, ac: '#0e7490', fest: [-48, -46, 34, -46, 44, -12] },
+    'js-lab': { W: 125, H: 100, fn: jsLab, ac: '#0e7490', fest: [-48, -46, 34, -46, 44, -12] },
+    'go-lab': { W: 125, H: 100, fn: goLab, ac: '#0e7490', fest: [-48, -46, 34, -46, 44, -12] },
+    'smart-home': { W: 170, H: 120, fn: smartHome, ac: '#0e7490', fest: [-70, -48, 58, -40, 62, -10] },
+    'rpi-lab': { W: 170, H: 120, fn: rpiLab, ac: '#0e7490', fest: [-70, -49, 60, -49, 62, -10] },
     construction: { W: 150, H: 120, fn: construction, ac: '#db2777', fest: [-70, -16, 70, -16, -66, -22], planned: false },
     hall: { W: 125, H: 100, fn: hall, ac: '#c8553d', fest: [-46, -50, 34, -50, 48, -10] }
   };
@@ -1500,7 +1661,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       const ac = isHex(o.color) ? o.color.trim() : def.ac;
       let body = def.fn(o, ac);
       if (o.status === 'new' && def.fest) body += festive(def.fest, ac, o.soft);
-      else if (o.status === 'planned' && def.fest && def.planned !== false) body = `<g opacity=".55">${body}</g>` + plannedMarks(def.W);
+      else if (o.status === 'planned' && def.fest && def.planned !== false) body = `<g opacity=".82">${body}</g>` + plannedMarks(def.W);
       const tr = Math.abs(s - 1) > 1e-3 ? ` transform="scale(${Math.round(s * 1e4) / 1e4})"` : '';
       return `<g class="ca-art ca-${key}"${tr} stroke="${OL}" stroke-width="${f2(1.4 * K)}" stroke-linejoin="round" stroke-linecap="round">${body}</g>`;
     } finally { K = prevK; }
@@ -1566,7 +1727,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
 
 </script>
   <script>/* js/layout.js */
-/* 開心學園 · layout.js — 校園地圖的地理配置（座標系 1600×1000，y 向下）
+/* 開心學園 · layout.js — 校園地圖的地理配置（座標系 1920×1220，y 向下）
  *
  * 學區（zone）= 一塊有底色的街廓；每個學區有一組「建築位（slot）」：
  *   - slot.ids：預留給 registry 裡指定 id 的建築（美術設計過的位置）
@@ -1578,93 +1739,101 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   var C = (window.CAMPUS = window.CAMPUS || {});
 
   var LAYOUT = {
-    W: 1600,
-    H: 1000,
+    W: 1920,
+    H: 1220,
     // 地圖可視範圍（平移的邊界，含校外地景）
-    bounds: { x: -260, y: -170, w: 2120, h: 1360 },
-    plaza: { x: 800, y: 470, r: 90 },
-    serviceCenter: { x: 800, y: 518, w: 150, h: 165 },
-    gate: { x: 800, y: 986, w: 300, h: 125 },
+    bounds: { x: -260, y: -170, w: 2440, h: 1580 },
+    plaza: { x: 960, y: 470, r: 90 },
+    serviceCenter: { x: 960, y: 518, w: 150, h: 165 },
+    gate: { x: 960, y: 1206, w: 300, h: 125 },
     zones: {
       language: {
-        box: [40, 100, 545, 455],
+        box: [40, 100, 650, 455],
         sign: [52, 108],
         slots: [
-          { ids: ['english'], x: 142, y: 382, w: 130, h: 205 },
-          { ids: ['japanese'], x: 336, y: 382, w: 200, h: 190 },
-          { x: 492, y: 232, w: 100, h: 84 },
-          { x: 492, y: 382, w: 100, h: 84 },
+          { ids: ['english'], x: 164, y: 382, w: 130, h: 205 },
+          { ids: ['japanese'], x: 382, y: 382, w: 200, h: 190 },
+          { x: 572, y: 232, w: 102, h: 84 },
+          { x: 572, y: 382, w: 102, h: 84 },
         ],
       },
       finance: {
-        box: [1072, 92, 1590, 488],
-        sign: [1082, 100],
+        box: [1356, 86, 1884, 504],
+        sign: [1368, 94],
         slots: [
-          { ids: ['finance'], x: 1335, y: 235, w: 240, h: 145 },
-          { ids: ['finance-ta'], x: 1142, y: 302, w: 125, h: 100, small: true },
-          { ids: ['finance-fa'], x: 1524, y: 302, w: 125, h: 100, small: true },
-          { ids: ['finance-chip'], x: 1142, y: 452, w: 125, h: 100, small: true },
-          { ids: ['finance-news'], x: 1524, y: 452, w: 125, h: 100, small: true },
-          { x: 1524, y: 190, w: 104, h: 80 },
+          { ids: ['finance'], x: 1616, y: 206, w: 210, h: 122 },
+          { ids: ['finance-ta'], x: 1432, y: 284, w: 118, h: 90, small: true },
+          { ids: ['finance-fa'], x: 1800, y: 284, w: 118, h: 90, small: true },
+          { ids: ['finance-chip'], x: 1432, y: 428, w: 118, h: 88, small: true },
+          { ids: ['stock'], x: 1616, y: 462, w: 174, h: 112, small: true },
+          { ids: ['finance-news'], x: 1800, y: 428, w: 118, h: 88, small: true },
+          { x: 1808, y: 168, w: 94, h: 72 },
+        ],
+      },
+      tech: {
+        box: [40, 556, 902, 1022],
+        sign: [52, 566],
+        slots: [
+          { ids: ['coding'], x: 410, y: 698, w: 186, h: 116 },
+          { ids: ['coding-python'], x: 166, y: 842, w: 122, h: 94, small: true },
+          { ids: ['coding-c'], x: 416, y: 842, w: 122, h: 94, small: true },
+          { ids: ['coding-js'], x: 166, y: 978, w: 122, h: 94, small: true },
+          { ids: ['coding-go'], x: 416, y: 978, w: 122, h: 94, small: true },
+          { ids: ['smart-iot'], x: 736, y: 774, w: 172, h: 120 },
+          { ids: ['embedded-rpi'], x: 736, y: 966, w: 172, h: 120 },
+          { x: 598, y: 644, w: 92, h: 72 },
+          { x: 836, y: 636, w: 92, h: 72 },
         ],
       },
       games: {
-        box: [848, 560, 1060, 965],
-        sign: [858, 568],
+        box: [1018, 556, 1884, 930],
+        sign: [1030, 566],
         slots: [
-          { ids: ['poker'], x: 954, y: 772, w: 180, h: 140 },
-          { x: 905, y: 930, w: 92, h: 78 },
-          { x: 1006, y: 930, w: 92, h: 78 },
-        ],
-      },
-      arena: {
-        box: [1066, 560, 1590, 965],
-        sign: [1076, 568],
-        slots: [
-          { ids: ['stock'], x: 1345, y: 698, w: 200, h: 135 },
-          { ids: ['nba'], x: 1160, y: 736, w: 160, h: 110 },
-          { ids: ['epl'], x: 1205, y: 910, w: 230, h: 120 },
-          { ids: ['f1'], x: 1462, y: 910, w: 240, h: 120 },
-          { x: 1525, y: 698, w: 104, h: 84 },
+          { ids: ['poker'], x: 1170, y: 734, w: 180, h: 136 },
+          { ids: ['nba'], x: 1465, y: 734, w: 175, h: 118 },
+          { ids: ['epl'], x: 1235, y: 890, w: 225, h: 116 },
+          { ids: ['f1'], x: 1585, y: 890, w: 235, h: 116 },
+          { x: 1775, y: 650, w: 100, h: 78 },
+          { x: 1775, y: 754, w: 100, h: 78 },
         ],
       },
       arts: {
-        box: [40, 560, 545, 820],
-        sign: [52, 568],
+        box: [1018, 948, 1602, 1184],
+        sign: [1030, 956],
         slots: [
-          { ids: ['cooking'], x: 132, y: 762, w: 150, h: 120 },
-          { ids: ['music'], x: 312, y: 762, w: 150, h: 120 },
-          { x: 476, y: 662, w: 100, h: 82 },
-          { x: 476, y: 796, w: 100, h: 82 },
+          { ids: ['cooking'], x: 1165, y: 1142, w: 144, h: 114 },
+          { ids: ['music'], x: 1378, y: 1142, w: 144, h: 114 },
+          { x: 1532, y: 1042, w: 94, h: 76 },
+          { x: 1532, y: 1152, w: 94, h: 76 },
         ],
       },
     },
     // 未來學區預定地：registry 新增的學區進駐這裡
     expansion: [
       {
-        box: [565, 560, 752, 820],
-        sign: [574, 568],
+        box: [1620, 948, 1884, 1184],
+        sign: [1632, 956],
         slots: [
-          { x: 658, y: 706, w: 104, h: 84 },
-          { x: 658, y: 810, w: 104, h: 84 },
+          { x: 1752, y: 1076, w: 104, h: 80 },
+          { x: 1752, y: 1168, w: 104, h: 76 },
         ],
       },
     ],
-    // 學以致用橋（財經學區 → 實戰區・台股）
-    practiceBridge: { x: 1335, y1: 486, y2: 562 },
-    canal: { y: 512, x1: 1062, x2: 1640, half: 15 },
+    // 學以致用長廊（財經學院 → 財經廣場 → 台股智慧選股）與跨河拱橋
+    practiceBridge: { x: 1616, y1: 238, y2: 344, canalX: 1539, canalY1: 500, canalY2: 558 },
+    canal: { y: 526, x1: 1356, x2: 1960, half: 15 },
     lake: {
-      d: 'M600,215 C600,150 660,122 720,128 C765,132 785,160 800,172 C815,160 840,128 900,126 ' +
-        'C965,124 1010,170 1008,228 C1006,290 960,330 900,326 C850,322 818,296 800,282 ' +
-        'C782,296 750,322 700,322 C640,322 600,280 600,215 Z',
-      label: [690, 262],
-      bridge: { x: 800, y1: 158, y2: 296 },
-      island: [946, 212],
+      d: 'M760,215 C760,150 820,122 880,128 C925,132 945,160 960,172 C975,160 1000,128 1060,126 ' +
+        'C1125,124 1170,170 1168,228 C1166,290 1120,330 1060,326 C1010,322 978,296 960,282 ' +
+        'C942,296 910,322 860,322 C800,322 760,280 760,215 Z',
+      label: [850, 262],
+      bridge: { x: 960, y1: 158, y2: 296 },
+      island: [1106, 212],
     },
-    legend: [24, 838, 306, 146],
-    compass: [1550, 50],
+    legend: [40, 1040, 306, 146],
+    compass: [1844, 50],
     cartouche: [22, 14],
-    parking: [345, 860, 270, 104],
+    parking: [372, 1060, 270, 104],
   };
 
   /* 把 registry 的建築分配到學區的建築位：先放指定位置，其餘依序進駐預定地。
@@ -1825,7 +1994,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   function inLake(x, y, m) {
     m = m || 0;
     function el(cx, cy, rx, ry) { var dx = (x - cx) / (rx + m), dy = (y - cy) / (ry + m); return dx * dx + dy * dy <= 1; }
-    return el(700, 224, 104, 100) || el(905, 226, 106, 104) || (x > 780 && x < 820 && y > 160 - m && y < 294 + m);
+    return el(860, 224, 104, 100) || el(1065, 226, 106, 104) || (x > 940 && x < 980 && y > 160 - m && y < 294 + m);
   }
   function textW(str, fs) {
     var w = 0;
@@ -1854,6 +2023,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     out.push(call('defs', [], null));
     out.push('<defs>' +
       '<pattern id="cm-hatch" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="16" fill="#db2777" opacity=".07"/></pattern>' +
+      '<pattern id="cm-hatch-tech" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="16" fill="#0e7490" opacity=".065"/></pattern>' +
       '<pattern id="cm-sand" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r="1.1" fill="#c8b18a" opacity=".55"/><circle cx="10" cy="10" r=".9" fill="#c8b18a" opacity=".45"/></pattern>' +
       '</defs>');
 
@@ -1862,32 +2032,33 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       '<rect x="' + B.x + '" y="' + B.y + '" width="' + B.w + '" height="' + B.h + '" fill="#ebe3cd"/>' +
       '<rect x="' + B.x + '" y="' + B.y + '" width="' + B.w + '" height="' + (60 - B.y) + '" fill="#eef2e7"/>' +
       '<path d="M' + B.x + ',40 L' + B.x + ',-20 C-150,-70 -40,-95 90,-60 C200,-30 300,-110 430,-96 C560,-82 600,-40 700,-58 C820,-80 900,-128 1030,-104 ' +
-      'C1160,-80 1220,-40 1330,-62 C1450,-86 1520,-118 1640,-92 C1740,-70 1800,-50 ' + (B.x + B.w) + ',-60 L' + (B.x + B.w) + ',40 Z" fill="#d6e2d3"/>' +
+      'C1160,-80 1220,-40 1330,-62 C1450,-86 1520,-118 1640,-92 C1760,-66 1860,-108 1980,-84 C2060,-68 2120,-52 ' + (B.x + B.w) + ',-60 L' + (B.x + B.w) + ',40 Z" fill="#d6e2d3"/>' +
       '<path d="M' + B.x + ',90 L' + B.x + ',20 C-160,0 -60,-24 60,-6 C170,10 260,-34 380,-22 C500,-10 560,12 680,-2 C800,-16 880,-40 1000,-26 ' +
-      'C1120,-12 1200,14 1320,0 C1440,-14 1520,-36 1640,-18 C1740,-4 1800,6 ' + (B.x + B.w) + ',0 L' + (B.x + B.w) + ',90 Z" fill="#c5dab3"/>' +
+      'C1120,-12 1200,14 1320,0 C1440,-14 1520,-36 1640,-18 C1760,0 1860,-28 1980,-12 C2060,-2 2120,8 ' + (B.x + B.w) + ',0 L' + (B.x + B.w) + ',90 Z" fill="#c5dab3"/>' +
       '</g>');
 
     // --- 草地（校地）
     var tuft = '';
     var rnd = rng(11);
-    for (var i = 0; i < 140; i++) {
-      var tx = 30 + rnd() * 1540, ty = 100 + rnd() * 870;
+    for (var i = 0; i < 190; i++) {
+      var tx = 30 + rnd() * (L.W - 60), ty = 100 + rnd() * (L.H - 130);
       if (inLake(tx, ty, 8)) continue;
       tuft += 'M' + n(tx) + ',' + n(ty) + ' l2,-6 M' + n(tx + 4) + ',' + n(ty) + ' l1,-7 M' + n(tx + 8) + ',' + n(ty) + ' l-1,-5 ';
     }
     out.push('<g class="m-ground">' +
-      '<rect x="14" y="86" width="1580" height="906" rx="36" fill="#d5e7bb" stroke="#bcd49c" stroke-width="3"/>' +
+      '<rect x="14" y="86" width="' + (L.W - 28) + '" height="' + (L.H - 94) + '" rx="36" fill="#d5e7bb" stroke="#bcd49c" stroke-width="3"/>' +
       '<path d="' + tuft + '" fill="none" stroke="#bfd8a1" stroke-width="1.6" stroke-linecap="round"/>' +
       '</g>');
 
     // --- 校外道路（校門前）
+    var stY = L.H - 6;
     var st = '';
-    for (var sx = B.x + 20; sx < B.x + B.w; sx += 46) st += 'M' + sx + ',1021 h24 ';
+    for (var sx = B.x + 20; sx < B.x + B.w; sx += 46) st += 'M' + sx + ',' + (stY + 27) + ' h24 ';
     var cw = '';
-    for (var cx = 764; cx <= 832; cx += 12) cw += 'M' + cx + ',1000 v40 ';
+    for (var cx = L.gate.x - 36; cx <= L.gate.x + 32; cx += 12) cw += 'M' + cx + ',' + (stY + 6) + ' v40 ';
     out.push('<g class="m-street">' +
-      '<rect x="' + B.x + '" y="994" width="' + B.w + '" height="54" fill="#e2d8c4"/>' +
-      '<rect x="' + B.x + '" y="992" width="' + B.w + '" height="5" fill="#d3c5aa"/>' +
+      '<rect x="' + B.x + '" y="' + stY + '" width="' + B.w + '" height="54" fill="#e2d8c4"/>' +
+      '<rect x="' + B.x + '" y="' + (stY - 2) + '" width="' + B.w + '" height="5" fill="#d3c5aa"/>' +
       '<path d="' + st + '" stroke="#fffaf0" stroke-width="2.5"/>' +
       '<path d="' + cw + '" stroke="#fffaf0" stroke-width="6"/>' +
       '</g>');
@@ -1897,10 +2068,11 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     asg.zones.forEach(function (z) {
       var d = z.district, b = z.layout.box;
       var planned = d.status === 'planned';
+      var hatchId = d.id === 'tech' ? 'cm-hatch-tech' : 'cm-hatch';
       zonesSvg += '<g class="zone" data-district="' + esc(d.id) + '">' +
         '<rect class="zone-bg" x="' + b[0] + '" y="' + b[1] + '" width="' + (b[2] - b[0]) + '" height="' + (b[3] - b[1]) + '" rx="26" ' +
         'fill="' + esc(d.soft || '#f1f5f9') + '" stroke="' + esc(d.color || '#64748b') + '" stroke-opacity=".6" stroke-width="2.5" stroke-dasharray="11 7"/>' +
-        (planned ? '<rect x="' + b[0] + '" y="' + b[1] + '" width="' + (b[2] - b[0]) + '" height="' + (b[3] - b[1]) + '" rx="26" fill="url(#cm-hatch)" pointer-events="none"/>' : '') +
+        (planned ? '<rect x="' + b[0] + '" y="' + b[1] + '" width="' + (b[2] - b[0]) + '" height="' + (b[3] - b[1]) + '" rx="26" fill="url(#' + hatchId + ')" pointer-events="none"/>' : '') +
         '</g>';
     });
     (asg.freeExpansion || []).forEach(function (e) {
@@ -1915,25 +2087,25 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     // --- 水：湖、水道
     var lk = L.lake, cy = L.canal.y;
     var pads = '';
-    [[648, 188], [664, 204], [632, 236], [742, 288], [722, 272], [868, 300]].forEach(function (p, k) {
+    [[808, 188], [824, 204], [792, 236], [902, 288], [882, 272], [1028, 300]].forEach(function (p, k) {
       var r = 6 + (k % 3);
       pads += '<path d="M' + p[0] + ',' + p[1] + ' L' + (p[0] + r) + ',' + (p[1] - 2) + ' A' + r + ',' + r + ' 0 1,1 ' + (p[0] + r) + ',' + (p[1] + 2) + ' Z" fill="#86bf78" stroke="#5f9a55" stroke-width="1"/>';
     });
-    pads += '<circle cx="652" cy="196" r="3.2" fill="#f9a8d4"/><circle cx="730" cy="280" r="3" fill="#f9a8d4"/>';
-    var canalD = 'M1036,' + cy + ' C1150,' + (cy - 6) + ' 1250,' + (cy + 6) + ' 1335,' + cy + ' S1520,' + (cy - 6) + ' 1650,' + cy;
+    pads += '<circle cx="812" cy="196" r="3.2" fill="#f9a8d4"/><circle cx="890" cy="280" r="3" fill="#f9a8d4"/>';
+    var canalD = 'M1330,' + cy + ' C1444,' + (cy - 6) + ' 1544,' + (cy + 6) + ' 1629,' + cy + ' S1814,' + (cy - 6) + ' 1970,' + cy;
     out.push('<g class="m-water">' +
       '<path d="' + lk.d + '" fill="none" stroke="#e9dcc1" stroke-width="26" stroke-linejoin="round"/>' +
       '<path d="' + lk.d + '" fill="#a6d5e7" stroke="#7cb9d0" stroke-width="3"/>' +
-      '<path d="M640,206 q12,-5 24,0 M694,166 q10,-4 20,0 M846,182 q12,-5 24,0 M900,286 q14,-5 28,0 M664,292 q12,-5 24,0 M968,246 q10,-4 20,0 M720,236 q10,-4 20,0" fill="none" stroke="#e2f3f9" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<path d="M800,206 q12,-5 24,0 M854,166 q10,-4 20,0 M1006,182 q12,-5 24,0 M1060,286 q14,-5 28,0 M824,292 q12,-5 24,0 M1128,246 q10,-4 20,0 M880,236 q10,-4 20,0" fill="none" stroke="#e2f3f9" stroke-width="2.4" stroke-linecap="round"/>' +
       pads +
       '<ellipse cx="' + lk.island[0] + '" cy="' + (lk.island[1] + 6) + '" rx="34" ry="15" fill="#cfe3ae" stroke="#9fc283" stroke-width="2"/>' +
       pavilion(lk.island[0], lk.island[1] + 8) +
       '<text x="' + lk.label[0] + '" y="' + lk.label[1] + '" text-anchor="middle" font-family="' + FONT + '" font-size="16" font-weight="700" letter-spacing="5" fill="#3f7f99" opacity=".85">學園湖</text>' +
       '<path d="' + canalD + '" fill="none" stroke="#7cb9d0" stroke-width="34"/>' +
       '<path d="' + canalD + '" fill="none" stroke="#a6d5e7" stroke-width="28"/>' +
-      '<path d="M1110,' + (cy - 3) + ' q12,-4 24,0 M1220,' + (cy + 4) + ' q12,-4 24,0 M1440,' + (cy - 2) + ' q12,-4 24,0 M1560,' + (cy + 3) + ' q12,-4 24,0" fill="none" stroke="#e2f3f9" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M1404,' + (cy - 3) + ' q12,-4 24,0 M1514,' + (cy + 4) + ' q12,-4 24,0 M1734,' + (cy - 2) + ' q12,-4 24,0 M1854,' + (cy + 3) + ' q12,-4 24,0" fill="none" stroke="#e2f3f9" stroke-width="2.2" stroke-linecap="round"/>' +
       '</g>');
-    occ.push(R(1036, cy - 20, 620, 40));
+    occ.push(R(1330, cy - 20, 640, 40));
 
     // --- 道路與步道
     function road(d, w, center) {
@@ -1946,18 +2118,21 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         '<path d="' + d + '" fill="none" stroke="#efe3c9" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"/>';
     }
     var roads = '';
-    roads += path('M800,380 V316', 16) + path('M800,152 V30', 12);
-    roads += path('M60,442 H530 M240,442 V480', 10);
-    roads += path('M222,520 V626 H418', 10);
-    roads += path('M828,816 H1052 V768 H1590', 10);
-    roads += path('M1062,345 H1250 M1420,345 H1590 M1335,404 V490', 10);
-    roads += road('M14,500 H712', 44, true) + road('M888,500 H1062', 44, true);
-    roads += road('M1042,40 V522', 38, true);
-    roads += road('M800,556 V1048', 56, true);
-    occ.push(R(14, 474, 700, 52), R(886, 474, 178, 52), R(1018, 30, 48, 496), R(768, 554, 64, 500));
-    occ.push(R(52, 434, 486, 16), R(232, 434, 16, 48), R(214, 518, 16, 112), R(214, 618, 210, 16));
-    occ.push(R(824, 808, 234, 16), R(1044, 760, 16, 64), R(1044, 760, 548, 16), R(1058, 337, 196, 16), R(1416, 337, 176, 16), R(1327, 400, 16, 92));
-    occ.push(R(790, 300, 20, 84), R(792, 24, 16, 130));
+    roads += path('M960,380 V316', 16) + path('M960,152 V30', 12);
+    roads += path('M64,436 H610 M274,436 V480', 10);
+    roads += path('M410,522 V582 M291,698 H320 M291,698 V978 M226,842 H356 M226,978 H356 M476,840 H565 M565,774 V966 M565,774 H652 M565,966 H652', 10);
+    roads += path('M1018,790 H1884 M1318,734 V890', 10);
+    roads += path('M1018,1065 H1480', 10);
+    roads += path('M1356,286 H1542 M1698,286 H1884 M1426,294 V456 M1814,294 V456 M1620,214 V456', 10);
+    roads += road('M14,500 H872', 44, true) + road('M1048,500 H1356', 44, true);
+    roads += road('M1336,40 V522', 38, true);
+    roads += road('M960,556 V' + (L.H + 48), 56, true);
+    occ.push(R(14, 474, 860, 52), R(1046, 474, 312, 52), R(1312, 30, 48, 496), R(928, 554, 64, L.H - 500));
+    occ.push(R(56, 428, 560, 16), R(266, 428, 16, 54));
+    occ.push(R(402, 520, 16, 66), R(283, 694, 16, 290), R(224, 834, 136, 16), R(224, 970, 136, 16), R(474, 832, 96, 16), R(557, 768, 16, 206), R(557, 766, 98, 16), R(557, 958, 98, 16));
+    occ.push(R(1014, 782, 874, 16), R(1310, 734, 16, 158), R(1014, 1057, 470, 16));
+    occ.push(R(1352, 278, 196, 16), R(1694, 278, 192, 16), R(1612, 214, 16, 242));
+    occ.push(R(950, 300, 20, 84), R(952, 24, 16, 130));
 
     // 停車場
     var P = L.parking;
@@ -1982,9 +2157,10 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     occ.push(R(P[0] - 6, P[1] - 6, P[2] + 12, P[3] + 12));
 
     // 南側圍牆
+    var wallY = L.H - 24;
     roads += '<g class="m-wall">' +
-      '<rect x="40" y="976" width="612" height="11" rx="3" fill="#dba27e" stroke="' + INK + '" stroke-width="1"/>' +
-      '<rect x="948" y="976" width="612" height="11" rx="3" fill="#dba27e" stroke="' + INK + '" stroke-width="1"/>' +
+      '<rect x="40" y="' + wallY + '" width="' + (L.gate.x - 148 - 40) + '" height="11" rx="3" fill="#dba27e" stroke="' + INK + '" stroke-width="1"/>' +
+      '<rect x="' + (L.gate.x + 148) + '" y="' + wallY + '" width="' + (L.W - 40 - (L.gate.x + 148)) + '" height="11" rx="3" fill="#dba27e" stroke="' + INK + '" stroke-width="1"/>' +
       '</g>';
     out.push('<g class="m-roads">' + roads + '</g>');
 
@@ -1997,31 +2173,40 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       '</g>');
     occ.push(R(pz.x - pz.r - 4, pz.y - pz.r - 4, pz.r * 2 + 8, pz.r * 2 + 8));
 
-    // --- 財經廣場（銅牛）＋學以致用橋
+    // --- 財經廣場（銅牛）＋學以致用長廊（財經學院 ⇄ 台股智慧選股）＋跨河拱橋
     var fz = asg.zones.filter(function (z) { return z.district.id === 'finance' && !z.expansion; })[0];
     var bridgeSvg = '';
+    var pb = L.practiceBridge;
     if (fz) {
       bridgeSvg += '<g class="m-fplaza">' +
-        '<ellipse cx="1335" cy="360" rx="94" ry="46" fill="#f8e9c6" stroke="#e1c27e" stroke-width="2.5"/>' +
-        '<ellipse cx="1335" cy="360" rx="70" ry="31" fill="none" stroke="#ebd29a" stroke-width="1.6" stroke-dasharray="5 5"/>' +
-        '<g transform="translate(1335,384)">' + call('bull', [{ w: 64, h: 46 }], fbBull) + '</g>' +
-        '<text x="1335" y="400" text-anchor="middle" font-family="' + FONT + '" font-size="11" font-weight="700" fill="#92400e" opacity=".85">財經廣場</text>' +
+        '<ellipse cx="' + pb.x + '" cy="276" rx="64" ry="26" fill="#f8e9c6" stroke="#e1c27e" stroke-width="2.2"/>' +
+        '<ellipse cx="' + pb.x + '" cy="276" rx="46" ry="17" fill="none" stroke="#ebd29a" stroke-width="1.4" stroke-dasharray="5 5"/>' +
+        '<g transform="translate(' + pb.x + ',287)">' + call('bull', [{ w: 48, h: 34 }], fbBull) + '</g>' +
         '</g>';
-      occ.push(R(1239, 312, 192, 96));
+      occ.push(R(pb.x - 68, 246, 136, 62));
     }
-    var pb = L.practiceBridge;
     if (fz && C.building('stock')) {
+      var cx = pb.canalX || 1245, cy1 = pb.canalY1 || 500, cy2 = pb.canalY2 || 558;
       var rails = '';
-      for (var ry = pb.y1 + 4; ry <= pb.y2 - 4; ry += 9) rails += '<circle cx="' + (pb.x - 15) + '" cy="' + ry + '" r="2.2" fill="#b7791f"/><circle cx="' + (pb.x + 15) + '" cy="' + ry + '" r="2.2" fill="#b7791f"/>';
+      for (var ry = cy1 + 4; ry <= cy2 - 4; ry += 9) rails += '<circle cx="' + (cx - 14) + '" cy="' + ry + '" r="2" fill="#b7791f"/><circle cx="' + (cx + 14) + '" cy="' + ry + '" r="2" fill="#b7791f"/>';
       bridgeSvg += '<g class="m-pbridge">' +
-        '<rect x="' + (pb.x - 15) + '" y="' + pb.y1 + '" width="30" height="' + (pb.y2 - pb.y1) + '" fill="#f1dcb5" stroke="' + INK + '" stroke-width="1.4"/>' +
-        '<path d="M' + (pb.x - 15) + ',' + pb.y1 + ' V' + pb.y2 + ' M' + (pb.x + 15) + ',' + pb.y1 + ' V' + pb.y2 + '" stroke="#e3a72f" stroke-width="3.5"/>' +
+        '<rect x="' + (pb.x - 13) + '" y="238" width="26" height="106" rx="4" fill="#f6e3ba" stroke="#d97706" stroke-width="1.4" stroke-dasharray="4 3"/>' +
+        '<rect x="' + (cx - 14) + '" y="' + cy1 + '" width="28" height="' + (cy2 - cy1) + '" fill="#f1dcb5" stroke="' + INK + '" stroke-width="1.4"/>' +
+        '<path d="M' + (cx - 14) + ',' + cy1 + ' V' + cy2 + ' M' + (cx + 14) + ',' + cy1 + ' V' + cy2 + '" stroke="#e3a72f" stroke-width="3.2"/>' +
         rails + '</g>';
-      labelsSvg.push('<g class="lbl lbl-banner" data-banner="practice" transform="translate(' + pb.x + ',' + (pb.y1 + 13) + ')"><g class="lbl-s">' +
-        '<rect x="-62" y="0" width="124" height="27" rx="8" fill="#1d6b57" stroke="#134e40" stroke-width="1.5"/>' +
-        '<text x="0" y="18.5" text-anchor="middle" font-family="' + FONT + '" font-size="14" font-weight="800" fill="#fffaf0" letter-spacing="2">學以致用 ▸</text>' +
+      labelsSvg.push('<g class="lbl lbl-banner" data-banner="practice" transform="translate(' + pb.x + ',304)"><g class="lbl-s">' +
+        '<rect class="lbl-bg" x="-52" y="0" width="104" height="23" rx="11.5" fill="#1d6b57" stroke="#134e40" stroke-width="1.4"/>' +
+        '<text x="0" y="15.5" text-anchor="middle" font-family="' + FONT + '" font-size="12" font-weight="800" fill="#fffaf0" letter-spacing="1.2">學以致用 ▾</text>' +
         '</g></g>');
-      occ.push(R(pb.x - 70, pb.y1 - 40, 140, pb.y2 - pb.y1 + 46));
+      occ.push(R(pb.x - 56, 238, 112, 106), R(cx - 24, cy1 - 6, 48, cy2 - cy1 + 12));
+    }
+    var tz = asg.zones.filter(function (z) { return z.district.id === 'tech' && !z.expansion; })[0];
+    if (tz && C.building('coding') && (C.building('smart-iot') || C.building('embedded-rpi'))) {
+      labelsSvg.push('<g class="lbl lbl-banner" data-banner="tech-link" transform="translate(565,816)"><g class="lbl-s">' +
+        '<rect class="lbl-bg" x="-52" y="0" width="104" height="23" rx="11.5" fill="#0e7490" stroke="#155e75" stroke-width="1.4"/>' +
+        '<text x="0" y="15.5" text-anchor="middle" font-family="' + FONT + '" font-size="12" font-weight="800" fill="#ecfeff" letter-spacing="1.1">軟硬整合 ⇄</text>' +
+        '</g></g>');
+      occ.push(R(509, 812, 112, 31));
     }
 
     // 湖上的橋
@@ -2113,36 +2298,37 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       return true;
     }
     // 椰林大道
-    for (var py = 600; py <= 852; py += 42) { tryDeco('palm', 752, py, 0.95, true); tryDeco('palm', 848, py, 0.95, true); }
-    for (var ly = 621; ly <= 840; ly += 84) { tryDeco('lamp', 768, ly, 0.9, true); tryDeco('lamp', 832, ly, 0.9, true); }
+    for (var py = 600; py <= 1062; py += 42) { tryDeco('palm', 912, py, 0.95, true); tryDeco('palm', 1008, py, 0.95, true); }
+    for (var ly = 621; ly <= 1041; ly += 84) { tryDeco('lamp', 928, ly, 0.9, true); tryDeco('lamp', 992, ly, 0.9, true); }
     // 遠景森林（兩排）
     var rf = rng(23);
     for (var fx = B.x + 10; fx < B.x + B.w; fx += 24) {
       if (fx > ct[0] - 10 && fx < ct[0] + 320) continue;
-      if (fx > 1018 && fx < 1066) continue;
-      if (fx > 788 && fx < 812) continue;
+      if (fx > 1312 && fx < 1360) continue;
+      if (fx > 948 && fx < 972) continue;
       tryDeco(rf() < 0.55 ? 'pine' : 'tree', fx + rf() * 8, 58 + rf() * 6, 0.78, true);
     }
     for (var fx2 = B.x + 22; fx2 < B.x + B.w; fx2 += 26) {
       if (fx2 > ct[0] - 10 && fx2 < ct[0] + 320) continue;
       if (fx2 > cp[0] - 44 && fx2 < cp[0] + 44) continue;
-      if (fx2 > 1018 && fx2 < 1066) continue;
-      if (fx2 > 788 && fx2 < 812) continue;
+      if (fx2 > 1312 && fx2 < 1360) continue;
+      if (fx2 > 948 && fx2 < 972) continue;
       tryDeco(rf() < 0.45 ? 'pine' : 'tree', fx2 + rf() * 8, 82 + rf() * 4, 0.92, true);
     }
     // 校外兩側與南側
     for (var ox = B.x + 14; ox < B.x + B.w; ox += 30) {
-      var oy1 = 1064 + rf() * 18, oy2 = 1110 + rf() * 22;
+      if (ox > 922 && ox < 998) continue;
+      var oy1 = L.H + 64 + rf() * 18, oy2 = L.H + 110 + rf() * 22;
       tryDeco(rf() < 0.5 ? 'tree' : 'pine', ox + rf() * 10, oy1, 0.9, true);
       if (rf() < 0.8) tryDeco('tree', ox + 12 + rf() * 10, oy2, 1, true);
     }
-    for (var sy = 110; sy < 990; sy += 34) {
+    for (var sy = 110; sy < L.H - 10; sy += 34) {
       for (var sx2 = B.x + 16; sx2 < 4; sx2 += 32) tryDeco(rf() < 0.5 ? 'tree' : 'pine', sx2 + rf() * 10, sy + rf() * 10, 0.9, true);
-      for (var sx3 = 1612; sx3 < B.x + B.w; sx3 += 32) tryDeco(rf() < 0.5 ? 'tree' : 'pine', sx3 + rf() * 10, sy + rf() * 10, 0.9, true);
+      for (var sx3 = L.W + 12; sx3 < B.x + B.w; sx3 += 32) tryDeco(rf() < 0.5 ? 'tree' : 'pine', sx3 + rf() * 10, sy + rf() * 10, 0.9, true);
     }
     // 大道兩旁行道樹
-    for (var ax = 40; ax < 706; ax += 58) { tryDeco('tree', ax, 472, 0.72); tryDeco('tree', ax + 26, 557, 0.66); }
-    for (var ax2 = 904; ax2 < 1010; ax2 += 52) { tryDeco('tree', ax2, 472, 0.72); tryDeco('tree', ax2 + 20, 557, 0.66); }
+    for (var ax = 40; ax < 856; ax += 58) { tryDeco('tree', ax, 472, 0.72); tryDeco('tree', ax + 26, 552, 0.66); }
+    for (var ax2 = 1064; ax2 < 1306; ax2 += 56) { tryDeco('tree', ax2, 472, 0.72); tryDeco('tree', ax2 + 20, 552, 0.66); }
     // 草地與學區內的樹
     var rg = rng(5);
     var zoneOf = function (x, y) {
@@ -2152,22 +2338,23 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       }
       return '';
     };
-    for (var gy = 104; gy < 975; gy += 34) {
-      for (var gx = 30; gx < 1585; gx += 36) {
+    for (var gy = 104; gy < L.H - 26; gy += 34) {
+      for (var gx = 30; gx < L.W - 20; gx += 36) {
         var x = gx + (rg() - 0.5) * 22, y = gy + (rg() - 0.5) * 18;
         var zid = zoneOf(x, y);
         var p = zid ? 0.42 : 0.7;
         if (rg() > p) continue;
         var kind = 'tree', s = 0.72 + rg() * 0.3;
         if (zid === 'language') kind = rg() < 0.55 ? 'sakura' : 'tree';
+        else if (zid === 'tech') kind = rg() < 0.36 ? 'pine' : (rg() < 0.56 ? 'bush' : 'tree');
         else if (zid === 'arts') kind = rg() < 0.4 ? 'bush' : 'tree';
-        else if (!zid && y < 340 && x > 560 && x < 1040) kind = rg() < 0.4 ? 'pine' : 'tree';
+        else if (!zid && y < 340 && x > 680 && x < 1260) kind = rg() < 0.4 ? 'pine' : 'tree';
         else if (rg() < 0.18) kind = 'bush';
         tryDeco(kind, x, y, s);
       }
     }
     // 長椅與路燈（湖邊、廣場）
-    [[620, 336], [980, 340], [700, 104], [904, 104]].forEach(function (b) { tryDeco('bench', b[0], b[1], 1); });
+    [[780, 338], [1140, 340], [860, 108], [1064, 108]].forEach(function (b) { tryDeco('bench', b[0], b[1], 1); });
     decos.sort(function (a, b) { return a.y - b.y; });
     out.push('<g class="m-deco" pointer-events="none">' + decos.map(function (dd) {
       return '<g transform="translate(' + n(dd.x) + ',' + n(dd.y) + ')">' + call('deco', [dd.kind, { s: n(dd.s * 1.55) }], fbDeco) + '</g>';
@@ -2247,7 +2434,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     var planned = d.status === 'planned';
     var nameW = textW((d.icon ? d.icon + ' ' : '') + d.name, 18);
     var enW = textW(d.en || '', 10.5);
-    var cntW = planned ? 0 : textW(count + ' 棟', 10.5) + 16;
+    var cntW = planned ? 66 : textW(count + ' 棟', 10.5) + 16;
     return Math.round(Math.max(150, 30 + Math.max(nameW + (cntW ? cntW + 10 : 0), enW) + 14));
   }
   function signboard(d, x, y, count) {
@@ -2324,7 +2511,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   /* ------------------------------------------------------------ 地圖元件 */
   var M = {
     asg: null, wrap: null, svg: null, tip: null,
-    view: { x: 0, y: 0, w: 1600, h: 1000 },
+    view: { x: 0, y: 0, w: L.W, h: L.H },
     cw: 0, ch: 0, k: 1, anim: 0, lastTapAt: 0,
     labelMeta: [], searchIds: null, fromId: null, selId: null,
   };
@@ -2340,8 +2527,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   }
   function homeView() {
     if (M.cw < 720) {
-      // 手機：預設完整顯示五大學區全覽，也可隨時點上方學區按鈕聚焦放大
-      return fitView({ x: 20, y: 70, w: 1560, h: 915 }, 6);
+      // 手機：預設完整顯示學園全覽，也可隨時點上方學區按鈕聚焦放大
+      return fitView({ x: 20, y: 70, w: L.W - 40, h: L.H - 80 }, 6);
     }
     return fitView({ x: 0, y: 0, w: L.W, h: L.H }, 6);
   }
@@ -2450,8 +2637,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         ct.setAttribute('x', n(cx + 6.5));
       }
       if (meta) {
-        var half = total / 2 * 1.2;
-        var ax = clamp(meta.x, 10 + half, L.W - 10 - half);
+        var half = total / 2;
+        var ax = clamp(meta.x, 8 + half, L.W - 8 - half);
         var tr = g.getAttribute('transform') || '';
         g.setAttribute('transform', tr.replace(/translate\(([-\d.]+),/, 'translate(' + n(ax) + ','));
       }
@@ -2515,6 +2702,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     if (id) { enterOrOpen(id); return; }
     if (el.classList.contains('svc') || el.classList.contains('lbl-svc')) { C.emit('about'); return; }
     if (el.getAttribute('data-banner') === 'practice') { enterOrOpen('stock'); return; }
+    if (el.getAttribute('data-banner') === 'tech-link') { enterOrOpen('coding'); return; }
     if (el.classList.contains('sign')) {
       var did = el.getAttribute('data-district');
       if (did) focusDistrict(did);
@@ -2864,7 +3052,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       h += '<ul class="pn-feat">' + b.features.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
     }
     if (children.length) {
-      h += '<div class="pn-sec">四大分院</div><div class="pn-kids">' + children.map(function (k) {
+      h += '<div class="pn-sec">' + (children.length === 4 ? '四大分院' : '隸屬分院（' + children.length + '）') + '</div><div class="pn-kids">' + children.map(function (k) {
         return '<button type="button" class="kid" data-open="' + esc(k.id) + '"><span aria-hidden="true">' + esc(k.icon || '') + '</span> ' + esc(k.name) + '</button>';
       }).join('') + '</div>';
     }
@@ -2872,6 +3060,21 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       h += '<div class="pn-sec">快速前往</div><div class="pn-links">' + b.links.map(function (l) {
         return '<a href="' + esc(C.linkUrl(b, l.hash)) + '" data-visit="' + esc(b.id) + '">' + esc(l.label) + '</a>';
       }).join('') + '</div>';
+    }
+    if (b.related && b.related.length) {
+      var relItems = b.related.map(function (r) {
+        var rb = C.building(r.id);
+        if (!rb) return '';
+        if (C.isLive(rb)) {
+          var rUrl = r.hash ? C.linkUrl(rb, r.hash) : C.primaryUrl(rb);
+          return '<a class="pn-rel-link" href="' + esc(rUrl) + '" data-visit="' + esc(rb.id) + '" data-rel-id="' + esc(rb.id) + '" data-rel-hash="' + esc(r.hash || '') + '">' + esc(r.label || rb.name) + ' ↗</a>';
+        }
+        return '<button type="button" class="pn-rel-link pn-rel-btn" data-open="' + esc(rb.id) + '">' + esc(r.label || rb.name) + ' ›</button>';
+      }).filter(Boolean);
+      if (relItems.length) {
+        var relSec = b.district === 'tech' ? '🔗 軟硬整合・跨院連動' : '🔗 理論 ⇄ 實戰連動';
+        h += '<div class="pn-sec">' + relSec + '</div><div class="pn-links pn-related">' + relItems.join('') + '</div>';
+      }
     }
     h += '<div class="pn-actions">';
     if (live) {
@@ -3061,12 +3264,22 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     var links = live ? b.links.slice(0, 4).map(function (l) {
       return '<a href="' + esc(C.linkUrl(b, l.hash)) + '" data-visit="' + esc(b.id) + '">' + esc(l.label) + '</a>';
     }).join('') : '';
+    var rels = b.related && b.related.length ? b.related.slice(0, 3).map(function (r) {
+      var rb = C.building(r.id);
+      if (!rb) return '';
+      if (C.isLive(rb)) {
+        var rUrl = r.hash ? C.linkUrl(rb, r.hash) : C.primaryUrl(rb);
+        return '<a class="card-rel" href="' + esc(rUrl) + '" data-visit="' + esc(rb.id) + '">' + esc(r.label || rb.name) + ' ↗</a>';
+      }
+      return '<button type="button" class="card-rel card-rel-btn" data-more="' + esc(rb.id) + '">' + esc(r.label || rb.name) + ' ›</button>';
+    }).filter(Boolean).join('') : '';
     return '<article class="card' + (live ? '' : ' planned') + '" data-id="' + esc(b.id) + '" tabindex="0" aria-label="' + esc(b.name + '：' + (b.tagline || '')) + '">' +
       '<div class="card-top"><span class="card-ic" aria-hidden="true">' + esc(b.icon || '🏫') + '</span>' +
       '<div class="card-tt"><h3>' + esc(b.name) + '</h3><div class="card-en">' + esc(b.en || '') + '</div></div>' + chip(b) + '</div>' +
       (b.tagline ? '<p class="card-tag">' + esc(b.tagline) + '</p>' : '') +
       (feats ? '<ul class="card-feat">' + feats + '</ul>' : (b.desc ? '<p class="card-desc">' + esc(b.desc) + '</p>' : '')) +
       (links ? '<div class="card-links">' + links + '</div>' : '') +
+      (rels ? '<div class="card-rels"><span class="card-rel-lbl">🔗 連動</span>' + rels + '</div>' : '') +
       '<div class="card-act">' +
       (live ? '<a class="btn primary" href="' + esc(C.primaryUrl(b)) + '" data-visit="' + esc(b.id) + '" data-primary="1">' + esc(label) + '</a>'
         : '<button type="button" class="btn" data-wish="' + esc(b.id) + '">💬 許願</button>') +
@@ -3074,7 +3287,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       '</div></article>';
   }
   function lotCard(d) {
-    var what = d.id === 'arena' ? '實戰館' : '學院';
+    var what = d.id === 'games' ? '學院或運彩館' : d.id === 'finance' ? '分院或實戰館' : d.id === 'tech' ? '程式語言或硬體實作學院' : '學院';
     return '<button type="button" class="card lotcard" data-wish-district="' + esc(d.id) + '">' +
       '<span class="lot-ic" aria-hidden="true">🚧</span><b>預定地</b><span>未來的新' + what + '會自動進駐這裡</span><em>想要什麼' + what + '？點我許願 →</em></button>';
   }
@@ -3160,7 +3373,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     var empty = document.getElementById('dirEmpty');
     if (empty) {
       empty.hidden = !(on && !shown);
-      empty.innerHTML = on && !shown ? '🔍 找不到符合「' + esc(q || '') + '」的建築。試試「英語」「K 線」「NBA」「撲克」…' : '';
+      empty.innerHTML = on && !shown ? '🔍 找不到符合「' + esc(q || '') + '」的建築。試試「英語」「Python」「樹莓派」「K 線」「NBA」…' : '';
     }
   }
 
@@ -3183,8 +3396,21 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   'use strict';
   const CAMPUS = (window.CAMPUS = window.CAMPUS || {});
   CAMPUS.RELEASES_DATA = {
-    "current_version": "1.0.0",
+    "current_version": "1.1.0",
     "releases": [
+      {
+        "version": "1.1.0",
+        "date": "2026-10-30",
+        "bump": "minor",
+        "title": "新增智慧科技學區（智慧生活與物聯網／嵌入式與樹莓派／程式語言學院與四大分院）",
+        "highlights": [
+          "🤖 新增「智慧科技學區（Tech, IoT & Coding Quarter）」並擴充校園地圖版面（1920×1220），保留未來學區預定地",
+          "🏡 拆分為兩大硬體與物聯網學院：「智慧生活與物聯網學院」（家電／Matter／Thread／MQTT／Home Assistant）與「嵌入式與樹莓派學院」（Raspberry Pi／ESP32／GPIO／I2C／SPI／UART／RTOS）",
+          "💻 新增「程式語言學院」本部與 Python、C、JavaScript、Go 四大分院，配備 7 款專屬建築主題插畫",
+          "🔗 支援「軟硬整合 ⇄」跨院雙向連動（介紹卡與目錄皆可直接切換對應軟硬體學院）與短網址別名（/tech、/iot、/rpi、/python、/c、/js、/golang）"
+        ],
+        "files_count": 9
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-30",
@@ -3745,7 +3971,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     function renderPop(q) {
       if (!q) { pop.hidden = true; pop.innerHTML = ''; return; }
       if (!results.length) {
-        pop.innerHTML = '<div class="s-none">找不到「' + esc(q) + '」，試試「日語」「K 線」「NBA」</div>';
+        pop.innerHTML = '<div class="s-none">找不到「' + esc(q) + '」，試試「日語」「Python」「樹莓派」「K 線」「NBA」</div>';
         pop.hidden = false;
         return;
       }

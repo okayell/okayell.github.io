@@ -2363,6 +2363,16 @@ a.term:hover {
   // Cloudtop 上各工具的 Autobahn proxy 與 Python backend port（registry.json 的 local_port / backend_port）。
   var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8899', '8898',
     '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916'];
+  var TOOL_MAP = {
+    english: { port: '8911', path: 'english-speak-listen/' },
+    japanese: { port: '8923', path: 'japanese/' },
+    finance: { port: '8925', path: 'finance/' },
+    stock: { port: '8905', path: 'tw-stock-insight/' },
+    poker: { port: '8899', path: 'poker-gto/' },
+    nba: { port: '8913', path: 'nba-betting-iq/' },
+    epl: { port: '8917', path: 'epl-odds-iq/' },
+    f1: { port: '8915', path: 'f1-odds-iq/' }
+  };
   var VISITS_KEY = 'okayell.campus.visits.v1';
 
   function campusBase() {
@@ -2380,6 +2390,20 @@ a.term:hover {
     return toolId ? base + '?from=' + encodeURIComponent(toolId) : base;
   }
 
+  function toolUrl(targetId, hash) {
+    var t = TOOL_MAP[targetId];
+    var h = String(hash || '').trim();
+    if (h && h.charAt(0) !== '#') h = '#' + (h.charAt(0) === '/' ? '' : '/') + h;
+    if (!t) return campusUrl(targetId);
+    var loc = window.location;
+    if (loc.protocol === 'http:' || loc.protocol === 'https:') {
+      var host = loc.hostname || '';
+      if (/(^|\.)github\.io$/i.test(host)) return loc.origin + '/' + t.path + h;
+      return loc.protocol + '//' + host + ':' + t.port + '/' + h;
+    }
+    return PUBLIC_CAMPUS + t.path + h;
+  }
+
   function recordVisit(toolId) {
     if (!toolId) return;
     try {
@@ -2393,19 +2417,28 @@ a.term:hover {
 
   var CSS = [
     '.campus-home{display:inline-flex;align-items:center;gap:5px;flex:none;box-sizing:border-box;height:30px;',
-    'padding:0 11px 0 9px;margin:0 10px 0 0;border-radius:999px;border:1px solid #c7d2fe;background:#eef2ff;',
+    'padding:0 11px 0 9px;margin:0 6px 0 0;border-radius:999px;border:1px solid #c7d2fe;background:#eef2ff;',
     'color:#3730a3;font:600 13px/1 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",',
     '"Microsoft JhengHei",sans-serif;letter-spacing:0;text-decoration:none!important;white-space:nowrap;',
     'cursor:pointer;vertical-align:middle;transition:background .15s,box-shadow .15s,transform .15s}',
     '.campus-home:hover{background:#e0e7ff;box-shadow:0 2px 8px rgba(55,48,163,.18);transform:translateY(-1px)}',
     '.campus-home:focus-visible{outline:2px solid #6366f1;outline-offset:2px}',
     '.campus-home .ch-ic{font-size:15px;line-height:1}',
+    '.campus-home.campus-sibling{background:#fffbeb;border-color:#fcd34d;color:#92400e;margin-right:10px}',
+    '.campus-home.campus-sibling:hover{background:#fef3c7;box-shadow:0 2px 8px rgba(180,83,9,.16)}',
     '.campus-home[data-campus-theme="dark"]{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.30);color:#f8fafc}',
     '.campus-home[data-campus-theme="dark"]:hover{background:rgba(255,255,255,.18)}',
     '.campus-home.floating{position:fixed;left:12px;top:12px;z-index:2147483000;margin:0;',
     'box-shadow:0 4px 14px rgba(15,23,42,.18)}',
-    '@media (max-width:640px){.campus-home{padding:0 8px;margin-right:6px}.campus-home .ch-txt{display:none}}',
-    '@media print{.campus-home{display:none!important}}',
+    '.campus-acad-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:8px 12px;margin:8px 0 12px;',
+    'border-radius:12px;background:linear-gradient(90deg,#fffbeb,#fef3c7);border:1px solid #fcd34d;font-size:13px;color:#78350f}',
+    '.campus-acad-bar b{font-weight:800;color:#92400e;display:inline-flex;align-items:center;gap:4px}',
+    '.campus-acad-pill{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;border-radius:999px;',
+    'background:#fff;border:1px solid #f59e0b;color:#92400e;font-size:12.5px;font-weight:700;text-decoration:none!important;',
+    'white-space:nowrap;transition:background .15s,transform .15s}',
+    '.campus-acad-pill:hover{background:#fef3c7;transform:translateY(-1px)}',
+    '@media (max-width:640px){.campus-home{padding:0 8px;margin-right:5px}.campus-home:not(.campus-sibling) .ch-txt{display:none}}',
+    '@media print{.campus-home,.campus-acad-bar{display:none!important}}',
   ].join('');
 
   function injectCss() {
@@ -2425,6 +2458,20 @@ a.term:hover {
     a.innerHTML = '<span class="ch-ic" aria-hidden="true">🏫</span><span class="ch-txt">校園</span>';
   }
 
+  function wireGoLinks(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    var links = scope.querySelectorAll('[data-campus-go]');
+    for (var i = 0; i < links.length; i++) {
+      var el = links[i];
+      var tid = el.getAttribute('data-campus-go');
+      var h = el.getAttribute('data-campus-hash') || '';
+      if (tid) {
+        el.href = toolUrl(tid, h);
+        el.removeAttribute('target');
+      }
+    }
+  }
+
   function init() {
     injectCss();
     var toolId = window.CAMPUS_TOOL_ID || '';
@@ -2441,10 +2488,25 @@ a.term:hover {
       document.body.appendChild(a);
       decorate(a, toolId);
     }
+    wireGoLinks(document);
+    if (window.MutationObserver && document.body) {
+      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('[data-campus-go]') : null;
+      if (!a) return;
+      var tid = a.getAttribute('data-campus-go');
+      var h = a.getAttribute('data-campus-hash') || '';
+      if (tid) {
+        recordVisit(tid);
+        a.href = toolUrl(tid, h);
+      }
+    }, true);
     recordVisit(toolId);
   }
 
-  window.CampusNav = { base: campusBase, url: campusUrl, init: init, visitsKey: VISITS_KEY };
+  window.CampusNav = { base: campusBase, url: campusUrl, toolUrl: toolUrl, wire: wireGoLinks, init: init, visitsKey: VISITS_KEY };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
