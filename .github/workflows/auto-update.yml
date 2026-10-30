@@ -1,0 +1,122 @@
+# Auto-generated — 開心學園 okayell.github.io 全站自動解包部署 ＋ 台股／NBA／英超／F1 每日排程更新
+# 平常更新全站只需把下載的 okayell.github.io.zip「免解壓」直接上傳到 Repo 根目錄即可！
+name: Deploy & Auto Update (Happy Campus All-in-One)
+
+on:
+  push:
+    branches: [main]
+  schedule:  # GitHub cron 使用 UTC（台灣時間 = UTC + 8）
+    - cron: '40 22 * * *'     # 06:40 TW — NBA 賽前傷兵／先發
+    - cron: '40 23 * * *'     # 07:40 TW — 英超／F1 早盤 ＋ 週一～五台股盤前戰情
+    - cron: '35 0 * * 1-5'    # 08:35 TW — 週一～五台股開盤前再研判
+    - cron: '40 3 * * *'      # 11:40 TW — NBA 賽果與 boxscore
+    - cron: '30 4 * * *'      # 12:30 TW — 英超／F1 午盤更新
+    - cron: '15 6 * * *'      # 14:15 TW — NBA 完整對獎＋模型進化
+    - cron: '50 6 * * 1-5'    # 14:50 TW — 週一～五台股上市收盤行情
+    - cron: '10 8 * * 1-5'    # 16:10 TW — 週一～五台股上櫃收盤／三大法人
+    - cron: '30 10 * * *'     # 18:30 TW — 英超／F1 晚盤 ＋ 週一～五台股法人／估值
+    - cron: '30 13 * * 1-5'   # 21:30 TW — 週一～五台股補抓遺漏
+    - cron: '3 15 * * *'      # 23:03 TW — NBA／英超／F1 鎖定讓分與大小分盤口
+  workflow_dispatch:
+    inputs:
+      target:
+        description: '更新目標（auto = 依時段自動判斷；all = 全部實戰館）'
+        default: auto
+        type: choice
+        options: [auto, all, tw-stock-insight, nba-betting-iq, epl-odds-iq, f1-odds-iq, none]
+      mode:
+        description: '執行模式（auto = 自動；update = 立即抓資料；morning = 台股盤前；odds = 運彩鎖盤；rebuild = 只重編網頁）'
+        default: auto
+        type: choice
+        options: [auto, update, morning, odds, rebuild, deploy_only]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: campus-all-in-one
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      TZ: Asia/Taipei
+    outputs:
+      deploy: ${{ steps.run.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Extract okayell.github.io.zip (or loose repo files)
+        run: |
+          rm -rf _site _work && mkdir -p _site _work
+          if [ -f okayell.github.io.zip ]; then
+            python3 -m zipfile -e okayell.github.io.zip _site
+          fi
+          python3 - << 'PY'
+          import os, shutil
+          skip = {'.git', '.github', '_site', '_work', '.arena_cache', 'okayell.github.io.zip', 'README.md'}
+          has_zip = os.path.isfile('okayell.github.io.zip')
+          for name in os.listdir('.'):
+            if name in skip or name.startswith('.'):
+              continue
+            dst = os.path.join('_site', name)
+            if not has_zip or not os.path.exists(dst):
+              if os.path.isdir(name):
+                shutil.copytree(name, dst, dirs_exist_ok=True)
+              else:
+                shutil.copy2(name, dst)
+          PY
+
+      - name: Restore arena SQLite history & latest rendered pages
+        uses: actions/cache/restore@v4
+        with:
+          path: .arena_cache
+          key: campus-arenas-v1-${{ github.run_id }}
+          restore-keys: campus-arenas-v1-
+
+      - name: Build / refresh arenas & prepare _site
+        id: run
+        run: |
+          if [ -f _site/bundles/ci_site_deploy.py ]; then
+            python3 _site/bundles/ci_site_deploy.py \
+              --site _site \
+              --cache .arena_cache \
+              --work _work \
+              --event "${{ github.event_name }}" \
+              --target "${{ inputs.target || 'auto' }}" \
+              --mode "${{ inputs.mode || 'auto' }}"
+          else
+            touch _site/.nojekyll
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save arena SQLite history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .arena_cache
+          key: campus-arenas-v1-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.run.outputs.deploy == 'true'
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
