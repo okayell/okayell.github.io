@@ -630,7 +630,7 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
   .app-main { padding: 14px 12px 90px; }
   .mobile-nav { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: rgba(255, 255, 255, 0.97); border-top: 1px solid var(--border);
     padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
-  .mnav-link { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 4px 0; border-radius: 10px; color: var(--muted); text-decoration: none !important; font-size: 19px; }
+  .mnav-link { position: relative; flex: 1 1 0; min-width: 0; white-space: nowrap; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 4px 0; border-radius: 10px; color: var(--muted); text-decoration: none !important; font-size: 18px; }
   .mnav-link small { font-size: 11px; font-weight: 600; }
   .mnav-link.active { color: var(--primary); background: var(--primary-soft); }
   .mnav-link .nav-badge { top: 0; right: calc(50% - 22px); }
@@ -1022,20 +1022,24 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
   var PUBLIC_CAMPUS = 'https://okayell.github.io/';
   var LOCAL_CAMPUS_PORT = '8919';
   // Cloudtop 上各工具的 Autobahn proxy 與 Python backend port（registry.json 的 local_port / backend_port）。
-  var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8899', '8898',
+  var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8929', '8928', '8899', '8898',
     '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916'];
   var TOOL_MAP = {
-    english: { port: '8911', path: 'english-speak-listen/' },
-    japanese: { port: '8923', path: 'japanese/' },
-    finance: { port: '8925', path: 'finance/' },
-    'addiction-cm': { port: '8927', path: 'addiction-cm/' },
-    stock: { port: '8905', path: 'tw-stock-insight/' },
-    poker: { port: '8899', path: 'poker-gto/' },
-    nba: { port: '8913', path: 'nba-betting-iq/' },
-    epl: { port: '8917', path: 'epl-odds-iq/' },
-    f1: { port: '8915', path: 'f1-odds-iq/' }
+    english: { port: '8911', path: 'english-speak-listen/', name: '英語學院', icon: '🇬🇧' },
+    japanese: { port: '8923', path: 'japanese/', name: '日語學院', icon: '🇯🇵' },
+    finance: { port: '8925', path: 'finance/', name: '財經學院', icon: '🏛️' },
+    'addiction-cm': { port: '8927', path: 'addiction-cm/', name: '藥癮個管師學院', icon: '💚' },
+    music: { port: '8929', path: 'music/', name: '音樂學院', icon: '🎵' },
+    stock: { port: '8905', path: 'tw-stock-insight/', name: '台股智慧選股', icon: '📈' },
+    poker: { port: '8899', path: 'poker-gto/', name: 'GTO 撲克學院', icon: '♠️' },
+    nba: { port: '8913', path: 'nba-betting-iq/', name: 'NBA 運彩智庫', icon: '🏀' },
+    epl: { port: '8917', path: 'epl-odds-iq/', name: '英超運彩智庫', icon: '⚽' },
+    f1: { port: '8915', path: 'f1-odds-iq/', name: 'F1 運彩智庫', icon: '🏎️' }
   };
   var VISITS_KEY = 'okayell.campus.visits.v1';
+  var STU_KEY = 'okayell.campus.student.v1';
+  var NTFY_TOPIC = 'okayell_happy_campus_v1';
+  var BC_NAME = 'okayell.campus.presence.v1';
 
   function localOrigin(loc, port) {
     var p = parseInt(port, 10);
@@ -1092,6 +1096,51 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
       visits[toolId] = Date.now();
       window.localStorage.setItem(VISITS_KEY, JSON.stringify(visits));
     } catch (e) { /* 無痕模式或空間不足：略過 */ }
+    sendPresenceHeartbeat(toolId);
+  }
+
+  function sendPresenceHeartbeat(toolId) {
+    if (!toolId || !TOOL_MAP[toolId]) return;
+    try {
+      var t = TOOL_MAP[toolId];
+      var stu = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {};
+      if (!stu.uid) {
+        stu.uid = 'stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+        stu.name = stu.name || '學員';
+        stu.avatar = stu.avatar || '🧑‍🎓';
+        stu.title = stu.title || '💹 財經特攻隊';
+        stu.carIdx = typeof stu.carIdx === 'number' ? stu.carIdx : 0;
+        stu.carColor = stu.carColor || '#f87171';
+        stu.carName = stu.carName || '🏎️ 烈焰紅跑車';
+      }
+      stu.buildingId = toolId;
+      stu.buildingName = t.name;
+      stu.buildingIcon = t.icon;
+      stu.activity = '正在「' + t.name + '」進修中';
+      stu.ts = Math.floor(Date.now() / 1000);
+      window.localStorage.setItem(STU_KEY, JSON.stringify(stu));
+      if (window.BroadcastChannel) {
+        try {
+          var bc = new BroadcastChannel(BC_NAME);
+          bc.postMessage(stu);
+          bc.close();
+        } catch (e) { /* ignore */ }
+      }
+      var loc = window.location;
+      if (loc.protocol === 'http:' || loc.protocol === 'https:') {
+        var host = loc.hostname || '';
+        if (/(^|\.)github\.io$/i.test(host)) {
+          fetch('https://ntfy.sh/' + NTFY_TOPIC, { method: 'POST', body: JSON.stringify(stu), keepalive: true }).catch(function () {});
+        } else {
+          fetch(campusBase() + 'api/presence', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(stu),
+            keepalive: true
+          }).catch(function () {});
+        }
+      }
+    } catch (e) { /* ignore */ }
   }
 
   var CSS = [
@@ -1116,9 +1165,132 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
     'background:#fff;border:1px solid #f59e0b;color:#92400e;font-size:12.5px;font-weight:700;text-decoration:none!important;',
     'white-space:nowrap;transition:background .15s,transform .15s}',
     '.campus-acad-pill:hover{background:#fef3c7;transform:translateY(-1px)}',
-    '@media (max-width:640px){.campus-home{padding:0 8px;margin-right:5px}.campus-home:not(.campus-sibling) .ch-txt{display:none}}',
-    '@media print{.campus-home,.campus-acad-bar{display:none!important}}',
+    '.cfb-box{margin-top:8px;padding:12px 14px;border-radius:12px;background:#fffbeb;border:1.5px solid #fcd34d;color:#78350f;font-size:13px;line-height:1.55;text-align:left}',
+    '.cfb-hd{font-weight:700;color:#92400e;margin-bottom:3px}.cfb-hd code{background:#fef3c7;border:1px solid #fde68a;border-radius:5px;padding:1px 5px;font-size:12px}',
+    '.cfb-sub{font-size:12px;color:#92400e;opacity:.92;margin-bottom:9px}',
+    '.cfb-btns{display:flex;flex-wrap:wrap;gap:7px}',
+    '.cfb-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;padding:5px 11px;border-radius:9px;',
+    'border:1px solid #f59e0b;background:#fff;color:#92400e!important;font:700 12.5px/1.2 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;',
+    'text-decoration:none!important;cursor:pointer;transition:background .15s,transform .12s}',
+    '.cfb-btn:hover{background:#fef3c7;transform:translateY(-1px)}',
+    '.cfb-btn.primary{background:#059669;border-color:#059669;color:#fff!important}',
+    '.cfb-btn.primary:hover{background:#047857;border-color:#047857}',
+    '@media (max-width:640px){.campus-home{padding:0 8px;margin-right:5px}.campus-home:not(.campus-sibling) .ch-txt{display:none}.cfb-btns{display:grid;grid-template-columns:1fr 1fr}.cfb-btn.primary{grid-column:1/-1}}',
+    '@media print{.campus-home,.campus-acad-bar,.cfb-box{display:none!important}}',
   ].join('');
+
+  var DEFAULT_FB_EMAIL = 'okayell@hotmail.com';
+  var GH_ISSUES_URL = 'https://github.com/okayell/okayell.github.io/issues/new';
+
+  function fbEsc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function fbCopyText(text) {
+    function fallback() {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return Promise.resolve(ok);
+      } catch (e) { return Promise.resolve(false); }
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }, fallback);
+    }
+    return fallback();
+  }
+
+  function deliveryLinks(opts) {
+    opts = opts || {};
+    var email = opts.email || DEFAULT_FB_EMAIL;
+    var tool = opts.tool || '開心學園';
+    var kindLabel = opts.kindLabel || '💬 意見回饋';
+    var title = String(opts.title || '').trim();
+    var description = String(opts.description || '').trim();
+    var subject = '[' + tool + ' 意見回饋] ' + kindLabel + ' — ' + title;
+    var body = '工具名稱：' + tool + '\n回饋類型：' + kindLabel + '\n標題：' + title + '\n\n內容描述：\n' + description + '\n';
+    var copyPayload = '收件信箱：' + email + '\n主旨：' + subject + '\n\n' + body;
+    return {
+      email: email,
+      subject: subject,
+      body: body,
+      copyPayload: copyPayload,
+      mailto: 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body),
+      gmail: 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(email) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body),
+      outlook: 'https://outlook.live.com/mail/0/deeplink/compose?to=' + encodeURIComponent(email) + '&subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body),
+      github: (opts.repoIssues || GH_ISSUES_URL) + '?title=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body)
+    };
+  }
+
+  function postJsonWithTimeout(url, payload, ms) {
+    var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, ms || 3600) : 0;
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(payload),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) {
+      clearTimeout(timer);
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        var ok = r.ok && (d.success === true || d.success === 'true' || d.success === 1 || d.success === '1' || d.ok === true);
+        return { ok: ok, status: r.status, data: d };
+      });
+    }, function () {
+      clearTimeout(timer);
+      return { ok: false, status: 0, data: {} };
+    });
+  }
+
+  function sendStaticFeedback(opts) {
+    opts = opts || {};
+    var links = deliveryLinks(opts);
+    var relay = window.CAMPUS_FEEDBACK_RELAY || '';
+    if (window.location.protocol === 'file:' && !relay) {
+      return Promise.resolve({ sent: false, channel: 'file_offline', links: links });
+    }
+    var payload = {
+      _subject: links.subject,
+      _template: 'table',
+      _captcha: 'false',
+      '工具名稱': opts.tool || '開心學園',
+      '回饋類型': opts.kindLabel || '💬 意見回饋',
+      '標題': String(opts.title || '').trim(),
+      '內容描述': String(opts.description || '').trim(),
+      '送出時間': opts.createdAt || new Date().toISOString().slice(0, 19).replace('T', ' ')
+    };
+    var tryRelay = relay ? postJsonWithTimeout(relay, payload, 3600) : Promise.resolve({ ok: false });
+    return tryRelay.then(function (r1) {
+      if (r1 && r1.ok) return { sent: true, channel: 'relay', links: links };
+      return postJsonWithTimeout('https://formsubmit.co/ajax/' + links.email, payload, 3600).then(function (r2) {
+        if (r2 && r2.ok) return { sent: true, channel: 'formsubmit', links: links };
+        return { sent: false, channel: 'fallback', links: links };
+      });
+    });
+  }
+
+  function fallbackHtml(opts) {
+    var links = (opts && opts.links) || deliveryLinks(opts);
+    var note = (opts && opts.note) || '✅ 您的回饋已先保存在本機紀錄；因靜態網頁自動寄信服務暫時忙碌，請任選下方一種方式一鍵寄達站長：';
+    return '<div class="cfb-box">' +
+      '<div class="cfb-hd">📬 <b>請選擇任一方式一鍵寄出</b>（主旨與內容皆已自動帶入，收件信箱：<code>' + fbEsc(links.email) + '</code>）</div>' +
+      '<div class="cfb-sub">' + fbEsc(note) + '</div>' +
+      '<div class="cfb-btns">' +
+        '<a class="cfb-btn primary" href="' + fbEsc(links.gmail) + '" target="_blank" rel="noopener">📧 用 Gmail 網頁寄出</a>' +
+        '<a class="cfb-btn" href="' + fbEsc(links.outlook) + '" target="_blank" rel="noopener">📬 用 Outlook 寄出</a>' +
+        '<a class="cfb-btn" href="' + fbEsc(links.mailto) + '">📱 開啟手機／預設信箱 App</a>' +
+        '<button type="button" class="cfb-btn" data-campus-fb-copy="' + fbEsc(links.copyPayload) + '" data-campus-fb-email="' + fbEsc(links.email) + '">📋 複製信件內容與信箱</button>' +
+        '<a class="cfb-btn" href="' + fbEsc(links.github) + '" target="_blank" rel="noopener">🐙 GitHub Issue 留言</a>' +
+      '</div></div>';
+  }
 
   function injectCss() {
     if (document.getElementById('campusNavCss')) return;
@@ -1173,6 +1345,19 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
+      var cp = e.target && e.target.closest ? e.target.closest('[data-campus-fb-copy]') : null;
+      if (cp) {
+        e.preventDefault();
+        var txt = cp.getAttribute('data-campus-fb-copy') || '';
+        var em = cp.getAttribute('data-campus-fb-email') || DEFAULT_FB_EMAIL;
+        fbCopyText(txt).then(function (ok) {
+          var orig = cp.getAttribute('data-orig-label') || cp.textContent;
+          cp.setAttribute('data-orig-label', orig);
+          cp.textContent = ok ? ('✅ 已複製！可貼到信箱寄至 ' + em) : ('信箱：' + em);
+          setTimeout(function () { cp.textContent = orig; }, 3800);
+        });
+        return;
+      }
       var a = e.target && e.target.closest ? e.target.closest('[data-campus-go]') : null;
       if (!a) return;
       var tid = a.getAttribute('data-campus-go');
@@ -1185,7 +1370,17 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
     recordVisit(toolId);
   }
 
-  window.CampusNav = { base: campusBase, url: campusUrl, toolUrl: toolUrl, wire: wireGoLinks, init: init, visitsKey: VISITS_KEY };
+  window.CampusNav = {
+    base: campusBase,
+    url: campusUrl,
+    toolUrl: toolUrl,
+    wire: wireGoLinks,
+    init: init,
+    visitsKey: VISITS_KEY,
+    deliveryLinks: deliveryLinks,
+    sendStaticFeedback: sendStaticFeedback,
+    fallbackHtml: fallbackHtml
+  };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
@@ -9032,7 +9227,23 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
     const body = `工具名稱：${TOOL}\n回饋類型：${kindLabel}\n標題：${title}\n\n內容描述：\n${desc}\n`;
     return `mailto:${TARGET_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
+  function fallbackCard(kindLabel, title, desc, note) {
+    if (window.CampusNav && CampusNav.fallbackHtml) {
+      return CampusNav.fallbackHtml({ email: TARGET_EMAIL, tool: TOOL, kindLabel, title, description: desc, note });
+    }
+    return `✅ 意見已記錄！也可以點 <a href="${esc(buildMailto(kindLabel, title, desc))}">📩 一鍵開啟郵件直接寄給站長</a>。`;
+  }
   async function sendStaticEmail(item) {
+    if (window.CampusNav && CampusNav.sendStaticFeedback) {
+      return CampusNav.sendStaticFeedback({
+        email: TARGET_EMAIL,
+        tool: TOOL,
+        kindLabel: item.kind_label,
+        title: item.title,
+        description: item.description,
+        createdAt: item.created_at,
+      });
+    }
     try {
       const resp = await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
         method: 'POST',
@@ -9048,7 +9259,7 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
   const banner = (el, kind, html) => {
     if (!el) return;
     el.hidden = false;
-    el.className = `fb-banner ${kind}`;
+    el.className = kind ? `fb-banner ${kind}` : '';
     el.innerHTML = html;
   };
 
@@ -9109,22 +9320,26 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
           const res = await JA.api('/api/feedback', { body: { kind: selKind, title, description } });
           itemsCache = res.items || [res.item, ...(itemsCache || [])];
           saveLocal(itemsCache);
-          JA.toast('✅ 感謝你的回饋！已寄送至站長信箱', 'ok');
+          const sentOk = !res.item || res.item.mail_sent !== false;
+          if (sentOk) JA.toast('✅ 感謝你的回饋！已寄送至站長信箱', 'ok');
           JA.renderRoute();
-          banner(JA.$('#jaFbBanner'), 'ok', `✅ 已收到並寄送通知信至 <strong>${TARGET_EMAIL}</strong>，感謝你的寶貴意見！`);
+          if (sentOk) {
+            banner(JA.$('#jaFbBanner'), 'ok', `✅ 已收到並寄送通知信至 <strong>${TARGET_EMAIL}</strong>，感謝你的寶貴意見！`);
+          } else {
+            banner(JA.$('#jaFbBanner'), '', fallbackCard(kindObj.label, title, description, '✅ 回饋已儲存至伺服器紀錄；但自動寄信暫時忙碌，請任選下方一種方式一鍵寄達站長：'));
+          }
         } else {
           const item = { id: `FB-${Date.now().toString(36).toUpperCase()}`, kind: selKind, kind_label: kindObj.label, title, description,
             created_at: new Date().toISOString().slice(0, 19).replace('T', ' ') };
           const mail = await sendStaticEmail(item);
           itemsCache = [item, ...(itemsCache || [])];
           saveLocal(itemsCache);
-          const mailto = buildMailto(kindObj.label, title, description);
           JA.renderRoute();
-          banner(JA.$('#jaFbBanner'), 'ok', mail.sent ? `✅ 感謝回饋！已寄送至 <strong>${TARGET_EMAIL}</strong>。`
-            : `✅ 意見已記錄！也可以點 <a href="${esc(mailto)}">📩 一鍵開啟郵件直接寄給站長</a>。`);
+          if (mail.sent) banner(JA.$('#jaFbBanner'), 'ok', `✅ 感謝回饋！已寄送至 <strong>${TARGET_EMAIL}</strong>。`);
+          else banner(JA.$('#jaFbBanner'), '', fallbackCard(kindObj.label, title, description));
         }
       } catch (e) {
-        banner(JA.$('#jaFbBanner', root), 'warn', `⚠️ 暫時無法連線（${esc(e.message)}），請點 <a href="${esc(buildMailto(kindObj.label, title, description))}">📩 直接寄信至 ${TARGET_EMAIL}</a>。`);
+        banner(JA.$('#jaFbBanner', root), '', fallbackCard(kindObj.label, title, description, `⚠️ 暫時無法連線（${e.message || '連線忙碌'}），請任選下方一種方式一鍵寄達站長：`));
       } finally {
         sending = false;
         if (btn) { btn.disabled = false; btn.textContent = '📨 送出回饋'; }
