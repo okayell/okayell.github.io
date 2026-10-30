@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>開心學園 · 校園地圖</title>
-  <meta name="description" content="開心學園：一張插畫風校園地圖，走進英語學院、日語學院、財經學院與四大分院、程式語言學院、智慧生活與物聯網學院、嵌入式與樹莓派學院、GTO 撲克學院，以及台股、NBA、英超、F1 實戰館。">
+  <meta name="description" content="開心學園：一張插畫風校園地圖，走進英語學院、日語學院、財經學院與四大分院、藥癮個管師學院、程式語言學院、智慧生活與物聯網學院、嵌入式與樹莓派學院、GTO 撲克學院，以及台股、NBA、英超、F1 實戰館。">
   <meta name="theme-color" content="#1d6b57">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E">
   <style>/* css/campus.css */
@@ -416,6 +416,201 @@ html.redirecting body::before {
 .fb-msg { font-size: 13.5px; font-weight: 700; color: var(--muted); }
 body.modal-open { overflow: hidden; }
 
+/* ------------------------------------------------------------ 校園互動（車隊・萌寵・球場・垂釣） */
+.campus-map .fun-spot,
+.campus-map .parked-car,
+.campus-map .parking-sign,
+.campus-map .campus-vehicle,
+.campus-map .animal { cursor: pointer; outline: none; }
+.campus-map .lake-fish .fish-swim {
+  transform-box: fill-box; transform-origin: center;
+  animation: cm-fish 6.5s ease-in-out infinite;
+}
+.campus-map .lake-fish:nth-child(2n) .fish-swim { animation-duration: 8.2s; animation-direction: reverse; }
+.campus-map .lake-fish:nth-child(3n) .fish-swim { animation-duration: 5.4s; }
+@keyframes cm-fish {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(14px, -6px) rotate(6deg); }
+}
+.campus-map .bobber-float {
+  transform-box: fill-box; transform-origin: center;
+  animation: cm-bobber 2.1s ease-in-out infinite;
+}
+.campus-map .bobber-ring {
+  transform-box: fill-box; transform-origin: center;
+  animation: cm-ripple 2.4s ease-out infinite;
+}
+@keyframes cm-bobber { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+@keyframes cm-ripple { 0% { transform: scale(.7); opacity: .85; } 100% { transform: scale(1.7); opacity: 0; } }
+
+.campus-map .parked-car {
+  transform-box: fill-box; transform-origin: center;
+  transition: transform .18s ease, opacity .25s ease, filter .18s ease;
+}
+.campus-map .parked-car:hover, .campus-map .parked-car.hover {
+  transform: translateY(-4px) scale(1.08);
+  filter: drop-shadow(0 4px 6px rgba(59, 47, 37, .28));
+}
+.campus-map .parked-car.car-out { opacity: .25; }
+.campus-map .parking-sign:hover rect { stroke: #fbbf24; stroke-width: 2.5; }
+.campus-map .campus-vehicle {
+  filter: drop-shadow(0 4px 7px rgba(59, 47, 37, .28));
+}
+.campus-map .campus-vehicle:hover .veh-body { filter: brightness(1.06); }
+
+.campus-map .fun-spot { transition: transform .18s ease, filter .18s ease; transform-box: fill-box; transform-origin: center; }
+.campus-map .fun-spot:hover, .campus-map .fun-spot.hover, .campus-map .fun-spot:focus-visible {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 8px 14px rgba(29, 107, 87, .24));
+}
+.campus-map .court-ball {
+  transform-box: fill-box; transform-origin: center;
+  animation: cm-ball 1.8s ease-in-out infinite;
+}
+@keyframes cm-ball { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+.campus-map .animal .animal-in {
+  transform-box: fill-box; transform-origin: center bottom;
+  transition: transform .2s cubic-bezier(.2, .9, .3, 1.4);
+  animation: cm-pet-idle 3.6s ease-in-out infinite;
+}
+.campus-map .animal:nth-child(2n) .animal-in { animation-delay: -1.4s; }
+.campus-map .animal:nth-child(3n) .animal-in { animation-delay: -2.5s; }
+.campus-map .animal:hover .animal-in, .campus-map .animal.hover .animal-in, .campus-map .animal:focus-visible .animal-in {
+  transform: translateY(-6px) scale(1.14);
+}
+.campus-map .animal.animal-jump .animal-in {
+  animation: cm-pet-jump .65s cubic-bezier(.2, .9, .3, 1.4) 2;
+}
+@keyframes cm-pet-idle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
+@keyframes cm-pet-jump {
+  0%, 100% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(-13px) scale(1.18) rotate(-5deg); }
+  75% { transform: translateY(-5px) scale(1.08) rotate(4deg); }
+}
+.campus-map .fun-pop-in {
+  transform-box: fill-box; transform-origin: center bottom;
+  animation: cm-pop .24s cubic-bezier(.2, .9, .3, 1.3);
+}
+@keyframes cm-pop { from { opacity: 0; transform: translateY(8px) scale(.85); } to { opacity: 1; transform: none; } }
+
+.mc.mc-fun {
+  border-color: #d97706; background: linear-gradient(180deg, #fffbeb, #fef3c7); color: #92400e;
+}
+.mc.mc-fun:hover { background: #fde68a; border-color: #b45309; }
+
+/* 底部校園專車導航列 */
+.car-hud {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 25;
+  width: min(740px, calc(100% - 120px));
+  background: rgba(255, 253, 248, .96); border: 2px solid #e3a72f; border-radius: 18px;
+  padding: 9px 13px 10px; box-shadow: 0 14px 34px rgba(59, 47, 37, .22);
+  backdrop-filter: blur(6px);
+}
+.car-hud-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.car-hud-title { font-size: 13.5px; font-weight: 800; color: var(--ink); }
+.car-hud-acts { display: flex; align-items: center; gap: 6px; }
+.car-btn {
+  height: 27px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line-2);
+  background: #fff; color: var(--ink); font-size: 12px; font-weight: 800; cursor: pointer;
+}
+.car-btn:hover { border-color: var(--brand); color: var(--brand); background: #eef7f3; }
+.car-btn.car-btn-x { width: 27px; padding: 0; color: var(--muted); }
+.car-hud-pills {
+  display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  margin-top: 7px; padding-bottom: 2px;
+}
+.car-hud-pills::-webkit-scrollbar { display: none; }
+.car-hud-lbl { font-size: 12px; font-weight: 800; color: var(--muted); flex: none; }
+.car-pill {
+  flex: none; height: 28px; padding: 0 11px; border-radius: 999px;
+  border: 1px solid #dccdb2; background: #fffaf0; color: var(--ink);
+  font-size: 12.5px; font-weight: 800; cursor: pointer; white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .12s;
+}
+.car-pill:hover { background: #eef7f3; border-color: var(--brand); color: var(--brand); transform: translateY(-1px); }
+
+/* 校園小遊戲與互動視窗 */
+.fun-modal { width: min(760px, 100%); padding: 20px 22px 22px; }
+.fun-tabs {
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  padding: 0 36px 10px 0; border-bottom: 1px solid var(--line); margin-bottom: 14px;
+}
+.fun-tabs::-webkit-scrollbar { display: none; }
+.fun-tab {
+  flex: none; height: 34px; padding: 0 13px; border-radius: 999px;
+  border: 1.5px solid var(--line-2); background: #fffaf0; color: var(--muted);
+  font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap;
+}
+.fun-tab:hover { border-color: var(--brand); color: var(--ink); }
+.fun-tab.on { background: var(--brand); border-color: var(--brand); color: #fff; box-shadow: 0 3px 10px rgba(29, 107, 87, .24); }
+.fg-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.fg-head h2 { margin: 0; font-size: 20px; }
+.fg-sub { margin: 2px 0 0 !important; font-size: 13px !important; color: var(--muted) !important; }
+.fg-stats { display: flex; flex-wrap: wrap; gap: 6px; }
+.fg-badge {
+  display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 11px;
+  border-radius: 999px; background: #f6efe1; border: 1px solid var(--line-2);
+  font-size: 12.5px; font-weight: 800; color: var(--ink);
+}
+.fg-badge.gold { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+.pond-stage { position: relative; border-radius: 16px; overflow: hidden; border: 2px solid #cbe4ec; background: #cfeaf2; }
+#pondCanvas, #bbCanvas, #scCanvas, #tnCanvas {
+  display: block; width: 100%; height: auto; border-radius: 14px;
+  border: 2px solid var(--line-2); cursor: pointer; touch-action: none; user-select: none;
+}
+#pondCanvas { border: 0; border-radius: 0; }
+.pond-hud {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  padding: 9px 13px; background: rgba(255, 253, 248, .96); border-top: 1px solid #cbe4ec;
+}
+.pond-msg { font-size: 13.5px; font-weight: 800; color: var(--ink); }
+.pond-msg.bite { color: #b45309; animation: cm-pulse .45s ease-in-out infinite alternate; }
+.pond-msg.ok { color: var(--brand); }
+.pond-msg.warn { color: #b45309; }
+@keyframes cm-pulse { from { transform: scale(1); } to { transform: scale(1.04); } }
+.catch-banner {
+  display: flex; align-items: center; gap: 12px; margin-top: 10px; padding: 10px 14px;
+  border-radius: 14px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1.5px solid #f59e0b;
+}
+.catch-ic { font-size: 32px; line-height: 1; }
+.catch-tx { display: flex; flex-direction: column; flex: 1; font-size: 13px; color: #78350f; }
+.catch-tx b { font-size: 15px; color: #3b2f25; }
+.fg-sec { margin: 14px 0 8px !important; font-size: 14px !important; font-weight: 800; color: var(--ink); }
+.fg-dex { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 8px; }
+.dex-card {
+  display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 12px;
+  background: #fff; border: 1.5px solid var(--line); transition: transform .15s, border-color .15s;
+}
+.dex-card.locked { opacity: .55; background: #f8f3e8; border-style: dashed; }
+.dex-card.dex-pet:hover { transform: translateY(-2px); border-color: var(--brand); }
+.dex-ic { font-size: 24px; width: 32px; text-align: center; flex: none; }
+.dex-info { display: flex; flex-direction: column; min-width: 0; }
+.dex-info b { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dex-info small { font-size: 11.5px; color: var(--muted); }
+.hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 9px; margin-bottom: 6px; }
+.hub-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 11px 12px;
+  border-radius: 14px; border: 1.5px solid var(--line-2); background: #fff; color: var(--ink);
+  text-align: left; cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.hub-card:hover { transform: translateY(-2px); border-color: var(--brand); box-shadow: 0 8px 18px rgba(59, 47, 37, .1); }
+.hub-ic { font-size: 24px; line-height: 1.1; }
+.hub-card b { font-size: 14px; }
+.hub-card small { font-size: 12px; color: var(--muted); }
+.hub-cars { display: flex; flex-wrap: wrap; gap: 7px; }
+.car-chip {
+  height: 32px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--cc, var(--line-2));
+  background: #fff; color: var(--ink); font-size: 12.5px; font-weight: 800; cursor: pointer;
+}
+.car-chip:hover { background: #fffaf0; transform: translateY(-1px); }
+
+@media (max-width: 720px) {
+  .car-hud { left: 10px; right: 62px; bottom: 12px; width: auto; transform: none; padding: 8px 10px; }
+  .fun-modal { padding: 16px 14px calc(18px + env(safe-area-inset-bottom)); }
+  .fg-dex { grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); }
+}
+
 /* ------------------------------------------------------------ 平板 */
 @media (max-width: 1080px) {
   .brand-sub { display: none; }
@@ -483,7 +678,7 @@ body.modal-open { overflow: hidden; }
 </style>
   <script>/* js/registry_data.js */
 /* registry.json → window.CAMPUS_REGISTRY（自動產生；要改內容請改 registry.json） */
-window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy Campus","icon":"🏫","tagline":"一張校園地圖，走進每一間學院與實戰館"},"campus":{"repo":"okayell.github.io","public_url":"https://okayell.github.io/","backend_port":8918,"local_port":8919},"districts":[{"id":"language","name":"語言學區","en":"Language Quarter","icon":"🌏","color":"#0284c7","soft":"#e0f2fe","desc":"聽、說、讀、單字一次練齊：英語、日語都依程度分級，從零開始也跟得上。"},{"id":"finance","name":"財經學區","en":"Finance Quarter","icon":"💹","color":"#d97706","soft":"#fef3c7","desc":"財經學院與四大分院（技術分析、基本面、籌碼面、消息面）＋台股智慧選股實戰館：學完理論直接走過財經廣場實戰驗證。"},{"id":"games","name":"博弈學區","en":"Strategy & Betting Quarter","icon":"🎲","color":"#7c3aed","soft":"#ede9fe","desc":"GTO 撲克學院與 NBA、英超、F1 三大運彩智庫：用機率、期望值（EV）與凱利公式做理性決策。"},{"id":"tech","name":"智慧科技學區","en":"Tech, IoT & Coding Quarter","icon":"🤖","color":"#0e7490","soft":"#ecfeff","status":"planned","desc":"建設中：智慧生活與物聯網、嵌入式與樹莓派兩大硬體實作學院，搭配程式語言學院與四大分院（Python、C、JavaScript、Go），軟硬體跨院連動學習。"},{"id":"arts","name":"藝能生活學區","en":"Arts & Life Skills Quarter","icon":"🎨","color":"#db2777","soft":"#fce7f3","status":"planned","desc":"建設中：烹飪、音樂等各種生活技能學院，陸續開張。"}],"buildings":[{"id":"english","district":"language","kind":"academy","name":"英語學院","en":"English Academy","icon":"🇬🇧","art":"clock-tower","status":"live","repo":"english-speak-listen","url":"https://okayell.github.io/english-speak-listen/","local_port":8911,"aliases":["english","en"],"tagline":"A1–C2 分級：聽力、口說、單字一次學齊","desc":"72+ 篇分級生活對話，逐句朗讀、跟讀發音評分、角色扮演、聽寫與理解測驗；新增分級單字學習，搭配 SM-2 間隔複習的個人單字本。","features":["🔤 A1–C2 分級單字學習","🎧 男女聲分角色朗讀・盲聽","🗣️ 跟讀發音評分・角色扮演","🧠 單字卡間隔複習（SM-2）"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"🔤 單字學習","hash":"#/words"},{"label":"📚 分級文章","hash":"#/library"},{"label":"🧠 複習","hash":"#/review"}]},{"id":"japanese","district":"language","kind":"academy","name":"日語學院","en":"Japanese Academy","icon":"🇯🇵","art":"pagoda","status":"new","repo":"okayell.github.io","path":"japanese/","url":"https://okayell.github.io/japanese/","local_port":8923,"aliases":["japanese","ja","jp"],"tagline":"從五十音開始：A1–C2 分級，真人語速發音","desc":"平假名、片假名五十音（清音・濁音・拗音）點字即發音與測驗，A1–C2（對應 JLPT N5–N1）分級對話課程、文法重點與分級單字，跟讀口說評分與間隔複習。","features":["あ 五十音表・點字發音・認字測驗","🗣️ 日語朗讀與跟讀評分","📚 A1–C2 分級對話與文法","🔤 分級單字・間隔複習"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"あ 五十音","hash":"#/kana"},{"label":"📚 分級課程","hash":"#/library"},{"label":"🔤 單字學習","hash":"#/words"}]},{"id":"finance","district":"finance","kind":"academy","name":"財經學院","en":"Finance Academy","icon":"🏛️","art":"classical-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/","local_port":8925,"aliases":["finance","fin"],"tagline":"台股投資四大分析，一次系統化學會","desc":"財經學院本部：技術分析、基本面、籌碼面、消息面四大分院的圖解課程、互動圖表、隨堂測驗與術語百科，課程直接連到台股智慧選股實戰練習。","features":["📈 技術分析學院","📊 基本面學院","🧮 籌碼面學院","📰 消息面學院"],"links":[{"label":"🏛️ 學院首頁","hash":"#/home"},{"label":"📖 術語百科","hash":"#/glossary"}],"related":[{"id":"stock","label":"📈 台股選股 · 今日推薦","hash":"#/"},{"id":"stock","label":"🔎 2,000 檔選股器","hash":"#/screener"},{"id":"stock","label":"🧠 台積電 K 線一鍵技術分析","hash":"#/stock/2330"},{"id":"stock","label":"🌅 盤前美股與重大事件戰情","hash":"#/morning"}]},{"id":"finance-ta","district":"finance","kind":"department","parent":"finance","name":"技術分析學院","en":"Technical Analysis","icon":"📈","art":"chart-tower","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/ta","local_port":8925,"local_hash":"#/track/ta","aliases":["ta"],"tagline":"K 線、均線、量價、KD／RSI／MACD 與型態","desc":"從 K 線與均線讀懂趨勢，再學量價關係、支撐壓力、型態學與常用指標，每課都有可操作的互動圖表，並可直接開啟台股智慧選股 K 線驗證。","features":["🕯️ K 線與型態","〰️ 均線・趨勢線・支撐壓力","📉 KD／RSI／MACD","🔊 量價關係"],"links":[{"label":"📈 進入分院","hash":"#/track/ta"}],"related":[{"id":"stock","label":"🧠 台積電 K 線一鍵技術分析","hash":"#/stock/2330"},{"id":"stock","label":"🔥 選股器 · 均線強勢多頭","hash":"#/screener?p=strong"},{"id":"stock","label":"🔄 選股器 · KD 低檔黃金交叉","hash":"#/screener?p=rebound"}]},{"id":"finance-fa","district":"finance","kind":"department","parent":"finance","name":"基本面學院","en":"Fundamental Analysis","icon":"📊","art":"ledger-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/fa","local_port":8925,"local_hash":"#/track/fa","aliases":["fa"],"tagline":"財報三表、EPS、ROE、本益比與殖利率","desc":"看懂損益表、資產負債表、現金流量表，學會用月營收、毛利率、ROE、本益比、殖利率評估一家公司值不值得買，並可直接用選股器篩出高殖利率與營收創高股。","features":["🧾 財報三表","💰 EPS・ROE・毛利率","⚖️ 本益比・股價淨值比・殖利率","📅 月營收與產業分析"],"links":[{"label":"📊 進入分院","hash":"#/track/fa"}],"related":[{"id":"stock","label":"🏦 選股器 · 高殖利率存股","hash":"#/screener?p=yield"},{"id":"stock","label":"📈 選股器 · 營收創高成長","hash":"#/screener?p=rev"},{"id":"stock","label":"📊 台積電營收／EPS／股利","hash":"#/stock/2330?tab=revenue"}]},{"id":"finance-chip","district":"finance","kind":"department","parent":"finance","name":"籌碼面學院","en":"Chip Analysis","icon":"🧮","art":"vault","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/chip","local_port":8925,"local_hash":"#/track/chip","aliases":["chip"],"tagline":"三大法人、融資融券、主力分點與股權分散","desc":"追蹤錢的流向：外資、投信、自營商買賣超，融資融券與券資比，主力券商分點，集保股權分散與大戶持股比例，並可直接到選股器篩選法人連買標的。","features":["🏦 三大法人買賣超","💳 融資融券・券資比","🕵️ 主力分點・當沖比","👥 集保股權分散"],"links":[{"label":"🧮 進入分院","hash":"#/track/chip"}],"related":[{"id":"stock","label":"💰 選股器 · 投信外資連買股","hash":"#/screener?p=inst"},{"id":"stock","label":"🏦 台積電三大法人買賣超明細","hash":"#/stock/2330?tab=inst"}]},{"id":"finance-news","district":"finance","kind":"department","parent":"finance","name":"消息面學院","en":"News & Macro","icon":"📰","art":"broadcast","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/news","local_port":8925,"local_hash":"#/track/news","aliases":["news"],"tagline":"重大訊息、法說會、總經數據與市場情緒","desc":"學會解讀公司重大訊息與法說會、CPI／非農／FOMC 等總經數據、產業新聞與國際股市連動，並直接搭配台股智慧選股「盤前戰情室」追蹤隔夜美股與事件催化。","features":["📢 重大訊息・法說會","🌐 總經數據・央行利率","🔗 國際股市與產業連動","🧯 假消息與情緒判讀"],"links":[{"label":"📰 進入分院","hash":"#/track/news"}],"related":[{"id":"stock","label":"🌅 盤前美股與重大事件戰情","hash":"#/morning"},{"id":"stock","label":"🔗 台股產業價值鏈地圖","hash":"#/industry"}]},{"id":"poker","district":"games","kind":"academy","name":"GTO 撲克學院","en":"GTO Poker Academy","icon":"♠️","art":"card-hall","status":"live","repo":"poker-gto","url":"https://okayell.github.io/poker-gto/","local_port":8899,"aliases":["poker","gto"],"tagline":"從零學會德州撲克：圖解課程與 GTO 範圍表","desc":"完全新手也能學會的德州撲克 GTO 學習工具：54 堂圖解課程、6 人桌 40 組翻前範圍表、11 種無限隨機練習、200+ 術語百科與期望值（EV）／資金控管計算工具。","features":["🎓 54 堂圖解課程","📊 6-Max GTO 翻前範圍表","🎯 11 種無限隨機練習","📖 200+ 術語百科"],"links":[{"label":"🎓 學習","hash":"#/learn"},{"label":"📊 範圍表","hash":"#/ranges"},{"label":"🎯 練習","hash":"#/quiz"},{"label":"📖 百科","hash":"#/wiki"}],"related":[{"id":"nba","label":"🏀 NBA 運彩智庫 · 凱利注碼","hash":"#/bankroll"},{"id":"epl","label":"⚽ 英超運彩智庫 · 本輪解盤","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫 · 本站解盤","hash":"#/picks"}]},{"id":"stock","district":"finance","kind":"arena","name":"台股智慧選股","en":"TW Stock Insight","icon":"📈","art":"exchange","status":"live","repo":"tw-stock-insight","url":"https://okayell.github.io/tw-stock-insight/","local_port":8905,"aliases":["stock","tw"],"tagline":"財經實戰館：每日推薦、2,000 檔選股器、K 線一鍵技術分析","desc":"與財經學院深度連動的實戰驗證場！每天收盤後自動更新：大盤與三大法人、今日推薦 20 檔、約 2,000 檔即時選股器、個股 K 線與一鍵技術分析、產業鏈、ETF 專區與盤前戰情；看盤時可隨時一鍵跳回財經學院四大分院對照觀念。","features":["🎯 每日推薦 20 檔","🔎 2,000 檔選股器","🧠 K 線一鍵技術分析","🌅 盤前戰情・ETF 專區"],"links":[{"label":"🎯 今日推薦","hash":"#/"},{"label":"🌅 盤前戰情","hash":"#/morning"},{"label":"🔎 選股器","hash":"#/screener"},{"label":"🧠 個股分析","hash":"#/stock/2330"}],"related":[{"id":"finance-ta","label":"📈 技術分析學院（K線／均線／指標）","hash":"#/track/ta"},{"id":"finance-fa","label":"📊 基本面學院（EPS／本益比／殖利率）","hash":"#/track/fa"},{"id":"finance-chip","label":"🧮 籌碼面學院（三大法人／主力）","hash":"#/track/chip"},{"id":"finance-news","label":"📰 消息面學院（總經／法說／事件）","hash":"#/track/news"},{"id":"finance","label":"📖 財經術語百科","hash":"#/glossary"}]},{"id":"nba","district":"games","kind":"arena","name":"NBA 運彩智庫","en":"NBA Betting IQ","icon":"🏀","art":"arena","status":"live","repo":"nba-betting-iq","url":"https://okayell.github.io/nba-betting-iq/","local_port":8913,"aliases":["nba"],"tagline":"讓分／大小分解盤、跨場串關、傷兵雷達","desc":"每日讓分與大小分盤口分析、跨場串關推薦、傷兵出賽雷達、凱利公式注碼試算，賽後自動對獎、檢討並調整模型權重。","features":["🎯 每日解盤","🎰 跨場串關","🏥 傷兵出賽雷達","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"📊 過盤紀錄","hash":"#/results"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"epl","label":"⚽ 英超運彩智庫","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫","hash":"#/picks"}]},{"id":"epl","district":"games","kind":"arena","name":"英超運彩智庫","en":"EPL Odds IQ","icon":"⚽","art":"stadium","status":"live","repo":"epl-odds-iq","url":"https://okayell.github.io/epl-odds-iq/","local_port":8917,"aliases":["epl"],"tagline":"亞洲讓球、2.5 球大小、1X2 和局防雷","desc":"英超每輪亞洲讓球與 2.5 球大小盤分析、1X2 和局防雷、跨場串關，整合官方 FPL xG 與傷停資訊，賽後自動檢討。","features":["🎯 本輪解盤","🎰 英超串關","📈 FPL xG・傷停","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏆 積分排行","hash":"#/stats"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 運彩智庫","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫","hash":"#/picks"}]},{"id":"f1","district":"games","kind":"arena","name":"F1 運彩智庫","en":"F1 Odds IQ","icon":"🏎️","art":"circuit","status":"live","repo":"f1-odds-iq","url":"https://okayell.github.io/f1-odds-iq/","local_port":8915,"aliases":["f1"],"tagline":"車手配對 H2H、奪冠與頒獎台價值、罰退雷達","desc":"每站車手配對盤 H2H、奪冠與頒獎台價值分析、引擎罰退雷達與分站串關，逐站自動檢討進化。","features":["🎯 本站解盤","🏁 車手 H2H","🔧 罰退雷達","🧠 逐站檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏎️ 車隊車手","hash":"#/team"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 運彩智庫","hash":"#/picks"},{"id":"epl","label":"⚽ 英超運彩智庫","hash":"#/picks"}]},{"id":"coding","district":"tech","kind":"academy","name":"程式語言學院","en":"Coding Academy","icon":"💻","art":"code-hall","status":"planned","aliases":["coding","code","cs","prog"],"tagline":"Python、C、JavaScript、Go 四大語言系統化圖解，直通軟硬體實戰","desc":"規劃中：程式語言學院本部，統整變數、記憶體模型、資料結構與演算法共通觀念，旗下設 Python、C、JavaScript、Go 四大分院，從零基礎互動式練習一路銜接樹莓派腳本、嵌入式韌體、網頁前端與雲端高併發後端。","features":["🐍 Python 學院（自動化・資料處理・樹莓派）","⚙️ C 語言學院（記憶體指標・位元運算・嵌入式韌體）","🌐 JavaScript 學院（互動前端・非同步・中控面板）","🐹 Go 語言學院（Goroutine 高併發・網路服務・閘道器）"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（C 韌體＋Python 硬體實戰）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（JS 面板＋Go 物聯網閘道）"}]},{"id":"coding-python","district":"tech","kind":"department","parent":"coding","name":"Python 學院","en":"Python Department","icon":"🐍","art":"py-lab","status":"planned","aliases":["python","py"],"tagline":"直覺好上手的第一門語言：自動化腳本、API 串接與樹莓派控制","desc":"規劃中：從基礎語法、串列與字典推導式、檔案與 JSON／API 處理、非同步 asyncio 到單元測試，並直接對接樹莓派 GPIO 感測器控制與智慧家庭自動化腳本。","features":["🧱 基礎語法・容器型別與函式設計","🤖 日常自動化腳本・API 與資料清理","⏱️ 非同步 asyncio・模組化與單元測試","🍓 樹莓派 GPIO／MQTT 感測器串接實戰"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（樹莓派 Python 感測與控制）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（智慧家庭自動化與 MQTT）"}]},{"id":"coding-c","district":"tech","kind":"department","parent":"coding","name":"C 語言學院","en":"C Programming","icon":"⚙️","art":"c-lab","status":"planned","aliases":["clang","c"],"tagline":"看懂記憶體與電腦底層：指標、位元運算、結構體與嵌入式韌體","desc":"規劃中：用視覺化記憶體格子徹底搞懂指標（Pointer）、陣列、struct、Stack／Heap 配置與 Bitwise 位元遮罩操作，打通嵌入式單晶片韌體與 Linux 系統程式任督二脈。","features":["🧠 視覺化記憶體模型・Stack 與 Heap","🎯 指標（Pointer）・陣列與函式指標不迷路","🔢 位元運算（Bitwise）・暫存器遮罩操作","🔌 編譯連結流程・Makefile 與嵌入式 C 慣例"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（MCU 暫存器與底層韌體實作）"}]},{"id":"coding-js","district":"tech","kind":"department","parent":"coding","name":"JavaScript 學院","en":"JavaScript & Web","icon":"🌐","art":"js-lab","status":"planned","aliases":["javascript","js"],"tagline":"瀏覽器與即時互動的核心：DOM、Event Loop、Fetch／WebSocket","desc":"規劃中：掌握現代 ES6+ 語法、閉包與原型、Event Loop 非同步 Promise／async-await、DOM 互動介面與 WebSocket 即時通訊，親手打造智慧家電即時監控儀表板。","features":["⚡ 現代 ES6+ 語法・閉包與模組化","🔄 Event Loop・Promise 與 async／await 圖解","🎨 DOM 事件互動・視覺化圖表與狀態管理","📡 Fetch／WebSocket 即時物聯網控制面板"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（即時家電狀態與中控面板）"}]},{"id":"coding-go","district":"tech","kind":"department","parent":"coding","name":"Go 語言學院","en":"Go & Cloud Systems","icon":"🐹","art":"go-lab","status":"planned","aliases":["golang","go"],"tagline":"簡潔高效的高併發系統語言：Goroutine、Channel 與網路服務","desc":"規劃中：從 struct 與 interface 組合哲學出發，圖解 Goroutine 輕量執行緒、Channel 訊息傳遞、Context 生命週期管理與高效能 HTTP／MQTT 閘道器開發。","features":["🧩 簡潔型別系統・struct 與 interface 設計","🚀 Goroutine 併發模型・Channel 與 select","🛡️ Context 控制・錯誤處理與效能調校","☁️ CLI 工具與高併發物聯網裝置閘道器"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（高併發物聯網中樞與服務）"},{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（交叉編譯樹莓派常駐服務）"}]},{"id":"smart-iot","district":"tech","kind":"academy","name":"智慧生活與物聯網學院","en":"Smart Living & IoT Academy","icon":"🏡","art":"smart-home","status":"planned","aliases":["iot","smarthome","smart-iot","matter"],"tagline":"智慧家電、Matter／Thread／MQTT 通訊協定與全屋情境自動化","desc":"規劃中：從智慧照明、智慧門鎖、溫控器與攝影機等智慧家電原理出發，圖解 Wi-Fi、BLE、Thread、Zigbee、MQTT 與 Matter 跨生態系標準，打造 Home Assistant 全屋智慧生活情境與感測自動化。","features":["🏠 智慧家電運作原理・感測器與情境規則","📡 Matter／Thread／Zigbee／BLE／Wi-Fi 協定圖解","🔀 MQTT 發布訂閱・本地中樞與雲端連動","🎛️ Home Assistant 智慧家庭面板與自動化實戰"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（自製樹莓派中樞與感測節點）"},{"id":"coding-python","label":"🐍 Python 學院（自動化腳本與 MQTT 串接）"},{"id":"coding-js","label":"🌐 JavaScript 學院（智慧家庭即時控制面板）"},{"id":"coding-go","label":"🐹 Go 語言學院（高併發物聯網裝置閘道器）"}]},{"id":"embedded-rpi","district":"tech","kind":"academy","name":"嵌入式與樹莓派學院","en":"Embedded & Raspberry Pi Academy","icon":"🍓","art":"rpi-lab","status":"planned","aliases":["rpi","embedded","raspberrypi","mcu"],"tagline":"樹莓派 Linux 單板實作、MCU 單晶片、電子電路與 GPIO 韌體控制","desc":"規劃中：結合 Raspberry Pi 單板電腦與 ESP32／STM32 微控制器，從麵包板基礎電子電路、GPIO／PWM／ADC 到 I2C／SPI／UART 通訊匯流排、中斷與 RTOS 即時系統，動手做出能感知與控制真實世界的硬體專案。","features":["🍓 樹莓派 Raspberry Pi 系統建置與 GPIO 實戰","🔌 基礎電子電路・感測器・馬達與麵包板接線","📟 I2C／SPI／UART 匯流排與數位邏輯波形圖解","⚡ ESP32／MCU 暫存器、中斷處理與 RTOS 韌體"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（把自製感測器接入全屋自動化）"},{"id":"coding-c","label":"⚙️ C 語言學院（指標、位元運算與底層韌體必備）"},{"id":"coding-python","label":"🐍 Python 學院（樹莓派 gpiozero 與感測資料處理）"}]},{"id":"cooking","district":"arts","kind":"academy","name":"烹飪學院","en":"Culinary Academy","icon":"🍳","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：從刀工、火候到家常菜與甜點的分級料理課程。","features":[],"links":[]},{"id":"music","district":"arts","kind":"academy","name":"音樂學院","en":"Music Academy","icon":"🎵","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：樂理、節奏、視唱聽音與樂器入門。","features":[],"links":[]}]};
+window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy Campus","icon":"🏫","tagline":"一張校園地圖，走進每一間學院與實戰館"},"campus":{"repo":"okayell.github.io","public_url":"https://okayell.github.io/","backend_port":8918,"local_port":8919},"districts":[{"id":"language","name":"語言學區","en":"Language Quarter","icon":"🌏","color":"#0284c7","soft":"#e0f2fe","desc":"聽、說、讀、單字一次練齊：英語、日語都依程度分級，從零開始也跟得上。"},{"id":"finance","name":"財經學區","en":"Finance Quarter","icon":"💹","color":"#d97706","soft":"#fef3c7","desc":"財經學院與四大分院（技術分析、基本面、籌碼面、消息面）＋台股智慧選股實戰館：學完理論直接走過財經廣場實戰驗證。"},{"id":"games","name":"博弈學區","en":"Strategy & Betting Quarter","icon":"🎲","color":"#7c3aed","soft":"#ede9fe","desc":"GTO 撲克學院與 NBA、英超、F1 三大運彩智庫：用機率、期望值（EV）與凱利公式做理性決策。"},{"id":"care","name":"健康照護學區","en":"Health & Care Quarter","icon":"🌿","color":"#059669","soft":"#ecfdf5","desc":"藥癮個管師學院新開幕（毒防中心甄試上榜＋在職個管實務雙軌）：結合心理諮商、社會工作、護理與公共衛生專業，並預留社工／心理／長照學院擴充空地。"},{"id":"tech","name":"智慧科技學區","en":"Tech, IoT & Coding Quarter","icon":"🤖","color":"#0e7490","soft":"#ecfeff","status":"planned","desc":"建設中：智慧生活與物聯網、嵌入式與樹莓派兩大硬體實作學院，搭配程式語言學院與四大分院（Python、C、JavaScript、Go），軟硬體跨院連動學習。"},{"id":"arts","name":"藝能生活學區","en":"Arts & Life Skills Quarter","icon":"🎨","color":"#db2777","soft":"#fce7f3","status":"planned","desc":"建設中：烹飪、音樂等各種生活技能學院，陸續開張。"}],"buildings":[{"id":"english","district":"language","kind":"academy","name":"英語學院","en":"English Academy","icon":"🇬🇧","art":"clock-tower","status":"live","repo":"english-speak-listen","url":"https://okayell.github.io/english-speak-listen/","local_port":8911,"aliases":["english","en"],"tagline":"A1–C2 分級：聽力、口說、單字一次學齊","desc":"72+ 篇分級生活對話，逐句朗讀、跟讀發音評分、角色扮演、聽寫與理解測驗；新增分級單字學習，搭配 SM-2 間隔複習的個人單字本。","features":["🔤 A1–C2 分級單字學習","🎧 男女聲分角色朗讀・盲聽","🗣️ 跟讀發音評分・角色扮演","🧠 單字卡間隔複習（SM-2）"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"🔤 單字學習","hash":"#/words"},{"label":"📚 分級文章","hash":"#/library"},{"label":"🧠 複習","hash":"#/review"}]},{"id":"japanese","district":"language","kind":"academy","name":"日語學院","en":"Japanese Academy","icon":"🇯🇵","art":"pagoda","status":"new","repo":"okayell.github.io","path":"japanese/","url":"https://okayell.github.io/japanese/","local_port":8923,"aliases":["japanese","ja","jp"],"tagline":"從五十音開始：A1–C2 分級，真人語速發音","desc":"平假名、片假名五十音（清音・濁音・拗音）點字即發音與測驗，A1–C2（對應 JLPT N5–N1）分級對話課程、文法重點與分級單字，跟讀口說評分與間隔複習。","features":["あ 五十音表・點字發音・認字測驗","🗣️ 日語朗讀與跟讀評分","📚 A1–C2 分級對話與文法","🔤 分級單字・間隔複習"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"あ 五十音","hash":"#/kana"},{"label":"📚 分級課程","hash":"#/library"},{"label":"🔤 單字學習","hash":"#/words"}]},{"id":"finance","district":"finance","kind":"academy","name":"財經學院","en":"Finance Academy","icon":"🏛️","art":"classical-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/","local_port":8925,"aliases":["finance","fin"],"tagline":"台股投資四大分析，一次系統化學會","desc":"財經學院本部：技術分析、基本面、籌碼面、消息面四大分院的圖解課程、互動圖表、隨堂測驗與術語百科，課程直接連到台股智慧選股實戰練習。","features":["📈 技術分析學院","📊 基本面學院","🧮 籌碼面學院","📰 消息面學院"],"links":[{"label":"🏛️ 學院首頁","hash":"#/home"},{"label":"📖 術語百科","hash":"#/glossary"}],"related":[{"id":"stock","label":"📈 台股選股 · 今日推薦","hash":"#/"},{"id":"stock","label":"🔎 2,000 檔選股器","hash":"#/screener"},{"id":"stock","label":"🧠 台積電 K 線一鍵技術分析","hash":"#/stock/2330"},{"id":"stock","label":"🌅 盤前美股與重大事件戰情","hash":"#/morning"}]},{"id":"finance-ta","district":"finance","kind":"department","parent":"finance","name":"技術分析學院","en":"Technical Analysis","icon":"📈","art":"chart-tower","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/ta","local_port":8925,"local_hash":"#/track/ta","aliases":["ta"],"tagline":"K 線、均線、量價、KD／RSI／MACD 與型態","desc":"從 K 線與均線讀懂趨勢，再學量價關係、支撐壓力、型態學與常用指標，每課都有可操作的互動圖表，並可直接開啟台股智慧選股 K 線驗證。","features":["🕯️ K 線與型態","〰️ 均線・趨勢線・支撐壓力","📉 KD／RSI／MACD","🔊 量價關係"],"links":[{"label":"📈 進入分院","hash":"#/track/ta"}],"related":[{"id":"stock","label":"🧠 台積電 K 線一鍵技術分析","hash":"#/stock/2330"},{"id":"stock","label":"🔥 選股器 · 均線強勢多頭","hash":"#/screener?p=strong"},{"id":"stock","label":"🔄 選股器 · KD 低檔黃金交叉","hash":"#/screener?p=rebound"}]},{"id":"finance-fa","district":"finance","kind":"department","parent":"finance","name":"基本面學院","en":"Fundamental Analysis","icon":"📊","art":"ledger-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/fa","local_port":8925,"local_hash":"#/track/fa","aliases":["fa"],"tagline":"財報三表、EPS、ROE、本益比與殖利率","desc":"看懂損益表、資產負債表、現金流量表，學會用月營收、毛利率、ROE、本益比、殖利率評估一家公司值不值得買，並可直接用選股器篩出高殖利率與營收創高股。","features":["🧾 財報三表","💰 EPS・ROE・毛利率","⚖️ 本益比・股價淨值比・殖利率","📅 月營收與產業分析"],"links":[{"label":"📊 進入分院","hash":"#/track/fa"}],"related":[{"id":"stock","label":"🏦 選股器 · 高殖利率存股","hash":"#/screener?p=yield"},{"id":"stock","label":"📈 選股器 · 營收創高成長","hash":"#/screener?p=rev"},{"id":"stock","label":"📊 台積電營收／EPS／股利","hash":"#/stock/2330?tab=revenue"}]},{"id":"finance-chip","district":"finance","kind":"department","parent":"finance","name":"籌碼面學院","en":"Chip Analysis","icon":"🧮","art":"vault","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/chip","local_port":8925,"local_hash":"#/track/chip","aliases":["chip"],"tagline":"三大法人、融資融券、主力分點與股權分散","desc":"追蹤錢的流向：外資、投信、自營商買賣超，融資融券與券資比，主力券商分點，集保股權分散與大戶持股比例，並可直接到選股器篩選法人連買標的。","features":["🏦 三大法人買賣超","💳 融資融券・券資比","🕵️ 主力分點・當沖比","👥 集保股權分散"],"links":[{"label":"🧮 進入分院","hash":"#/track/chip"}],"related":[{"id":"stock","label":"💰 選股器 · 投信外資連買股","hash":"#/screener?p=inst"},{"id":"stock","label":"🏦 台積電三大法人買賣超明細","hash":"#/stock/2330?tab=inst"}]},{"id":"finance-news","district":"finance","kind":"department","parent":"finance","name":"消息面學院","en":"News & Macro","icon":"📰","art":"broadcast","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/#/track/news","local_port":8925,"local_hash":"#/track/news","aliases":["news"],"tagline":"重大訊息、法說會、總經數據與市場情緒","desc":"學會解讀公司重大訊息與法說會、CPI／非農／FOMC 等總經數據、產業新聞與國際股市連動，並直接搭配台股智慧選股「盤前戰情室」追蹤隔夜美股與事件催化。","features":["📢 重大訊息・法說會","🌐 總經數據・央行利率","🔗 國際股市與產業連動","🧯 假消息與情緒判讀"],"links":[{"label":"📰 進入分院","hash":"#/track/news"}],"related":[{"id":"stock","label":"🌅 盤前美股與重大事件戰情","hash":"#/morning"},{"id":"stock","label":"🔗 台股產業價值鏈地圖","hash":"#/industry"}]},{"id":"poker","district":"games","kind":"academy","name":"GTO 撲克學院","en":"GTO Poker Academy","icon":"♠️","art":"card-hall","status":"live","repo":"poker-gto","url":"https://okayell.github.io/poker-gto/","local_port":8899,"aliases":["poker","gto"],"tagline":"從零學會德州撲克：圖解課程與 GTO 範圍表","desc":"完全新手也能學會的德州撲克 GTO 學習工具：54 堂圖解課程、6 人桌 40 組翻前範圍表、11 種無限隨機練習、200+ 術語百科與期望值（EV）／資金控管計算工具。","features":["🎓 54 堂圖解課程","📊 6-Max GTO 翻前範圍表","🎯 11 種無限隨機練習","📖 200+ 術語百科"],"links":[{"label":"🎓 學習","hash":"#/learn"},{"label":"📊 範圍表","hash":"#/ranges"},{"label":"🎯 練習","hash":"#/quiz"},{"label":"📖 百科","hash":"#/wiki"}],"related":[{"id":"nba","label":"🏀 NBA 運彩智庫 · 凱利注碼","hash":"#/bankroll"},{"id":"epl","label":"⚽ 英超運彩智庫 · 本輪解盤","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫 · 本站解盤","hash":"#/picks"}]},{"id":"stock","district":"finance","kind":"arena","name":"台股智慧選股","en":"TW Stock Insight","icon":"📈","art":"exchange","status":"live","repo":"tw-stock-insight","url":"https://okayell.github.io/tw-stock-insight/","local_port":8905,"aliases":["stock","tw"],"tagline":"財經實戰館：每日推薦、2,000 檔選股器、K 線一鍵技術分析","desc":"與財經學院深度連動的實戰驗證場！每天收盤後自動更新：大盤與三大法人、今日推薦 20 檔、約 2,000 檔即時選股器、個股 K 線與一鍵技術分析、產業鏈、ETF 專區與盤前戰情；看盤時可隨時一鍵跳回財經學院四大分院對照觀念。","features":["🎯 每日推薦 20 檔","🔎 2,000 檔選股器","🧠 K 線一鍵技術分析","🌅 盤前戰情・ETF 專區"],"links":[{"label":"🎯 今日推薦","hash":"#/"},{"label":"🌅 盤前戰情","hash":"#/morning"},{"label":"🔎 選股器","hash":"#/screener"},{"label":"🧠 個股分析","hash":"#/stock/2330"}],"related":[{"id":"finance-ta","label":"📈 技術分析學院（K線／均線／指標）","hash":"#/track/ta"},{"id":"finance-fa","label":"📊 基本面學院（EPS／本益比／殖利率）","hash":"#/track/fa"},{"id":"finance-chip","label":"🧮 籌碼面學院（三大法人／主力）","hash":"#/track/chip"},{"id":"finance-news","label":"📰 消息面學院（總經／法說／事件）","hash":"#/track/news"},{"id":"finance","label":"📖 財經術語百科","hash":"#/glossary"}]},{"id":"nba","district":"games","kind":"arena","name":"NBA 運彩智庫","en":"NBA Betting IQ","icon":"🏀","art":"arena","status":"live","repo":"nba-betting-iq","url":"https://okayell.github.io/nba-betting-iq/","local_port":8913,"aliases":["nba"],"tagline":"讓分／大小分解盤、跨場串關、傷兵雷達","desc":"每日讓分與大小分盤口分析、跨場串關推薦、傷兵出賽雷達、凱利公式注碼試算，賽後自動對獎、檢討並調整模型權重。","features":["🎯 每日解盤","🎰 跨場串關","🏥 傷兵出賽雷達","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"📊 過盤紀錄","hash":"#/results"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"epl","label":"⚽ 英超運彩智庫","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫","hash":"#/picks"}]},{"id":"epl","district":"games","kind":"arena","name":"英超運彩智庫","en":"EPL Odds IQ","icon":"⚽","art":"stadium","status":"live","repo":"epl-odds-iq","url":"https://okayell.github.io/epl-odds-iq/","local_port":8917,"aliases":["epl"],"tagline":"亞洲讓球、2.5 球大小、1X2 和局防雷","desc":"英超每輪亞洲讓球與 2.5 球大小盤分析、1X2 和局防雷、跨場串關，整合官方 FPL xG 與傷停資訊，賽後自動檢討。","features":["🎯 本輪解盤","🎰 英超串關","📈 FPL xG・傷停","🧠 賽後檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏆 積分排行","hash":"#/stats"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 運彩智庫","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 運彩智庫","hash":"#/picks"}]},{"id":"f1","district":"games","kind":"arena","name":"F1 運彩智庫","en":"F1 Odds IQ","icon":"🏎️","art":"circuit","status":"live","repo":"f1-odds-iq","url":"https://okayell.github.io/f1-odds-iq/","local_port":8915,"aliases":["f1"],"tagline":"車手配對 H2H、奪冠與頒獎台價值、罰退雷達","desc":"每站車手配對盤 H2H、奪冠與頒獎台價值分析、引擎罰退雷達與分站串關，逐站自動檢討進化。","features":["🎯 本站解盤","🏁 車手 H2H","🔧 罰退雷達","🧠 逐站檢討進化"],"links":[{"label":"🎯 解盤","hash":"#/picks"},{"label":"🎰 串關","hash":"#/parlay"},{"label":"🏎️ 車隊車手","hash":"#/team"},{"label":"📝 注單＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♠️ GTO 撲克學院（EV 期望值與資金控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 運彩智庫","hash":"#/picks"},{"id":"epl","label":"⚽ 英超運彩智庫","hash":"#/picks"}]},{"id":"addiction-cm","district":"care","kind":"academy","name":"藥癮個管師學院","en":"Addiction Case Manager Academy","icon":"💚","art":"care-center","status":"new","repo":"okayell.github.io","path":"addiction-cm/","url":"https://okayell.github.io/addiction-cm/","local_port":8927,"aliases":["addiction-cm","dpcp","cm","care-cm"],"tagline":"毒防中心甄試上榜＋藥癮個管四大實務雙軌培訓","desc":"專為各縣市衛生局毒品危害防制中心與醫療院所「藥癮個案管理員（毒防個管師）」打造：涵蓋報考任用資格檢核、毒品危害防制條例法規筆試題庫與口試情境擬答，以及追蹤關懷（電訪／家訪／BSRS-5）、資源媒合（醫療戒癮／心理／就業／法律／社福）、減害支持與動機式晤談（MI／OARS）、SOAP 個管紀錄與 0800-770-885 專線實務演練。","features":["🎓 衛生局毒防中心報考資格檢核・筆試法規＆口試題庫","📞 追蹤與關懷：電訪／家訪安全評估・BSRS-5 與復發預警","🤝 資源媒合＆減害：替代治療・心理・就業・法律・社福轉介與 MI 晤談","📋 行政與協調：SOAP 個管紀錄撰寫・0800-770-885 專線與出入監銜接"],"links":[{"label":"🏠 學院首頁","hash":"#/home"},{"label":"🧪 實務演練室","hash":"#/lab"},{"label":"🎯 甄試題庫","hash":"#/quiz"},{"label":"📖 毒防百科","hash":"#/glossary"}]},{"id":"coding","district":"tech","kind":"academy","name":"程式語言學院","en":"Coding Academy","icon":"💻","art":"code-hall","status":"planned","aliases":["coding","code","cs","prog"],"tagline":"Python、C、JavaScript、Go 四大語言系統化圖解，直通軟硬體實戰","desc":"規劃中：程式語言學院本部，統整變數、記憶體模型、資料結構與演算法共通觀念，旗下設 Python、C、JavaScript、Go 四大分院，從零基礎互動式練習一路銜接樹莓派腳本、嵌入式韌體、網頁前端與雲端高併發後端。","features":["🐍 Python 學院（自動化・資料處理・樹莓派）","⚙️ C 語言學院（記憶體指標・位元運算・嵌入式韌體）","🌐 JavaScript 學院（互動前端・非同步・中控面板）","🐹 Go 語言學院（Goroutine 高併發・網路服務・閘道器）"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（C 韌體＋Python 硬體實戰）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（JS 面板＋Go 物聯網閘道）"}]},{"id":"coding-python","district":"tech","kind":"department","parent":"coding","name":"Python 學院","en":"Python Department","icon":"🐍","art":"py-lab","status":"planned","aliases":["python","py"],"tagline":"直覺好上手的第一門語言：自動化腳本、API 串接與樹莓派控制","desc":"規劃中：從基礎語法、串列與字典推導式、檔案與 JSON／API 處理、非同步 asyncio 到單元測試，並直接對接樹莓派 GPIO 感測器控制與智慧家庭自動化腳本。","features":["🧱 基礎語法・容器型別與函式設計","🤖 日常自動化腳本・API 與資料清理","⏱️ 非同步 asyncio・模組化與單元測試","🍓 樹莓派 GPIO／MQTT 感測器串接實戰"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（樹莓派 Python 感測與控制）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（智慧家庭自動化與 MQTT）"}]},{"id":"coding-c","district":"tech","kind":"department","parent":"coding","name":"C 語言學院","en":"C Programming","icon":"⚙️","art":"c-lab","status":"planned","aliases":["clang","c"],"tagline":"看懂記憶體與電腦底層：指標、位元運算、結構體與嵌入式韌體","desc":"規劃中：用視覺化記憶體格子徹底搞懂指標（Pointer）、陣列、struct、Stack／Heap 配置與 Bitwise 位元遮罩操作，打通嵌入式單晶片韌體與 Linux 系統程式任督二脈。","features":["🧠 視覺化記憶體模型・Stack 與 Heap","🎯 指標（Pointer）・陣列與函式指標不迷路","🔢 位元運算（Bitwise）・暫存器遮罩操作","🔌 編譯連結流程・Makefile 與嵌入式 C 慣例"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（MCU 暫存器與底層韌體實作）"}]},{"id":"coding-js","district":"tech","kind":"department","parent":"coding","name":"JavaScript 學院","en":"JavaScript & Web","icon":"🌐","art":"js-lab","status":"planned","aliases":["javascript","js"],"tagline":"瀏覽器與即時互動的核心：DOM、Event Loop、Fetch／WebSocket","desc":"規劃中：掌握現代 ES6+ 語法、閉包與原型、Event Loop 非同步 Promise／async-await、DOM 互動介面與 WebSocket 即時通訊，親手打造智慧家電即時監控儀表板。","features":["⚡ 現代 ES6+ 語法・閉包與模組化","🔄 Event Loop・Promise 與 async／await 圖解","🎨 DOM 事件互動・視覺化圖表與狀態管理","📡 Fetch／WebSocket 即時物聯網控制面板"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（即時家電狀態與中控面板）"}]},{"id":"coding-go","district":"tech","kind":"department","parent":"coding","name":"Go 語言學院","en":"Go & Cloud Systems","icon":"🐹","art":"go-lab","status":"planned","aliases":["golang","go"],"tagline":"簡潔高效的高併發系統語言：Goroutine、Channel 與網路服務","desc":"規劃中：從 struct 與 interface 組合哲學出發，圖解 Goroutine 輕量執行緒、Channel 訊息傳遞、Context 生命週期管理與高效能 HTTP／MQTT 閘道器開發。","features":["🧩 簡潔型別系統・struct 與 interface 設計","🚀 Goroutine 併發模型・Channel 與 select","🛡️ Context 控制・錯誤處理與效能調校","☁️ CLI 工具與高併發物聯網裝置閘道器"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（高併發物聯網中樞與服務）"},{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（交叉編譯樹莓派常駐服務）"}]},{"id":"smart-iot","district":"tech","kind":"academy","name":"智慧生活與物聯網學院","en":"Smart Living & IoT Academy","icon":"🏡","art":"smart-home","status":"planned","aliases":["iot","smarthome","smart-iot","matter"],"tagline":"智慧家電、Matter／Thread／MQTT 通訊協定與全屋情境自動化","desc":"規劃中：從智慧照明、智慧門鎖、溫控器與攝影機等智慧家電原理出發，圖解 Wi-Fi、BLE、Thread、Zigbee、MQTT 與 Matter 跨生態系標準，打造 Home Assistant 全屋智慧生活情境與感測自動化。","features":["🏠 智慧家電運作原理・感測器與情境規則","📡 Matter／Thread／Zigbee／BLE／Wi-Fi 協定圖解","🔀 MQTT 發布訂閱・本地中樞與雲端連動","🎛️ Home Assistant 智慧家庭面板與自動化實戰"],"links":[],"related":[{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（自製樹莓派中樞與感測節點）"},{"id":"coding-python","label":"🐍 Python 學院（自動化腳本與 MQTT 串接）"},{"id":"coding-js","label":"🌐 JavaScript 學院（智慧家庭即時控制面板）"},{"id":"coding-go","label":"🐹 Go 語言學院（高併發物聯網裝置閘道器）"}]},{"id":"embedded-rpi","district":"tech","kind":"academy","name":"嵌入式與樹莓派學院","en":"Embedded & Raspberry Pi Academy","icon":"🍓","art":"rpi-lab","status":"planned","aliases":["rpi","embedded","raspberrypi","mcu"],"tagline":"樹莓派 Linux 單板實作、MCU 單晶片、電子電路與 GPIO 韌體控制","desc":"規劃中：結合 Raspberry Pi 單板電腦與 ESP32／STM32 微控制器，從麵包板基礎電子電路、GPIO／PWM／ADC 到 I2C／SPI／UART 通訊匯流排、中斷與 RTOS 即時系統，動手做出能感知與控制真實世界的硬體專案。","features":["🍓 樹莓派 Raspberry Pi 系統建置與 GPIO 實戰","🔌 基礎電子電路・感測器・馬達與麵包板接線","📟 I2C／SPI／UART 匯流排與數位邏輯波形圖解","⚡ ESP32／MCU 暫存器、中斷處理與 RTOS 韌體"],"links":[],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（把自製感測器接入全屋自動化）"},{"id":"coding-c","label":"⚙️ C 語言學院（指標、位元運算與底層韌體必備）"},{"id":"coding-python","label":"🐍 Python 學院（樹莓派 gpiozero 與感測資料處理）"}]},{"id":"cooking","district":"arts","kind":"academy","name":"烹飪學院","en":"Culinary Academy","icon":"🍳","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：從刀工、火候到家常菜與甜點的分級料理課程。","features":[],"links":[]},{"id":"music","district":"arts","kind":"academy","name":"音樂學院","en":"Music Academy","icon":"🎵","art":"construction","status":"planned","tagline":"建設中・敬請期待","desc":"規劃中：樂理、節奏、視唱聽音與樂器入門。","features":[],"links":[]}]};
 
 </script>
   <script>/* js/core.js */
@@ -593,9 +788,39 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   var env = detectEnv();
 
   function isLive(b) { return !!(b && b.status !== 'planned' && b.url); }
+  // 支援直接主機名（host:port）與反向代理編碼子網域（a+30hex / b+54hex，將 4 位數 hex port 寫入子網域且不加 :port）
+  function localOrigin(port) {
+    var p = parseInt(port, 10);
+    if (env.mode !== 'cloudtop' || !(p > 0 && p < 65536)) return '';
+    var host = env.host || '';
+    var dot = host.indexOf('.');
+    if (dot > 0) {
+      var label = host.slice(0, dot);
+      var pHex = ('0000' + p.toString(16)).slice(-4).toLowerCase();
+      if (label.length === 31 && /^a[0-9a-f]{30}$/i.test(label)) {
+        return env.proto + '//' + (label.slice(0, 9) + pHex + label.slice(13)).toLowerCase() + host.slice(dot);
+      }
+      if (label.length === 55 && /^b[0-9a-f]{54}$/i.test(label)) {
+        return env.proto + '//' + (label.slice(0, 33) + pHex + label.slice(37)).toLowerCase() + host.slice(dot);
+      }
+    }
+    return env.proto + '//' + host + ':' + p;
+  }
+  function currentLocalPort() {
+    if (window.location.port) return window.location.port;
+    var host = env.host || '';
+    var dot = host.indexOf('.');
+    if (dot > 0) {
+      var label = host.slice(0, dot);
+      if (label.length === 31 && /^a[0-9a-f]{30}$/i.test(label)) return String(parseInt(label.slice(9, 13), 16));
+      if (label.length === 55 && /^b[0-9a-f]{54}$/i.test(label)) return String(parseInt(label.slice(33, 37), 16));
+    }
+    return '';
+  }
   function localBase(b) {
     if (env.mode !== 'cloudtop' || !b || !b.local_port) return '';
-    return env.proto + '//' + env.host + ':' + b.local_port + '/';
+    var orig = localOrigin(b.local_port);
+    return orig ? orig + '/' : '';
   }
   function publicUrl(b) { return b && b.url ? b.url : ''; }
   // 主要入口：Local (cloudtop) 版一律使用 Local 網址；GitHub / file 版一律使用 GitHub 公開網址
@@ -621,9 +846,9 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     if (env.mode === 'file') return 'index.html';
     if (env.mode === 'github') return window.location.origin + '/';
     if (env.mode === 'cloudtop') {
-      var p = window.location.port;
+      var p = currentLocalPort();
       if (p && CAMPUS_PORTS.indexOf(p) >= 0) return window.location.origin + '/';
-      return env.proto + '//' + env.host + ':' + CAMPUS_PORTS[0] + '/';
+      return localOrigin(CAMPUS_PORTS[0]) + '/';
     }
     return reg.campus.public_url || 'https://okayell.github.io/';
   }
@@ -845,7 +1070,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       </div>
       <div class="search" id="searchBox" role="search">
         <span class="s-ic" aria-hidden="true">🔍</span>
-        <input id="q" type="search" placeholder="搜尋學院、實戰館…（例：日語、Python、樹莓派、K 線、NBA）" autocomplete="off" spellcheck="false" enterkeyhint="go" aria-label="搜尋學院與實戰館" aria-controls="qPop">
+        <input id="q" type="search" placeholder="搜尋學院、實戰館…（例：藥癮個管、日語、Python、K 線、NBA）" autocomplete="off" spellcheck="false" enterkeyhint="go" aria-label="搜尋學院與實戰館" aria-controls="qPop">
         <button type="button" class="s-clear" id="qClear" aria-label="清除搜尋" hidden>✕</button>
         <div class="s-pop" id="qPop" role="listbox" aria-label="搜尋結果" hidden></div>
       </div>
@@ -867,7 +1092,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   <main id="main">
     <section class="map-view" id="mapView" role="tabpanel" aria-labelledby="tabMap">
       <div class="map-wrap" id="mapWrap">
-        <svg class="campus-map" id="campusMap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1220" preserveAspectRatio="xMidYMid meet"
+        <svg class="campus-map" id="campusMap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 1220" preserveAspectRatio="xMidYMid meet"
           tabindex="0" role="group" aria-label="開心學園校園地圖。Tab 鍵走訪建築，Enter 開啟介紹，方向鍵平移，加號減號縮放，0 回到全覽"></svg>
         <div class="map-chips" id="mapChips" aria-label="學區快捷"></div>
         <div class="map-zoom" aria-label="縮放">
@@ -1535,6 +1760,33 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     return s;
   }
 
+  // 藥癮個管師學院 — warm community counseling & recovery pavilion with emerald roof, heart-leaf emblem & 0800 helpline sign
+  function careCenter(o, ac) {
+    const roof = '#059669', roofD = '#047857', warm = '#fff9ed', mint = '#d1fae5';
+    let s = shadow(0, 86, 6);
+    // Main warm pavilion + side-gabled emerald roof
+    s += box(-74, 0, 136, 52, 11, 6.6, warm, dk(warm, 0.18), false);
+    s += sideRoof(-74, -52, 136, 11, 6.6, 20, roof, lt(warm, 0.15));
+    // Central welcoming counseling portico + arched wooden/glass doorway + accessible ramp
+    s += gable(-33, -50, 54, 25, 8, 4.8, '#ffffff', roofD);
+    s += P(arch(-17, -34, 22, 34), '#b47b52', sw(0.9)) + P(arch(-13, -30, 14, 30), '#fef3c7', sw(0.8));
+    s += P('M-6 -30V0', 'none', sw(0.8));
+    s += P(pg(-24, 0, 14, 0, 18, 3.5, -20, 3.5), C.stone, sw(0.7));
+    // Warm sunlit counseling windows + wooden planter boxes on left & right wings
+    s += R(-64, -38, 24, 17, '#fef9c3', ' rx="2"' + sw(0.9)) + P('M-52 -38v17M-64 -29.5h24', 'none', sw(0.6));
+    s += R(-65, -18, 26, 6, C.wood, sw(0.8)) + P(cloud(-52, -20, 11, 3.4, 6), '#34d399', sw(0.7));
+    s += R(22, -26, 30, 14, C.glass, ' rx="2"' + sw(0.9)) + P('M37 -26v14', 'none', sw(0.6));
+    s += R(21, -9, 32, 6, C.wood, sw(0.8)) + P(cloud(37, -11, 13, 3.4, 6), '#6ee7b7', sw(0.7));
+    // 0800-770-885 helpline pill sign on right facade (clear of festive bunting)
+    s += R(20, -41.5, 34, 12.5, mint, ' rx="3"' + stk(roofD, 0.9)) + Tx(37, -32.4, '0800', 8.5, roofD);
+    // Rooftop circular Care & Recovery Emblem (heart + sprouting leaf) on central finial
+    s += P('M-6 -77.5V-83', 'none', sw(2.2));
+    s += Ci(-6, -96.5, 13.5, '#ffffff', stk(roofD, 1.3)) + Ci(-6, -96.5, 10.6, mint, NS);
+    s += P('M-6 -89C-11.5 -92.8 -13.8 -97 -11.5 -100.2C-9.5 -102.8 -6.7 -101.6 -6 -99.1C-5.3 -101.6 -2.5 -102.8 -0.5 -100.2C1.8 -97 -0.5 -92.8 -6 -89Z', roof, sw(0.8));
+    s += P('M-6 -99.3C-3.2 -103.8 0.8 -104.6 2.6 -101.8C0.8 -99.2 -3.2 -98.4 -6 -99.3Z', '#10b981', sw(0.7));
+    return s;
+  }
+
   // unknown key — generic campus hall with a district banner showing o.icon
   function hall(o, ac) {
     const wall = C.cream;
@@ -1644,6 +1896,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     'go-lab': { W: 125, H: 100, fn: goLab, ac: '#0e7490', fest: [-48, -46, 34, -46, 44, -12] },
     'smart-home': { W: 170, H: 120, fn: smartHome, ac: '#0e7490', fest: [-70, -48, 58, -40, 62, -10] },
     'rpi-lab': { W: 170, H: 120, fn: rpiLab, ac: '#0e7490', fest: [-70, -49, 60, -49, 62, -10] },
+    'care-center': { W: 176, H: 116, fn: careCenter, ac: '#059669', fest: [-72, -52, 58, -52, 66, -12] },
     construction: { W: 150, H: 120, fn: construction, ac: '#db2777', fest: [-70, -16, 70, -16, -66, -22], planned: false },
     hall: { W: 125, H: 100, fn: hall, ac: '#c8553d', fest: [-46, -50, 34, -50, 48, -10] }
   };
@@ -1727,7 +1980,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
 
 </script>
   <script>/* js/layout.js */
-/* 開心學園 · layout.js — 校園地圖的地理配置（座標系 1920×1220，y 向下）
+/* 開心學園 · layout.js — 校園地圖的地理配置（座標系 2100×1220，y 向下）
  *
  * 學區（zone）= 一塊有底色的街廓；每個學區有一組「建築位（slot）」：
  *   - slot.ids：預留給 registry 裡指定 id 的建築（美術設計過的位置）
@@ -1739,101 +1992,125 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   var C = (window.CAMPUS = window.CAMPUS || {});
 
   var LAYOUT = {
-    W: 1920,
+    W: 2100,
     H: 1220,
     // 地圖可視範圍（平移的邊界，含校外地景）
-    bounds: { x: -260, y: -170, w: 2440, h: 1580 },
-    plaza: { x: 960, y: 470, r: 90 },
-    serviceCenter: { x: 960, y: 518, w: 150, h: 165 },
-    gate: { x: 960, y: 1206, w: 300, h: 125 },
+    bounds: { x: -260, y: -170, w: 2620, h: 1580 },
+    plaza: { x: 1000, y: 470, r: 90 },
+    serviceCenter: { x: 1000, y: 518, w: 150, h: 165 },
+    gate: { x: 1000, y: 1206, w: 300, h: 125 },
     zones: {
       language: {
-        box: [40, 100, 650, 455],
+        box: [40, 100, 680, 455],
         sign: [52, 108],
         slots: [
-          { ids: ['english'], x: 164, y: 382, w: 130, h: 205 },
-          { ids: ['japanese'], x: 382, y: 382, w: 200, h: 190 },
-          { x: 572, y: 232, w: 102, h: 84 },
-          { x: 572, y: 382, w: 102, h: 84 },
+          { ids: ['english'], x: 170, y: 382, w: 130, h: 205 },
+          { ids: ['japanese'], x: 396, y: 382, w: 200, h: 190 },
+          { x: 598, y: 232, w: 102, h: 84 },
+          { x: 598, y: 382, w: 102, h: 84 },
         ],
       },
       finance: {
-        box: [1356, 86, 1884, 504],
-        sign: [1368, 94],
+        box: [1476, 86, 2060, 504],
+        sign: [1488, 94],
         slots: [
-          { ids: ['finance'], x: 1616, y: 206, w: 210, h: 122 },
-          { ids: ['finance-ta'], x: 1432, y: 284, w: 118, h: 90, small: true },
-          { ids: ['finance-fa'], x: 1800, y: 284, w: 118, h: 90, small: true },
-          { ids: ['finance-chip'], x: 1432, y: 428, w: 118, h: 88, small: true },
-          { ids: ['stock'], x: 1616, y: 462, w: 174, h: 112, small: true },
-          { ids: ['finance-news'], x: 1800, y: 428, w: 118, h: 88, small: true },
-          { x: 1808, y: 168, w: 94, h: 72 },
+          { ids: ['finance'], x: 1766, y: 206, w: 210, h: 122 },
+          { ids: ['finance-ta'], x: 1562, y: 284, w: 118, h: 90, small: true },
+          { ids: ['finance-fa'], x: 1968, y: 284, w: 118, h: 90, small: true },
+          { ids: ['finance-chip'], x: 1562, y: 428, w: 118, h: 88, small: true },
+          { ids: ['stock'], x: 1766, y: 462, w: 174, h: 112, small: true },
+          { ids: ['finance-news'], x: 1968, y: 428, w: 118, h: 88, small: true },
+          { x: 1972, y: 168, w: 94, h: 72 },
         ],
       },
       tech: {
-        box: [40, 556, 902, 1022],
+        box: [40, 556, 942, 1022],
         sign: [52, 566],
         slots: [
-          { ids: ['coding'], x: 410, y: 698, w: 186, h: 116 },
-          { ids: ['coding-python'], x: 166, y: 842, w: 122, h: 94, small: true },
-          { ids: ['coding-c'], x: 416, y: 842, w: 122, h: 94, small: true },
-          { ids: ['coding-js'], x: 166, y: 978, w: 122, h: 94, small: true },
-          { ids: ['coding-go'], x: 416, y: 978, w: 122, h: 94, small: true },
-          { ids: ['smart-iot'], x: 736, y: 774, w: 172, h: 120 },
-          { ids: ['embedded-rpi'], x: 736, y: 966, w: 172, h: 120 },
-          { x: 598, y: 644, w: 92, h: 72 },
-          { x: 836, y: 636, w: 92, h: 72 },
+          { ids: ['coding'], x: 424, y: 698, w: 186, h: 116 },
+          { ids: ['coding-python'], x: 170, y: 842, w: 122, h: 94, small: true },
+          { ids: ['coding-c'], x: 430, y: 842, w: 122, h: 94, small: true },
+          { ids: ['coding-js'], x: 170, y: 978, w: 122, h: 94, small: true },
+          { ids: ['coding-go'], x: 430, y: 978, w: 122, h: 94, small: true },
+          { ids: ['smart-iot'], x: 766, y: 774, w: 172, h: 120 },
+          { ids: ['embedded-rpi'], x: 766, y: 966, w: 172, h: 120 },
+          { x: 618, y: 644, w: 92, h: 72 },
+          { x: 868, y: 636, w: 92, h: 72 },
         ],
       },
       games: {
-        box: [1018, 556, 1884, 930],
-        sign: [1030, 566],
+        box: [1058, 556, 2060, 926],
+        sign: [1070, 566],
         slots: [
-          { ids: ['poker'], x: 1170, y: 734, w: 180, h: 136 },
-          { ids: ['nba'], x: 1465, y: 734, w: 175, h: 118 },
-          { ids: ['epl'], x: 1235, y: 890, w: 225, h: 116 },
-          { ids: ['f1'], x: 1585, y: 890, w: 235, h: 116 },
-          { x: 1775, y: 650, w: 100, h: 78 },
-          { x: 1775, y: 754, w: 100, h: 78 },
+          { ids: ['poker'], x: 1226, y: 734, w: 180, h: 136 },
+          { ids: ['nba'], x: 1564, y: 734, w: 175, h: 118 },
+          { ids: ['epl'], x: 1296, y: 888, w: 225, h: 116 },
+          { ids: ['f1'], x: 1696, y: 888, w: 235, h: 116 },
+          { x: 1940, y: 650, w: 104, h: 78 },
+          { x: 1940, y: 758, w: 104, h: 78 },
+        ],
+      },
+      care: {
+        box: [1058, 944, 1480, 1186],
+        sign: [1070, 952],
+        slots: [
+          { ids: ['addiction-cm'], x: 1236, y: 1132, w: 176, h: 116 },
+          { x: 1418, y: 1048, w: 92, h: 72 },
+          { x: 1418, y: 1154, w: 92, h: 72 },
         ],
       },
       arts: {
-        box: [1018, 948, 1602, 1184],
-        sign: [1030, 956],
+        box: [1494, 944, 1872, 1186],
+        sign: [1504, 952],
         slots: [
-          { ids: ['cooking'], x: 1165, y: 1142, w: 144, h: 114 },
-          { ids: ['music'], x: 1378, y: 1142, w: 144, h: 114 },
-          { x: 1532, y: 1042, w: 94, h: 76 },
-          { x: 1532, y: 1152, w: 94, h: 76 },
+          { ids: ['cooking'], x: 1588, y: 1134, w: 128, h: 104, small: true },
+          { ids: ['music'], x: 1780, y: 1134, w: 128, h: 104, small: true },
+          { x: 1824, y: 1018, w: 76, h: 60 },
         ],
       },
     },
     // 未來學區預定地：registry 新增的學區進駐這裡
     expansion: [
       {
-        box: [1620, 948, 1884, 1184],
-        sign: [1632, 956],
+        box: [1886, 944, 2066, 1186],
+        sign: [1891, 952],
         slots: [
-          { x: 1752, y: 1076, w: 104, h: 80 },
-          { x: 1752, y: 1168, w: 104, h: 76 },
+          { x: 1976, y: 1080, w: 98, h: 74 },
+          { x: 1976, y: 1168, w: 98, h: 72 },
         ],
       },
     ],
     // 學以致用長廊（財經學院 → 財經廣場 → 台股智慧選股）與跨河拱橋
-    practiceBridge: { x: 1616, y1: 238, y2: 344, canalX: 1539, canalY1: 500, canalY2: 558 },
-    canal: { y: 526, x1: 1356, x2: 1960, half: 15 },
+    practiceBridge: { x: 1766, y1: 238, y2: 344, canalX: 1689, canalY1: 500, canalY2: 558 },
+    canal: { y: 526, x1: 1476, x2: 2088, half: 15 },
     lake: {
-      d: 'M760,215 C760,150 820,122 880,128 C925,132 945,160 960,172 C975,160 1000,128 1060,126 ' +
-        'C1125,124 1170,170 1168,228 C1166,290 1120,330 1060,326 C1010,322 978,296 960,282 ' +
-        'C942,296 910,322 860,322 C800,322 760,280 760,215 Z',
-      label: [850, 262],
-      bridge: { x: 960, y1: 158, y2: 296 },
-      island: [1106, 212],
+      d: 'M800,215 C800,150 860,122 920,128 C965,132 985,160 1000,172 C1015,160 1040,128 1100,126 ' +
+        'C1165,124 1210,170 1208,228 C1206,290 1160,330 1100,326 C1050,322 1018,296 1000,282 ' +
+        'C982,296 950,322 900,322 C840,322 800,280 800,215 Z',
+      label: [890, 262],
+      bridge: { x: 1000, y1: 158, y2: 296 },
+      island: [1146, 212],
     },
     legend: [40, 1040, 306, 146],
-    compass: [1844, 50],
+    compass: [2024, 50],
     cartouche: [22, 14],
-    parking: [372, 1060, 270, 104],
+    parking: [382, 1060, 270, 104],
+    fishingDock: { x: 865, y: 316, w: 68, h: 42 },
+    courts: [
+      { id: 'basketball', game: 'basketball', name: '🏀 陽光籃球場', sub: '點此玩三分投籃大賽', x: 1316, y: 205, w: 128, h: 74 },
+      { id: 'tennis', game: 'tennis', name: '🎾 森林網球場', sub: '點此玩網球對打挑戰', x: 1316, y: 355, w: 128, h: 74 },
+      { id: 'soccer', game: 'soccer', name: '⚽ 綠茵足球場', sub: '點此玩黃金十二碼 PK', x: 802, y: 1114, w: 156, h: 76 },
+    ],
+    animals: [
+      { id: 'shiba', name: '🐕 校犬阿柴', x: 928, y: 536, msg: '汪汪！🐶 阿柴開心地對你搖尾巴～摸摸頭 +1！' },
+      { id: 'cat', name: '🐈 櫻花三花貓', x: 284, y: 376, msg: '呼嚕呼嚕～🐾 小花在櫻花樹下伸懶腰討摸摸！' },
+      { id: 'ducks', name: '🦆 綠頭鴨小隊', x: 848, y: 256, msg: '呱呱呱！🦆 綠頭鴨小隊排成愛心游過湖面～' },
+      { id: 'swan', name: '🦢 湖畔白天鵝', x: 1092, y: 196, msg: '🦢 白天鵝優雅地向你點頭致意，湖面閃閃發光✨' },
+      { id: 'squirrel', name: '🐿️ 松果小松鼠', x: 742, y: 232, msg: '吱吱！🌰 小松鼠從松樹跳下來送你一顆幸運松果！' },
+      { id: 'turtle', name: '🐢 湖岸慢活龜', x: 1048, y: 318, msg: '🐢 慢活龜曬著太陽：穩紮穩打，每天進步一點點！' },
+      { id: 'owl', name: '🦉 博學貓頭鷹', x: 1390, y: 118, msg: '🦉 咕咕～貓頭鷹博士眨眼：今天想進哪間學院深造？' },
+      { id: 'bunny', name: '🐇 草地雪白兔', x: 1474, y: 886, msg: '🐰 雪白兔蹦蹦跳跳轉了一圈，祝你手氣與靈感大爆發！' },
+    ],
   };
 
   /* 把 registry 的建築分配到學區的建築位：先放指定位置，其餘依序進駐預定地。
@@ -1994,7 +2271,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   function inLake(x, y, m) {
     m = m || 0;
     function el(cx, cy, rx, ry) { var dx = (x - cx) / (rx + m), dy = (y - cy) / (ry + m); return dx * dx + dy * dy <= 1; }
-    return el(860, 224, 104, 100) || el(1065, 226, 106, 104) || (x > 940 && x < 980 && y > 160 - m && y < 294 + m);
+    return el(900, 224, 104, 100) || el(1105, 226, 106, 104) || (x > 980 && x < 1020 && y > 160 - m && y < 294 + m);
   }
   function textW(str, fs) {
     var w = 0;
@@ -2032,9 +2309,9 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       '<rect x="' + B.x + '" y="' + B.y + '" width="' + B.w + '" height="' + B.h + '" fill="#ebe3cd"/>' +
       '<rect x="' + B.x + '" y="' + B.y + '" width="' + B.w + '" height="' + (60 - B.y) + '" fill="#eef2e7"/>' +
       '<path d="M' + B.x + ',40 L' + B.x + ',-20 C-150,-70 -40,-95 90,-60 C200,-30 300,-110 430,-96 C560,-82 600,-40 700,-58 C820,-80 900,-128 1030,-104 ' +
-      'C1160,-80 1220,-40 1330,-62 C1450,-86 1520,-118 1640,-92 C1760,-66 1860,-108 1980,-84 C2060,-68 2120,-52 ' + (B.x + B.w) + ',-60 L' + (B.x + B.w) + ',40 Z" fill="#d6e2d3"/>' +
+      'C1160,-80 1220,-40 1330,-62 C1450,-86 1520,-118 1640,-92 C1760,-66 1860,-108 1980,-84 C2100,-60 2220,-96 ' + (B.x + B.w) + ',-60 L' + (B.x + B.w) + ',40 Z" fill="#d6e2d3"/>' +
       '<path d="M' + B.x + ',90 L' + B.x + ',20 C-160,0 -60,-24 60,-6 C170,10 260,-34 380,-22 C500,-10 560,12 680,-2 C800,-16 880,-40 1000,-26 ' +
-      'C1120,-12 1200,14 1320,0 C1440,-14 1520,-36 1640,-18 C1760,0 1860,-28 1980,-12 C2060,-2 2120,8 ' + (B.x + B.w) + ',0 L' + (B.x + B.w) + ',90 Z" fill="#c5dab3"/>' +
+      'C1120,-12 1200,14 1320,0 C1440,-14 1520,-36 1640,-18 C1760,0 1860,-28 1980,-12 C2100,4 2220,-20 ' + (B.x + B.w) + ',0 L' + (B.x + B.w) + ',90 Z" fill="#c5dab3"/>' +
       '</g>');
 
     // --- 草地（校地）
@@ -2087,25 +2364,30 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     // --- 水：湖、水道
     var lk = L.lake, cy = L.canal.y;
     var pads = '';
-    [[808, 188], [824, 204], [792, 236], [902, 288], [882, 272], [1028, 300]].forEach(function (p, k) {
+    [[848, 188], [864, 204], [832, 236], [942, 288], [922, 272], [1068, 300]].forEach(function (p, k) {
       var r = 6 + (k % 3);
       pads += '<path d="M' + p[0] + ',' + p[1] + ' L' + (p[0] + r) + ',' + (p[1] - 2) + ' A' + r + ',' + r + ' 0 1,1 ' + (p[0] + r) + ',' + (p[1] + 2) + ' Z" fill="#86bf78" stroke="#5f9a55" stroke-width="1"/>';
     });
-    pads += '<circle cx="812" cy="196" r="3.2" fill="#f9a8d4"/><circle cx="890" cy="280" r="3" fill="#f9a8d4"/>';
-    var canalD = 'M1330,' + cy + ' C1444,' + (cy - 6) + ' 1544,' + (cy + 6) + ' 1629,' + cy + ' S1814,' + (cy - 6) + ' 1970,' + cy;
+    pads += '<circle cx="852" cy="196" r="3.2" fill="#f9a8d4"/><circle cx="930" cy="280" r="3" fill="#f9a8d4"/>';
+    var canalD = 'M1450,' + cy + ' C1574,' + (cy - 6) + ' 1684,' + (cy + 6) + ' 1779,' + cy + ' S1964,' + (cy - 6) + ' 2096,' + cy;
+    var fishesSvg = lakeFishes();
+    var dockSvg = fishingDock(L.fishingDock || { x: 865, y: 316, w: 68, h: 42 });
     out.push('<g class="m-water">' +
       '<path d="' + lk.d + '" fill="none" stroke="#e9dcc1" stroke-width="26" stroke-linejoin="round"/>' +
-      '<path d="' + lk.d + '" fill="#a6d5e7" stroke="#7cb9d0" stroke-width="3"/>' +
-      '<path d="M800,206 q12,-5 24,0 M854,166 q10,-4 20,0 M1006,182 q12,-5 24,0 M1060,286 q14,-5 28,0 M824,292 q12,-5 24,0 M1128,246 q10,-4 20,0 M880,236 q10,-4 20,0" fill="none" stroke="#e2f3f9" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<path class="lake-surface" data-fun="fishing" d="' + lk.d + '" fill="#a6d5e7" stroke="#7cb9d0" stroke-width="3"/>' +
+      '<path d="M840,206 q12,-5 24,0 M894,166 q10,-4 20,0 M1046,182 q12,-5 24,0 M1100,286 q14,-5 28,0 M864,292 q12,-5 24,0 M1168,246 q10,-4 20,0 M920,236 q10,-4 20,0" fill="none" stroke="#e2f3f9" stroke-width="2.4" stroke-linecap="round" pointer-events="none"/>' +
+      fishesSvg +
       pads +
-      '<ellipse cx="' + lk.island[0] + '" cy="' + (lk.island[1] + 6) + '" rx="34" ry="15" fill="#cfe3ae" stroke="#9fc283" stroke-width="2"/>' +
+      '<ellipse cx="' + lk.island[0] + '" cy="' + (lk.island[1] + 6) + '" rx="34" ry="15" fill="#cfe3ae" stroke="#9fc283" stroke-width="2" pointer-events="none"/>' +
       pavilion(lk.island[0], lk.island[1] + 8) +
-      '<text x="' + lk.label[0] + '" y="' + lk.label[1] + '" text-anchor="middle" font-family="' + FONT + '" font-size="16" font-weight="700" letter-spacing="5" fill="#3f7f99" opacity=".85">學園湖</text>' +
+      '<text x="' + lk.label[0] + '" y="' + lk.label[1] + '" text-anchor="middle" font-family="' + FONT + '" font-size="16" font-weight="700" letter-spacing="5" fill="#3f7f99" opacity=".85" pointer-events="none">學園湖</text>' +
+      dockSvg +
       '<path d="' + canalD + '" fill="none" stroke="#7cb9d0" stroke-width="34"/>' +
       '<path d="' + canalD + '" fill="none" stroke="#a6d5e7" stroke-width="28"/>' +
-      '<path d="M1404,' + (cy - 3) + ' q12,-4 24,0 M1514,' + (cy + 4) + ' q12,-4 24,0 M1734,' + (cy - 2) + ' q12,-4 24,0 M1854,' + (cy + 3) + ' q12,-4 24,0" fill="none" stroke="#e2f3f9" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M1524,' + (cy - 3) + ' q12,-4 24,0 M1634,' + (cy + 4) + ' q12,-4 24,0 M1884,' + (cy - 2) + ' q12,-4 24,0 M2004,' + (cy + 3) + ' q12,-4 24,0" fill="none" stroke="#e2f3f9" stroke-width="2.2" stroke-linecap="round"/>' +
       '</g>');
-    occ.push(R(1330, cy - 20, 640, 40));
+    occ.push(R(1450, cy - 20, 650, 40));
+    if (L.fishingDock) occ.push(R(L.fishingDock.x - 56, L.fishingDock.y - 48, 112, 92));
 
     // --- 道路與步道
     function road(d, w, center) {
@@ -2118,42 +2400,64 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         '<path d="' + d + '" fill="none" stroke="#efe3c9" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"/>';
     }
     var roads = '';
-    roads += path('M960,380 V316', 16) + path('M960,152 V30', 12);
-    roads += path('M64,436 H610 M274,436 V480', 10);
-    roads += path('M410,522 V582 M291,698 H320 M291,698 V978 M226,842 H356 M226,978 H356 M476,840 H565 M565,774 V966 M565,774 H652 M565,966 H652', 10);
-    roads += path('M1018,790 H1884 M1318,734 V890', 10);
-    roads += path('M1018,1065 H1480', 10);
-    roads += path('M1356,286 H1542 M1698,286 H1884 M1426,294 V456 M1814,294 V456 M1620,214 V456', 10);
-    roads += road('M14,500 H872', 44, true) + road('M1048,500 H1356', 44, true);
-    roads += road('M1336,40 V522', 38, true);
-    roads += road('M960,556 V' + (L.H + 48), 56, true);
-    occ.push(R(14, 474, 860, 52), R(1046, 474, 312, 52), R(1312, 30, 48, 496), R(928, 554, 64, L.H - 500));
-    occ.push(R(56, 428, 560, 16), R(266, 428, 16, 54));
-    occ.push(R(402, 520, 16, 66), R(283, 694, 16, 290), R(224, 834, 136, 16), R(224, 970, 136, 16), R(474, 832, 96, 16), R(557, 768, 16, 206), R(557, 766, 98, 16), R(557, 958, 98, 16));
-    occ.push(R(1014, 782, 874, 16), R(1310, 734, 16, 158), R(1014, 1057, 470, 16));
-    occ.push(R(1352, 278, 196, 16), R(1694, 278, 192, 16), R(1612, 214, 16, 242));
-    occ.push(R(950, 300, 20, 84), R(952, 24, 16, 130));
+    roads += path('M1000,380 V316', 16) + path('M1000,152 V30', 12);
+    roads += path('M865,330 V478 M1316,205 V478 M652,1084 H972 M517,1060 V1022', 10);
+    roads += path('M64,436 H640 M280,436 V480', 10);
+    roads += path('M424,522 V582 M300,698 H330 M300,698 V978 M232,842 H368 M232,978 H368 M492,840 H584 M584,774 V966 M584,774 H678 M584,966 H678', 10);
+    roads += path('M1058,790 H2040 M1395,734 V888', 10);
+    roads += path('M1028,1132 H1148 M1324,1132 H1372 M1494,1134 H1522 M1654,1134 H1714', 10);
+    roads += path('M1476,286 H1692 M1848,286 H2060 M1562,294 V456 M1968,294 V456 M1766,214 V456', 10);
+    roads += road('M14,500 H912', 44, true) + road('M1088,500 H1456', 44, true);
+    roads += road('M1436,40 V522', 38, true);
+    roads += road('M1000,556 V' + (L.H + 48), 56, true);
+    occ.push(R(14, 474, 900, 52), R(1086, 474, 372, 52), R(1412, 30, 48, 496), R(968, 554, 64, L.H - 500));
+    occ.push(R(857, 326, 16, 154), R(1308, 200, 16, 280), R(650, 1076, 324, 16));
+    occ.push(R(56, 428, 590, 16), R(272, 428, 16, 54));
+    occ.push(R(416, 520, 16, 66), R(292, 694, 16, 290), R(230, 834, 142, 16), R(230, 970, 142, 16), R(490, 832, 98, 16), R(576, 768, 16, 206), R(576, 766, 106, 16), R(576, 958, 106, 16));
+    occ.push(R(1054, 782, 990, 16), R(1387, 734, 16, 158), R(1026, 1124, 350, 16), R(1490, 1126, 230, 16));
+    occ.push(R(1472, 278, 224, 16), R(1844, 278, 220, 16), R(1758, 214, 16, 242));
+    occ.push(R(990, 300, 20, 84), R(992, 24, 16, 130));
 
-    // 停車場
+    // 停車場（每台車皆可點擊發動／開往指定學院）
     var P = L.parking;
     var stalls = '';
     for (var si = 0; si <= 8; si++) {
       var lx = P[0] + 14 + si * 30;
       stalls += 'M' + lx + ',' + (P[1] + 8) + ' v34 M' + lx + ',' + (P[1] + P[3] - 42) + ' v34 ';
     }
+    var CAR_SPECS = [
+      [0, 0, '#f87171', '🏎️ 烈焰紅跑車'],
+      [2, 0, '#60a5fa', '🚙 晴空藍轎車'],
+      [3, 0, '#fbbf24', '🚕 活力黃計程車'],
+      [6, 0, '#a78bfa', '🚐 薰衣草紫休旅'],
+      [1, 1, '#34d399', '🌿 薄荷綠電動車'],
+      [4, 1, '#f472b6', '🌸 櫻花粉敞篷車'],
+      [7, 1, '#94a3b8', '🛸 鈦銀特仕車'],
+    ];
     var cars = '';
-    [[0, 0, '#f87171'], [2, 0, '#60a5fa'], [3, 0, '#fbbf24'], [6, 0, '#a78bfa'], [1, 1, '#34d399'], [4, 1, '#f472b6'], [7, 1, '#94a3b8']].forEach(function (c) {
+    CAR_SPECS.forEach(function (c, idx) {
       var x = P[0] + 19 + c[0] * 30, y = c[1] ? P[1] + P[3] - 40 : P[1] + 10;
-      cars += '<rect x="' + x + '" y="' + y + '" width="20" height="30" rx="6" fill="' + c[2] + '" stroke="' + INK + '" stroke-width="1"/>' +
-        '<rect x="' + (x + 3) + '" y="' + (y + (c[1] ? 18 : 6)) + '" width="14" height="7" rx="2" fill="#e0f2fe"/>';
+      var cx = x + 10, cy = y + 15;
+      var lightsY = c[1] ? y + 2 : y + 26;
+      cars += '<g class="parked-car" data-car="' + idx + '" data-car-color="' + c[2] + '" data-car-name="' + esc(c[3]) + '" data-cx="' + cx + '" data-cy="' + cy + '" tabindex="0" role="button" aria-label="' + esc(c[3] + '：點一下發動兜風或開往指定學院') + '">' +
+        '<rect x="' + (x - 3) + '" y="' + (y - 3) + '" width="26" height="36" rx="7" fill="transparent"/>' +
+        '<rect class="car-body" x="' + x + '" y="' + y + '" width="20" height="30" rx="6" fill="' + c[2] + '" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<rect x="' + (x + 3) + '" y="' + (y + (c[1] ? 18 : 6)) + '" width="14" height="7" rx="2" fill="#e0f2fe" stroke="' + INK + '" stroke-width=".6"/>' +
+        '<rect x="' + (x + 4) + '" y="' + (y + (c[1] ? 7 : 16)) + '" width="12" height="5" rx="1.5" fill="rgba(255,255,255,.35)"/>' +
+        '<circle cx="' + (x + 5) + '" cy="' + lightsY + '" r="1.6" fill="#fef08a"/>' +
+        '<circle cx="' + (x + 15) + '" cy="' + lightsY + '" r="1.6" fill="#fef08a"/>' +
+        '</g>';
     });
     roads += '<g class="m-parking">' +
       '<rect x="' + P[0] + '" y="' + P[1] + '" width="' + P[2] + '" height="' + P[3] + '" rx="12" fill="#e7dfd0" stroke="#c8b898" stroke-width="2"/>' +
       '<path d="' + stalls + '" stroke="#fffaf0" stroke-width="2"/>' + cars +
+      '<g class="parking-sign" data-fun="car-hub" tabindex="0" role="button" aria-label="校園停車場：點車子或此處可派車開往各學院">' +
+      '<rect x="' + (P[0] + P[2] - 96) + '" y="' + (P[1] + P[3] / 2 - 16) + '" width="90" height="32" rx="8" fill="rgba(255,253,248,.92)" stroke="#c8b898" stroke-width="1.2"/>' +
       '<rect x="' + (P[0] + P[2] - 92) + '" y="' + (P[1] + P[3] / 2 - 13) + '" width="26" height="26" rx="5" fill="#2563eb" stroke="#1e3a8a"/>' +
       '<text x="' + (P[0] + P[2] - 79) + '" y="' + (P[1] + P[3] / 2 + 7) + '" text-anchor="middle" font-family="' + FONT + '" font-size="18" font-weight="800" fill="#fff">P</text>' +
-      '<text x="' + (P[0] + P[2] - 60) + '" y="' + (P[1] + P[3] / 2 + 5) + '" font-family="' + FONT + '" font-size="12.5" font-weight="700" fill="#5b4a3a">停車場</text>' +
-      '</g>';
+      '<text x="' + (P[0] + P[2] - 61) + '" y="' + (P[1] + P[3] / 2 + 1) + '" font-family="' + FONT + '" font-size="12" font-weight="800" fill="#3b2f25">停車場</text>' +
+      '<text x="' + (P[0] + P[2] - 61) + '" y="' + (P[1] + P[3] / 2 + 12) + '" font-family="' + FONT + '" font-size="9.5" font-weight="700" fill="#2563eb">點車出發 🚗</text>' +
+      '</g></g>';
     occ.push(R(P[0] - 6, P[1] - 6, P[2] + 12, P[3] + 12));
 
     // 南側圍牆
@@ -2202,11 +2506,11 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     }
     var tz = asg.zones.filter(function (z) { return z.district.id === 'tech' && !z.expansion; })[0];
     if (tz && C.building('coding') && (C.building('smart-iot') || C.building('embedded-rpi'))) {
-      labelsSvg.push('<g class="lbl lbl-banner" data-banner="tech-link" transform="translate(565,816)"><g class="lbl-s">' +
+      labelsSvg.push('<g class="lbl lbl-banner" data-banner="tech-link" transform="translate(584,816)"><g class="lbl-s">' +
         '<rect class="lbl-bg" x="-52" y="0" width="104" height="23" rx="11.5" fill="#0e7490" stroke="#155e75" stroke-width="1.4"/>' +
         '<text x="0" y="15.5" text-anchor="middle" font-family="' + FONT + '" font-size="12" font-weight="800" fill="#ecfeff" letter-spacing="1.1">軟硬整合 ⇄</text>' +
         '</g></g>');
-      occ.push(R(509, 812, 112, 31));
+      occ.push(R(528, 812, 112, 31));
     }
 
     // 湖上的橋
@@ -2281,6 +2585,32 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     var lg = L.legend, cp = L.compass, ct = L.cartouche;
     occ.push(R(lg[0] - 4, lg[1] - 4, lg[2] + 8, lg[3] + 8), R(cp[0] - 40, cp[1] - 40, 80, 80), R(ct[0] - 4, ct[1] - 4, 318, 78));
 
+    // 球場與校園動物佔位（避免裝飾樹遮住球場或小動物）
+    var courtsSvg = '';
+    (L.courts || []).forEach(function (c) {
+      occ.push(R(c.x - c.w / 2 - 12, c.y - c.h - 10, c.w + 24, c.h + 44));
+      courtsSvg += courtSvg(c);
+      labelsSvg.push('<g class="lbl lbl-fun" data-fun="' + esc(c.game) + '" transform="translate(' + c.x + ',' + (c.y + 6) + ')"><g class="lbl-s">' +
+        '<rect class="lbl-hit" x="-72" y="-4" width="144" height="32" rx="12" fill="transparent"/>' +
+        '<rect x="-66" y="0" width="132" height="23" rx="11.5" fill="#fffaf0" stroke="#0284c7" stroke-opacity=".65" stroke-width="1.5"/>' +
+        '<text x="0" y="15.5" text-anchor="middle" font-family="' + FONT + '" font-size="12" font-weight="800" fill="#1e3a8a">' + esc(c.name) + ' 🎮</text>' +
+        '</g></g>');
+    });
+    if (L.fishingDock) {
+      var fd = L.fishingDock;
+      labelsSvg.push('<g class="lbl lbl-fun" data-fun="fishing" transform="translate(' + fd.x + ',' + (fd.y + 12) + ')"><g class="lbl-s">' +
+        '<rect class="lbl-hit" x="-64" y="-4" width="128" height="32" rx="12" fill="transparent"/>' +
+        '<rect x="-58" y="0" width="116" height="23" rx="11.5" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.5"/>' +
+        '<text x="0" y="15.5" text-anchor="middle" font-family="' + FONT + '" font-size="12" font-weight="800" fill="#0369a1">🎣 學園湖釣魚</text>' +
+        '</g></g>');
+    }
+    var animalsSvg = '';
+    (L.animals || []).forEach(function (a) {
+      occ.push(R(a.x - 22, a.y - 26, 44, 34));
+      animalsSvg += animalSvg(a);
+    });
+    out.push('<g class="m-courts">' + courtsSvg + '</g>');
+
     // --- 裝飾：森林、行道樹、椰林、草地上的樹
     var decos = [];
     function tryDeco(kind, x, y, s, force) {
@@ -2298,26 +2628,26 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       return true;
     }
     // 椰林大道
-    for (var py = 600; py <= 1062; py += 42) { tryDeco('palm', 912, py, 0.95, true); tryDeco('palm', 1008, py, 0.95, true); }
-    for (var ly = 621; ly <= 1041; ly += 84) { tryDeco('lamp', 928, ly, 0.9, true); tryDeco('lamp', 992, ly, 0.9, true); }
+    for (var py = 600; py <= 1062; py += 42) { tryDeco('palm', 952, py, 0.95, true); tryDeco('palm', 1048, py, 0.95, true); }
+    for (var ly = 621; ly <= 1041; ly += 84) { tryDeco('lamp', 968, ly, 0.9, true); tryDeco('lamp', 1032, ly, 0.9, true); }
     // 遠景森林（兩排）
     var rf = rng(23);
     for (var fx = B.x + 10; fx < B.x + B.w; fx += 24) {
       if (fx > ct[0] - 10 && fx < ct[0] + 320) continue;
-      if (fx > 1312 && fx < 1360) continue;
-      if (fx > 948 && fx < 972) continue;
+      if (fx > 1412 && fx < 1460) continue;
+      if (fx > 988 && fx < 1012) continue;
       tryDeco(rf() < 0.55 ? 'pine' : 'tree', fx + rf() * 8, 58 + rf() * 6, 0.78, true);
     }
     for (var fx2 = B.x + 22; fx2 < B.x + B.w; fx2 += 26) {
       if (fx2 > ct[0] - 10 && fx2 < ct[0] + 320) continue;
       if (fx2 > cp[0] - 44 && fx2 < cp[0] + 44) continue;
-      if (fx2 > 1312 && fx2 < 1360) continue;
-      if (fx2 > 948 && fx2 < 972) continue;
+      if (fx2 > 1412 && fx2 < 1460) continue;
+      if (fx2 > 988 && fx2 < 1012) continue;
       tryDeco(rf() < 0.45 ? 'pine' : 'tree', fx2 + rf() * 8, 82 + rf() * 4, 0.92, true);
     }
     // 校外兩側與南側
     for (var ox = B.x + 14; ox < B.x + B.w; ox += 30) {
-      if (ox > 922 && ox < 998) continue;
+      if (ox > 962 && ox < 1038) continue;
       var oy1 = L.H + 64 + rf() * 18, oy2 = L.H + 110 + rf() * 22;
       tryDeco(rf() < 0.5 ? 'tree' : 'pine', ox + rf() * 10, oy1, 0.9, true);
       if (rf() < 0.8) tryDeco('tree', ox + 12 + rf() * 10, oy2, 1, true);
@@ -2327,8 +2657,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       for (var sx3 = L.W + 12; sx3 < B.x + B.w; sx3 += 32) tryDeco(rf() < 0.5 ? 'tree' : 'pine', sx3 + rf() * 10, sy + rf() * 10, 0.9, true);
     }
     // 大道兩旁行道樹
-    for (var ax = 40; ax < 856; ax += 58) { tryDeco('tree', ax, 472, 0.72); tryDeco('tree', ax + 26, 552, 0.66); }
-    for (var ax2 = 1064; ax2 < 1306; ax2 += 56) { tryDeco('tree', ax2, 472, 0.72); tryDeco('tree', ax2 + 20, 552, 0.66); }
+    for (var ax = 40; ax < 896; ax += 58) { tryDeco('tree', ax, 472, 0.72); tryDeco('tree', ax + 26, 552, 0.66); }
+    for (var ax2 = 1104; ax2 < 1396; ax2 += 56) { tryDeco('tree', ax2, 472, 0.72); tryDeco('tree', ax2 + 20, 552, 0.66); }
     // 草地與學區內的樹
     var rg = rng(5);
     var zoneOf = function (x, y) {
@@ -2347,18 +2677,21 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         var kind = 'tree', s = 0.72 + rg() * 0.3;
         if (zid === 'language') kind = rg() < 0.55 ? 'sakura' : 'tree';
         else if (zid === 'tech') kind = rg() < 0.36 ? 'pine' : (rg() < 0.56 ? 'bush' : 'tree');
+        else if (zid === 'care') kind = rg() < 0.42 ? 'sakura' : (rg() < 0.68 ? 'bush' : 'tree');
         else if (zid === 'arts') kind = rg() < 0.4 ? 'bush' : 'tree';
-        else if (!zid && y < 340 && x > 680 && x < 1260) kind = rg() < 0.4 ? 'pine' : 'tree';
+        else if (!zid && y < 340 && x > 700 && x < 1340) kind = rg() < 0.4 ? 'pine' : 'tree';
         else if (rg() < 0.18) kind = 'bush';
         tryDeco(kind, x, y, s);
       }
     }
     // 長椅與路燈（湖邊、廣場）
-    [[780, 338], [1140, 340], [860, 108], [1064, 108]].forEach(function (b) { tryDeco('bench', b[0], b[1], 1); });
+    [[785, 338], [1180, 340], [900, 108], [1104, 108]].forEach(function (b) { tryDeco('bench', b[0], b[1], 1); });
     decos.sort(function (a, b) { return a.y - b.y; });
     out.push('<g class="m-deco" pointer-events="none">' + decos.map(function (dd) {
       return '<g transform="translate(' + n(dd.x) + ',' + n(dd.y) + ')">' + call('deco', [dd.kind, { s: n(dd.s * 1.55) }], fbDeco) + '</g>';
     }).join('') + '</g>');
+    out.push('<g class="m-animals">' + animalsSvg + '</g>');
+    out.push('<g class="m-vehicles" id="mapVehicles"></g>');
 
     // --- 建築（依地面基準線由北到南繪製）
     var bSvg = [];
@@ -2429,6 +2762,179 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     return '<ellipse cx="' + x + '" cy="' + y + '" rx="17" ry="10" fill="#9fcf82" stroke="#6fa75a" stroke-width="1.2"/>' +
       '<circle cx="' + (x - 7) + '" cy="' + (y - 2) + '" r="2.4" fill="#f9a8d4"/><circle cx="' + (x + 2) + '" cy="' + (y + 3) + '" r="2.4" fill="#fde68a"/>' +
       '<circle cx="' + (x + 8) + '" cy="' + (y - 3) + '" r="2.4" fill="#fca5a5"/>';
+  }
+  function lakeFishes() {
+    var specs = [
+      { x: 912, y: 174, rot: 14, col: '#ef4444', spot: '#ffffff', cls: 'f1', name: '紅白錦鯉' },
+      { x: 882, y: 222, rot: -18, col: '#f59e0b', spot: '#fef08a', cls: 'f2', name: '黃金錦鯉' },
+      { x: 954, y: 208, rot: 165, col: '#fb7185', spot: '#fff1f2', cls: 'f3', name: '櫻花錦鯉' },
+      { x: 1058, y: 166, rot: -12, col: '#f97316', spot: '#1e293b', cls: 'f4', name: '大正三色鯉' },
+      { x: 1072, y: 256, rot: 18, col: '#eab308', spot: '#fef9c3', cls: 'f5', name: '黃金鯉魚王' },
+      { x: 1146, y: 270, rot: 158, col: '#38bdf8', spot: '#e0f2fe', cls: 'f6', name: '碧水青魚' },
+    ];
+    return specs.map(function (f) {
+      return '<g class="lake-fish ' + f.cls + '" data-fun="fishing" data-fish-name="' + esc(f.name) + '" transform="translate(' + f.x + ',' + f.y + ') rotate(' + f.rot + ')">' +
+        '<g class="fish-swim">' +
+        '<circle cx="0" cy="0" r="14" fill="transparent"/>' +
+        '<ellipse cx="2" cy="0" rx="11" ry="5.5" fill="rgba(255,255,255,.22)"/>' +
+        '<path d="M-8,0 L-14,-4.5 L-12.5,0 L-14,4.5 Z" fill="' + f.col + '" opacity=".9"/>' +
+        '<ellipse cx="0" cy="0" rx="8.5" ry="3.8" fill="' + f.col + '" stroke="rgba(74,59,47,.35)" stroke-width=".7"/>' +
+        '<circle cx="-1" cy="-0.6" r="2.1" fill="' + f.spot + '" opacity=".9"/>' +
+        '<circle cx="3.2" cy="0.7" r="1.5" fill="' + f.spot + '" opacity=".85"/>' +
+        '<circle cx="5.8" cy="-1" r=".9" fill="#1e293b"/>' +
+        '</g></g>';
+    }).join('');
+  }
+  function fishingDock(fd) {
+    var x = fd.x, y = fd.y;
+    var planks = '';
+    for (var py = -28; py <= 2; py += 6) {
+      planks += '<rect x="-15" y="' + py + '" width="30" height="4.8" rx="1.2" fill="#d9a066" stroke="#6b4a32" stroke-width="1"/>';
+    }
+    return '<g class="fun-spot fishing-dock" data-fun="fishing" tabindex="0" role="button" aria-label="學園湖垂釣木棧道：點一下開始釣魚小遊戲" transform="translate(' + x + ',' + y + ')">' +
+      '<rect x="-42" y="-56" width="84" height="72" rx="10" fill="transparent"/>' +
+      '<ellipse cx="0" cy="-42" rx="12" ry="5.5" fill="none" stroke="#e0f2fe" stroke-width="1.6" stroke-dasharray="4 3" class="bobber-ring"/>' +
+      '<ellipse cx="0" cy="-42" rx="6" ry="2.8" fill="none" stroke="#ffffff" stroke-width="1.3"/>' +
+      '<path d="M-12,-28 V8 M12,-28 V8 M-12,-12 V6 M12,-12 V6" stroke="#5c3d28" stroke-width="3.2" stroke-linecap="round"/>' +
+      planks +
+      '<rect x="6" y="-22" width="8" height="9" rx="1.5" fill="#38bdf8" stroke="' + INK + '" stroke-width="1"/>' +
+      '<path d="M6,-20 Q10,-25 14,-20" fill="none" stroke="' + INK + '" stroke-width="1"/>' +
+      '<path d="M-6,-14 Q-3,-34 0,-48" fill="none" stroke="#854d0e" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M0,-48 L0,-42" fill="none" stroke="#f8fafc" stroke-width="1" stroke-dasharray="2 1"/>' +
+      '<g class="bobber-float">' +
+      '<circle cx="0" cy="-42" r="3.8" fill="#ffffff" stroke="' + INK + '" stroke-width=".9"/>' +
+      '<path d="M-3.6,-42 A3.6,3.6 0 0,1 3.6,-42 Z" fill="#ef4444"/>' +
+      '<path d="M0,-45.8 V-48.5" stroke="#ef4444" stroke-width="1.4" stroke-linecap="round"/>' +
+      '</g></g>';
+  }
+  function courtSvg(c) {
+    var w = c.w, h = c.h, x0 = -w / 2, y0 = -h;
+    var inner = '';
+    if (c.id === 'basketball') {
+      inner = '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" rx="9" fill="#e07a5f" stroke="#8c4a32" stroke-width="2"/>' +
+        '<rect x="' + (x0 + 6) + '" y="' + (y0 + 6) + '" width="' + (w - 12) + '" height="' + (h - 12) + '" rx="3" fill="#f2a65a" stroke="#ffffff" stroke-width="1.6"/>' +
+        '<rect x="' + (x0 + 6) + '" y="' + (y0 + h / 2 - 12) + '" width="22" height="24" fill="#e07a5f" stroke="#ffffff" stroke-width="1.3"/>' +
+        '<rect x="' + (x0 + w - 28) + '" y="' + (y0 + h / 2 - 12) + '" width="22" height="24" fill="#e07a5f" stroke="#ffffff" stroke-width="1.3"/>' +
+        '<path d="M' + (x0 + 6) + ',' + (y0 + 11) + ' A26,26 0 0,1 ' + (x0 + 6) + ',' + (y0 + h - 11) + ' M' + (x0 + w - 6) + ',' + (y0 + 11) + ' A26,26 0 0,0 ' + (x0 + w - 6) + ',' + (y0 + h - 11) + '" fill="none" stroke="#ffffff" stroke-width="1.4"/>' +
+        '<line x1="0" y1="' + (y0 + 6) + '" x2="0" y2="' + (y0 + h - 6) + '" stroke="#ffffff" stroke-width="1.5"/>' +
+        '<circle cx="0" cy="' + (y0 + h / 2) + '" r="11" fill="none" stroke="#ffffff" stroke-width="1.5"/>' +
+        '<rect x="' + (x0 + 2) + '" y="' + (y0 + h / 2 - 8) + '" width="3.5" height="16" rx="1" fill="#ffffff" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="' + (x0 + 9) + '" cy="' + (y0 + h / 2) + '" r="3.8" fill="none" stroke="#ef4444" stroke-width="1.5"/>' +
+        '<rect x="' + (x0 + w - 5.5) + '" y="' + (y0 + h / 2 - 8) + '" width="3.5" height="16" rx="1" fill="#ffffff" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="' + (x0 + w - 9) + '" cy="' + (y0 + h / 2) + '" r="3.8" fill="none" stroke="#ef4444" stroke-width="1.5"/>' +
+        '<g class="court-ball"><circle cx="14" cy="' + (y0 + h / 2 - 4) + '" r="5.5" fill="#ea580c" stroke="' + INK + '" stroke-width="1.1"/><path d="M9,' + (y0 + h / 2 - 4) + ' H19 M14,' + (y0 + h / 2 - 9) + ' V' + (y0 + h / 2 + 1) + '" stroke="' + INK + '" stroke-width=".8"/></g>';
+    } else if (c.id === 'tennis') {
+      inner = '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" rx="9" fill="#4d9078" stroke="#2d6a4f" stroke-width="2"/>' +
+        '<rect x="' + (x0 + 9) + '" y="' + (y0 + 8) + '" width="' + (w - 18) + '" height="' + (h - 16) + '" rx="2" fill="#2563eb" stroke="#ffffff" stroke-width="1.6"/>' +
+        '<line x1="' + (x0 + 9) + '" y1="' + (y0 + 15) + '" x2="' + (x0 + w - 9) + '" y2="' + (y0 + 15) + '" stroke="#ffffff" stroke-width="1.1"/>' +
+        '<line x1="' + (x0 + 9) + '" y1="' + (y0 + h - 15) + '" x2="' + (x0 + w - 9) + '" y2="' + (y0 + h - 15) + '" stroke="#ffffff" stroke-width="1.1"/>' +
+        '<line x1="' + (x0 + 32) + '" y1="' + (y0 + 15) + '" x2="' + (x0 + 32) + '" y2="' + (y0 + h - 15) + '" stroke="#ffffff" stroke-width="1.1"/>' +
+        '<line x1="' + (x0 + w - 32) + '" y1="' + (y0 + 15) + '" x2="' + (x0 + w - 32) + '" y2="' + (y0 + h - 15) + '" stroke="#ffffff" stroke-width="1.1"/>' +
+        '<line x1="' + (x0 + 32) + '" y1="' + (y0 + h / 2) + '" x2="' + (x0 + w - 32) + '" y2="' + (y0 + h / 2) + '" stroke="#ffffff" stroke-width="1.1"/>' +
+        '<line x1="0" y1="' + (y0 + 5) + '" x2="0" y2="' + (y0 + h - 5) + '" stroke="#f8fafc" stroke-width="2.4" stroke-dasharray="3 2"/>' +
+        '<circle cx="0" cy="' + (y0 + 5) + '" r="2.2" fill="#334155"/><circle cx="0" cy="' + (y0 + h - 5) + '" r="2.2" fill="#334155"/>' +
+        '<g class="court-ball"><circle cx="-18" cy="' + (y0 + h / 2 - 6) + '" r="4.2" fill="#bef264" stroke="' + INK + '" stroke-width="1"/></g>';
+    } else {
+      var sw = (w - 14) / 6;
+      var stripes = '';
+      for (var i = 0; i < 6; i++) {
+        stripes += '<rect x="' + n(x0 + 7 + i * sw) + '" y="' + (y0 + 6) + '" width="' + n(sw) + '" height="' + (h - 12) + '" fill="' + (i % 2 ? '#52b788' : '#40916c') + '"/>';
+      }
+      inner = '<rect x="' + x0 + '" y="' + y0 + '" width="' + w + '" height="' + h + '" rx="10" fill="#2d6a4f" stroke="#1b4332" stroke-width="2"/>' +
+        stripes +
+        '<rect x="' + (x0 + 7) + '" y="' + (y0 + 6) + '" width="' + (w - 14) + '" height="' + (h - 12) + '" rx="2" fill="none" stroke="#ffffff" stroke-width="1.6"/>' +
+        '<line x1="0" y1="' + (y0 + 6) + '" x2="0" y2="' + (y0 + h - 6) + '" stroke="#ffffff" stroke-width="1.4"/>' +
+        '<circle cx="0" cy="' + (y0 + h / 2) + '" r="12" fill="none" stroke="#ffffff" stroke-width="1.4"/>' +
+        '<circle cx="0" cy="' + (y0 + h / 2) + '" r="2" fill="#ffffff"/>' +
+        '<rect x="' + (x0 + 7) + '" y="' + (y0 + h / 2 - 16) + '" width="18" height="32" fill="none" stroke="#ffffff" stroke-width="1.3"/>' +
+        '<rect x="' + (x0 + w - 25) + '" y="' + (y0 + h / 2 - 16) + '" width="18" height="32" fill="none" stroke="#ffffff" stroke-width="1.3"/>' +
+        '<rect x="' + (x0 + 2) + '" y="' + (y0 + h / 2 - 9) + '" width="5" height="18" fill="rgba(255,255,255,.45)" stroke="#ffffff" stroke-width="1.3"/>' +
+        '<rect x="' + (x0 + w - 7) + '" y="' + (y0 + h / 2 - 9) + '" width="5" height="18" fill="rgba(255,255,255,.45)" stroke="#ffffff" stroke-width="1.3"/>' +
+        '<g class="court-ball"><circle cx="10" cy="' + (y0 + h / 2 + 3) + '" r="5" fill="#ffffff" stroke="#1e293b" stroke-width="1.2"/><circle cx="10" cy="' + (y0 + h / 2 + 3) + '" r="1.8" fill="#1e293b"/></g>';
+    }
+    return '<g class="fun-spot court" data-fun="' + esc(c.game) + '" data-court="' + esc(c.id) + '" tabindex="0" role="button" aria-label="' + esc(c.name + '：' + c.sub) + '" transform="translate(' + c.x + ',' + c.y + ')">' +
+      '<ellipse cx="0" cy="' + (-h / 2 + 3) + '" rx="' + n(w * 0.53) + '" ry="' + n(h * 0.54) + '" fill="rgba(74,59,47,.14)"/>' +
+      '<g class="bld-in">' + inner +
+      '<rect class="hit" x="' + (x0 - 8) + '" y="' + (y0 - 8) + '" width="' + (w + 16) + '" height="' + (h + 36) + '" rx="12" fill="transparent"/>' +
+      '</g></g>';
+  }
+  function animalSvg(a) {
+    var body = '';
+    if (a.id === 'shiba') {
+      body = '<ellipse cx="0" cy="1" rx="12" ry="4" fill="rgba(74,59,47,.18)"/>' +
+        '<path d="M-8,-6 Q-14,-13 -10,-16 Q-7,-14 -6,-9" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round"/>' +
+        '<ellipse cx="-1" cy="-7" rx="9" ry="6" fill="#f59e0b" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<ellipse cx="2" cy="-5.5" rx="5" ry="3.5" fill="#fffbeb"/>' +
+        '<path d="M-6,-2 V2 M-2,-2 V2 M3,-2 V2 M6,-2 V2" stroke="' + INK + '" stroke-width="2" stroke-linecap="round"/>' +
+        '<circle cx="6" cy="-12" r="6.5" fill="#f59e0b" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<path d="M2,-17 L0,-22 L5,-18 Z M7,-18 L11,-22 L11,-16 Z" fill="#d97706" stroke="' + INK + '" stroke-width="1"/>' +
+        '<ellipse cx="7.5" cy="-10" rx="4" ry="3" fill="#fffbeb"/>' +
+        '<circle cx="5.2" cy="-13" r="1.1" fill="#1e293b"/><circle cx="9.2" cy="-13" r="1.1" fill="#1e293b"/>' +
+        '<circle cx="8" cy="-10.5" r="1.3" fill="#1e293b"/>' +
+        '<path d="M1,-8 Q6,-6 10,-8" fill="none" stroke="#ef4444" stroke-width="2"/>';
+    } else if (a.id === 'cat') {
+      body = '<ellipse cx="0" cy="1" rx="11" ry="3.8" fill="rgba(74,59,47,.18)"/>' +
+        '<path d="M-8,-6 Q-15,-12 -11,-17" fill="none" stroke="#475569" stroke-width="2.4" stroke-linecap="round"/>' +
+        '<ellipse cx="-1" cy="-6.5" rx="8.5" ry="5.5" fill="#ffffff" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<circle cx="-3" cy="-8" r="3" fill="#f97316"/><circle cx="2" cy="-6" r="2.5" fill="#334155"/>' +
+        '<circle cx="6" cy="-11.5" r="6" fill="#ffffff" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<path d="M2,-16 L1,-21 L6,-17 Z M7,-17 L11,-21 L11,-15 Z" fill="#f97316" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="4.8" cy="-12" r="1.1" fill="#1e293b"/><circle cx="8.6" cy="-12" r="1.1" fill="#1e293b"/>' +
+        '<circle cx="6.8" cy="-10" r="1" fill="#fb7185"/>';
+    } else if (a.id === 'ducks') {
+      body = '<ellipse cx="-4" cy="1" rx="12" ry="4" fill="rgba(255,255,255,.35)"/>' +
+        '<ellipse cx="-5" cy="-3" rx="8" ry="4.5" fill="#a16207" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<circle cx="1" cy="-8.5" r="4.5" fill="#15803d" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<path d="M5,-9.5 L9.5,-8 L5,-7 Z" fill="#facc15" stroke="' + INK + '" stroke-width=".8"/>' +
+        '<circle cx="2.2" cy="-9.2" r=".9" fill="#ffffff"/>' +
+        '<ellipse cx="-16" cy="0" rx="5" ry="3" fill="#fde047" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="-13" cy="-3.5" r="3" fill="#fde047" stroke="' + INK + '" stroke-width="1"/>' +
+        '<path d="M-10,-4 L-7.5,-3.2 L-10,-2.5 Z" fill="#f97316"/>';
+    } else if (a.id === 'swan') {
+      body = '<ellipse cx="0" cy="1" rx="13" ry="4.2" fill="rgba(255,255,255,.4)"/>' +
+        '<ellipse cx="-2" cy="-4" rx="9.5" ry="5.5" fill="#ffffff" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<path d="M-6,-5 Q-1,-10 3,-4" fill="none" stroke="#cbd5e1" stroke-width="1.2"/>' +
+        '<path d="M5,-6 C9,-11 5,-18 8,-19 C10,-19.5 11,-17 9,-15" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round"/>' +
+        '<path d="M5,-6 C9,-11 5,-18 8,-19" fill="none" stroke="' + INK + '" stroke-width="1.1" stroke-linecap="round"/>' +
+        '<path d="M10,-18 L14,-17 L10,-16 Z" fill="#f97316" stroke="' + INK + '" stroke-width=".7"/>';
+    } else if (a.id === 'squirrel') {
+      body = '<ellipse cx="0" cy="1" rx="10" ry="3.5" fill="rgba(74,59,47,.18)"/>' +
+        '<path d="M-4,-3 C-14,-4 -16,-16 -8,-18 C-3,-19 -2,-12 -4,-6 Z" fill="#b45309" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<ellipse cx="1" cy="-6.5" rx="6" ry="5.5" fill="#d97706" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<circle cx="4" cy="-12.5" r="4.8" fill="#d97706" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<path d="M2,-16 L3,-20 L5,-16 Z" fill="#b45309" stroke="' + INK + '" stroke-width=".9"/>' +
+        '<circle cx="5.5" cy="-13" r="1" fill="#1e293b"/>' +
+        '<circle cx="8.5" cy="-7" r="3" fill="#78350f" stroke="' + INK + '" stroke-width=".9"/>';
+    } else if (a.id === 'turtle') {
+      body = '<ellipse cx="0" cy="1" rx="11" ry="3.6" fill="rgba(74,59,47,.18)"/>' +
+        '<ellipse cx="-6" cy="-1" rx="3" ry="1.8" fill="#65a30d" stroke="' + INK + '" stroke-width="1"/>' +
+        '<ellipse cx="5" cy="-1" rx="3" ry="1.8" fill="#65a30d" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="9.5" cy="-4.5" r="3.4" fill="#84cc16" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<circle cx="10.8" cy="-5.2" r=".9" fill="#1e293b"/>' +
+        '<path d="M-8,-2 A8.5,7.5 0 0,1 8,-2 Z" fill="#15803d" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<path d="M-4,-2 L-2,-7 H2 L4,-2 M-7,-4 H7" fill="none" stroke="#bef264" stroke-width="1"/>';
+    } else if (a.id === 'owl') {
+      body = '<ellipse cx="0" cy="1" rx="9" ry="3.2" fill="rgba(74,59,47,.18)"/>' +
+        '<ellipse cx="0" cy="-8" rx="7.5" ry="8.5" fill="#92400e" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<ellipse cx="0" cy="-6.5" rx="4.8" ry="5.5" fill="#fef3c7"/>' +
+        '<path d="M-5,-15 L-7,-19 L-2,-16 Z M5,-15 L7,-19 L2,-16 Z" fill="#78350f" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="-2.6" cy="-11.5" r="2.6" fill="#ffffff" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="2.6" cy="-11.5" r="2.6" fill="#ffffff" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="-2.6" cy="-11.5" r="1.2" fill="#1e293b"/><circle cx="2.6" cy="-11.5" r="1.2" fill="#1e293b"/>' +
+        '<path d="M-1.4,-9.5 L0,-7.2 L1.4,-9.5 Z" fill="#f59e0b"/>';
+    } else {
+      body = '<ellipse cx="0" cy="1" rx="10" ry="3.5" fill="rgba(74,59,47,.18)"/>' +
+        '<circle cx="-7" cy="-4.5" r="2.8" fill="#ffffff" stroke="' + INK + '" stroke-width="1"/>' +
+        '<ellipse cx="-1" cy="-5.5" rx="7" ry="5" fill="#ffffff" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<circle cx="4.5" cy="-10" r="4.8" fill="#ffffff" stroke="' + INK + '" stroke-width="1.2"/>' +
+        '<ellipse cx="3" cy="-17" rx="1.8" ry="5" fill="#ffffff" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<ellipse cx="6.2" cy="-16.8" rx="1.8" ry="5" fill="#ffffff" stroke="' + INK + '" stroke-width="1.1"/>' +
+        '<ellipse cx="3" cy="-17" rx=".9" ry="3.2" fill="#fbcfe8"/><ellipse cx="6.2" cy="-16.8" rx=".9" ry="3.2" fill="#fbcfe8"/>' +
+        '<circle cx="6" cy="-10.5" r="1" fill="#e11d48"/><circle cx="8.5" cy="-9.2" r="1" fill="#fb7185"/>';
+    }
+    return '<g class="animal" data-animal="' + esc(a.id) + '" data-animal-name="' + esc(a.name) + '" data-animal-msg="' + esc(a.msg) + '" tabindex="0" role="button" aria-label="' + esc(a.name + '：點一下互動') + '" transform="translate(' + a.x + ',' + a.y + ')">' +
+      '<rect x="-18" y="-26" width="36" height="32" rx="10" fill="transparent"/>' +
+      '<g class="animal-in">' + body + '</g></g>';
   }
   function signW(d, count) {
     var planned = d.status === 'planned';
@@ -2645,7 +3151,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     }
   }
 
-  /* ------------------------------------------------------------ 提示框（滑鼠移到建築上） */
+  /* ------------------------------------------------------------ 提示框（滑鼠移到建築或互動設施上） */
   function showTip(el) {
     if (!M.tip) return;
     var id = el.getAttribute('data-id');
@@ -2654,7 +3160,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       var b = C.building(id);
       if (!b) return;
       var st = STATUS[b.status] || STATUS.live;
-      var actHint = (C.isLive(b) && !C.infoMode) ? '點一下直接進入（上方可切換「📖 看介紹」）' : '點一下看介紹';
+      var actHint = C.carPickMode ? '🚗 點一下派專車開往「' + b.name + '」' : ((C.isLive(b) && !C.infoMode) ? '點一下直接進入（上方可切換「📖 看介紹」）' : '點一下看介紹');
       html = '<b>' + esc(labelName(b)) + '</b><span class="tip-st" style="background:' + st.bg + ';color:' + st.fg + '">' + esc(st.t) + '</span>' +
         '<p>' + esc(b.tagline || '') + '</p><em>' + esc(actHint) + '</em>';
     } else if (el.classList.contains('svc')) {
@@ -2666,6 +3172,29 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     } else if (el.classList.contains('lot')) {
       var dd = C.district(el.getAttribute('data-district'));
       html = '<b>🚧 預定地</b><p>' + esc(dd ? dd.name + '的' : '') + '保留空地：registry 新增學院後會自動進駐</p><em>想要什麼學院？點一下許願</em>';
+    } else if (el.hasAttribute('data-car')) {
+      var cname = el.getAttribute('data-car-name') || '🚗 校園專車';
+      html = '<b>' + esc(cname) + '</b><span class="tip-st" style="background:#dbeafe;color:#1e40af">可駕駛</span><p>發動引擎在校園道路兜風，或直接指定開往任一學院！</p><em>點一下發動專車 🚗💨</em>';
+    } else if (el.classList.contains('campus-vehicle')) {
+      var vname = el.getAttribute('data-vname') || '🚌 開心校車';
+      html = '<b>' + esc(vname) + '</b><span class="tip-st" style="background:#fef3c7;color:#92400e">巡航中</span><p>穿梭校園各大道的接駁專車，隨時搭載學員前往各學院</p><em>點一下按喇叭／選擇目的地 🚌</em>';
+    } else if (el.hasAttribute('data-animal')) {
+      var aname = el.getAttribute('data-animal-name') || '🐾 校園動物';
+      html = '<b>' + esc(aname) + '</b><span class="tip-st" style="background:#fce7f3;color:#9d174d">校園萌寵</span><p>開心學園的人氣小動物，點牠會有可愛反應並收錄進圖鑑！</p><em>點一下摸摸互動 💕</em>';
+    } else if (el.getAttribute('data-fun')) {
+      var fk = el.getAttribute('data-fun');
+      if (fk === 'fishing') {
+        var fnm = el.getAttribute('data-fish-name');
+        html = '<b>🎣 學園湖垂釣 · ' + esc(fnm || '生態池') + '</b><span class="tip-st" style="background:#e0f2fe;color:#0369a1">小遊戲</span><p>池塘裡有紅白錦鯉、黃金鯉魚王與神秘寶物，快來拋竿試試手氣！</p><em>點一下開始釣魚小遊戲 🐟</em>';
+      } else if (fk === 'basketball') {
+        html = '<b>🏀 陽光籃球場</b><span class="tip-st" style="background:#ffedd5;color:#9a3412">小遊戲</span><p>限時街頭三分投籃挑戰，看你能連進幾顆空心球（Swish）！</p><em>點一下開始投籃大賽 🔥</em>';
+      } else if (fk === 'tennis') {
+        html = '<b>🎾 森林網球場</b><span class="tip-st" style="background:#dcfce7;color:#166534">小遊戲</span><p>移動球拍與校園網球教練對抽過招，挑戰最高連擊紀錄！</p><em>點一下開始網球對打 ⚡</em>';
+      } else if (fk === 'soccer') {
+        html = '<b>⚽ 綠茵足球場</b><span class="tip-st" style="background:#dcfce7;color:#166534">小遊戲</span><p>五球黃金十二碼 PK 大戰，瞄準死角騙過守門員破網得分！</p><em>點一下開始十二碼 PK ⚽</em>';
+      } else if (fk === 'car-hub') {
+        html = '<b>🅿️ 校園停車場 · 專車接送</b><span class="tip-st" style="background:#dbeafe;color:#1e40af">互動導航</span><p>挑選喜歡的超跑或電動車，自動沿校園道路開往你想去的學院！</p><em>點一下召喚專車 🚗</em>';
+      } else return;
     } else {
       return;
     }
@@ -2684,6 +3213,10 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   function enterOrOpen(id) {
     var b = C.building(id);
     if (!b) return;
+    if (C.carPickMode && C.driveCarToBuilding) {
+      C.driveCarToBuilding(b.id);
+      return;
+    }
     if (C.isLive(b) && !C.infoMode) {
       C.recordVisit(b.id);
       var url = C.primaryUrl(b);
@@ -2696,8 +3229,24 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
 
   function activate(target) {
     if (!target || !target.closest) return;
-    var el = target.closest('[data-id], .svc, .sign, .lot, [data-banner], .lbl-svc');
+    var el = target.closest('[data-id], .svc, .sign, .lot, [data-banner], .lbl-svc, [data-car], .campus-vehicle, [data-animal], [data-fun]');
     if (!el || !M.svg.contains(el)) return;
+    if (el.hasAttribute('data-car')) {
+      C.emit('fun', { kind: 'car', idx: +el.getAttribute('data-car'), el: el });
+      return;
+    }
+    if (el.classList.contains('campus-vehicle')) {
+      C.emit('fun', { kind: 'vehicle', id: el.getAttribute('data-vid') || 'bus', el: el });
+      return;
+    }
+    if (el.hasAttribute('data-animal')) {
+      C.emit('fun', { kind: 'animal', id: el.getAttribute('data-animal'), el: el });
+      return;
+    }
+    if (el.hasAttribute('data-fun')) {
+      C.emit('fun', { kind: el.getAttribute('data-fun'), fish: el.getAttribute('data-fish-name') || '', el: el });
+      return;
+    }
     var id = el.getAttribute('data-id');
     if (id) { enterOrOpen(id); return; }
     if (el.classList.contains('svc') || el.classList.contains('lbl-svc')) { C.emit('about'); return; }
@@ -2742,7 +3291,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     svg.addEventListener('pointermove', function (e) {
       if (!pts[e.pointerId]) {
         if (e.pointerType === 'mouse') {
-          var el = e.target && e.target.closest ? e.target.closest('.bld, .svc, .sign, .lot') : null;
+          var el = e.target && e.target.closest ? e.target.closest('.bld, .svc, .sign, .lot, .fun-spot, .parked-car, .parking-sign, .campus-vehicle, .animal, .lake-fish') : null;
           if (el !== M.hoverEl) {
             if (M.hoverEl) M.hoverEl.classList.remove('hover');
             M.hoverEl = el;
@@ -2819,7 +3368,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     // 鍵盤：Tab 走訪建築／看板，Enter／空白鍵開啟；方向鍵平移、+／- 縮放、0 回到全覽
     svg.addEventListener('keydown', function (e) {
       var t = e.target;
-      if ((e.key === 'Enter' || e.key === ' ') && t && t.closest && t.closest('.bld, .svc, .sign, .lot')) {
+      if ((e.key === 'Enter' || e.key === ' ') && t && t.closest && t.closest('.bld, .svc, .sign, .lot, .fun-spot, .parked-car, .parking-sign, .campus-vehicle, .animal')) {
         e.preventDefault();
         activate(t);
         return;
@@ -2980,6 +3529,13 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     document.addEventListener('pointerdown', function () { wrap.classList.remove('kbd'); }, true);
   }
 
+  function flyToPoint(x, y, zoomW, ms) {
+    var w = zoomW || Math.min(M.view.w, 820);
+    w = clamp(w, limits().minW, limits().maxW);
+    var h = w * M.ch / Math.max(1, M.cw);
+    flyTo({ x: x - w / 2, y: y - h / 2, w: w, h: h }, ms);
+  }
+
   C.map = {
     init: init,
     resize: resize,
@@ -2988,6 +3544,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     zoomBy: zoomBy,
     focusDistrict: focusDistrict,
     focusBuilding: focusBuilding,
+    flyToPoint: flyToPoint,
     highlight: highlight,
     select: select,
     markFrom: markFrom,
@@ -3079,10 +3636,12 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     h += '<div class="pn-actions">';
     if (live) {
       h += '<a class="btn primary big" href="' + esc(C.primaryUrl(b)) + '" data-visit="' + esc(b.id) + '" data-primary="1">' + esc(primaryLabel(b)) + '</a>' +
-        '<button type="button" class="btn" data-copy="' + esc(b.id) + '">🔗 複製網址</button>';
+        '<div style="display:flex;gap:8px;width:100%"><button type="button" class="btn" style="flex:1" data-drive-to="' + esc(b.id) + '">🚗 派專車開來這裡</button>' +
+        '<button type="button" class="btn" style="flex:1" data-copy="' + esc(b.id) + '">🔗 複製網址</button></div>';
     } else {
       h += '<button type="button" class="btn big" disabled>🚧 建設中・敬請期待</button>' +
-        '<button type="button" class="btn" data-wish="' + esc(b.id) + '">💬 許願：想先上這門課</button>';
+        '<div style="display:flex;gap:8px;width:100%"><button type="button" class="btn" style="flex:1" data-drive-to="' + esc(b.id) + '">🚗 派車去工地巡視</button>' +
+        '<button type="button" class="btn" style="flex:1" data-wish="' + esc(b.id) + '">💬 許願開課</button></div>';
     }
     h += '</div>';
     h += ctRow(b);
@@ -3107,8 +3666,14 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       close();
     });
     P.el.addEventListener('click', function (e) {
-      var t = e.target.closest ? e.target.closest('[data-open],[data-district],[data-copy],[data-share],[data-wish],[data-visit]') : null;
+      var t = e.target.closest ? e.target.closest('[data-open],[data-district],[data-copy],[data-share],[data-wish],[data-visit],[data-drive-to]') : null;
       if (!t) return;
+      if (t.hasAttribute('data-drive-to')) {
+        var dtId = t.getAttribute('data-drive-to');
+        if (isMobile()) close();
+        if (C.driveCarToBuilding) C.driveCarToBuilding(dtId, { keepPanel: !isMobile() });
+        return;
+      }
       if (t.hasAttribute('data-open')) { C.emit('open', t.getAttribute('data-open')); return; }
       if (t.classList.contains('pn-dist')) {
         var did = t.getAttribute('data-district');
@@ -3287,7 +3852,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       '</div></article>';
   }
   function lotCard(d) {
-    var what = d.id === 'games' ? '學院或運彩館' : d.id === 'finance' ? '分院或實戰館' : d.id === 'tech' ? '程式語言或硬體實作學院' : '學院';
+    var what = d.id === 'games' ? '學院或運彩館' : d.id === 'finance' ? '分院或實戰館' : d.id === 'tech' ? '程式語言或硬體實作學院' : d.id === 'care' ? '社工、心理諮商或健康照護學院' : '學院';
     return '<button type="button" class="card lotcard" data-wish-district="' + esc(d.id) + '">' +
       '<span class="lot-ic" aria-hidden="true">🚧</span><b>預定地</b><span>未來的新' + what + '會自動進駐這裡</span><em>想要什麼' + what + '？點我許願 →</em></button>';
   }
@@ -3373,7 +3938,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     var empty = document.getElementById('dirEmpty');
     if (empty) {
       empty.hidden = !(on && !shown);
-      empty.innerHTML = on && !shown ? '🔍 找不到符合「' + esc(q || '') + '」的建築。試試「英語」「Python」「樹莓派」「K 線」「NBA」…' : '';
+      empty.innerHTML = on && !shown ? '🔍 找不到符合「' + esc(q || '') + '」的建築。試試「藥癮個管」「英語」「Python」「K 線」「NBA」…' : '';
     }
   }
 
@@ -3396,8 +3961,34 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   'use strict';
   const CAMPUS = (window.CAMPUS = window.CAMPUS || {});
   CAMPUS.RELEASES_DATA = {
-    "current_version": "1.1.0",
+    "current_version": "1.3.0",
     "releases": [
+      {
+        "version": "1.3.0",
+        "date": "2026-10-30",
+        "bump": "minor",
+        "title": "新增校園互動遊樂系統（校園專車導航・8 款萌寵圖鑑・3 座運動球場 PK・學園湖垂釣小遊戲）",
+        "highlights": [
+          "🚗 校園車隊與學院導航：停車場 7 輛轎車點擊即可發動上路，搭配自動巡航的「🚌 開心校車」與底部導航列，可指定開往任意學院或由建築介紹卡「派專車開來這裡」",
+          "🐾 8 款校園萌寵互動與圖鑑：新增校犬阿柴、櫻花三花貓、綠頭鴨小隊、湖畔白天鵝、松果小松鼠、湖岸慢活龜、博學貓頭鷹、草地雪白兔，點擊跳躍冒對話泡泡並收錄至萌寵圖鑑",
+          "🏀 3 座戶外運動球場與小遊戲：新增陽光籃球場（三分投籃大賽）、森林網球場（王牌網球對打挑戰）、綠茵足球場（黃金十二碼 PK 賽）",
+          "🎣 學園湖錦鯉游動與垂釣木棧道：湖中新增游動魚群與垂釣碼頭，點擊可玩「學園湖垂釣樂」拋竿釣魚並收集 7 種湖中魚類圖鑑（含傳說黃金龍鯉）"
+        ],
+        "files_count": 8
+      },
+      {
+        "version": "1.2.0",
+        "date": "2026-10-30",
+        "bump": "minor",
+        "title": "新增「健康照護學區」與「藥癮個管師學院」新開幕",
+        "highlights": [
+          "新增常設學區「🌿 健康照護學區」（care，森林綠主題，保留 2 座預定地供未來社工／心理／長照學院進駐）",
+          "新開幕「💚 藥癮個管師學院」（addiction-cm，甄試準備＋毒防實務雙軌：四大分院 16 堂圖解課、4 座實戰練功房、68 題筆試題庫、12 題口試閃卡、50 則專業百科）",
+          "繪製「照護諮詢館（care-center）」專屬建築插畫（0800 專線燈箱、無障礙坡道、花圃與新開幕彩旗氣球），擴展校園地圖畫布至 2100×1220 零重疊排版",
+          "同步支援 okayell.github.io/addiction-cm/ 子路徑打包、/dpcp 短網址轉址與 Cloudtop :8927 即時狀態偵測"
+        ],
+        "files_count": 9
+      },
       {
         "version": "1.1.0",
         "date": "2026-10-30",
@@ -3971,7 +4562,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     function renderPop(q) {
       if (!q) { pop.hidden = true; pop.innerHTML = ''; return; }
       if (!results.length) {
-        pop.innerHTML = '<div class="s-none">找不到「' + esc(q) + '」，試試「日語」「Python」「樹莓派」「K 線」「NBA」</div>';
+        pop.innerHTML = '<div class="s-none">找不到「' + esc(q) + '」，試試「藥癮個管」「日語」「Python」「K 線」「NBA」</div>';
         pop.hidden = false;
         return;
       }
@@ -4062,12 +4653,17 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       h += '<button type="button" class="mc" data-district="' + esc(d.id) + '" style="--dc:' + esc(d.color || '#64748b') + '">' +
         esc((d.icon ? d.icon + ' ' : '') + String(d.name || '').replace(/學區$/, '')) + '</button>';
     });
+    h += '<button type="button" class="mc mc-fun" id="mapFunBtn" data-fun-hub="1" title="打開校園遊樂場：釣魚、投籃、足球 PK、網球、專車導航與動物圖鑑">🎮 校園互動</button>';
     h += '<button type="button" class="mc mc-mode' + (C.infoMode ? ' on' : '') + '" id="mapModeBtn" data-info-mode="1" aria-pressed="' + (C.infoMode ? 'true' : 'false') + '" title="切換點建築的行為：直接進入 vs 看介紹卡">' +
       (C.infoMode ? '📖 點建築：看介紹' : '🚀 點建築：直接進入') + '</button>';
     el.innerHTML = h;
     el.addEventListener('click', function (e) {
       var t = e.target.closest ? e.target.closest('.mc') : null;
       if (!t) return;
+      if (t.hasAttribute('data-fun-hub')) {
+        C.emit('fun', { kind: 'hub' });
+        return;
+      }
       if (t.hasAttribute('data-info-mode')) {
         C.infoMode = !C.infoMode;
         t.classList.toggle('on', C.infoMode);
@@ -4347,6 +4943,1440 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
+})();
+
+</script>
+  <script>/* js/fun.js */
+/* 開心學園 · fun.js — 校園互動生態與小遊戲系統
+ *   1. 🚗 停車場車隊＆🚌 開心校車：點車子立即發動兜風，或指定開往任一學院（沿校園道路導航行駛）
+ *   2. 🐾 校園動物生態：柴犬、三花貓、綠頭鴨、白天鵝、松鼠、慢活龜、貓頭鷹、雪白兔（點擊互動＋收集圖鑑）
+ *   3. 🎣 學園湖釣魚樂：拋竿、浮標咬餌、拉竿收線、7 種湖中魚類圖鑑
+ *   4. 🏀 陽光籃球場：街頭三分投籃大賽（準度槽、空心 Swish 連進加成、移動籃框）
+ *   5. ⚽ 綠茵足球場：黃金十二碼 PK 賽（六宮格射門死角 vs 守門員撲救）
+ *   6. 🎾 森林網球場：王牌網球對打挑戰（滑鼠／觸控移動球拍對抽連擊）
+ */
+(function () {
+  'use strict';
+  var C = window.CAMPUS;
+  if (!C || C.redirecting) return;
+  var L = C.LAYOUT;
+  var esc = C.util.esc;
+  var clamp = C.util.clamp;
+  var STORE_KEY = 'okayell.campus.fun.v1';
+
+  /* ------------------------------------------------------------ 存檔（圖鑑與最高分） */
+  function loadState() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+      return {
+        fishCaught: raw.fishCaught && typeof raw.fishCaught === 'object' ? raw.fishCaught : {},
+        fishTotal: Number(raw.fishTotal) || 0,
+        animalsMet: raw.animalsMet && typeof raw.animalsMet === 'object' ? raw.animalsMet : {},
+        bballHigh: Number(raw.bballHigh) || 0,
+        soccerHigh: Number(raw.soccerHigh) || 0,
+        tennisHigh: Number(raw.tennisHigh) || 0,
+        carTrips: Number(raw.carTrips) || 0,
+      };
+    } catch (e) {
+      return { fishCaught: {}, fishTotal: 0, animalsMet: {}, bballHigh: 0, soccerHigh: 0, tennisHigh: 0, carTrips: 0 };
+    }
+  }
+  var ST = loadState();
+  function saveState() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(ST)); } catch (e) { /* ignore */ }
+  }
+
+  /* ------------------------------------------------------------ 魚種與動物資料 */
+  var FISH_SPECIES = [
+    { id: 'crucian', name: '學園小鯽魚', icon: '🐟', col: '#60a5fa', stars: '★☆☆☆☆', pts: 10, cm: [12, 22], desc: '學園湖最常見的活潑小魚，喜歡成群在睡蓮下乘涼。' },
+    { id: 'koi_rw', name: '紅白錦鯉', icon: '🐠', col: '#ef4444', stars: '★★☆☆☆', pts: 25, cm: [28, 45], desc: '身上的紅白斑紋象徵好運，據說考前釣到牠會猜題全中！' },
+    { id: 'shrimp', name: '湖畔大螯蝦', icon: '🦐', col: '#f97316', stars: '★★☆☆☆', pts: 30, cm: [10, 18], desc: '揮舞著大鉗子的元氣螯蝦，最愛偷吃釣客的魚餌。' },
+    { id: 'puffer', name: '氣噗噗河豚', icon: '🐡', col: '#f59e0b', stars: '★★★☆☆', pts: 45, cm: [18, 30], desc: '一出水就會鼓起圓滾滾的肚子，模樣超療癒！' },
+    { id: 'turtle_sp', name: '長壽小靈龜', icon: '🐢', col: '#10b981', stars: '★★★★☆', pts: 65, cm: [25, 38], desc: '學園湖的慢活長老，象徵財經複利與穩健成長。' },
+    { id: 'boot', name: '傳說的黃金雨鞋', icon: '👢', col: '#eab308', stars: '★★★☆☆', pts: 20, cm: [26, 28], desc: '不知道哪位學長姐掉進湖裡的雨鞋，竟然被湖水洗得金光閃閃！' },
+    { id: 'dragon_koi', name: '黃金龍魚王', icon: '👑', col: '#d97706', stars: '★★★★★', pts: 120, cm: [58, 88], desc: '學園湖傳說級霸主！全身閃耀金色鱗片，釣到代表今日運勢大吉！' },
+  ];
+
+  /* ------------------------------------------------------------ 地圖特效泡泡（動物／車子喇叭／釣魚水花） */
+  function spawnMapBubble(x, y, text, color) {
+    var fx = document.querySelector('#campusMap .m-fx');
+    if (!fx) return;
+    var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'fun-pop');
+    g.setAttribute('transform', 'translate(' + Math.round(x) + ',' + Math.round(y - 26) + ')');
+    var w = Math.max(88, Math.min(260, text.length * 14 + 24));
+    var bg = color || '#1d6b57';
+    g.innerHTML = '<g class="fun-pop-in">' +
+      '<rect x="' + (-w / 2) + '" y="-28" width="' + w + '" height="26" rx="13" fill="' + bg + '" stroke="#ffffff" stroke-width="1.5"/>' +
+      '<path d="M-5,-2 L0,5 L5,-2 Z" fill="' + bg + '"/>' +
+      '<text x="0" y="-10.5" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff" font-family="-apple-system,PingFang TC,Noto Sans TC,sans-serif">' + esc(text) + '</text>' +
+      '</g>';
+    fx.appendChild(g);
+    setTimeout(function () { if (g.parentNode) g.parentNode.removeChild(g); }, 2400);
+  }
+
+  /* ------------------------------------------------------------ 🐾 校園動物互動 */
+  function handleAnimalClick(id, el) {
+    var list = L.animals || [];
+    var a = null;
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) { a = list[i]; break; }
+    if (!a) return;
+    ST.animalsMet[a.id] = (ST.animalsMet[a.id] || 0) + 1;
+    saveState();
+    if (el) {
+      el.classList.remove('animal-jump');
+      void el.getBoundingClientRect();
+      el.classList.add('animal-jump');
+      setTimeout(function () { el.classList.remove('animal-jump'); }, 900);
+    }
+    var shortBubbles = {
+      shiba: '汪汪！🐶❤️',
+      cat: '喵嗚～🐾💕',
+      ducks: '呱呱呱！🦆💦',
+      swan: '優雅行禮 🦢✨',
+      squirrel: '送你幸運松果 🌰',
+      turtle: '穩紮穩打 🐢🌿',
+      owl: '咕咕！智慧 +100 🦉',
+      bunny: '蹦蹦跳跳！🐰🎵',
+    };
+    spawnMapBubble(a.x, a.y, shortBubbles[a.id] || a.name, '#be185d');
+    var metCount = Object.keys(ST.animalsMet).length;
+    C.toast(a.msg + '（已收集校園萌寵 ' + metCount + ' / ' + list.length + '）');
+  }
+
+  /* ------------------------------------------------------------ 🚗 校園專車與道路導航系統 */
+  var V = {
+    layer: null,
+    busEl: null,
+    carEl: null,
+    busT: 0,
+    busRaf: 0,
+    carRaf: 0,
+    activeCarIdx: -1,
+    activeCarName: '🏎️ 烈焰紅跑車',
+    activeCarColor: '#f87171',
+    carPos: { x: 517, y: 1084, ang: -90 },
+    arrivalAction: 'panel', // 'panel' | 'enter' | 'cruise'
+    hudEl: null,
+  };
+
+  // 校車巡航路線（校門 ⇄ 中央廣場 ⇄ 語言學區 ⇄ 財經學區）
+  var BUS_LOOP = [
+    { x: 1000, y: 1140 },
+    { x: 1000, y: 500 },
+    { x: 280, y: 500 },
+    { x: 1000, y: 500 },
+    { x: 1436, y: 500 },
+    { x: 1436, y: 286 },
+    { x: 1436, y: 500 },
+    { x: 1000, y: 500 },
+    { x: 1000, y: 1140 },
+  ];
+
+  function ensureVehicleLayer() {
+    if (V.layer && document.contains(V.layer)) return V.layer;
+    V.layer = document.getElementById('mapVehicles');
+    if (!V.layer) return null;
+    // 建立巡迴開心校車
+    var bus = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    bus.setAttribute('class', 'campus-vehicle campus-bus');
+    bus.setAttribute('data-vid', 'bus');
+    bus.setAttribute('data-vname', '🚌 開心學園接駁校車');
+    bus.setAttribute('tabindex', '0');
+    bus.setAttribute('role', 'button');
+    bus.setAttribute('transform', 'translate(1000,880)');
+    bus.innerHTML = '<g class="veh-rot" transform="rotate(-90)">' +
+      '<ellipse cx="0" cy="1" rx="22" ry="11" fill="rgba(74,59,47,.18)"/>' +
+      '<rect x="-20" y="-9" width="40" height="18" rx="5" fill="#f59e0b" stroke="#4a3b2f" stroke-width="1.3"/>' +
+      '<rect x="-16" y="-7" width="32" height="14" rx="3" fill="#fbbf24"/>' +
+      '<rect x="10" y="-6.5" width="7" height="13" rx="2" fill="#e0f2fe" stroke="#4a3b2f" stroke-width=".8"/>' +
+      '<rect x="-14" y="-7.5" width="6" height="2" fill="#e0f2fe"/><rect x="-5" y="-7.5" width="6" height="2" fill="#e0f2fe"/><rect x="3" y="-7.5" width="5" height="2" fill="#e0f2fe"/>' +
+      '<rect x="-14" y="5.5" width="6" height="2" fill="#e0f2fe"/><rect x="-5" y="5.5" width="6" height="2" fill="#e0f2fe"/><rect x="3" y="5.5" width="5" height="2" fill="#e0f2fe"/>' +
+      '<circle cx="19" cy="-5.5" r="2" fill="#fef08a"/><circle cx="19" cy="5.5" r="2" fill="#fef08a"/>' +
+      '<circle cx="-19" cy="-5.5" r="1.6" fill="#ef4444"/><circle cx="-19" cy="5.5" r="1.6" fill="#ef4444"/>' +
+      '</g>' +
+      '<g class="veh-tag" transform="translate(0,-16)"><rect x="-32" y="-12" width="64" height="15" rx="7.5" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.1"/><text x="0" y="-1.5" text-anchor="middle" font-size="9.5" font-weight="800" fill="#92400e" font-family="-apple-system,PingFang TC,sans-serif">🚌 開心校車</text></g>';
+    V.layer.appendChild(bus);
+    V.busEl = bus;
+    V.busT = 260;
+    startBusLoop();
+    return V.layer;
+  }
+
+  function startBusLoop() {
+    cancelAnimationFrame(V.busRaf);
+    var segs = [];
+    var totalLen = 0;
+    for (var i = 0; i < BUS_LOOP.length - 1; i++) {
+      var a = BUS_LOOP[i], b = BUS_LOOP[i + 1];
+      var len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+      segs.push({ a: a, b: b, len: len, start: totalLen, ang: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI });
+      totalLen += len;
+    }
+    var speed = 58; // px per second
+    var last = performance.now();
+    function tick(now) {
+      var dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      if (!V.busEl || !document.contains(V.busEl)) {
+        if (document.getElementById('mapVehicles')) ensureVehicleLayer();
+      }
+      if (!document.hidden && V.busEl) {
+        V.busT = (V.busT + speed * dt) % totalLen;
+        var d = V.busT;
+        var seg = segs[0];
+        for (var j = 0; j < segs.length; j++) {
+          if (d <= segs[j].start + segs[j].len) { seg = segs[j]; break; }
+        }
+        var u = (d - seg.start) / seg.len;
+        var x = seg.a.x + (seg.b.x - seg.a.x) * u;
+        var y = seg.a.y + (seg.b.y - seg.a.y) * u;
+        V.busEl.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
+        var rot = V.busEl.querySelector('.veh-rot');
+        if (rot) rot.setAttribute('transform', 'rotate(' + seg.ang.toFixed(1) + ')');
+      }
+      V.busRaf = requestAnimationFrame(tick);
+    }
+    V.busRaf = requestAnimationFrame(tick);
+  }
+
+  function ensureActiveCar(color, name) {
+    ensureVehicleLayer();
+    if (!V.layer) return null;
+    if (color) V.activeCarColor = color;
+    if (name) V.activeCarName = name;
+    if (!V.carEl || !document.contains(V.carEl)) {
+      var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('class', 'campus-vehicle active-car');
+      g.setAttribute('data-vid', 'car');
+      V.layer.appendChild(g);
+      V.carEl = g;
+    }
+    V.carEl.setAttribute('data-vname', V.activeCarName);
+    var shortName = V.activeCarName.replace(/^[^\s]+\s*/, '');
+    V.carEl.innerHTML = '<g class="veh-rot">' +
+      '<ellipse cx="0" cy="1" rx="18" ry="9.5" fill="rgba(74,59,47,.22)"/>' +
+      '<path class="car-beam" d="M14,-5 L38,-13 L38,13 L14,5 Z" fill="rgba(254,240,138,.45)" pointer-events="none"/>' +
+      '<rect x="-16" y="-8" width="32" height="16" rx="5.5" fill="' + V.activeCarColor + '" stroke="#3b2f25" stroke-width="1.3"/>' +
+      '<rect x="-6" y="-6" width="14" height="12" rx="3" fill="#e0f2fe" stroke="#3b2f25" stroke-width=".8"/>' +
+      '<rect x="-11" y="-5" width="5" height="10" rx="1.5" fill="rgba(255,255,255,.35)"/>' +
+      '<circle cx="15" cy="-5" r="2" fill="#fef08a"/><circle cx="15" cy="5" r="2" fill="#fef08a"/>' +
+      '<circle cx="-15" cy="-5" r="1.5" fill="#ef4444"/><circle cx="-15" cy="5" r="1.5" fill="#ef4444"/>' +
+      '</g>' +
+      '<g class="veh-tag" transform="translate(0,-15)"><rect x="-38" y="-13" width="76" height="16" rx="8" fill="#1e293b" stroke="#ffffff" stroke-width="1.2"/><text class="car-tag-txt" x="0" y="-2" text-anchor="middle" font-size="9.5" font-weight="800" fill="#ffffff" font-family="-apple-system,PingFang TC,sans-serif">🚗 ' + esc(shortName) + '</text></g>';
+    V.carEl.setAttribute('transform', 'translate(' + V.carPos.x.toFixed(1) + ',' + V.carPos.y.toFixed(1) + ')');
+    var rot = V.carEl.querySelector('.veh-rot');
+    if (rot) rot.setAttribute('transform', 'rotate(' + (V.carPos.ang || 0).toFixed(1) + ')');
+    return V.carEl;
+  }
+
+  // 依據校園道路網計算從 p0 到目標點 (tx, ty, district) 的轉折路徑
+  function buildRoadWaypoints(p0, tx, ty, districtId) {
+    var pts = [{ x: p0.x, y: p0.y }];
+    function add(x, y) {
+      var last = pts[pts.length - 1];
+      if (Math.hypot(x - last.x, y - last.y) > 4) pts.push({ x: x, y: y });
+    }
+    // 1. 先從目前位置回到最近的主幹道節點
+    if (p0.y > 1020 && p0.x < 960) {
+      add(p0.x, 1084);
+      add(1000, 1084);
+    } else if (Math.abs(p0.x - 1000) > 25 && Math.abs(p0.y - 500) > 25) {
+      if (p0.x > 1400 && p0.y < 520) add(1436, p0.y);
+      else if (p0.y < 520) add(p0.x, 500);
+      else add(1000, p0.y);
+    }
+    // 2. 走中央南北大道 (x=1000) 與東西大道 (y=500)
+    var cur = pts[pts.length - 1];
+    if (districtId === 'language') {
+      if (cur.y !== 500) { add(1000, cur.y); add(1000, 500); }
+      add(280, 500);
+      add(280, 436);
+      add(tx, 436);
+      add(tx, ty);
+    } else if (districtId === 'finance') {
+      if (cur.y !== 500) { add(1000, cur.y); add(1000, 500); }
+      add(1436, 500);
+      add(1436, 286);
+      add(tx, 286);
+      add(tx, ty);
+    } else if (districtId === 'tech') {
+      if (cur.y !== 500) { add(1000, cur.y); add(1000, 500); }
+      add(424, 500);
+      add(424, 698);
+      if (tx < 360) { add(300, 698); add(300, ty); add(tx, ty); }
+      else if (tx > 600) { add(584, 698); add(584, ty); add(tx, ty); }
+      else { add(tx, ty); }
+    } else if (districtId === 'games') {
+      if (cur.x !== 1000) { add(cur.x, 500); add(1000, 500); }
+      add(1000, 790);
+      add(tx, 790);
+      add(tx, ty);
+    } else if (districtId === 'care' || districtId === 'arts') {
+      if (cur.x !== 1000) { add(cur.x, 500); add(1000, 500); }
+      add(1000, 1132);
+      add(tx, 1132);
+      add(tx, ty);
+    } else if (districtId === 'parking') {
+      if (cur.x !== 1000) { add(cur.x, 500); add(1000, 500); }
+      add(1000, 1084);
+      add(tx, 1084);
+      add(tx, ty);
+    } else {
+      // 球場或湖邊
+      if (cur.y !== 500) { add(1000, cur.y); add(1000, 500); }
+      add(tx, 500);
+      add(tx, ty);
+    }
+    return pts;
+  }
+
+  function animateCarAlong(pts, labelText, onDone) {
+    cancelAnimationFrame(V.carRaf);
+    var car = ensureActiveCar();
+    if (!car || pts.length < 2) { if (onDone) onDone(); return; }
+    var tag = car.querySelector('.car-tag-txt');
+    if (tag && labelText) tag.textContent = labelText;
+
+    var segs = [];
+    var total = 0;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var a = pts[i], b = pts[i + 1];
+      var len = Math.hypot(b.x - a.x, b.y - a.y);
+      if (len < 1) continue;
+      segs.push({ a: a, b: b, len: len, start: total, ang: Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI });
+      total += len;
+    }
+    if (!segs.length) { if (onDone) onDone(); return; }
+    var speed = 340; // px/sec
+    var dur = Math.max(0.65, total / speed);
+    var t0 = performance.now();
+    function step(now) {
+      var p = Math.min(1, (now - t0) / (dur * 1000));
+      var ease = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      var dist = ease * total;
+      var seg = segs[segs.length - 1];
+      for (var j = 0; j < segs.length; j++) {
+        if (dist <= segs[j].start + segs[j].len) { seg = segs[j]; break; }
+      }
+      var u = seg.len ? (dist - seg.start) / seg.len : 1;
+      var x = seg.a.x + (seg.b.x - seg.a.x) * u;
+      var y = seg.a.y + (seg.b.y - seg.a.y) * u;
+      V.carPos = { x: x, y: y, ang: seg.ang };
+      car.setAttribute('transform', 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')');
+      var rot = car.querySelector('.veh-rot');
+      if (rot) rot.setAttribute('transform', 'rotate(' + seg.ang.toFixed(1) + ')');
+      if (p < 1) {
+        V.carRaf = requestAnimationFrame(step);
+      } else {
+        if (onDone) onDone();
+      }
+    }
+    V.carRaf = requestAnimationFrame(step);
+  }
+
+  function selectParkedCar(idx) {
+    var cars = document.querySelectorAll('#campusMap .parked-car');
+    for (var i = 0; i < cars.length; i++) {
+      var isThis = +cars[i].getAttribute('data-car') === idx;
+      cars[i].classList.toggle('car-out', isThis);
+      if (isThis) {
+        V.activeCarIdx = idx;
+        V.activeCarColor = cars[i].getAttribute('data-car-color') || '#f87171';
+        V.activeCarName = cars[i].getAttribute('data-car-name') || '🏎️ 校園專車';
+        V.carPos = {
+          x: Number(cars[i].getAttribute('data-cx')) || 517,
+          y: Number(cars[i].getAttribute('data-cy')) || 1084,
+          ang: -90,
+        };
+      }
+    }
+    ensureActiveCar(V.activeCarColor, V.activeCarName);
+  }
+
+  function driveCarToBuilding(id, opts) {
+    opts = opts || {};
+    var b = C.building(id);
+    var placed = C.map.placed ? C.map.placed() : {};
+    var p = placed[id];
+    if (!b || !p || !p.slot) return;
+    if (V.activeCarIdx < 0) selectParkedCar(0);
+    C.carPickMode = false;
+    updateCarHud();
+    var tx = p.slot.x, ty = p.slot.y + 6;
+    var pts = buildRoadWaypoints(V.carPos, tx, ty, b.district);
+    spawnMapBubble(V.carPos.x, V.carPos.y, '叭叭！出發前往 ' + b.name + ' 🚗💨', '#2563eb');
+    C.toast('🚗 ' + V.activeCarName + ' 正在開往「' + b.name + '」…');
+    ST.carTrips = (ST.carTrips || 0) + 1;
+    saveState();
+    animateCarAlong(pts, '🚗 → ' + b.name, function () {
+      spawnMapBubble(tx, ty, '🎉 已抵達 ' + b.name + '！', '#1d6b57');
+      var tag = V.carEl && V.carEl.querySelector('.car-tag-txt');
+      if (tag) tag.textContent = '📍 ' + b.name;
+      if (V.arrivalAction === 'enter' && C.isLive(b)) {
+        C.recordVisit(b.id);
+        C.toast('🚀 專車已抵達「' + b.name + '」，正在為你進入學院…');
+        setTimeout(function () { window.location.href = C.primaryUrl(b); }, 550);
+      } else if (V.arrivalAction === 'panel' && !opts.keepPanel) {
+        C.emit('open', b.id);
+      } else {
+        C.map.focusBuilding(b.id, { zoom: false });
+      }
+    });
+  }
+  C.driveCarToBuilding = driveCarToBuilding;
+
+  function driveCarToSpot(spotKind) {
+    if (V.activeCarIdx < 0) selectParkedCar(0);
+    C.carPickMode = false;
+    updateCarHud();
+    if (spotKind === 'parking') {
+      var pts0 = buildRoadWaypoints(V.carPos, 517, 1084, 'parking');
+      animateCarAlong(pts0, '🅿️ 回停車場', function () {
+        var cars = document.querySelectorAll('#campusMap .parked-car');
+        for (var i = 0; i < cars.length; i++) cars[i].classList.remove('car-out');
+        if (V.carEl && V.carEl.parentNode) V.carEl.parentNode.removeChild(V.carEl);
+        V.carEl = null;
+        V.activeCarIdx = -1;
+        C.toast('🅿️ 專車已安全停回車位！');
+      });
+      return;
+    }
+    var tx = 865, ty = 340, label = '🎣 學園湖釣魚台';
+    if (spotKind === 'basketball') { tx = 1316; ty = 220; label = '🏀 陽光籃球場'; }
+    else if (spotKind === 'tennis') { tx = 1316; ty = 370; label = '🎾 森林網球場'; }
+    else if (spotKind === 'soccer') { tx = 802; ty = 1084; label = '⚽ 綠茵足球場'; }
+    var pts = buildRoadWaypoints(V.carPos, tx, ty, spotKind === 'soccer' ? 'parking' : '');
+    C.toast('🚗 ' + V.activeCarName + ' 正在開往「' + label + '」…');
+    animateCarAlong(pts, '🚗 → ' + label, function () {
+      spawnMapBubble(tx, ty, '🎉 已抵達 ' + label + '！', '#0284c7');
+      openFunModal(spotKind);
+    });
+  }
+
+  function startRandomCruise() {
+    var liveBlds = (C.reg.buildings || []).filter(function (b) { return C.isLive(b); });
+    if (!liveBlds.length) liveBlds = C.reg.buildings || [];
+    if (!liveBlds.length) return;
+    var pick = liveBlds[Math.floor(Math.random() * liveBlds.length)];
+    var prevMode = V.arrivalAction;
+    V.arrivalAction = 'cruise';
+    driveCarToBuilding(pick.id, { keepPanel: true });
+    V.arrivalAction = prevMode;
+  }
+
+  function openCarHud(carIdx) {
+    if (typeof carIdx === 'number' && carIdx >= 0) selectParkedCar(carIdx);
+    else if (V.activeCarIdx < 0) selectParkedCar(0);
+    if (!V.hudEl) {
+      var wrap = document.getElementById('mapWrap');
+      if (!wrap) return;
+      var div = document.createElement('div');
+      div.className = 'car-hud';
+      div.id = 'carNavHud';
+      wrap.appendChild(div);
+      V.hudEl = div;
+      div.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('button[data-car-act]') : null;
+        if (!btn) return;
+        var act = btn.getAttribute('data-car-act');
+        if (act === 'close') {
+          C.carPickMode = false;
+          div.hidden = true;
+        } else if (act === 'random') {
+          startRandomCruise();
+        } else if (act === 'pick-map') {
+          C.carPickMode = !C.carPickMode;
+          updateCarHud();
+          C.toast(C.carPickMode ? '👆 請直接點擊地圖上的任一棟建築，專車就會開過去！' : '已取消地圖點選導航');
+        } else if (act === 'mode') {
+          V.arrivalAction = V.arrivalAction === 'panel' ? 'enter' : (V.arrivalAction === 'enter' ? 'cruise' : 'panel');
+          updateCarHud();
+        } else if (act === 'goto-bld') {
+          driveCarToBuilding(btn.getAttribute('data-bld'));
+        } else if (act === 'goto-spot') {
+          driveCarToSpot(btn.getAttribute('data-spot'));
+        }
+      });
+    }
+    V.hudEl.hidden = false;
+    updateCarHud();
+  }
+
+  function updateCarHud() {
+    if (!V.hudEl || V.hudEl.hidden) return;
+    var modeTxt = V.arrivalAction === 'enter' ? '🚀 抵達：直接進入學院' : (V.arrivalAction === 'panel' ? '📖 抵達：打開介紹卡' : '👀 抵達：純兜風不彈窗');
+    var quickIds = ['english', 'japanese', 'finance', 'stock', 'poker', 'nba', 'epl', 'f1', 'addiction-cm', 'coding', 'smart-iot', 'embedded-rpi'];
+    var pills = quickIds.map(function (id) {
+      var b = C.building(id);
+      if (!b) return '';
+      return '<button type="button" class="car-pill" data-car-act="goto-bld" data-bld="' + esc(b.id) + '">' + esc((b.icon || '🏫') + ' ' + b.name.replace(/學院|智慧選股|運彩智庫/g, '')) + '</button>';
+    }).join('');
+    V.hudEl.innerHTML = '<div class="car-hud-top">' +
+      '<span class="car-hud-title"><span class="car-dot" style="background:' + esc(V.activeCarColor) + '"></span><b>' + esc(V.activeCarName) + '</b> 已發動！要去哪裡？</span>' +
+      '<div class="car-hud-ctrls">' +
+      '<button type="button" class="car-btn' + (C.carPickMode ? ' on' : '') + '" data-car-act="pick-map">👆 點地圖建築開過去</button>' +
+      '<button type="button" class="car-btn" data-car-act="random">🎲 隨機兜風</button>' +
+      '<button type="button" class="car-btn" data-car-act="mode">' + esc(modeTxt) + '</button>' +
+      '<button type="button" class="car-btn" data-car-act="goto-spot" data-spot="parking">🅿️ 停回車位</button>' +
+      '<button type="button" class="car-close" data-car-act="close" aria-label="關閉導航列">✕</button>' +
+      '</div></div>' +
+      '<div class="car-hud-pills">' +
+      '<span class="car-hud-lbl">⚡ 一鍵開往：</span>' + pills +
+      '<button type="button" class="car-pill spot" data-car-act="goto-spot" data-spot="fishing">🎣 湖邊釣魚</button>' +
+      '<button type="button" class="car-pill spot" data-car-act="goto-spot" data-spot="basketball">🏀 籃球場</button>' +
+      '</div>';
+  }
+
+  /* ------------------------------------------------------------ 🎮 小遊戲視窗（Modal 容器） */
+  var activeCleanup = null;
+  function ensureFunModal() {
+    var bd = document.getElementById('funModal');
+    if (bd) return bd;
+    bd = document.createElement('div');
+    bd.className = 'modal-bd';
+    bd.id = 'funModal';
+    bd.hidden = true;
+    bd.innerHTML = '<div class="modal fun-modal" role="dialog" aria-modal="true" aria-label="校園互動遊樂場">' +
+      '<button type="button" class="modal-x" id="funModalClose" aria-label="關閉">✕</button>' +
+      '<div class="modal-body" id="funModalBody"></div>' +
+      '</div>';
+    document.body.appendChild(bd);
+    bd.addEventListener('click', function (e) {
+      if (e.target === bd || (e.target.closest && e.target.closest('#funModalClose'))) closeFunModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !bd.hidden) closeFunModal();
+    });
+    return bd;
+  }
+
+  function closeFunModal() {
+    if (activeCleanup) { try { activeCleanup(); } catch (e) { /* ignore */ } activeCleanup = null; }
+    var bd = document.getElementById('funModal');
+    if (!bd) return;
+    bd.classList.remove('open');
+    bd.hidden = true;
+    if (!document.querySelector('.modal-bd.open')) document.body.classList.remove('modal-open');
+  }
+
+  function funNavHtml(activeTab) {
+    var tabs = [
+      { id: 'fishing', label: '🎣 學園湖釣魚' },
+      { id: 'basketball', label: '🏀 三分投籃賽' },
+      { id: 'soccer', label: '⚽ 十二碼 PK' },
+      { id: 'tennis', label: '🎾 網球對打' },
+      { id: 'hub', label: '🐾 動物＆車隊圖鑑' },
+    ];
+    return '<div class="fun-tabs" role="tablist">' + tabs.map(function (t) {
+      return '<button type="button" class="fun-tab' + (t.id === activeTab ? ' on' : '') + '" data-fun-tab="' + t.id + '">' + esc(t.label) + '</button>';
+    }).join('') + '</div>';
+  }
+
+  function openFunModal(kind) {
+    if (activeCleanup) { try { activeCleanup(); } catch (e) { /* ignore */ } activeCleanup = null; }
+    var bd = ensureFunModal();
+    var body = document.getElementById('funModalBody');
+    bd.hidden = false;
+    bd.classList.add('open');
+    document.body.classList.add('modal-open');
+    if (kind === 'fishing') renderFishingGame(body);
+    else if (kind === 'basketball') renderBasketballGame(body);
+    else if (kind === 'soccer') renderSoccerGame(body);
+    else if (kind === 'tennis') renderTennisGame(body);
+    else renderFunHub(body);
+    body.onclick = function (e) {
+      var tab = e.target.closest ? e.target.closest('[data-fun-tab]') : null;
+      if (tab) openFunModal(tab.getAttribute('data-fun-tab'));
+    };
+  }
+
+  /* ============================================================
+   * GAME 1: 🎣 學園湖釣魚樂 (Lake Fishing Mini-Game)
+   * ============================================================ */
+  function renderFishingGame(container) {
+    var caughtKinds = Object.keys(ST.fishCaught).length;
+    container.innerHTML = funNavHtml('fishing') +
+      '<div class="fg-head">' +
+      '<div><h2>🎣 學園湖垂釣樂</h2><p class="fg-sub">點擊湖面任意位置拋竿，等浮標大力下沉顯示「❗上鉤了」時立刻點「⚡收線拉竿」！</p></div>' +
+      '<div class="fg-stats"><span class="fg-badge">🏆 累積漁獲：<b id="fishTotalCnt">' + ST.fishTotal + '</b> 尾</span>' +
+      '<span class="fg-badge">📖 圖鑑：<b id="fishDexCnt">' + caughtKinds + ' / ' + FISH_SPECIES.length + '</b></span></div>' +
+      '</div>' +
+      '<div class="pond-stage" id="pondStage">' +
+      '<canvas id="pondCanvas" width="620" height="270"></canvas>' +
+      '<div class="pond-hud">' +
+      '<span class="pond-status" id="pondStatus">👆 點擊湖面拋竿，或按右側按鈕開始垂釣</span>' +
+      '<button type="button" class="btn primary sm" id="pondActionBtn">🎯 拋竿下水</button>' +
+      '</div>' +
+      '<div class="catch-banner" id="catchBanner" hidden></div>' +
+      '</div>' +
+      '<div class="fg-dex-title">📖 學園湖魚類圖鑑（點擊湖面收集全部 7 種！）</div>' +
+      '<div class="fg-dex" id="fishDexGrid"></div>';
+
+    function renderDex() {
+      var grid = document.getElementById('fishDexGrid');
+      if (!grid) return;
+      grid.innerHTML = FISH_SPECIES.map(function (sp) {
+        var cnt = ST.fishCaught[sp.id] || 0;
+        return '<div class="dex-card' + (cnt ? ' unlocked' : ' locked') + '">' +
+          '<div class="dex-ic">' + (cnt ? sp.icon : '❔') + '</div>' +
+          '<div class="dex-info"><b>' + esc(cnt ? sp.name : '？？？未知魚種') + '</b>' +
+          '<small>' + esc(sp.stars + ' · +' + sp.pts + '分' + (cnt ? ' · 已釣 ' + cnt + ' 次' : '')) + '</small>' +
+          '<p>' + esc(cnt ? sp.desc : '在學園湖拋竿垂釣即可解鎖此圖鑑') + '</p></div></div>';
+      }).join('');
+      var tc = document.getElementById('fishTotalCnt'), dc = document.getElementById('fishDexCnt');
+      if (tc) tc.textContent = ST.fishTotal;
+      if (dc) dc.textContent = Object.keys(ST.fishCaught).length + ' / ' + FISH_SPECIES.length;
+    }
+    renderDex();
+
+    var cvs = document.getElementById('pondCanvas');
+    var ctx = cvs.getContext('2d');
+    var statusEl = document.getElementById('pondStatus');
+    var actBtn = document.getElementById('pondActionBtn');
+    var banner = document.getElementById('catchBanner');
+
+    var fishes = [];
+    for (var i = 0; i < 8; i++) {
+      var sp = FISH_SPECIES[i % FISH_SPECIES.length];
+      fishes.push({
+        sp: sp,
+        x: 60 + Math.random() * 500,
+        y: 55 + Math.random() * 185,
+        vx: (Math.random() < 0.5 ? -1 : 1) * (28 + Math.random() * 32),
+        vy: (Math.random() - 0.5) * 14,
+        size: sp.id === 'dragon_koi' ? 18 : (sp.id === 'koi_rw' ? 14 : 11),
+        wobble: Math.random() * 6.28,
+      });
+    }
+    var state = 'idle'; // 'idle' | 'cast' | 'nibble' | 'bite' | 'reel'
+    var bobber = { x: 310, y: 145, r: 0, sink: 0 };
+    var targetFish = null;
+    var timer = 0;
+    var reelPos = 0.5, reelDir = 1, reelProg = 0;
+    var ripples = [];
+
+    function castAt(x, y) {
+      banner.hidden = true;
+      bobber.x = clamp(x, 70, 550);
+      bobber.y = clamp(y, 65, 225);
+      bobber.sink = 0;
+      ripples.push({ x: bobber.x, y: bobber.y, r: 4, a: 1 });
+      state = 'cast';
+      timer = 1.1 + Math.random() * 1.2;
+      // 挑選一隻幸運魚游過來
+      var roll = Math.random();
+      var chosenSp = roll < 0.12 ? FISH_SPECIES[6] : (roll < 0.25 ? FISH_SPECIES[4] : (roll < 0.42 ? FISH_SPECIES[3] : (roll < 0.62 ? FISH_SPECIES[1] : FISH_SPECIES[Math.floor(Math.random() * 3)])));
+      targetFish = fishes[0];
+      targetFish.sp = chosenSp;
+      targetFish.size = chosenSp.id === 'dragon_koi' ? 19 : 13;
+      statusEl.textContent = '🌊 浮標已拋出！魚兒正在靠近中…';
+      actBtn.textContent = '⏳ 等待咬餌…';
+    }
+
+    function triggerPull() {
+      if (state === 'idle') {
+        castAt(160 + Math.random() * 300, 85 + Math.random() * 120);
+        return;
+      }
+      if (state === 'cast' || state === 'nibble') {
+        state = 'idle';
+        statusEl.textContent = '😅 太早拉竿把魚嚇跑了！再點一次湖面拋竿吧';
+        actBtn.textContent = '🎯 重新拋竿';
+        return;
+      }
+      if (state === 'bite') {
+        // 進入拉竿判定或直接釣起
+        var sp = targetFish ? targetFish.sp : FISH_SPECIES[0];
+        var cm = Math.round(sp.cm[0] + Math.random() * (sp.cm[1] - sp.cm[0]));
+        ST.fishCaught[sp.id] = (ST.fishCaught[sp.id] || 0) + 1;
+        ST.fishTotal += 1;
+        saveState();
+        renderDex();
+        state = 'idle';
+        ripples.push({ x: bobber.x, y: bobber.y, r: 6, a: 1 });
+        statusEl.textContent = '🎉 恭喜釣獲「' + sp.name + '」（' + cm + ' cm · +' + sp.pts + ' 分）！';
+        actBtn.textContent = '🎯 再拋一竿';
+        banner.hidden = false;
+        banner.innerHTML = '<div class="cb-card"><span class="cb-ic">' + sp.icon + '</span>' +
+          '<div><b>釣到了！' + esc(sp.name) + ' <span class="cb-cm">' + cm + ' cm</span></b>' +
+          '<p>' + esc(sp.desc) + '（+' + sp.pts + ' 分）</p></div></div>';
+        if (targetFish) {
+          targetFish.x = Math.random() < 0.5 ? 40 : 580;
+          targetFish.y = 60 + Math.random() * 170;
+        }
+      }
+    }
+
+    cvs.addEventListener('pointerdown', function (e) {
+      var r = cvs.getBoundingClientRect();
+      var x = (e.clientX - r.left) * (cvs.width / r.width);
+      var y = (e.clientY - r.top) * (cvs.height / r.height);
+      if (state === 'bite') triggerPull();
+      else castAt(x, y);
+    });
+    actBtn.addEventListener('click', function () {
+      if (state === 'bite') triggerPull();
+      else castAt(160 + Math.random() * 300, 85 + Math.random() * 120);
+    });
+
+    var raf = 0, last = performance.now();
+    function loop(now) {
+      var dt = Math.min(0.08, (now - last) / 1000);
+      last = now;
+      // 背景湖水
+      var grad = ctx.createLinearGradient(0, 0, 0, cvs.height);
+      grad.addColorStop(0, '#7dd3fc');
+      grad.addColorStop(1, '#0284c7');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+      // 岸邊木棧道（下方中央）
+      ctx.fillStyle = '#d9a066';
+      ctx.strokeStyle = '#6b4a32';
+      ctx.lineWidth = 2;
+      ctx.fillRect(285, 232, 50, 38);
+      ctx.strokeRect(285, 232, 50, 38);
+
+      // 睡蓮
+      [[90, 70, 18], [122, 92, 13], [520, 68, 19], [490, 205, 16]].forEach(function (p) {
+        ctx.fillStyle = '#86bf78';
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], p[2], 0.2, Math.PI * 1.9);
+        ctx.lineTo(p[0], p[1]);
+        ctx.closePath();
+        ctx.fill();
+      });
+
+      // 更新並繪製魚群
+      for (var i = 0; i < fishes.length; i++) {
+        var f = fishes[i];
+        f.wobble += dt * 7;
+        if ((state === 'cast' || state === 'nibble' || state === 'bite') && f === targetFish) {
+          var dx = bobber.x - f.x, dy = bobber.y - f.y;
+          var dist = Math.hypot(dx, dy) || 1;
+          if (dist > 14) {
+            f.vx = (dx / dist) * 85;
+            f.vy = (dy / dist) * 85;
+          } else {
+            f.vx *= 0.8;
+            f.vy *= 0.8;
+          }
+        } else {
+          if (f.x < 35 || f.x > cvs.width - 35) f.vx = -f.vx;
+          if (f.y < 35 || f.y > cvs.height - 35) f.vy = -f.vy;
+        }
+        f.x += f.vx * dt;
+        f.y += f.vy * dt;
+        var ang = Math.atan2(f.vy, f.vx);
+        ctx.save();
+        ctx.translate(f.x, f.y);
+        ctx.rotate(ang);
+        ctx.fillStyle = f.sp.col || '#ef4444';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, f.size, f.size * 0.46, 0, 0, Math.PI * 2);
+        ctx.fill();
+        var tailY = Math.sin(f.wobble) * 3.5;
+        ctx.beginPath();
+        ctx.moveTo(-f.size + 2, 0);
+        ctx.lineTo(-f.size - 8, -5 + tailY);
+        ctx.lineTo(-f.size - 8, 5 + tailY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(f.size * 0.45, -1.8, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 釣魚狀態計時
+      if (state === 'cast') {
+        timer -= dt;
+        if (timer <= 0) {
+          state = 'nibble';
+          timer = 0.8 + Math.random() * 0.9;
+          bobber.sink = 3;
+          ripples.push({ x: bobber.x, y: bobber.y, r: 3, a: 0.9 });
+          statusEl.textContent = '💧 浮標動了一下… 魚兒正在試探！準備拉竿！';
+        }
+      } else if (state === 'nibble') {
+        timer -= dt;
+        bobber.sink = Math.sin(now * 0.025) * 3;
+        if (timer <= 0) {
+          state = 'bite';
+          timer = 1.65;
+          bobber.sink = 8;
+          ripples.push({ x: bobber.x, y: bobber.y, r: 5, a: 1 });
+          statusEl.textContent = '❗ 魚上鉤了！快點湖面或「⚡ 立即拉竿」！';
+          actBtn.textContent = '⚡ 立即拉竿！';
+        }
+      } else if (state === 'bite') {
+        timer -= dt;
+        bobber.sink = 7 + Math.sin(now * 0.05) * 3;
+        if (timer <= 0) {
+          state = 'idle';
+          statusEl.textContent = '🐟 哎呀！魚兒吃完餌溜走了，再拋一竿試試！';
+          actBtn.textContent = '🎯 重新拋竿';
+        }
+      }
+
+      // 漣漪
+      for (var r = ripples.length - 1; r >= 0; r--) {
+        var rp = ripples[r];
+        rp.r += dt * 36;
+        rp.a -= dt * 0.9;
+        if (rp.a <= 0) { ripples.splice(r, 1); continue; }
+        ctx.strokeStyle = 'rgba(255,255,255,' + rp.a.toFixed(2) + ')';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(rp.x, rp.y, rp.r, rp.r * 0.55, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // 釣竿與浮標
+      if (state !== 'idle') {
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.moveTo(310, 265);
+        ctx.quadraticCurveTo(310, 200, 310 + (bobber.x - 310) * 0.28, 185);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,.85)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(310 + (bobber.x - 310) * 0.28, 185);
+        ctx.lineTo(bobber.x, bobber.y + bobber.sink);
+        ctx.stroke();
+
+        // 浮標
+        var by = bobber.y + bobber.sink;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(bobber.x, by, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(bobber.x, by, 6, Math.PI, 0);
+        ctx.fill();
+        if (state === 'bite') {
+          ctx.fillStyle = '#fef08a';
+          ctx.font = '900 18px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('❗上鉤了！點此拉竿！', bobber.x, by - 14);
+        }
+      }
+
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    activeCleanup = function () { cancelAnimationFrame(raf); };
+  }
+
+  /* ============================================================
+   * GAME 2: 🏀 陽光籃球場 · 街頭三分投籃大賽 (Basketball Mini-Game)
+   * ============================================================ */
+  function renderBasketballGame(container) {
+    container.innerHTML = funNavHtml('basketball') +
+      '<div class="fg-head">' +
+      '<div><h2>🏀 陽光籃球場 · 街頭三分投籃大賽</h2><p class="fg-sub">當下方準度指針滑到「🎯 綠色／金色甜蜜點」時，點擊球場或按「🏀 出手投籃」！（連進 3 球開啟 🔥 手感發燙加成）</p></div>' +
+      '<div class="fg-stats"><span class="fg-badge">🏀 目前得分：<b id="bbScore">0</b></span>' +
+      '<span class="fg-badge">🔥 連進：<b id="bbStreak">0</b></span>' +
+      '<span class="fg-badge">🏆 最高紀錄：<b id="bbHigh">' + ST.bballHigh + '</b></span></div>' +
+      '</div>' +
+      '<div class="pond-stage">' +
+      '<canvas id="bbCanvas" width="620" height="275"></canvas>' +
+      '<div class="pond-hud">' +
+      '<span class="pond-status" id="bbStatus">🎯 抓準指針通過中央綠色／金色區域時出手！</span>' +
+      '<button type="button" class="btn primary sm" id="bbShootBtn">🏀 出手投籃 (空白鍵)</button>' +
+      '</div></div>';
+
+    var cvs = document.getElementById('bbCanvas');
+    var ctx = cvs.getContext('2d');
+    var scoreEl = document.getElementById('bbScore');
+    var streakEl = document.getElementById('bbStreak');
+    var highEl = document.getElementById('bbHigh');
+    var statusEl = document.getElementById('bbStatus');
+    var shootBtn = document.getElementById('bbShootBtn');
+
+    var score = 0, streak = 0;
+    var meter = 0.2, meterDir = 1;
+    var hoopX = 485, hoopY = 105, hoopDir = 1;
+    var ball = null; // {t, x0, y0, x1, y1, hit, swish, pts}
+    var popTxt = null;
+
+    function shoot() {
+      if (ball) return;
+      var diff = Math.abs(meter - 0.5);
+      var swish = diff <= 0.055;
+      var hit = diff <= 0.145;
+      var tx = hit ? hoopX : (meter < 0.5 ? hoopX - 34 : hoopX + 28);
+      var pts = 0;
+      if (hit) {
+        streak += 1;
+        pts = (swish ? 3 : 2) + (streak >= 3 ? 1 : 0);
+        score += pts;
+        if (score > ST.bballHigh) { ST.bballHigh = score; saveState(); }
+      } else {
+        streak = 0;
+      }
+      ball = { t: 0, x0: 120, y0: 195, x1: tx, y1: hoopY, hit: hit, swish: swish, pts: pts };
+    }
+
+    cvs.addEventListener('pointerdown', shoot);
+    shootBtn.addEventListener('click', shoot);
+    function onKey(e) {
+      if (e.code === 'Space') { e.preventDefault(); shoot(); }
+    }
+    window.addEventListener('keydown', onKey);
+
+    var raf = 0, last = performance.now();
+    function loop(now) {
+      var dt = Math.min(0.08, (now - last) / 1000);
+      last = now;
+
+      // 移動準度條與籃框
+      var spd = 0.85 + Math.min(0.65, streak * 0.08);
+      if (!ball) {
+        meter += meterDir * spd * dt;
+        if (meter >= 0.96) { meter = 0.96; meterDir = -1; }
+        if (meter <= 0.04) { meter = 0.04; meterDir = 1; }
+      }
+      if (streak >= 2) {
+        hoopX += hoopDir * 38 * dt;
+        if (hoopX > 525) { hoopX = 525; hoopDir = -1; }
+        if (hoopX < 435) { hoopX = 435; hoopDir = 1; }
+      }
+
+      // 球場背景
+      ctx.fillStyle = '#fef3c7';
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+      ctx.fillStyle = '#f2a65a';
+      ctx.fillRect(0, 185, cvs.width, 90);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, 185);
+      ctx.lineTo(cvs.width, 185);
+      ctx.stroke();
+
+      // 籃架與籃板
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(hoopX + 34, 225);
+      ctx.lineTo(hoopX + 34, hoopY - 28);
+      ctx.lineTo(hoopX + 18, hoopY - 12);
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 2;
+      ctx.fillRect(hoopX + 16, hoopY - 42, 6, 46);
+      ctx.strokeRect(hoopX + 16, hoopY - 42, 6, 46);
+
+      // 籃框與籃網
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(hoopX - 18, hoopY);
+      ctx.lineTo(hoopX + 16, hoopY);
+      ctx.stroke();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(hoopX - 16, hoopY + 2);
+      ctx.lineTo(hoopX - 11, hoopY + 24);
+      ctx.lineTo(hoopX + 9, hoopY + 24);
+      ctx.lineTo(hoopX + 14, hoopY + 2);
+      ctx.stroke();
+
+      // 球員
+      ctx.fillStyle = '#1d4ed8';
+      ctx.beginPath();
+      ctx.arc(110, 162, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillRect(100, 175, 20, 38);
+
+      // 拋物線預覽
+      ctx.strokeStyle = 'rgba(234,88,12,.25)';
+      ctx.setLineDash([5, 5]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(120, 185);
+      ctx.quadraticCurveTo((120 + hoopX) / 2, 18, hoopX, hoopY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 籃球飛行
+      var bx = 124, by = 172;
+      if (ball) {
+        ball.t += dt * 1.45;
+        var u = Math.min(1, ball.t);
+        bx = ball.x0 + (ball.x1 - ball.x0) * u;
+        var peakY = 26;
+        by = (1 - u) * (1 - u) * ball.y0 + 2 * (1 - u) * u * peakY + u * u * ball.y1;
+        if (ball.t >= 1) {
+          if (ball.hit) {
+            statusEl.textContent = ball.swish
+              ? '🔥 空心入網 SWISH！+' + ball.pts + ' 分（連進 ' + streak + ' 球）'
+              : '🏀 擦板命中！+' + ball.pts + ' 分（連進 ' + streak + ' 球）';
+            popTxt = { x: hoopX, y: hoopY - 18, text: (ball.swish ? '🔥 SWISH +' : '🏀 +') + ball.pts, col: ball.swish ? '#d97706' : '#16a34a', a: 1 };
+          } else {
+            statusEl.textContent = '💥 打鐵彈框而出！調整節奏再投一球！';
+            popTxt = { x: hoopX, y: hoopY - 18, text: '💦 差一點！', col: '#dc2626', a: 1 };
+          }
+          scoreEl.textContent = score;
+          streakEl.textContent = streak + (streak >= 3 ? ' 🔥' : '');
+          highEl.textContent = ST.bballHigh;
+          ball = null;
+        }
+      }
+      ctx.fillStyle = '#ea580c';
+      ctx.strokeStyle = '#4a3b2f';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.arc(bx, by, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      if (popTxt) {
+        popTxt.y -= dt * 28;
+        popTxt.a -= dt * 0.85;
+        if (popTxt.a <= 0) popTxt = null;
+        else {
+          ctx.fillStyle = popTxt.col;
+          ctx.font = '900 18px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(popTxt.text, popTxt.x, popTxt.y);
+        }
+      }
+
+      // 下方準度槽
+      var mx = 130, my = 242, mw = 360, mh = 18;
+      ctx.fillStyle = '#334155';
+      ctx.beginPath();
+      ctx.roundRect(mx, my, mw, mh, 9);
+      ctx.fill();
+      // 綠色命中區
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(mx + mw * 0.355, my + 2, mw * 0.29, mh - 4);
+      // 金色空心區
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(mx + mw * 0.445, my + 2, mw * 0.11, mh - 4);
+      // 指針
+      var px = mx + meter * mw;
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(px, my + mh / 2, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    activeCleanup = function () {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('keydown', onKey);
+    };
+  }
+
+  /* ============================================================
+   * GAME 3: ⚽ 綠茵足球場 · 黃金十二碼 PK 賽 (Soccer Penalty Shootout)
+   * ============================================================ */
+  function renderSoccerGame(container) {
+    var ZONES = [
+      { id: 0, label: '↖ 左上死角', x: 175, y: 74 },
+      { id: 1, label: '↑ 中路勺子球', x: 310, y: 72 },
+      { id: 2, label: '↗ 右上死角', x: 445, y: 74 },
+      { id: 3, label: '↙ 左下低平球', x: 175, y: 138 },
+      { id: 4, label: '↓ 中路抽射', x: 310, y: 138 },
+      { id: 5, label: '↘ 右下低平球', x: 445, y: 138 },
+    ];
+    container.innerHTML = funNavHtml('soccer') +
+      '<div class="fg-head">' +
+      '<div><h2>⚽ 綠茵足球場 · 黃金十二碼 PK 大戰</h2><p class="fg-sub">點擊球門上的 6 個射門死角，騙過守門員破網得分！</p></div>' +
+      '<div class="fg-stats"><span class="fg-badge">⚽ 進球數：<b id="scGoals">0</b> / <b id="scShots">0</b></span>' +
+      '<span class="fg-badge">🏆 最高進球：<b id="scHigh">' + ST.soccerHigh + '</b></span></div>' +
+      '</div>' +
+      '<div class="pond-stage">' +
+      '<canvas id="scCanvas" width="620" height="270"></canvas>' +
+      '<div class="pond-hud">' +
+      '<span class="pond-status" id="scStatus">👆 點擊球門中的「🎯 射門標靶」直接起腳射門！</span>' +
+      '<div class="sc-zone-btns">' + ZONES.map(function (z) {
+        return '<button type="button" class="btn sm" data-sc-zone="' + z.id + '">' + esc(z.label) + '</button>';
+      }).join('') + '</div></div></div>';
+
+    var cvs = document.getElementById('scCanvas');
+    var ctx = cvs.getContext('2d');
+    var goalsEl = document.getElementById('scGoals');
+    var shotsEl = document.getElementById('scShots');
+    var highEl = document.getElementById('scHigh');
+    var statusEl = document.getElementById('scStatus');
+
+    var goals = 0, shots = 0;
+    var keeper = { x: 310, y: 112, tx: 310, ty: 112 };
+    var kick = null; // {t, tx, ty, saved, zone}
+
+    function shootZone(zid) {
+      if (kick) return;
+      var z = ZONES[zid] || ZONES[0];
+      // 守門員隨機撲向一格（約 25% 機率猜中同格）
+      var keeperPick = Math.random() < 0.25 ? zid : Math.floor(Math.random() * ZONES.length);
+      var kz = ZONES[keeperPick];
+      keeper.tx = kz.x;
+      keeper.ty = kz.y;
+      kick = { t: 0, tx: z.x, ty: z.y, saved: keeperPick === zid, label: z.label };
+    }
+
+    cvs.addEventListener('pointerdown', function (e) {
+      var r = cvs.getBoundingClientRect();
+      var x = (e.clientX - r.left) * (cvs.width / r.width);
+      var y = (e.clientY - r.top) * (cvs.height / r.height);
+      var best = 0, bestD = 9999;
+      ZONES.forEach(function (z) {
+        var d = Math.hypot(x - z.x, y - z.y);
+        if (d < bestD) { bestD = d; best = z.id; }
+      });
+      shootZone(best);
+    });
+    container.querySelectorAll('[data-sc-zone]').forEach(function (b) {
+      b.addEventListener('click', function () { shootZone(+b.getAttribute('data-sc-zone')); });
+    });
+
+    var raf = 0, last = performance.now();
+    function loop(now) {
+      var dt = Math.min(0.08, (now - last) / 1000);
+      last = now;
+
+      // 球場草皮與天空
+      ctx.fillStyle = '#bae6fd';
+      ctx.fillRect(0, 0, cvs.width, 155);
+      ctx.fillStyle = '#40916c';
+      ctx.fillRect(0, 155, cvs.width, 115);
+      for (var i = 0; i < 6; i++) {
+        if (i % 2) {
+          ctx.fillStyle = '#52b788';
+          ctx.fillRect(i * 104, 155, 52, 115);
+        }
+      }
+
+      // 球門與球網
+      ctx.fillStyle = 'rgba(255,255,255,.22)';
+      ctx.fillRect(140, 46, 340, 112);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(140, 46, 340, 112);
+
+      // 6 個射門標靶
+      if (!kick) {
+        ZONES.forEach(function (z) {
+          ctx.fillStyle = 'rgba(250,204,21,.28)';
+          ctx.strokeStyle = '#facc15';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(z.x, z.y, 20, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '800 11px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('🎯', z.x, z.y + 4);
+        });
+      }
+
+      // 守門員移動
+      keeper.x += (keeper.tx - keeper.x) * Math.min(1, dt * 10);
+      keeper.y += (keeper.ty - keeper.y) * Math.min(1, dt * 10);
+      ctx.fillStyle = '#ef4444';
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(keeper.x - 22, keeper.y - 16, 44, 34, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.arc(keeper.x, keeper.y - 24, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(keeper.x - 26, keeper.y - 6, 7, 0, Math.PI * 2);
+      ctx.arc(keeper.x + 26, keeper.y - 6, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 足球飛行
+      var bx = 310, by = 238, br = 12;
+      if (kick) {
+        kick.t += dt * 1.9;
+        var u = Math.min(1, kick.t);
+        bx = 310 + (kick.tx - 310) * u;
+        by = 238 + (kick.ty - 238) * u - Math.sin(u * Math.PI) * 28;
+        br = 12 - u * 3.5;
+        if (kick.t >= 1) {
+          shots += 1;
+          if (!kick.saved) {
+            goals += 1;
+            if (goals > ST.soccerHigh) { ST.soccerHigh = goals; saveState(); }
+            statusEl.textContent = '⚽ GOAL!! 「' + kick.label + '」完美破網得分！';
+          } else {
+            statusEl.textContent = '🧤 守門員神撲擋下了「' + kick.label + '」！再踢一球！';
+          }
+          goalsEl.textContent = goals;
+          shotsEl.textContent = shots;
+          highEl.textContent = ST.soccerHigh;
+          setTimeout(function () { keeper.tx = 310; keeper.ty = 112; }, 350);
+          kick = null;
+        }
+      }
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(bx, by, br, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    activeCleanup = function () { cancelAnimationFrame(raf); };
+  }
+
+  /* ============================================================
+   * GAME 4: 🎾 森林網球場 · 王牌對打挑戰 (Tennis Rally Mini-Game)
+   * ============================================================ */
+  function renderTennisGame(container) {
+    container.innerHTML = funNavHtml('tennis') +
+      '<div class="fg-head">' +
+      '<div><h2>🎾 森林網球場 · 王牌對打挑戰</h2><p class="fg-sub">在球場上移動滑鼠或手指控制下方球拍，與網球教練對抽過招！球拍正中央擊球可打出「⚡黃金扣殺」！</p></div>' +
+      '<div class="fg-stats"><span class="fg-badge">🔥 目前連擊：<b id="tnRally">0</b></span>' +
+      '<span class="fg-badge">🏆 最高連擊：<b id="tnHigh">' + ST.tennisHigh + '</b></span>' +
+      '<span class="fg-badge">🏅 得分：<b id="tnScore">0 : 0</b></span></div>' +
+      '</div>' +
+      '<div class="pond-stage">' +
+      '<canvas id="tnCanvas" width="620" height="275"></canvas>' +
+      '<div class="pond-hud">' +
+      '<span class="pond-status" id="tnStatus">🎾 左右移動滑鼠／手指接球對抽！</span>' +
+      '<button type="button" class="btn primary sm" id="tnServeBtn">🎾 重新發球</button>' +
+      '</div></div>';
+
+    var cvs = document.getElementById('tnCanvas');
+    var ctx = cvs.getContext('2d');
+    var rallyEl = document.getElementById('tnRally');
+    var highEl = document.getElementById('tnHigh');
+    var scoreEl = document.getElementById('tnScore');
+    var statusEl = document.getElementById('tnStatus');
+    var serveBtn = document.getElementById('tnServeBtn');
+
+    var playerX = 310, botX = 310;
+    var pScore = 0, bScore = 0, rally = 0;
+    var ball = { x: 310, y: 137, vx: 110, vy: 165, smash: false };
+
+    function resetBall(dir) {
+      ball.x = 310;
+      ball.y = 137;
+      ball.vx = (Math.random() - 0.5) * 160;
+      ball.vy = (dir || 1) * 165;
+      ball.smash = false;
+      rally = 0;
+      rallyEl.textContent = '0';
+    }
+
+    function movePaddle(clientX) {
+      var r = cvs.getBoundingClientRect();
+      playerX = clamp((clientX - r.left) * (cvs.width / r.width), 130, 490);
+    }
+    cvs.addEventListener('pointermove', function (e) { movePaddle(e.clientX); });
+    cvs.addEventListener('pointerdown', function (e) { movePaddle(e.clientX); });
+    serveBtn.addEventListener('click', function () { resetBall(1); });
+
+    var raf = 0, last = performance.now();
+    function loop(now) {
+      var dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+
+      // 球場繪製
+      ctx.fillStyle = '#4d9078';
+      ctx.fillRect(0, 0, cvs.width, cvs.height);
+      ctx.fillStyle = '#2563eb';
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2.5;
+      ctx.fillRect(95, 16, 430, 243);
+      ctx.strokeRect(95, 16, 430, 243);
+      ctx.beginPath();
+      ctx.moveTo(95, 137.5);
+      ctx.lineTo(525, 137.5);
+      ctx.moveTo(310, 62);
+      ctx.lineTo(310, 213);
+      ctx.moveTo(95, 62);
+      ctx.lineTo(525, 62);
+      ctx.moveTo(95, 213);
+      ctx.lineTo(525, 213);
+      ctx.stroke();
+
+      // 教練 AI 移動
+      var botSpd = 195;
+      if (ball.x > botX + 8) botX = Math.min(485, botX + botSpd * dt);
+      else if (ball.x < botX - 8) botX = Math.max(135, botX - botSpd * dt);
+
+      // 球移動與碰撞
+      ball.x += ball.vx * dt;
+      ball.y += ball.vy * dt;
+      if (ball.x < 105) { ball.x = 105; ball.vx = Math.abs(ball.vx); }
+      if (ball.x > 515) { ball.x = 515; ball.vx = -Math.abs(ball.vx); }
+
+      // 玩家球拍接球 (y = 242)
+      if (ball.vy > 0 && ball.y >= 232 && ball.y <= 252 && Math.abs(ball.x - playerX) <= 44) {
+        var off = (ball.x - playerX) / 44;
+        var isSmash = Math.abs(off) < 0.24;
+        rally += 1;
+        if (rally > ST.tennisHigh) { ST.tennisHigh = rally; saveState(); highEl.textContent = ST.tennisHigh; }
+        rallyEl.textContent = rally + (isSmash ? ' ⚡' : '');
+        var spd = Math.min(310, 175 + rally * 9) * (isSmash ? 1.22 : 1);
+        ball.vy = -spd;
+        ball.vx = off * 220 + (Math.random() - 0.5) * 30;
+        ball.smash = isSmash;
+        statusEl.textContent = isSmash ? '⚡ 完美甜區擊球！黃金扣殺 Smash！（連擊 ' + rally + '）' : '🎾 漂亮回擊！（連擊 ' + rally + '）';
+      }
+
+      // 教練球拍接球 (y = 32)
+      if (ball.vy < 0 && ball.y <= 42 && ball.y >= 22 && Math.abs(ball.x - botX) <= 38) {
+        var boff = (ball.x - botX) / 38;
+        ball.vy = Math.min(280, 170 + rally * 7);
+        ball.vx = boff * 190;
+        ball.smash = false;
+      }
+
+      // 得分判定
+      if (ball.y < 10) {
+        pScore += 1;
+        scoreEl.textContent = pScore + ' : ' + bScore;
+        statusEl.textContent = '🏆 穿越得分！你拿下一分！（' + pScore + ' : ' + bScore + '）';
+        resetBall(1);
+      } else if (ball.y > 265) {
+        bScore += 1;
+        scoreEl.textContent = pScore + ' : ' + bScore;
+        statusEl.textContent = '😅 沒接到球，左右移動球拍再接再厲！';
+        resetBall(-1);
+      }
+
+      // 繪製球拍
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.roundRect(botX - 34, 24, 68, 10, 5);
+      ctx.fill();
+
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.roundRect(playerX - 40, 240, 80, 11, 5.5);
+      ctx.fill();
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(playerX - 10, 240, 20, 11);
+
+      // 網球
+      ctx.fillStyle = ball.smash ? '#facc15' : '#bef264';
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.smash ? 8 : 6.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+    activeCleanup = function () { cancelAnimationFrame(raf); };
+  }
+
+  /* ============================================================
+   * HUB: 🐾 校園互動總覽（動物圖鑑、專車派遣、4 大遊戲入口）
+   * ============================================================ */
+  function renderFunHub(container) {
+    var animals = L.animals || [];
+    var metCnt = Object.keys(ST.animalsMet).length;
+    var fishCnt = Object.keys(ST.fishCaught).length;
+    container.innerHTML = funNavHtml('hub') +
+      '<div class="fg-head">' +
+      '<div><h2>🎮 開心學園 · 校園互動與圖鑑中心</h2><p class="fg-sub">點擊地圖上的湖泊、球場、停車場車子與小動物，或從這裡一鍵體驗所有校園彩蛋！</p></div>' +
+      '</div>' +
+      '<div class="hub-grid">' +
+      '<button type="button" class="hub-card" data-fun-tab="fishing"><span class="hub-ic">🎣</span><div><b>學園湖垂釣樂</b><small>已收集 ' + fishCnt + ' / ' + FISH_SPECIES.length + ' 種魚 · 累積 ' + ST.fishTotal + ' 尾</small></div></button>' +
+      '<button type="button" class="hub-card" data-fun-tab="basketball"><span class="hub-ic">🏀</span><div><b>陽光籃球場 · 三分大賽</b><small>最高紀錄：' + ST.bballHigh + ' 分</small></div></button>' +
+      '<button type="button" class="hub-card" data-fun-tab="soccer"><span class="hub-ic">⚽</span><div><b>綠茵足球場 · 十二碼 PK</b><small>最高進球：' + ST.soccerHigh + ' 球</small></div></button>' +
+      '<button type="button" class="hub-card" data-fun-tab="tennis"><span class="hub-ic">🎾</span><div><b>森林網球場 · 王牌對打</b><small>最高連擊：' + ST.tennisHigh + ' 拍</small></div></button>' +
+      '</div>' +
+      '<div class="fg-dex-title">🚗 校園專車接送（已出車 ' + ST.carTrips + ' 趟 · 點擊立即派車開往學院）</div>' +
+      '<div class="hub-car-bar">' +
+      '<button type="button" class="btn primary sm" id="hubOpenCarBtn">🚗 打開校園專車導航列</button>' +
+      '<button type="button" class="btn sm" id="hubRandomCarBtn">🎲 派車隨機巡遊校園</button>' +
+      '</div>' +
+      '<div class="fg-dex-title">🐾 校園萌寵圖鑑（已遇見 ' + metCnt + ' / ' + animals.length + ' 隻 · 點擊可直接飛去地圖找牠！）</div>' +
+      '<div class="fg-dex">' + animals.map(function (a) {
+        var cnt = ST.animalsMet[a.id] || 0;
+        var ic = a.name.split(' ')[0];
+        return '<button type="button" class="dex-card unlocked hub-animal-btn" data-find-animal="' + esc(a.id) + '">' +
+          '<div class="dex-ic">' + esc(ic) + '</div>' +
+          '<div class="dex-info"><b>' + esc(a.name) + (cnt ? ' <span class="chip" style="background:#dcfce7;color:#166534">互動 ' + cnt + ' 次</span>' : ' <span class="chip" style="background:#f1f5f9;color:#475569">去地圖找牠 ›</span>') + '</b>' +
+          '<p>' + esc(a.msg) + '</p></div></button>';
+      }).join('') + '</div>';
+
+    var oc = document.getElementById('hubOpenCarBtn');
+    if (oc) oc.addEventListener('click', function () { closeFunModal(); openCarHud(0); startRandomCruise(); });
+    var rc = document.getElementById('hubRandomCarBtn');
+    if (rc) rc.addEventListener('click', function () { closeFunModal(); openCarHud(Math.floor(Math.random() * 7)); startRandomCruise(); });
+
+    container.querySelectorAll('[data-find-animal]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var aid = btn.getAttribute('data-find-animal');
+        var a = animals.filter(function (x) { return x.id === aid; })[0];
+        if (!a) return;
+        closeFunModal();
+        if (C.map.flyToPoint) C.map.flyToPoint(a.x, a.y, 680, 480);
+        var el = document.querySelector('#campusMap .animal[data-animal="' + aid + '"]');
+        setTimeout(function () { handleAnimalClick(aid, el); }, 450);
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------ 事件綁定與啟動 */
+  C.on('fun', function (ev) {
+    if (!ev || !ev.kind) return;
+    if (ev.kind === 'animal') {
+      handleAnimalClick(ev.id, ev.el);
+      return;
+    }
+    if (ev.kind === 'car') {
+      openCarHud(ev.idx);
+      startRandomCruise();
+      return;
+    }
+    if (ev.kind === 'car-hub' || ev.kind === 'vehicle') {
+      openCarHud(V.activeCarIdx >= 0 ? V.activeCarIdx : 0);
+      if (ev.kind === 'vehicle' && ev.id === 'bus') {
+        C.toast('🚌 叭叭～開心校車巡航中！可在下方導航列選擇想去的學院');
+      } else {
+        startRandomCruise();
+      }
+      return;
+    }
+    if (ev.kind === 'fishing') {
+      if (ev.fish) C.toast('🐟 水裡有「' + ev.fish + '」游過去了！準備拋竿垂釣～');
+      openFunModal('fishing');
+      return;
+    }
+    if (ev.kind === 'basketball' || ev.kind === 'tennis' || ev.kind === 'soccer' || ev.kind === 'hub') {
+      openFunModal(ev.kind);
+    }
+  });
+
+  function initFun() {
+    ensureVehicleLayer();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initFun);
+  else setTimeout(initFun, 50);
 })();
 
 </script>

@@ -2361,12 +2361,13 @@ a.term:hover {
   var PUBLIC_CAMPUS = 'https://okayell.github.io/';
   var LOCAL_CAMPUS_PORT = '8919';
   // Cloudtop 上各工具的 Autobahn proxy 與 Python backend port（registry.json 的 local_port / backend_port）。
-  var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8899', '8898',
+  var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8899', '8898',
     '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916'];
   var TOOL_MAP = {
     english: { port: '8911', path: 'english-speak-listen/' },
     japanese: { port: '8923', path: 'japanese/' },
     finance: { port: '8925', path: 'finance/' },
+    'addiction-cm': { port: '8927', path: 'addiction-cm/' },
     stock: { port: '8905', path: 'tw-stock-insight/' },
     poker: { port: '8899', path: 'poker-gto/' },
     nba: { port: '8913', path: 'nba-betting-iq/' },
@@ -2375,12 +2376,29 @@ a.term:hover {
   };
   var VISITS_KEY = 'okayell.campus.visits.v1';
 
+  function localOrigin(loc, port) {
+    var p = parseInt(port, 10);
+    var host = loc.hostname || '';
+    var dot = host.indexOf('.');
+    if (dot > 0) {
+      var label = host.slice(0, dot);
+      var pHex = ('0000' + p.toString(16)).slice(-4).toLowerCase();
+      if (label.length === 31 && /^a[0-9a-f]{30}$/i.test(label)) {
+        return loc.protocol + '//' + (label.slice(0, 9) + pHex + label.slice(13)).toLowerCase() + host.slice(dot);
+      }
+      if (label.length === 55 && /^b[0-9a-f]{54}$/i.test(label)) {
+        return loc.protocol + '//' + (label.slice(0, 33) + pHex + label.slice(37)).toLowerCase() + host.slice(dot);
+      }
+    }
+    return loc.protocol + '//' + host + ':' + p;
+  }
+
   function campusBase() {
     var loc = window.location;
     if (loc.protocol === 'http:' || loc.protocol === 'https:') {
       var host = loc.hostname || '';
       if (/(^|\.)github\.io$/i.test(host)) return loc.origin + '/';
-      return loc.protocol + '//' + host + ':' + LOCAL_CAMPUS_PORT + '/';
+      return localOrigin(loc, LOCAL_CAMPUS_PORT) + '/';
     }
     return PUBLIC_CAMPUS;
   }
@@ -2399,7 +2417,7 @@ a.term:hover {
     if (loc.protocol === 'http:' || loc.protocol === 'https:') {
       var host = loc.hostname || '';
       if (/(^|\.)github\.io$/i.test(host)) return loc.origin + '/' + t.path + h;
-      return loc.protocol + '//' + host + ':' + t.port + '/' + h;
+      return localOrigin(loc, t.port) + '/' + h;
     }
     return PUBLIC_CAMPUS + t.path + h;
   }
@@ -2907,7 +2925,19 @@ a.term:hover {
     const loc = window.location;
     const host = loc.hostname || '';
     if ((loc.protocol === 'http:' || loc.protocol === 'https:') && !/(^|\.)github\.io$/i.test(host)) {
-      return `${loc.protocol}//${host}:${FIN.PRACTICE.localPort}/${hash}`;
+      const p = parseInt(FIN.PRACTICE.localPort, 10);
+      const dot = host.indexOf('.');
+      if (dot > 0) {
+        const label = host.slice(0, dot);
+        const pHex = ('0000' + p.toString(16)).slice(-4).toLowerCase();
+        if (label.length === 31 && /^a[0-9a-f]{30}$/i.test(label)) {
+          return `${loc.protocol}//${(label.slice(0, 9) + pHex + label.slice(13)).toLowerCase()}${host.slice(dot)}/${hash}`;
+        }
+        if (label.length === 55 && /^b[0-9a-f]{54}$/i.test(label)) {
+          return `${loc.protocol}//${(label.slice(0, 33) + pHex + label.slice(37)).toLowerCase()}${host.slice(dot)}/${hash}`;
+        }
+      }
+      return `${loc.protocol}//${host}:${p}/${hash}`;
     }
     return FIN.PRACTICE.publicUrl + hash;
   };
