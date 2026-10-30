@@ -1022,7 +1022,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
   var PUBLIC_CAMPUS = 'https://okayell.github.io/';
   var LOCAL_CAMPUS_PORT = '8919';
   // Cloudtop 上各工具的 Autobahn proxy 與 Python backend port（registry.json 的 local_port / backend_port）。
-  var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8929', '8928', '8899', '8898',
+  var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8929', '8928', '8931', '8930', '8899', '8898',
     '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916'];
   var TOOL_MAP = {
     english: { port: '8911', path: 'english-speak-listen/', name: '英語學院', icon: '🇬🇧' },
@@ -1030,6 +1030,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
     finance: { port: '8925', path: 'finance/', name: '財經學院', icon: '🏛️' },
     'addiction-cm': { port: '8927', path: 'addiction-cm/', name: '藥癮個管師學院', icon: '💚' },
     music: { port: '8929', path: 'music/', name: '音樂學院', icon: '🎵' },
+    trivia: { port: '8931', path: 'trivia/', name: '冷知識學院', icon: '💡' },
     stock: { port: '8905', path: 'tw-stock-insight/', name: '台股智慧選股', icon: '📈' },
     poker: { port: '8899', path: 'poker-gto/', name: 'GTO 撲克學院', icon: '♠️' },
     nba: { port: '8913', path: 'nba-betting-iq/', name: 'NBA 運彩智庫', icon: '🏀' },
@@ -1038,8 +1039,32 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
   };
   var VISITS_KEY = 'okayell.campus.visits.v1';
   var STU_KEY = 'okayell.campus.student.v1';
-  var NTFY_TOPIC = 'okayell_happy_campus_v1';
+  var STU_COOKIE = 'okayell_campus_stu_v1';
+  var NTFY_TOPIC = 'okayell_happy_campus_v3';
   var BC_NAME = 'okayell.campus.presence.v1';
+
+  function readStuCookie() {
+    if (window.location && window.location.protocol === 'file:') return null;
+    try {
+      var parts = (document.cookie || '').split(';');
+      for (var i = 0; i < parts.length; i++) {
+        var kv = parts[i].trim();
+        if (kv.indexOf(STU_COOKIE + '=') === 0) {
+          var obj = JSON.parse(decodeURIComponent(kv.slice(STU_COOKIE.length + 1)));
+          return obj && typeof obj === 'object' ? obj : null;
+        }
+      }
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  function writeStuCookie(obj) {
+    if (window.location && window.location.protocol === 'file:') return;
+    try {
+      var val = encodeURIComponent(JSON.stringify(obj));
+      document.cookie = STU_COOKIE + '=' + val + '; path=/; max-age=31536000; SameSite=Lax';
+    } catch (e) { /* ignore */ }
+  }
 
   function localOrigin(loc, port) {
     var p = parseInt(port, 10);
@@ -1101,24 +1126,25 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
 
   function sendPresenceHeartbeat(toolId) {
     if (!toolId || !TOOL_MAP[toolId]) return;
+    if (typeof navigator !== 'undefined' && navigator.webdriver) return;
     try {
       var t = TOOL_MAP[toolId];
-      var stu = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {};
+      var lsStu = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {};
+      var ckStu = readStuCookie() || {};
+      var stu = (lsStu && lsStu.confirmed && lsStu.name) ? lsStu : (ckStu && ckStu.confirmed && ckStu.name) ? ckStu : lsStu;
       if (!stu.uid) {
-        stu.uid = 'stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
-        stu.name = stu.name || '學員';
-        stu.avatar = stu.avatar || '🧑‍🎓';
-        stu.title = stu.title || '💹 財經特攻隊';
-        stu.carIdx = typeof stu.carIdx === 'number' ? stu.carIdx : 0;
-        stu.carColor = stu.carColor || '#f87171';
-        stu.carName = stu.carName || '🏎️ 烈焰紅跑車';
+        stu.uid = (ckStu && ckStu.uid) || ('stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7));
       }
+      stu.renameCount = Math.max(+lsStu.renameCount || 0, +ckStu.renameCount || 0);
       stu.buildingId = toolId;
       stu.buildingName = t.name;
       stu.buildingIcon = t.icon;
       stu.activity = '正在「' + t.name + '」進修中';
       stu.ts = Math.floor(Date.now() / 1000);
       window.localStorage.setItem(STU_KEY, JSON.stringify(stu));
+      writeStuCookie(stu);
+      // 只有使用者已在校園地圖設定並確認名稱（stu.confirmed && stu.name）才對外同步，不自動偽造「學員」分身
+      if (stu.confirmed !== true || !stu.name || stu.name === '學員' || stu.name === '開心學員') return;
       if (window.BroadcastChannel) {
         try {
           var bc = new BroadcastChannel(BC_NAME);

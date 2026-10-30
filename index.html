@@ -151,10 +151,19 @@ html.redirecting body::before {
   -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
   cursor: grab; outline: none;
 }
+.campus-dyn {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2;
+  pointer-events: none;
+}
+.campus-dyn .campus-vehicle, .campus-dyn .ped, .campus-dyn .plane { pointer-events: auto; }
 .map-wrap.dragging .campus-map { cursor: grabbing; }
 .campus-map:focus-visible { box-shadow: inset 0 0 0 3px rgba(29, 107, 87, .45); }
 .campus-map .bld, .campus-map .svc, .campus-map .sign, .campus-map .lot, .campus-map .lbl { cursor: pointer; }
 .map-wrap.dragging .campus-map * { cursor: grabbing !important; }
+.map-wrap.dragging .campus-map .bld-in,
+.map-wrap.dragging .campus-map .spot-in,
+.map-wrap.dragging .campus-map .animal-in,
+.map-wrap.dragging .campus-map .car-in { transition: none !important; }
 .campus-map .bld-in { transition: transform .18s ease; }
 .campus-map .bld.hover .bld-in, .campus-map .bld:focus-visible .bld-in,
 .campus-map .svc.hover .bld-in, .campus-map .svc:focus-visible .bld-in { transform: translateY(-7px); }
@@ -169,9 +178,9 @@ html.redirecting body::before {
 .campus-map.searching .bld:not(.hit), .campus-map.searching .lbl[data-id]:not(.hit) { opacity: .26; transition: opacity .15s; }
 .campus-map .bld.from .bld-ring {
   stroke: var(--brand); stroke-width: 4; fill: rgba(29, 107, 87, .15);
-  transform-box: fill-box; transform-origin: center; animation: cm-ring 1.7s ease-out infinite;
+  transform-origin: 0 2px; animation: cm-ring 1.7s ease-out 4;
 }
-.campus-map .fc-bob { animation: cm-bob 1.9s ease-in-out infinite; }
+.campus-map .fc-bob { animation: cm-bob 1.9s ease-in-out 3; }
 .campus-map .from-callout { pointer-events: none; }
 @keyframes cm-ring { 0% { transform: scale(.75); opacity: 1; } 100% { transform: scale(1.45); opacity: 0; } }
 @keyframes cm-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
@@ -182,7 +191,7 @@ html.redirecting body::before {
 }
 
 .map-chips {
-  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 17;
   display: flex; gap: 6px; max-width: calc(100% - 24px); overflow-x: auto; scrollbar-width: none;
   padding: 2px; pointer-events: auto;
 }
@@ -198,7 +207,7 @@ html.redirecting body::before {
 .mc.mc-mode { border-color: #cbd5e1; color: var(--muted); }
 .mc.mc-mode.on { border-color: var(--brand); background: #eef7f3; color: var(--brand); }
 .map-zoom {
-  position: absolute; right: 14px; bottom: 16px; display: flex; flex-direction: column; gap: 6px;
+  position: absolute; right: 14px; bottom: 16px; z-index: 16; display: flex; flex-direction: column; gap: 6px;
 }
 .map-zoom button {
   width: 42px; height: 42px; border-radius: 13px; border: 1.5px solid var(--line-2);
@@ -218,7 +227,7 @@ html.redirecting body::before {
 .map-tip em { font-style: normal; font-size: 12px; color: var(--brand); font-weight: 700; }
 .tip-st { margin-left: 6px; font-size: 11px; font-weight: 800; border-radius: 999px; padding: 1px 7px; vertical-align: 1px; }
 .map-hint {
-  position: absolute; left: 50%; bottom: 22px; transform: translate(-50%, 12px); opacity: 0;
+  position: absolute; left: 50%; bottom: 22px; z-index: 15; transform: translate(-50%, 12px); opacity: 0;
   background: rgba(29, 107, 87, .94); color: #fff; font-weight: 800; font-size: 14px;
   padding: 9px 16px; border-radius: 999px; box-shadow: 0 8px 20px rgba(29, 107, 87, .3);
   transition: opacity .35s, transform .35s; pointer-events: none; white-space: nowrap;
@@ -265,7 +274,8 @@ html.redirecting body::before {
   width: 410px; max-width: 94vw; display: flex; flex-direction: column;
   background: #fffdf8; border-left: 1px solid var(--line);
   box-shadow: -14px 0 34px rgba(59, 47, 37, .14);
-  transform: translateX(104%); transition: transform .28s cubic-bezier(.2, .8, .2, 1);
+  transform: translateX(104%); transition: transform .26s cubic-bezier(.2, .8, .2, 1);
+  will-change: transform; contain: layout style paint;
   visibility: hidden;
 }
 .panel.open { transform: none; visibility: visible; }
@@ -323,7 +333,7 @@ html.redirecting body::before {
 .dir-intro-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
 .dir-intro h1 { margin: 0; font-size: 25px; }
 .dir-intro p { margin: 0; color: var(--muted); font-size: 14.5px; }
-.dir-d { margin-top: 28px; }
+.dir-d { margin-top: 28px; content-visibility: auto; contain-intrinsic-size: auto 340px; }
 .dir-dh {
   display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 18px;
   background: var(--ds); border: 1.5px solid var(--line); border-left: 7px solid var(--dc);
@@ -389,6 +399,7 @@ html.redirecting body::before {
 .modal {
   position: relative; width: min(700px, 100%); max-height: min(88vh, 940px); overflow: auto;
   background: #fffdf8; border-radius: 22px; padding: 26px 28px 24px; box-shadow: 0 26px 70px rgba(59, 47, 37, .3);
+  contain: layout style paint;
 }
 .modal-x {
   position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%;
@@ -440,17 +451,16 @@ body.modal-open { overflow: hidden; }
 .campus-map .m-fx, .campus-map .lbl:not(.lbl-banner) .lbl-s > :not(.lbl-hit) { pointer-events: none; }
 .campus-map .fun-pop text, .campus-map .float-fx, .campus-map .veh-tag text, .campus-map .plane text { font-family: var(--font); }
 
-.campus-map .lake-fish .fish-swim { transform-box: fill-box; transform-origin: center; animation: cm-fish 6.5s ease-in-out infinite; }
-.campus-map .lake-fish:nth-child(2n) .fish-swim { animation-duration: 8.2s; animation-direction: reverse; }
-.campus-map .lake-fish:nth-child(3n) .fish-swim { animation-duration: 5.4s; }
-@keyframes cm-fish { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(14px, -6px) rotate(6deg); } }
-.campus-map .bobber-float { transform-box: fill-box; transform-origin: center; animation: cm-bobber 2.1s ease-in-out infinite; }
-.campus-map .bobber-ring { transform-box: fill-box; transform-origin: center; animation: cm-ripple 2.4s ease-out infinite; }
+.campus-map .lake-fish .fish-swim { transform-origin: 0 0; transition: transform .35s ease; }
+.campus-map .lake-fish.hover .fish-swim { transform: translate(8px, -3px) rotate(5deg); }
+.campus-map .bobber-float, .campus-map .bobber-ring { transform-origin: 0 -42px; }
+.campus-map .fishing-dock.hover .bobber-float { animation: cm-bobber 1.6s ease-in-out infinite; }
+.campus-map .fishing-dock.hover .bobber-ring { animation: cm-ripple 1.8s ease-out infinite; }
 @keyframes cm-bobber { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 @keyframes cm-ripple { 0% { transform: scale(.7); opacity: .85; } 100% { transform: scale(1.7); opacity: 0; } }
 
 .campus-map .parked-car { transition: opacity .25s ease; }
-.campus-map .parked-car .car-in { transform-box: fill-box; transform-origin: center; transition: transform .18s ease; }
+.campus-map .parked-car .car-in { transform-origin: 0 0; transition: transform .18s ease; }
 .campus-map .parked-car.hover .car-in, .campus-map .parked-car:focus-visible .car-in { transform: translateY(-4px) scale(1.08); }
 .campus-map .parked-car.car-out { opacity: .25; }
 .campus-map .parking-sign.hover rect, .campus-map .parking-sign:hover rect { stroke: #fbbf24; stroke-width: 2.5; }
@@ -464,31 +474,28 @@ body.modal-open { overflow: hidden; }
 
 .campus-map .fun-spot .spot-in { transition: transform .18s ease; }
 .campus-map .fun-spot.hover .spot-in, .campus-map .fun-spot:focus-visible .spot-in { transform: translateY(-5px); }
-.campus-map .court-ball { transform-box: fill-box; transform-origin: center; animation: cm-ball 1.8s ease-in-out infinite; }
+.campus-map .fun-spot.hover .court-ball { animation: cm-ball .9s ease-in-out infinite; }
 @keyframes cm-ball { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
 .campus-map .animal .animal-in {
-  transform-box: fill-box; transform-origin: center bottom;
-  transition: transform .2s cubic-bezier(.2, .9, .3, 1.4); animation: cm-pet-idle 3.6s ease-in-out infinite;
+  transform-origin: 0 0;
+  transition: transform .2s cubic-bezier(.2, .9, .3, 1.4);
 }
-.campus-map .animal:nth-child(2n) .animal-in { animation-delay: -1.4s; }
-.campus-map .animal:nth-child(3n) .animal-in { animation-delay: -2.5s; }
 .campus-map .animal.hover .animal-in, .campus-map .animal:focus-visible .animal-in { transform: translateY(-6px) scale(1.14); }
 .campus-map .animal.animal-jump .animal-in { animation: cm-pet-jump .65s cubic-bezier(.2, .9, .3, 1.4) 2; }
-@keyframes cm-pet-idle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
 @keyframes cm-pet-jump {
   0%, 100% { transform: translateY(0) scale(1); }
   45% { transform: translateY(-13px) scale(1.18) rotate(-5deg); }
   75% { transform: translateY(-5px) scale(1.08) rotate(4deg); }
 }
-.campus-map .hidden-frog g { transform-box: fill-box; transform-origin: center bottom; }
+.campus-map .hidden-frog g { transform-origin: 0 2px; }
 .campus-map .hidden-frog.frog-found g { animation: cm-frog .9s cubic-bezier(.2, .9, .3, 1.4) 2; }
 @keyframes cm-frog { 0%, 100% { transform: none; } 40% { transform: translateY(-9px) scale(1.6); } }
 
-/* 🪓 樹木：直接點擊砍樹 */
+/* 🪓 樹木：直接點擊砍樹（座標原點即樹根 (0,0)，免去 280 棵樹的 fill-box 邊界計算） */
 .campus-map .m-deco { pointer-events: none; }
 .campus-map .m-deco .tree { pointer-events: visiblePainted; cursor: pointer; }
-.campus-map .tree-in { transform-box: fill-box; transform-origin: 50% 100%; }
+.campus-map .tree-in { transform-origin: 0 0; }
 .campus-map .tree:hover .tree-in { filter: brightness(1.07); }
 .campus-map .tree-in.chop { animation: cm-chop .3s ease-out; }
 .campus-map .tree-in.fall { animation: cm-fall .48s ease-in forwards; }
@@ -499,20 +506,24 @@ body.modal-open { overflow: hidden; }
 .campus-map .float-fx { font-size: 13px; font-weight: 900; fill: #92400e; paint-order: stroke; stroke: #fff; stroke-width: 3px; animation: cm-float .75s ease-out forwards; }
 @keyframes cm-float { from { transform: translateY(0); opacity: 1; } to { transform: translateY(-22px); opacity: 0; } }
 
-/* 🧑‍🎓 行人 */
-.campus-map .ped .leg { transform-box: fill-box; transform-origin: 50% 0; }
-.campus-map .ped.walking .leg { animation: cm-leg .4s ease-in-out infinite alternate; }
+/* 🧑‍🎓 行人（固定支點座標＋低頻階梯擺腿，避免每幀重算 32 組 fill-box） */
+.campus-map .ped .leg.l { transform-origin: -1.6px -6.5px; }
+.campus-map .ped .leg.r { transform-origin: 1.6px -6.5px; }
+.campus-map .ped.walking .leg { animation: cm-leg .56s steps(2, end) infinite alternate; }
 .campus-map .ped.walking .leg.r { animation-direction: alternate-reverse; }
-.campus-map .ped.playing .ped-in { transform-box: fill-box; transform-origin: 50% 100%; animation: cm-hop .55s ease-in-out infinite alternate; }
+.campus-map .ped.playing .ped-in { transform-origin: 0 0; animation: cm-hop .75s steps(2, end) infinite alternate; }
 .campus-map .ped:hover .ped-in { filter: brightness(1.08); }
-@keyframes cm-leg { from { transform: rotate(-22deg); } to { transform: rotate(22deg); } }
-@keyframes cm-hop { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+@keyframes cm-leg { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
+@keyframes cm-hop { from { transform: translateY(0); } to { transform: translateY(-3.5px); } }
 
 /* ✈️ 飛機 */
-.campus-map .plane .prop { transform-box: fill-box; transform-origin: center; animation: cm-prop .12s linear infinite; }
+.campus-map .plane .prop { transform-box: fill-box; transform-origin: center; animation: cm-prop .16s steps(2, end) infinite; }
 @keyframes cm-prop { 50% { transform: scaleY(.15); } }
-.campus-map .fun-pop-in { transform-box: fill-box; transform-origin: center bottom; animation: cm-pop .24s cubic-bezier(.2, .9, .3, 1.3); }
+.campus-map .fun-pop-in { transform-origin: 0 0; animation: cm-pop .22s cubic-bezier(.2, .9, .3, 1.3); }
 @keyframes cm-pop { from { opacity: 0; transform: translateY(8px) scale(.85); } to { opacity: 1; transform: none; } }
+body.modal-open .campus-map *, body.view-dir .campus-map *, .map-wrap.dragging .campus-dyn * {
+  animation-play-state: paused !important;
+}
 
 .mc.mc-fun { border-color: #d97706; background: linear-gradient(180deg, #fffbeb, #fef3c7); color: #92400e; }
 .mc.mc-fun:hover { background: #fde68a; border-color: #b45309; }
@@ -530,8 +541,8 @@ body.modal-open { overflow: hidden; }
 .stu-chip:hover { background: #fef3c7; transform: translateY(-1px); }
 .online-chip { background: #ecfdf5; border: 1.5px solid #34d399; color: #065f46; }
 .online-chip:hover { background: #d1fae5; transform: translateY(-1px); }
-.online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: cm-online 1.8s ease-in-out infinite; }
-@keyframes cm-online { 0%, 100% { box-shadow: 0 0 0 2px rgba(16, 185, 129, .3); } 50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, .06); } }
+.online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, .24); }
+@keyframes cm-online { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
 
 /* 底部專車導航列、伐木挑戰 HUD */
 .car-hud {
@@ -681,8 +692,9 @@ button.dex-card:hover { transform: translateY(-2px); border-color: var(--brand);
 .ach-pt { font-size: 11px; font-weight: 800; color: var(--muted); white-space: nowrap; }
 
 /* 🪪 學生證 */
+.stu-modal .fg-head, .online-modal .fg-head { padding-right: 40px; }
 .idcard { border-radius: 18px; overflow: hidden; border: 2px solid #d97706; background: linear-gradient(135deg, #fffdf7, #fef3c7); box-shadow: 0 10px 26px rgba(180, 83, 9, .14); margin: 8px 0 16px; }
-.idcard-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 16px; background: linear-gradient(90deg, var(--brand), #134e40); color: #fffaf0; font-size: 12.5px; font-weight: 900; letter-spacing: .6px; }
+.idcard-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; padding: 8px 16px; background: linear-gradient(90deg, var(--brand), #134e40); color: #fffaf0; font-size: 12.5px; font-weight: 900; letter-spacing: .6px; }
 .idcard-no { padding: 2px 9px; border-radius: 999px; background: rgba(255, 255, 255, .18); font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; }
 .idcard-main { display: flex; align-items: center; gap: 16px; padding: 14px 18px; }
 .idcard-av { width: 68px; height: 68px; border-radius: 18px; background: #fff; border: 2px solid #f59e0b; display: grid; place-items: center; font-size: 40px; flex: none; }
@@ -697,29 +709,32 @@ button.dex-card:hover { transform: translateY(-2px); border-color: var(--brand);
 .idcard-badges small { color: var(--muted); }
 .stu-form { display: flex; flex-direction: column; gap: 13px; }
 .stu-field label { display: block; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
-.stu-name-row { display: flex; gap: 8px; }
-.stu-name-row input { flex: 1; height: 38px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--line-2); background: #fff; font: inherit; font-size: 14.5px; font-weight: 700; color: var(--ink); }
+.stu-name-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.stu-name-row input { flex: 1 1 160px; min-width: 0; height: 38px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--line-2); background: #fff; font: inherit; font-size: 14.5px; font-weight: 700; color: var(--ink); }
 .stu-name-row input:focus { outline: none; border-color: var(--brand); }
 .stu-name-row input.err { border-color: #dc2626; background: #fef2f2; box-shadow: 0 0 0 3px rgba(220, 38, 38, .15); }
-.stu-name-hint { margin-top: 5px; font-size: 12px; color: var(--muted); font-weight: 700; }
+.stu-name-row input:disabled, .stu-name-row input.locked { background: #f5efe3; color: #5c4b3b; border-style: dashed; cursor: not-allowed; }
+.stu-lock-tag { display: inline-flex; align-items: center; gap: 4px; height: 38px; padding: 0 12px; border-radius: 10px; background: #fef3c7; border: 1.5px solid #fcd34d; color: #92400e; font-size: 12.5px; font-weight: 800; white-space: nowrap; }
+.stu-name-hint { margin-top: 5px; font-size: 12px; color: var(--muted); font-weight: 700; line-height: 1.45; }
 .stu-name-hint.err { color: #dc2626; }
+.stu-name-hint.warn { color: #b45309; }
 .stu-picks { display: flex; flex-wrap: wrap; gap: 6px; }
 .stu-av-btn { width: 40px; height: 40px; border-radius: 11px; border: 1.5px solid var(--line-2); background: #fff; font-size: 22px; cursor: pointer; }
 .stu-tt-btn, .stu-car-btn { display: inline-flex; align-items: center; gap: 5px; height: 33px; padding: 0 11px; border-radius: 999px; border: 1.5px solid var(--line-2); background: #fff; color: var(--ink); font-size: 12.5px; font-weight: 800; cursor: pointer; }
 .stu-av-btn:hover, .stu-tt-btn:hover, .stu-car-btn:hover { border-color: var(--brand); }
 .stu-av-btn.on, .stu-tt-btn.on, .stu-car-btn.on { border-color: var(--brand); background: #eef7f3; color: var(--brand); box-shadow: 0 0 0 2px rgba(29, 107, 87, .18); }
 .stu-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.stu-actions .btn { flex: 1 1 200px; }
+.stu-actions .btn { flex: 1 1 200px; max-width: 100%; white-space: normal; height: auto; min-height: 44px; padding: 10px 14px; line-height: 1.35; text-align: center; }
 
 /* 🟢 在線名單＆🏆 排行榜 */
 .online-list, .rank-list { display: flex; flex-direction: column; gap: 8px; max-height: 56vh; overflow-y: auto; }
-.online-row, .rank-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #fff; border: 1.5px solid var(--line-2); }
+.online-row, .rank-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px; padding: 10px 12px; border-radius: 14px; background: #fff; border: 1.5px solid var(--line-2); }
 .online-row.is-me, .rank-row.is-me { background: #fffdf5; border-color: #f59e0b; }
 .or-av { position: relative; width: 44px; height: 44px; border-radius: 13px; background: #f8f3e8; border: 1.5px solid var(--line-2); display: grid; place-items: center; font-size: 25px; flex: none; }
 .or-dot { position: absolute; right: -2px; bottom: -2px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; }
 .or-dot.on { background: #10b981; }
 .or-dot.idle { background: #94a3b8; }
-.or-main { flex: 1; min-width: 0; }
+.or-main { flex: 1 1 180px; min-width: 0; }
 .or-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .or-top b { font-size: 15px; }
 .or-title { font-size: 12px; color: var(--muted); font-weight: 700; }
@@ -727,7 +742,7 @@ button.dex-card:hover { transform: translateY(-2px); border-color: var(--brand);
 .stu-role-tag.me { background: #fef3c7; color: #92400e; }
 .stu-role-tag.real { background: #dcfce7; color: #166534; }
 .stu-role-tag.sim { background: #e0f2fe; color: #0369a1; }
-.or-sub { display: flex; align-items: center; gap: 6px 14px; flex-wrap: wrap; margin-top: 3px; font-size: 12.5px; color: #5c4b3b; }
+.or-sub { display: flex; align-items: center; gap: 4px 12px; flex-wrap: wrap; margin-top: 3px; font-size: 12.5px; color: #5c4b3b; }
 .or-car { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; }
 .or-loc b { color: var(--brand); }
 .or-acts { display: flex; gap: 6px; flex: none; flex-wrap: wrap; }
@@ -735,7 +750,7 @@ button.dex-card:hover { transform: translateY(-2px); border-color: var(--brand);
 .rk-n { font-size: 15px; font-weight: 900; color: var(--muted); }
 .rk-badges { margin-top: 4px; }
 .rk-badges small { color: var(--muted); font-size: 12px; }
-.rk-score { display: flex; flex-direction: column; align-items: flex-end; flex: none; line-height: 1.2; }
+.rk-score { display: flex; flex-direction: column; align-items: flex-end; flex: none; line-height: 1.2; margin-left: auto; }
 .rk-score b { font-size: 22px; color: #92400e; font-variant-numeric: tabular-nums; }
 .rk-score small { font-size: 11px; color: var(--muted); font-weight: 700; }
 
@@ -744,7 +759,19 @@ button.dex-card:hover { transform: translateY(-2px); border-color: var(--brand);
   .fun-modal, .stu-modal, .online-modal { padding: 16px 14px calc(18px + env(safe-area-inset-bottom)); }
   .stu-chip span, .online-chip .online-lbl { display: none; }
   .stu-chip, .online-chip { padding: 0 9px; }
-  .or-acts { width: 100%; }
+  .idcard-top { padding: 8px 12px; font-size: 12px; }
+  .idcard-main { gap: 12px; padding: 12px 14px; }
+  .idcard-av { width: 54px; height: 54px; font-size: 30px; border-radius: 14px; }
+  .idcard-name-row h3 { font-size: 18px; }
+  .online-row { align-items: flex-start; gap: 8px 10px; padding: 11px 12px; }
+  .online-row .or-main { flex: 1 1 calc(100% - 58px); min-width: 0; }
+  .online-row .or-acts { flex: 1 0 100%; width: 100%; padding-top: 8px; margin-top: 2px; border-top: 1px dashed var(--line); }
+  .online-row .or-acts .btn { flex: 1 1 0; min-height: 36px; }
+  .rank-row { flex-wrap: nowrap; gap: 8px; padding: 10px; }
+  .rank-row .rk { width: 24px; font-size: 19px; }
+  .rank-row .or-av { width: 38px; height: 38px; font-size: 21px; border-radius: 11px; }
+  .rank-row .or-main { flex: 1 1 auto; min-width: 0; }
+  .rank-row .rk-score b { font-size: 19px; }
   .chop-hud { top: 52px; font-size: 12.5px; }
   .chop-hud .ch-bar { width: 70px; }
 }
@@ -779,16 +806,32 @@ button.dex-card:hover { transform: translateY(-2px); border-color: var(--brand);
   .seg button { height: 32px; padding: 0 9px; font-size: 13px; }
   .cfb-btns { display: grid; grid-template-columns: 1fr 1fr; }
   .cfb-btn.primary { grid-column: 1 / -1; }
-  .ribbon { height: 40px; padding: 0 12px; }
-  .map-wrap { height: calc(100vh - var(--hdr-h) - var(--rb-h)); min-height: 430px; }
-  @supports (height: 100svh) {
-    .map-wrap { height: calc(100svh - var(--hdr-h) - var(--rb-h)); }
+  .ribbon { height: 40px; padding: 0 12px; touch-action: pan-x; }
+  /* 手機地圖模式：鎖定整頁為 100dvh 彈性滿版舞台（零頁面捲軸、零橡皮筋回彈），所有手勢交給校園地圖上下左右滑動 */
+  html:has(body:not(.view-dir)) { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body:not(.view-dir) {
+    display: flex; flex-direction: column;
+    height: 100vh; height: 100dvh;
+    overflow: hidden; overscroll-behavior: none;
   }
-  .map-chips { left: 10px; right: 10px; transform: none; max-width: none; top: 10px; }
+  body:not(.view-dir) .topbar,
+  body:not(.view-dir) .ribbon { flex: none; }
+  body:not(.view-dir) #main,
+  body:not(.view-dir) .map-view {
+    flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column;
+  }
+  body:not(.view-dir) .map-wrap {
+    flex: 1 1 auto; height: auto; min-height: 0; width: 100%;
+  }
+  body:not(.view-dir) .foot { display: none; }
+  .map-chips { left: 10px; right: 10px; transform: none; max-width: none; top: 10px; touch-action: pan-x; overscroll-behavior-x: contain; }
   .mc { height: 31px; padding: 0 11px; font-size: 12.5px; }
-  .map-zoom { right: 10px; bottom: 12px; }
+  .map-zoom { right: 10px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 16; }
   .map-zoom button { width: 40px; height: 40px; }
-  .map-hint { font-size: 13px; bottom: 16px; }
+  .map-hint {
+    font-size: 12px; padding: 8px 13px; left: calc(50% - 24px); bottom: calc(16px + env(safe-area-inset-bottom));
+    max-width: calc(100% - 72px); overflow: hidden; text-overflow: ellipsis; z-index: 15;
+  }
   .panel {
     top: auto; left: 0; right: 0; bottom: 0; width: auto; max-width: none; max-height: 80vh;
     border-left: 0; border-top: 1px solid var(--line); border-radius: 22px 22px 0 0;
@@ -859,12 +902,13 @@ button.dex-card:hover { transform: translateY(-2px); border-color: var(--brand);
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .14), 0 2px 6px rgba(180, 67, 47, .28);
 }
 .nb-tag:hover { filter: brightness(1.06); }
-.nb-mega { display: inline-block; font-size: 15px; transform-origin: 30% 70%; animation: nb-mega 5s ease-in-out infinite; }
+.nb-mega { display: inline-block; font-size: 15px; transform-origin: 30% 70%; }
+.nb-tag:hover .nb-mega { animation: nb-mega .55s ease-in-out; }
 @keyframes nb-mega {
-  0%, 84%, 100% { transform: none; }
-  88% { transform: rotate(-16deg) scale(1.15); }
-  92% { transform: rotate(10deg) scale(1.15); }
-  96% { transform: rotate(-6deg) scale(1.05); }
+  0%, 100% { transform: none; }
+  30% { transform: rotate(-16deg) scale(1.15); }
+  65% { transform: rotate(10deg) scale(1.15); }
+  85% { transform: rotate(-6deg) scale(1.05); }
 }
 .nb-item {
   flex: 1 1 auto; min-width: 0; height: 32px; display: flex; align-items: center; gap: 8px;
@@ -995,11 +1039,12 @@ body.news-on .chop-hud { top: 102px; }
 
 /* ------------------------------------------------------------ 🔥 地圖人氣標記（SVG） */
 .campus-map .m-news .heat-mk { cursor: pointer; }
-.campus-map .m-news .heat-in { transform-box: fill-box; transform-origin: 50% 100%; animation: hm-bob 2.4s ease-in-out infinite; }
-.campus-map .m-news .heat-mk:hover .heat-in { animation-play-state: paused; transform: translateY(-3px) scale(1.06); }
+.campus-map .m-news .heat-in { transform-origin: 0 0; transition: transform .16s ease; }
+.campus-map .m-news .heat-mk:hover .heat-in { transform: translateY(-3px) scale(1.06); }
 .campus-map .m-news .heat-mk text { font-family: var(--font); }
 .campus-map .m-news .heat-mk.lvl-3 .heat-bg { fill: #ffedd5; stroke: #dc2626; }
-@keyframes hm-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+body.modal-open .news-bar, body.modal-open .nb-item.nb-swap, body.modal-open .nb-mega,
+body.view-dir .news-bar, body.view-dir .nb-item.nb-swap, body.view-dir .nb-mega { animation-play-state: paused !important; }
 
 /* ------------------------------------------------------------ 介紹卡：🔥 人氣列 */
 .pn-heat {
@@ -1534,7 +1579,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
           <span class="brand-ic" aria-hidden="true">🏫</span>
           <span class="brand-txt"><span class="brand-name">開心學園</span><span class="brand-sub">校園地圖</span></span>
         </a>
-        <button type="button" class="ver-badge" id="verBadgeBtn" title="版本與 Release Notes">v1.0.0</button>
+        <button type="button" class="ver-badge" id="verBadgeBtn" title="版本與 Release Notes">v1.7.1</button>
       </div>
       <div class="search" id="searchBox" role="search">
         <span class="s-ic" aria-hidden="true">🔍</span>
@@ -1563,7 +1608,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   <main id="main">
     <section class="map-view" id="mapView" role="tabpanel" aria-labelledby="tabMap">
       <div class="map-wrap" id="mapWrap">
-        <svg class="campus-map" id="campusMap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 1220" preserveAspectRatio="xMidYMid meet"
+        <svg class="campus-map" id="campusMap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 1220" preserveAspectRatio="xMidYMid slice"
           tabindex="0" role="group" aria-label="開心學園校園地圖。Tab 鍵走訪建築，Enter 開啟介紹，方向鍵平移，加號減號縮放，0 回到全覽"></svg>
         <div class="map-chips" id="mapChips" aria-label="學區快捷"></div>
         <div class="map-zoom" aria-label="縮放">
@@ -1572,7 +1617,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
           <button type="button" id="zoomReset" aria-label="回到全覽" title="回到全覽">⟲</button>
         </div>
         <div class="map-tip" role="tooltip" hidden></div>
-        <div class="map-hint" id="mapHint" hidden>👆 點建築直接進入・拖曳／雙指縮放地圖</div>
+        <div class="map-hint" id="mapHint" hidden>👆 上下左右滑動逛校園・雙指縮放・點建築進入</div>
       </div>
     </section>
     <section class="dir-view" id="dirView" role="tabpanel" aria-labelledby="tabDir" hidden></section>
@@ -2510,8 +2555,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   var LAYOUT = {
     W: 2100,
     H: 1220,
-    // 地圖可視範圍（平移的邊界，含校外地景）
-    bounds: { x: -260, y: -170, w: 2620, h: 1580 },
+    // 地圖可視範圍（平移的邊界，含校外地景與南北全版面緩衝景觀）
+    bounds: { x: -260, y: -230, w: 2620, h: 1740 },
     plaza: { x: 1000, y: 470, r: 90 },
     serviceCenter: { x: 1000, y: 518, w: 150, h: 165 },
     gate: { x: 1000, y: 1206, w: 300, h: 125 },
@@ -2552,10 +2597,10 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         box: [470, 556, 942, 1022],
         sign: [482, 566],
         slots: [
-          { ids: ['coding'], x: 590, y: 762, w: 190, h: 124 },
-          { ids: ['smart-iot'], x: 826, y: 762, w: 172, h: 120 },
-          { ids: ['embedded-rpi'], x: 826, y: 970, w: 172, h: 120 },
-          { x: 596, y: 968, w: 120, h: 90 },
+          { ids: ['coding'], x: 576, y: 762, w: 184, h: 124 },
+          { ids: ['smart-iot'], x: 828, y: 762, w: 168, h: 120, small: true },
+          { ids: ['embedded-rpi'], x: 828, y: 970, w: 168, h: 120, small: true },
+          { x: 586, y: 968, w: 120, h: 90 },
         ],
       },
       games: {
@@ -2869,15 +2914,17 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       '<path d="' + tuft + '" fill="none" stroke="#bfd8a1" stroke-width="1.6" stroke-linecap="round"/>' +
       '</g>');
 
-    // --- 校外道路（校門前）
+    // --- 校外道路（校門前）與南側綠地
     var stY = L.H - 6;
     var st = '';
     for (var sx = B.x + 20; sx < B.x + B.w; sx += 46) st += 'M' + sx + ',' + (stY + 27) + ' h24 ';
     var cw = '';
     for (var cx = L.gate.x - 36; cx <= L.gate.x + 32; cx += 12) cw += 'M' + cx + ',' + (stY + 6) + ' v40 ';
     out.push('<g class="m-street">' +
+      '<rect x="' + B.x + '" y="' + (stY + 54) + '" width="' + B.w + '" height="' + Math.max(0, B.y + B.h - (stY + 54)) + '" fill="#dce8c4"/>' +
       '<rect x="' + B.x + '" y="' + stY + '" width="' + B.w + '" height="54" fill="#e2d8c4"/>' +
       '<rect x="' + B.x + '" y="' + (stY - 2) + '" width="' + B.w + '" height="5" fill="#d3c5aa"/>' +
+      '<rect x="' + B.x + '" y="' + (stY + 52) + '" width="' + B.w + '" height="4" fill="#c8d8ab"/>' +
       '<path d="' + st + '" stroke="#fffaf0" stroke-width="2.5"/>' +
       '<path d="' + cw + '" stroke="#fffaf0" stroke-width="6"/>' +
       '</g>');
@@ -3200,9 +3247,10 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     // 校外兩側與南側
     for (var ox = B.x + 14; ox < B.x + B.w; ox += 30) {
       if (ox > 962 && ox < 1038) continue;
-      var oy1 = L.H + 64 + rf() * 18, oy2 = L.H + 110 + rf() * 22;
+      var oy1 = L.H + 64 + rf() * 18, oy2 = L.H + 110 + rf() * 22, oy3 = L.H + 168 + rf() * 34;
       tryDeco(rf() < 0.5 ? 'tree' : 'pine', ox + rf() * 10, oy1, 0.9, true);
       if (rf() < 0.8) tryDeco('tree', ox + 12 + rf() * 10, oy2, 1, true);
+      if (rf() < 0.55) tryDeco(rf() < 0.35 ? 'bush' : 'tree', ox + 6 + rf() * 14, oy3, 0.92, true);
     }
     for (var sy = 110; sy < L.H - 10; sy += 34) {
       for (var sx2 = B.x + 16; sx2 < 4; sx2 += 32) tryDeco(rf() < 0.5 ? 'tree' : 'pine', sx2 + rf() * 10, sy + rf() * 10, 0.9, true);
@@ -3246,7 +3294,6 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       return CHOP[dd.kind] ? '<g class="tree" data-ti="' + ti + '"' + tr + '><g class="tree-in">' + art + '</g></g>' : '<g' + tr + '>' + art + '</g>';
     }).join('') + '</g>');
     out.push('<g class="m-animals">' + animalsSvg + '</g>');
-    out.push('<g class="m-people" id="mapPeople"></g>');
 
     // --- 建築（依地面基準線由北到南繪製）
     var bSvg = [];
@@ -3301,8 +3348,6 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
 
     out.push('<g class="m-labels">' + labelsSvg.join('') + '</g>');
     out.push('<g class="m-signs">' + signsSvg + '</g>');
-    out.push('<g class="m-vehicles" id="mapVehicles"></g>');
-    out.push('<g class="m-sky" id="mapSky"></g>');
     out.push('<g class="m-fx"></g>');
 
     // --- 圖例、指北針、標題框
@@ -3555,13 +3600,31 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
 
   /* ------------------------------------------------------------ 地圖元件 */
   var M = {
-    asg: null, wrap: null, svg: null, tip: null,
-    view: { x: 0, y: 0, w: L.W, h: L.H },
-    cw: 0, ch: 0, anim: 0, lastTapAt: 0,
-    labelMeta: [], searchIds: null, fromId: null, selId: null,
+    asg: null, wrap: null, svg: null, dynSvg: null, tip: null,
+    zi: null, zo: null, ziDis: null, zoDis: null,
+    view: { x: 0, y: 0, w: L.W, h: L.H }, lastVb: '',
+    cw: 0, ch: 0, anim: 0, rafView: 0, pendingView: null,
+    dragging: false, lastTapAt: 0, lastHoverRaw: null,
+    labelMeta: [], labelsLaidOut: false, searchIds: null, fromId: null, selId: null,
   };
 
+  function inMapSvg(node) {
+    return !!(node && ((M.svg && M.svg.contains(node)) || (M.dynSvg && M.dynSvg.contains(node))));
+  }
+  function stopAnim() {
+    if (M.anim) {
+      cancelAnimationFrame(M.anim);
+      M.anim = 0;
+    }
+    if (M.rafView) {
+      cancelAnimationFrame(M.rafView);
+      M.rafView = 0;
+      M.pendingView = null;
+    }
+  }
+
   function scale() { return M.cw / M.view.w; }
+  function isMobileMap() { return M.cw < 720 || M.cw < M.ch * 0.92; }
   function fitView(box, pad) {
     pad = pad == null ? 24 : pad;
     var bx = box.x - pad, by = box.y - pad, bw = box.w + pad * 2, bh = box.h + pad * 2;
@@ -3570,16 +3633,32 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     if (w / h > ar) h = w / ar; else w = h * ar;
     return { x: bx + bw / 2 - w / 2, y: by + bh / 2 - h / 2, w: w, h: h };
   }
+  function limits() {
+    var ar = M.cw / Math.max(1, M.ch);
+    var B = L.bounds;
+    // Cover-fit 上限：viewBox 寬高皆不超過已繪製的世界邊界 B，確保手機／寬螢幕任何縮放比例都 100% 滿版無米色留白
+    var coverMaxW = Math.min(B.w, B.h * ar);
+    var full = fitView({ x: 0, y: 0, w: L.W, h: L.H }, 6);
+    var maxW = isMobileMap()
+      ? Math.min(coverMaxW * 0.94, B.w)
+      : Math.min(full.w * 1.22, coverMaxW);
+    var minW = Math.max(180, M.cw / 3.2);
+    if (maxW < minW + 40) maxW = Math.max(minW + 40, coverMaxW);
+    return { maxW: maxW, minW: minW };
+  }
   function homeView() {
-    if (M.cw < 720) {
-      // 手機：預設完整顯示學園全覽，也可隨時點上方學區按鈕聚焦放大
-      return fitView({ x: 20, y: 70, w: L.W - 40, h: L.H - 80 }, 6);
+    var ar = M.cw / Math.max(1, M.ch);
+    if (isMobileMap()) {
+      // 手機／直向螢幕：全版面滿版視角（以中央廣場與學園服務中心為核心，保留充裕的上下左右四向滑動空間）
+      var lim = limits();
+      var targetH = clamp(Math.round(M.ch * 1.48), 820, 1080);
+      var w = clamp(Math.round(targetH * ar), Math.min(520, lim.maxW), Math.min(760, lim.maxW));
+      var h = w / ar;
+      var cx = L.plaza ? L.plaza.x : L.W / 2;
+      var cy = 560;
+      return { x: cx - w / 2, y: cy - h / 2, w: w, h: h };
     }
     return fitView({ x: 0, y: 0, w: L.W, h: L.H }, 6);
-  }
-  function limits() {
-    var full = fitView({ x: 0, y: 0, w: L.W, h: L.H }, 6);
-    return { maxW: Math.min(full.w * 1.25, L.bounds.w), minW: Math.max(160, M.cw / 3.2) };
   }
   function clampView(v) {
     var lim = limits();
@@ -3595,15 +3674,34 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   }
   function applyView(v) {
     M.view = clampView(v);
-    M.svg.setAttribute('viewBox', n(M.view.x) + ' ' + n(M.view.y) + ' ' + n(M.view.w) + ' ' + n(M.view.h));
+    var vb = n(M.view.x) + ' ' + n(M.view.y) + ' ' + n(M.view.w) + ' ' + n(M.view.h);
+    if (vb !== M.lastVb) {
+      M.lastVb = vb;
+      M.svg.setAttribute('viewBox', vb);
+      if (M.dynSvg) M.dynSvg.setAttribute('viewBox', vb);
+    }
     hideTip();
     var lim = limits();
-    var zi = document.getElementById('zoomIn'), zo = document.getElementById('zoomOut');
-    if (zi) zi.disabled = M.view.w <= lim.minW + 0.5;
-    if (zo) zo.disabled = M.view.w >= lim.maxW - 0.5;
+    var ziDis = M.view.w <= lim.minW + 0.5, zoDis = M.view.w >= lim.maxW - 0.5;
+    if (M.zi && ziDis !== M.ziDis) { M.ziDis = ziDis; M.zi.disabled = ziDis; }
+    if (M.zo && zoDis !== M.zoDis) { M.zoDis = zoDis; M.zo.disabled = zoDis; }
+  }
+  function scheduleView(v) {
+    M.view = clampView(v);
+    M.pendingView = M.view;
+    if (!M.rafView) {
+      M.rafView = requestAnimationFrame(function () {
+        M.rafView = 0;
+        if (M.pendingView) {
+          var pv = M.pendingView;
+          M.pendingView = null;
+          applyView(pv);
+        }
+      });
+    }
   }
   function flyTo(target, ms) {
-    cancelAnimationFrame(M.anim);
+    stopAnim();
     var to = clampView(target);
     var from = M.view;
     ms = reduceMotion ? 0 : (ms == null ? 520 : ms);
@@ -3618,11 +3716,12 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       var lh = lw * M.ch / M.cw;
       applyView({ x: cx - lw / 2, y: cy - lh / 2, w: lw, h: lh });
       if (t < 1) M.anim = requestAnimationFrame(step);
+      else M.anim = 0;
     }
     M.anim = requestAnimationFrame(step);
   }
-  function zoomAt(px, py, f, animate) {
-    var r = M.svg.getBoundingClientRect();
+  function zoomAt(px, py, f, animate, rect) {
+    var r = rect || M.wrap.getBoundingClientRect();
     var s = scale();
     var wx = M.view.x + (px - r.left) / s, wy = M.view.y + (py - r.top) / s;
     var lim = limits();
@@ -3630,16 +3729,19 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     var h = w * M.ch / M.cw;
     var s2 = M.cw / w;
     var v = { x: wx - (px - r.left) / s2, y: wy - (py - r.top) / s2, w: w, h: h };
-    if (animate) flyTo(v, 260); else applyView(v);
+    if (animate) flyTo(v, 260); else scheduleView(v);
   }
   function zoomBy(f) {
-    var r = M.svg.getBoundingClientRect();
-    zoomAt(r.left + r.width / 2, r.top + r.height / 2, f, true);
+    var r = M.wrap.getBoundingClientRect();
+    zoomAt(r.left + r.width / 2, r.top + r.height / 2, f, true, r);
   }
 
-  /* 依實際字寬排版標籤（名稱＋狀態膠囊），並避免超出地圖左右邊界 */
-  function layoutLabels() {
+  /* 依實際字寬排版標籤（名稱＋狀態膠囊），採兩階段讀寫分離避免強制重複排版（layout thrashing） */
+  function layoutLabels(force) {
+    if (M.labelsLaidOut && !force) return;
     var groups = M.svg.querySelectorAll('.m-labels .lbl[data-id], .m-labels .lbl-svc');
+    var reads = [];
+    var anyMeasured = false;
     for (var i = 0; i < groups.length; i++) {
       var g = groups[i];
       var t = g.querySelector('.lbl-t'), ct = g.querySelector('.chip-t');
@@ -3652,31 +3754,35 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       }
       var tw = 0, cw = 0;
       try { tw = t.getComputedTextLength(); cw = ct ? ct.getComputedTextLength() : 0; } catch (e) { tw = 0; }
-      if (!tw && meta) { tw = textW(meta.name, meta.fs); cw = textW(meta.chip || '', 10.5); }
-      var chipW = ct ? cw + 13 : 0;
-      var total = 11 + tw + (ct ? 7 + chipW : 0) + 5;
+      if (tw > 0) anyMeasured = true;
+      else if (meta) { tw = textW(meta.name, meta.fs); cw = textW(meta.chip || '', 10.5); }
+      reads.push({ g: g, t: t, ct: ct, bg: bg, cb: cb, lhit: g.querySelector('.lbl-hit'), meta: meta, tw: tw, cw: cw, tr: g.getAttribute('transform') || '' });
+    }
+    for (var j = 0; j < reads.length; j++) {
+      var it = reads[j];
+      var chipW = it.ct ? it.cw + 13 : 0;
+      var total = 11 + it.tw + (it.ct ? 7 + chipW : 0) + 5;
       var x0 = -total / 2;
-      bg.setAttribute('x', n(x0));
-      bg.setAttribute('width', n(total));
-      var lhit = g.querySelector('.lbl-hit');
-      if (lhit) {
-        lhit.setAttribute('x', n(x0 - 8));
-        lhit.setAttribute('width', n(total + 16));
+      it.bg.setAttribute('x', n(x0));
+      it.bg.setAttribute('width', n(total));
+      if (it.lhit) {
+        it.lhit.setAttribute('x', n(x0 - 8));
+        it.lhit.setAttribute('width', n(total + 16));
       }
-      t.setAttribute('x', n(x0 + 11));
-      if (ct && cb) {
-        var cx = x0 + 11 + tw + 7;
-        cb.setAttribute('x', n(cx));
-        cb.setAttribute('width', n(chipW));
-        ct.setAttribute('x', n(cx + 6.5));
+      it.t.setAttribute('x', n(x0 + 11));
+      if (it.ct && it.cb) {
+        var cx = x0 + 11 + it.tw + 7;
+        it.cb.setAttribute('x', n(cx));
+        it.cb.setAttribute('width', n(chipW));
+        it.ct.setAttribute('x', n(cx + 6.5));
       }
-      if (meta) {
+      if (it.meta) {
         var half = total / 2;
-        var ax = clamp(meta.x, 8 + half, L.W - 8 - half);
-        var tr = g.getAttribute('transform') || '';
-        g.setAttribute('transform', tr.replace(/translate\(([-\d.]+),/, 'translate(' + n(ax) + ','));
+        var ax = clamp(it.meta.x, 8 + half, L.W - 8 - half);
+        it.g.setAttribute('transform', it.tr.replace(/translate\(([-\d.]+),/, 'translate(' + n(ax) + ','));
       }
     }
+    if (anyMeasured) M.labelsLaidOut = true;
   }
 
   /* ------------------------------------------------------------ 提示框（滑鼠移到建築或互動設施上） */
@@ -3756,7 +3862,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     if (y < 8) y = r.bottom - wr.top + 10;
     M.tip.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
   }
-  function hideTip() { if (M.tip) M.tip.hidden = true; }
+  function hideTip() { if (M.tip && !M.tip.hidden) M.tip.hidden = true; }
 
   /* ------------------------------------------------------------ 互動：點擊、拖曳、縮放、鍵盤 */
   function enterOrOpen(id) {
@@ -3784,7 +3890,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   function activate(target) {
     if (!target || !target.closest) return;
     var el = target.closest('[data-id], .svc, .sign, .lot, [data-banner], .lbl-svc, [data-car], .campus-vehicle, [data-animal], [data-fun], .tree, .ped, .plane, .hidden-frog');
-    if (!el || !M.svg.contains(el)) return;
+    if (!el || !inMapSvg(el)) return;
     var simple = el.classList.contains('hidden-frog') ? 'frog' : el.classList.contains('tree') ? 'tree' : el.classList.contains('ped') ? 'ped' : el.classList.contains('plane') ? 'plane' : '';
     if (simple) {
       C.emit('fun', { kind: simple, el: el });
@@ -3825,35 +3931,73 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   }
 
   function bindPointer() {
-    var svg = M.svg;
+    var svg = M.svg, stage = M.wrap;
     var pts = {};
-    var drag = null, pinch = null;
+    var drag = null, pinch = null, wheelRect = null, wheelRectAt = 0;
     function count() { return Object.keys(pts).length; }
+    function clearHover() {
+      M.lastHoverRaw = null;
+      if (M.hoverEl) { M.hoverEl.classList.remove('hover'); M.hoverEl = null; hideTip(); }
+    }
     function startDrag(e, moved) {
-      drag = { x: e.clientX, y: e.clientY, v: M.view, target: e.target, moved: !!moved, pointerType: e.pointerType || 'mouse', captured: false };
+      var now = performance.now();
+      drag = {
+        x: e.clientX, y: e.clientY, v: M.view, target: e.target, moved: !!moved,
+        pointerType: e.pointerType || 'mouse', captured: false,
+        lx: e.clientX, ly: e.clientY, lt: now, vx: 0, vy: 0,
+      };
+    }
+    function startInertia(vx, vy) {
+      if (reduceMotion) return;
+      stopAnim();
+      var spd = Math.hypot(vx, vy), maxSpd = 2.8;
+      if (spd > maxSpd) { vx = vx * maxSpd / spd; vy = vy * maxSpd / spd; }
+      var last = performance.now();
+      function step(now) {
+        var dt = Math.min(40, Math.max(1, now - last));
+        last = now;
+        var decay = Math.pow(0.92, dt / 16.67);
+        vx *= decay;
+        vy *= decay;
+        if (Math.hypot(vx, vy) < 0.025) { M.anim = 0; return; }
+        var s = scale();
+        var px = M.view.x, py = M.view.y;
+        applyView({ x: px - (vx * dt) / s, y: py - (vy * dt) / s, w: M.view.w, h: M.view.h });
+        if (Math.abs(M.view.x - px) < 0.01 && Math.abs(M.view.y - py) < 0.01) { M.anim = 0; return; }
+        M.anim = requestAnimationFrame(step);
+      }
+      M.anim = requestAnimationFrame(step);
     }
     // 防止手機點擊 SVG 後 10-30ms 產生的合成 click 穿透點到剛彈出的底部面板遮罩 (#sheetBd / .modal-bd) 而瞬間閃退
     window.addEventListener('click', function (e) {
-      if (M.lastTapAt && Date.now() - M.lastTapAt < 420 && M.svg && !M.svg.contains(e.target)) {
+      if (M.lastTapAt && Date.now() - M.lastTapAt < 420 && M.svg && !inMapSvg(e.target)) {
         e.stopPropagation();
         e.preventDefault();
       }
     }, true);
-    svg.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-    svg.addEventListener('pointerdown', function (e) {
+    stage.addEventListener('contextmenu', function (e) { if (inMapSvg(e.target)) e.preventDefault(); });
+    stage.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
-      cancelAnimationFrame(M.anim);
+      if (!inMapSvg(e.target) && count() === 0) return;
+      stopAnim();
       pts[e.pointerId] = { x: e.clientX, y: e.clientY };
       if (count() === 1) startDrag(e, false);
       else if (count() === 2) {
         var p = Object.keys(pts).map(function (k) { return pts[k]; });
-        pinch = { d: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1, mx: (p[0].x + p[1].x) / 2, my: (p[0].y + p[1].y) / 2, v: M.view };
+        pinch = {
+          d: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1,
+          mx: (p[0].x + p[1].x) / 2, my: (p[0].y + p[1].y) / 2,
+          v: M.view, rect: stage.getBoundingClientRect(),
+        };
         if (drag) drag.moved = true;
       }
     });
-    svg.addEventListener('pointermove', function (e) {
+    stage.addEventListener('pointermove', function (e) {
       if (!pts[e.pointerId]) {
         if (e.pointerType === 'mouse') {
+          if (!inMapSvg(e.target)) { clearHover(); return; }
+          if (e.target === M.lastHoverRaw) return;
+          M.lastHoverRaw = e.target;
           var raw = e.target && e.target.closest ? e.target.closest('.bld, .svc, .sign, .lot, .fun-spot, .parked-car, .parking-sign, .campus-vehicle, .animal, .lake-fish, .ped, .plane, .lbl-fun, .lbl[data-id], .lbl-svc') : null;
           var el = raw;
           if (raw) {
@@ -3879,13 +4023,14 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         var p = Object.keys(pts).map(function (k) { return pts[k]; });
         var d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1;
         var mx = (p[0].x + p[1].x) / 2, my = (p[0].y + p[1].y) / 2;
-        var r = svg.getBoundingClientRect();
+        var r = pinch.rect;
         var v0 = pinch.v, s0 = M.cw / v0.w;
         var wx = v0.x + (pinch.mx - r.left) / s0, wy = v0.y + (pinch.my - r.top) / s0;
         var lim = limits();
         var w = clamp(v0.w * pinch.d / d, lim.minW, lim.maxW);
         var s1 = M.cw / w;
-        applyView({ x: wx - (mx - r.left) / s1, y: wy - (my - r.top) / s1, w: w, h: w * M.ch / M.cw });
+        if (!M.dragging) { M.dragging = true; M.wrap.classList.add('dragging'); hideTip(); }
+        scheduleView({ x: wx - (mx - r.left) / s1, y: wy - (my - r.top) / s1, w: w, h: w * M.ch / M.cw });
         return;
       }
       if (drag) {
@@ -3895,14 +4040,23 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
           drag.moved = true;
           if (!drag.captured) {
             drag.captured = true;
-            try { svg.setPointerCapture(e.pointerId); } catch (er) { /* 舊瀏覽器 */ }
+            try { stage.setPointerCapture(e.pointerId); } catch (er) { /* 舊瀏覽器 */ }
           }
+          M.dragging = true;
           M.wrap.classList.add('dragging');
-          hideTip();
+          clearHover();
         }
         if (drag.moved) {
+          var now = performance.now(), dt = now - drag.lt;
+          if (dt > 0) {
+            drag.vx = drag.vx * 0.35 + ((e.clientX - drag.lx) / dt) * 0.65;
+            drag.vy = drag.vy * 0.35 + ((e.clientY - drag.ly) / dt) * 0.65;
+            drag.lx = e.clientX;
+            drag.ly = e.clientY;
+            drag.lt = now;
+          }
           var s = M.cw / drag.v.w;
-          applyView({ x: drag.v.x - dx / s, y: drag.v.y - dy / s, w: drag.v.w, h: drag.v.h });
+          scheduleView({ x: drag.v.x - dx / s, y: drag.v.y - dy / s, w: drag.v.w, h: drag.v.h });
         }
       }
     });
@@ -3912,32 +4066,53 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       if (pinch && count() < 2) {
         pinch = null;
         var rest = Object.keys(pts);
-        if (rest.length === 1) { var p = pts[rest[0]]; drag = { x: p.x, y: p.y, v: M.view, target: null, moved: true, pointerType: e.pointerType || 'touch', captured: false }; }
-        else drag = null;
+        if (rest.length === 1) {
+          var p = pts[rest[0]], tn = performance.now();
+          drag = { x: p.x, y: p.y, v: M.view, target: null, moved: true, pointerType: e.pointerType || 'touch', captured: false, lx: p.x, ly: p.y, lt: tn, vx: 0, vy: 0 };
+        } else {
+          drag = null;
+          M.dragging = false;
+          M.wrap.classList.remove('dragging');
+        }
         return;
       }
       if (count() === 0) {
+        if (M.rafView && M.pendingView) {
+          cancelAnimationFrame(M.rafView);
+          M.rafView = 0;
+          var fv = M.pendingView;
+          M.pendingView = null;
+          applyView(fv);
+        }
         var wasTap = drag && !drag.moved && e.type === 'pointerup';
         var tapTarget = drag ? drag.target : null;
+        var flick = drag && drag.moved && e.type === 'pointerup' && (performance.now() - drag.lt < 95) && Math.hypot(drag.vx, drag.vy) > 0.16
+          ? { vx: drag.vx, vy: drag.vy } : null;
         drag = null;
+        M.dragging = false;
         M.wrap.classList.remove('dragging');
         if (wasTap && tapTarget) {
           if (e.cancelable) e.preventDefault();
           M.lastTapAt = Date.now();
           activate(tapTarget);
+        } else if (flick) {
+          startInertia(flick.vx, flick.vy);
         }
       }
     }
-    svg.addEventListener('pointerup', end);
-    svg.addEventListener('pointercancel', end);
-    svg.addEventListener('pointerleave', function (e) {
-      if (e.pointerType === 'mouse' && M.hoverEl) { M.hoverEl.classList.remove('hover'); M.hoverEl = null; hideTip(); }
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+    stage.addEventListener('pointerleave', function (e) {
+      if (e.pointerType === 'mouse') clearHover();
     });
-    svg.addEventListener('wheel', function (e) {
+    stage.addEventListener('wheel', function (e) {
+      if (!inMapSvg(e.target)) return;
       e.preventDefault();
+      var now = performance.now();
+      if (!wheelRect || now - wheelRectAt > 250) { wheelRect = stage.getBoundingClientRect(); wheelRectAt = now; }
       var dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1);
       var f = Math.exp(-dy * (e.ctrlKey ? 0.012 : 0.0016));
-      zoomAt(e.clientX, e.clientY, clamp(f, 0.5, 2), false);
+      zoomAt(e.clientX, e.clientY, clamp(f, 0.5, 2), false, wheelRect);
     }, { passive: false });
     // 鍵盤：Tab 走訪建築／看板，Enter／空白鍵開啟；方向鍵平移、+／- 縮放、0 回到全覽
     svg.addEventListener('keydown', function (e) {
@@ -3984,7 +4159,12 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     var z = zoneOf(did);
     if (!z) return false;
     var b = z.layout.box;
-    flyTo(fitView({ x: b[0], y: b[1] - 10, w: b[2] - b[0], h: b[3] - b[1] + 30 }, M.cw < 720 ? 8 : 40), ms);
+    var target = fitView({ x: b[0], y: b[1] - 10, w: b[2] - b[0], h: b[3] - b[1] + 30 }, M.cw < 720 ? 14 : 40);
+    if (isMobileMap()) {
+      var topClear = (document.body.classList.contains('news-on') ? 86 : 44) * (target.w / Math.max(1, M.cw));
+      target.y -= topClear * 0.45;
+    }
+    flyTo(target, ms);
     var g = M.svg.querySelector('.zone[data-district="' + did + '"]');
     if (g) {
       g.classList.remove('zfocus');
@@ -4063,9 +4243,10 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   function resize() {
     if (!M.svg) return;
     var old = { cx: M.view.x + M.view.w / 2, cy: M.view.y + M.view.h / 2, s: scale() };
-    var pw = M.cw;
+    var pw = M.cw, ph = M.ch;
     measure();
-    if (!M.cw || M.cw < 2) return;
+    if (!M.cw || M.cw < 2 || !M.ch || M.ch < 2) return;
+    if (pw === M.cw && ph === M.ch && M.ready) return;
     if (!pw || pw < 2 || !M.ready) { M.ready = true; applyView(homeView()); return; }
     var w = M.cw / old.s;
     var h = M.ch / old.s;
@@ -4074,8 +4255,10 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
 
   function init(wrap) {
     M.wrap = wrap;
-    M.svg = wrap.querySelector('svg.campus-map');
+    M.svg = wrap.querySelector('#campusMap') || wrap.querySelector('svg.campus-map');
     M.tip = wrap.querySelector('.map-tip');
+    M.zi = document.getElementById('zoomIn');
+    M.zo = document.getElementById('zoomOut');
     if (C.registryError) {
       wrap.classList.add('map-error');
       var msg = document.createElement('div');
@@ -4084,21 +4267,42 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       wrap.appendChild(msg);
       return;
     }
+    // 建立獨立的輕量動態圖層 SVG（行人／車輛／飛機／即時氣泡），讓底層 3500+ 節點的靜態校園地圖保持 GPU 快取不重繪
+    var dyn = wrap.querySelector('#campusDyn');
+    if (!dyn) {
+      dyn = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      dyn.setAttribute('id', 'campusDyn');
+      dyn.setAttribute('class', 'campus-map campus-dyn');
+      dyn.setAttribute('aria-hidden', 'true');
+      var par = M.svg.getAttribute('preserveAspectRatio');
+      if (par) dyn.setAttribute('preserveAspectRatio', par);
+      M.svg.insertAdjacentElement('afterend', dyn);
+    }
+    dyn.innerHTML = '<g class="m-people" id="mapPeople"></g><g class="m-vehicles" id="mapVehicles"></g><g class="m-sky" id="mapSky"></g><g class="m-fx" id="mapFx"></g>';
+    M.dynSvg = dyn;
+
     M.asg = C.assignLayout(C.reg);
     var scene = buildScene(M.asg);
     M.svg.innerHTML = scene.svg;
     M.labelMeta = scene.labels;
+    M.labelsLaidOut = false;
+    M.lastVb = '';
     measure();
-    layoutLabels();
-    M.ready = M.cw > 2;
+    layoutLabels(true);
+    M.ready = M.cw > 2 && M.ch > 2;
     applyView(homeView());
     bindPointer();
-    var zi = document.getElementById('zoomIn'), zo = document.getElementById('zoomOut'), zr = document.getElementById('zoomReset');
-    if (zi) zi.addEventListener('click', function () { zoomBy(1.4); });
-    if (zo) zo.addEventListener('click', function () { zoomBy(1 / 1.4); });
+    var zr = document.getElementById('zoomReset');
+    if (M.zi) M.zi.addEventListener('click', function () { zoomBy(1.4); });
+    if (M.zo) M.zo.addEventListener('click', function () { zoomBy(1 / 1.4); });
     if (zr) zr.addEventListener('click', function () { reset(); });
     var rt = 0;
-    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 80); });
+    var scheduleResize = function () { clearTimeout(rt); rt = setTimeout(resize, 60); };
+    window.addEventListener('resize', scheduleResize);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', scheduleResize);
+    if (typeof ResizeObserver === 'function') {
+      try { new ResizeObserver(function () { resize(); }).observe(wrap); } catch (e) { /* 舊瀏覽器 */ }
+    }
     // 只有用鍵盤操作時才自動捲動到焦點
     document.addEventListener('keydown', function (e) { if (e.key === 'Tab') wrap.classList.add('kbd'); }, true);
     document.addEventListener('pointerdown', function () { wrap.classList.remove('kbd'); }, true);
@@ -4126,6 +4330,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     placed: function () { return M.asg ? M.asg.placed : {}; },
     layout: function () { return M.asg; },
     view: function () { return M.view; },
+    isBusy: function () { return !!(M.anim || M.dragging || (M.wrap && M.wrap.classList.contains('dragging'))); },
   };
 })();
 
@@ -4373,9 +4578,9 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     refresh: refresh,
     current: function () { return P.id; },
     isMobile: isMobile,
-    // 桌機：抽屜寬度；手機：面板高度（讓地圖把建築移到看得到的地方）
-    coverW: function () { return !isMobile() && P.el ? P.el.offsetWidth : 0; },
-    coverH: function () { return isMobile() && P.el ? Math.min(P.el.offsetHeight, window.innerHeight * 0.8) : 0; },
+    // 桌機：抽屜寬度（固定 410px / 94vw，避免開啟瞬間讀取 offsetWidth 觸發同步 Reflow）；手機：面板高度
+    coverW: function () { return !isMobile() && P.el ? Math.min(410, Math.round(window.innerWidth * 0.94)) : 0; },
+    coverH: function () { return isMobile() && P.el ? Math.min(P.el.offsetHeight || 420, Math.round(window.innerHeight * 0.8)) : 0; },
   };
 })();
 
@@ -4386,7 +4591,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   'use strict';
   var C = window.CAMPUS;
   var esc = C.util.esc;
-  var D = { el: null, rendered: false };
+  var D = { el: null, rendered: false, cards: [], secs: [] };
 
   function chip(b) {
     var st = C.STATUS[b.status] || C.STATUS.live;
@@ -4453,6 +4658,11 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     h += '<div class="dir-empty" id="dirEmpty" hidden></div>';
     D.el.innerHTML = h;
     D.rendered = true;
+    D.secs = Array.prototype.slice.call(D.el.querySelectorAll('.dir-d')).map(function (sec) {
+      return { el: sec, cards: Array.prototype.slice.call(sec.querySelectorAll('.card')) };
+    });
+    D.cards = [];
+    D.secs.forEach(function (s) { D.cards = D.cards.concat(s.cards); });
     if (!D.bound) {
       D.bound = true;
       D.el.addEventListener('click', function (e) {
@@ -4501,17 +4711,23 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   function filter(ids, q) {
     if (!D.el) return;
     var on = Array.isArray(ids);
-    var cards = D.el.querySelectorAll('.card');
-    for (var i = 0; i < cards.length; i++) {
-      var id = cards[i].getAttribute('data-id');
-      cards[i].hidden = on && (!id || ids.indexOf(id) < 0);
+    var idSet = null;
+    if (on) {
+      idSet = {};
+      for (var k = 0; k < ids.length; k++) idSet[ids[k]] = 1;
     }
-    var secs = D.el.querySelectorAll('.dir-d');
     var shown = 0;
-    for (var j = 0; j < secs.length; j++) {
-      var vis = secs[j].querySelectorAll('.card:not([hidden])').length;
-      secs[j].hidden = on && !vis;
-      if (!secs[j].hidden) shown++;
+    for (var j = 0; j < D.secs.length; j++) {
+      var s = D.secs[j], vis = 0;
+      for (var i = 0; i < s.cards.length; i++) {
+        var c = s.cards[i], id = c.getAttribute('data-id');
+        var hide = on && (!id || !idSet[id]);
+        if (c.hidden !== hide) c.hidden = hide;
+        if (!hide) vis++;
+      }
+      var secHide = on && !vis;
+      if (s.el.hidden !== secHide) s.el.hidden = secHide;
+      if (!secHide) shown++;
     }
     var empty = document.getElementById('dirEmpty');
     if (empty) {
@@ -4539,8 +4755,56 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   'use strict';
   const CAMPUS = (window.CAMPUS = window.CAMPUS || {});
   CAMPUS.RELEASES_DATA = {
-    "current_version": "1.6.2",
+    "current_version": "1.7.1",
     "releases": [
+      {
+        "version": "1.7.1",
+        "date": "2026-10-30",
+        "bump": "patch",
+        "title": "⚡ 全面效能大優化：雙層動靜分離 SVG、四款小遊戲與專車 60fps 絲滑零卡頓",
+        "highlights": [
+          "雙層動靜分離 SVG 架構（#campusMap 靜態地景建築 9,379 節點常駐 GPU 快取 ＋ #campusDyn 動態覆蓋層僅 216 節點，每幀動態重繪規模縮減 44 倍），專車行駛、行人散步、觀光飛機與拖曳縮放全程 60fps 絲滑不掉幀",
+          "全面移除靜態地圖內連續背景 @keyframes 與高成本 transform-box: fill-box（改為精確座標原點），消除整張地圖每秒 60 次紋理重繪",
+          "四款小遊戲（釣魚、三分投籃、十二碼 PK、網球對決）升級 Opaque 2D Canvas（alpha: false）、字型狀態快取、零 GC 環形軌跡緩衝與座標快取，且開啟任何視窗或切換目錄頁時自動暫停背景校園交通迴圈，100% 算力集中於當前畫面",
+          "地圖↔目錄切換、右側／底部建築介紹抽屜、搜尋篩選與彈窗全面消除強制同步排版（Forced Reflow），頁面切換瞬時完成"
+        ],
+        "files_count": 1
+      },
+      {
+        "version": "1.7.0",
+        "date": "2026-10-30",
+        "bump": "minor",
+        "title": "手機全版面滿版校園地圖 ＆ 上下左右四向滑動／慣性滑行",
+        "highlights": [
+          "手機／直向螢幕改為 100dvh 全版面滿版地圖（零上下米色留白、零整頁誤捲動），進站與 ?from= 返回校園時直接滿版聚焦建築與中央廣場",
+          "重構 SVG 鏡頭邊界為 Cover-Fit 上限（任何縮放比例皆不露底邊並保留完整南北綠地森林緩衝），一進站即可單指上下左右四向滑動瀏覽全校園，並新增觸控甩動慣性滑行（Flick Inertia）與雙指縮放同步",
+          "修正離線單一 HTML（file://）啟動時讀寫 document.cookie 觸發作業系統鑰匙圈 IPC 阻塞的問題，確保離線版與公開版皆秒開順暢"
+        ],
+        "files_count": 4
+      },
+      {
+        "version": "1.6.4",
+        "date": "2026-10-30",
+        "bump": "patch",
+        "title": "修正手機版在線學員名單、排行榜、學生證改名按鈕與智慧科技學區標籤排版",
+        "highlights": [
+          "修正「🟢 目前在線學員」視窗在手機版因 .or-acts 設為 width:100% 且 .online-row 未開啟 flex-wrap 導致學員名稱與資訊被擠壓成單字直排並與按鈕重疊的問題，手機版改為上方頭像＋完整學員資訊、下方獨立操作按鈕列",
+          "優化「🪪 我的學生證」手機版排版與唯一改名確認按鈕自動換行（white-space: normal），避免長按鈕文字超出 360px 螢幕",
+          "微調智慧科技學區「程式語言學院」與「智慧生活與物聯網學院」建築座標與標籤尺寸，消除地圖標籤重疊"
+        ],
+        "files_count": 1
+      },
+      {
+        "version": "1.6.3",
+        "date": "2026-10-30",
+        "bump": "patch",
+        "title": "學生證 Cookie + 本機雙重永久綁定與唯一 1 次改名限制",
+        "highlights": [
+          "每個裝置／學員的學生證紀錄（學號、名稱、頭像、稱號、座駕、已用改名次數）同時寫入 1 年期根路徑 Cookie（okayell_campus_stu_v1）與 localStorage（okayell.campus.student.v1）及後端 presence.json；已設定過的裝置下次進入直接自動載入，不再重複彈窗。",
+          "新增「僅限 1 次改名機會」機制：首次設定名稱不扣次數；之後僅有唯一 1 次修改名稱機會（修改時顯示琥珀色提醒），一旦改名儲存後名稱欄位即永久鎖定（🔒 已鎖定，前、後端與 Cookie/localStorage 同步防繞過），但仍可隨時自由更換頭像、稱號與專屬座駕。"
+        ],
+        "files_count": 3
+      },
       {
         "version": "1.6.2",
         "date": "2026-10-30",
@@ -5178,7 +5442,9 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   /* ------------------------------------------------------------ 檢視切換 */
   function setView(v, opts) {
     opts = opts || {};
-    view = v === 'dir' ? 'dir' : 'map';
+    var next = v === 'dir' ? 'dir' : 'map';
+    if (next === view && !opts.force && $('mapView').hidden === (next === 'dir')) return;
+    view = next;
     var isDir = view === 'dir';
     $('mapView').hidden = isDir;
     $('dirView').hidden = !isDir;
@@ -5187,7 +5453,6 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     document.body.classList.toggle('view-dir', isDir);
     if (!isDir) {
       C.map.resize();
-      C.map.relayout();
     }
     if (!opts.noHash) {
       try {
@@ -5196,7 +5461,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
         window.history.replaceState(null, '', u.pathname + u.search + u.hash);
       } catch (e) { /* ignore */ }
     }
-    if (opts.scrollTop !== false) window.scrollTo(0, 0);
+    if (opts.scrollTop !== false && window.scrollY > 0) window.scrollTo(0, 0);
   }
 
   /* ------------------------------------------------------------ 開啟建築 */
@@ -5797,7 +6062,12 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
 
   /* ------------------------------------------------------------ 地圖特效 */
   var SVGNS = 'http://www.w3.org/2000/svg';
-  function fxLayer() { return document.querySelector('#campusMap .m-fx'); }
+  var cachedFx = null;
+  function fxLayer() {
+    if (cachedFx && cachedFx.isConnected) return cachedFx;
+    cachedFx = document.getElementById('mapFx') || document.querySelector('#campusMap .m-fx');
+    return cachedFx;
+  }
   function spawnMapBubble(x, y, text, color) {
     var fx = fxLayer();
     if (!fx) return;
@@ -5826,8 +6096,10 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 750);
   }
   function restartClass(el, cls) {
-    el.classList.remove(cls);
-    void el.getBoundingClientRect();
+    if (el.classList.contains(cls)) {
+      el.classList.remove(cls);
+      void el.getBoundingClientRect();
+    }
     el.classList.add(cls);
   }
   function posOf(el) {
@@ -6126,23 +6398,27 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
 
   /* ------------------------------------------------------------ 共用工具 */
   function dpr() { return Math.min(2, window.devicePixelRatio || 1); }
-  function setup(cvs, W, H) {
+  function setup(cvs, W, H, opaque) {
     var r = dpr();
     cvs.width = Math.round(W * r);
     cvs.height = Math.round(H * r);
-    var ctx = cvs.getContext('2d');
+    cvs._rect = null;
+    var ctx = cvs.getContext('2d', opaque !== false ? { alpha: false } : undefined);
     ctx.setTransform(r, 0, 0, r, 0, 0);
+    ctx.textBaseline = 'middle';
+    ctx._font = '';
+    ctx._align = 'start';
     return ctx;
   }
   function prerender(W, H, draw) {
     var c = document.createElement('canvas');
-    draw(setup(c, W, H));
+    draw(setup(c, W, H, true));
     return c;
   }
-  function loop(step) {
+  function loop(step, cvs) {
     var alive = true, raf = 0, last = performance.now();
     function f(now) {
-      if (!alive) return;
+      if (!alive || (cvs && !cvs.isConnected)) { alive = false; return; }
       var dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       if (!document.hidden) step(dt, now);
@@ -6161,10 +6437,11 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     ctx.closePath();
   }
   function text(ctx, s, x, y, size, color, align, weight) {
-    ctx.font = (weight || 800) + ' ' + size + 'px ' + FONT;
+    var f = (weight || 800) + ' ' + size + 'px ' + FONT;
+    if (ctx._font !== f) { ctx.font = f; ctx._font = f; }
+    var al = align || 'center';
+    if (ctx._align !== al) { ctx.textAlign = al; ctx._align = al; }
     ctx.fillStyle = color;
-    ctx.textAlign = align || 'center';
-    ctx.textBaseline = 'middle';
     ctx.fillText(s, x, y);
   }
   function stars(score, th) { return score >= th[2] ? 3 : score >= th[1] ? 2 : score >= th[0] ? 1 : 0; }
@@ -6197,9 +6474,18 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     window.addEventListener('keyup', u);
     return function () { window.removeEventListener('keydown', d); window.removeEventListener('keyup', u); };
   }
-  function canvasPoint(cvs, e, W, H) {
-    var r = cvs.getBoundingClientRect();
-    return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (H / r.height) };
+  function refreshRect(cvs) {
+    cvs._rect = cvs.getBoundingClientRect();
+    cvs._rectAt = performance.now();
+    return cvs._rect;
+  }
+  window.addEventListener('resize', function () {
+    var c = document.getElementById('gCvs');
+    if (c) c._rect = null;
+  });
+  function canvasPoint(cvs, e, W, H, fresh) {
+    var r = (!fresh && cvs._rect && (performance.now() - cvs._rectAt < 400)) ? cvs._rect : refreshRect(cvs);
+    return { x: (e.clientX - r.left) * (W / (r.width || W)), y: (e.clientY - r.top) * (H / (r.height || H)) };
   }
 
   /* ============================================================
@@ -6333,7 +6619,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       else if (state === 'cast' || state === 'bite') strike();
       else if (state === 'reel') holding = true;
     }
-    ui.cvs.addEventListener('pointerdown', function (e) { e.preventDefault(); onPress(canvasPoint(ui.cvs, e, W, H)); });
+    ui.cvs.addEventListener('pointerdown', function (e) { e.preventDefault(); onPress(canvasPoint(ui.cvs, e, W, H, true)); });
     actBtn.addEventListener('click', function () { onPress(null); });
     holdBtn.addEventListener('pointerdown', function (e) { e.preventDefault(); holding = true; });
     function release() { holding = false; }
@@ -6353,6 +6639,8 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s * 0.45, -1.6, 1.8, 0, 6.283); ctx.fill();
       ctx.restore();
     }
+    var lastShown = -1;
+    function hudTime() { var v = Math.ceil(Math.max(0, timeLeft)); if (v !== lastShown) { lastShown = v; tEl.textContent = v; } }
     var stop = loop(function (dt, now) {
       if (state !== 'ready' && state !== 'over') {
         timeLeft -= dt;
@@ -6426,10 +6714,8 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
         else { ctx.globalAlpha = Math.max(0, pop.a); text(ctx, pop.s, pop.x, pop.y, 20, pop.c); ctx.globalAlpha = 1; }
       }
       if (state !== 'ready' && timeLeft <= 10 && state !== 'over') text(ctx, Math.ceil(timeLeft) + '', W - 34, 30, 26, '#fff1f2');
-      if ((now | 0) % 4 === 0) hudTime();
-    });
-    var lastShown = -1;
-    function hudTime() { var v = Math.ceil(Math.max(0, timeLeft)); if (v !== lastShown) { lastShown = v; tEl.textContent = v; } }
+      hudTime();
+    }, ui.cvs);
     status('準備好就開始吧！');
     hud();
     overlay(ui.ov, { icon: '🎣', title: '學園湖釣魚大賽', sub: '60 秒內釣到 <b>' + GOAL + '</b> 分就獲勝！稀有魚分數高但比較難收線。', btn: '▶ 開始挑戰', onBtn: reset });
@@ -6577,7 +6863,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
         pop.y -= dt * 24; pop.a -= dt * 0.9;
         if (pop.a <= 0) pop = null; else { ctx.globalAlpha = pop.a; text(ctx, pop.s, pop.x, pop.y, 20, pop.c); ctx.globalAlpha = 1; }
       }
-    });
+    }, ui.cvs);
     ui.status.textContent = '準備好就開始吧！';
     overlay(ui.ov, { icon: '🏀', title: '三分投籃大賽', sub: '10 球拿下 <b>' + GOAL + '</b> 分就獲勝！', btn: '▶ 開始挑戰', onBtn: reset });
     return function () { stop(); unkeys(); };
@@ -6681,7 +6967,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     }
     ui.cvs.addEventListener('pointerdown', function (e) {
       e.preventDefault();
-      var p = canvasPoint(ui.cvs, e, W, H);
+      var p = canvasPoint(ui.cvs, e, W, H, true);
       if (p.y > 200 || p.x < 150 || p.x > 490) return;
       var best = 0, bd = 1e9;
       for (var z = 0; z < 6; z++) { var q = zpos(z), d = Math.hypot(q.x - p.x, q.y - p.y); if (d < bd) { bd = d; best = z; } }
@@ -6700,7 +6986,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(-22, -8, 6.5, 0, 6.283); ctx.arc(22, -8, 6.5, 0, 6.283); ctx.fill();
       ctx.restore();
     }
-    var stop = loop(function (dt, now) {
+    var stop = loop(function (dt) {
       keeper.x += (keeper.tx - keeper.x) * Math.min(1, dt * 9);
       keeper.y += (keeper.ty - keeper.y) * Math.min(1, dt * 9);
       ctx.drawImage(bg, 0, 0, W, H);
@@ -6779,7 +7065,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
         if (banner.a <= 0) banner = null;
         else { ctx.globalAlpha = Math.min(1, banner.a); text(ctx, banner.s, 320, 34, 26, banner.c); ctx.globalAlpha = 1; }
       }
-    });
+    }, ui.cvs);
     ui.status.textContent = '準備好就開始吧！';
     overlay(ui.ov, { icon: '⚽', title: '十二碼 PK 大戰', sub: '5 輪輪流射門＋守門，進球比對手多就獲勝；平手進入驟死賽！（鍵盤 1–6 也可選位置）', btn: '▶ 開賽', onBtn: reset });
     return function () { stop(); unkeys(); };
@@ -6810,10 +7096,10 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     var me = 0, cpu = 0, rally = 0, bestRally = 0;
     var px = 320, ptx = 320, ax = 320, atx = 320, aiT = 0, keyDir = 0;
     var ball = { x: 320, y: PY - 14, vx: 0, vy: 0, sp: 0, smash: false };
-    var state = 'ready', serveT = 0, server = 'me', pauseT = 0, banner = null, trail = [];
+    var state = 'ready', serveT = 0, server = 'me', pauseT = 0, banner = null, trail = [], trailHead = 0, trailLen = 0;
     function hud() { meEl.textContent = me; aiEl.textContent = cpu; raEl.textContent = rally; }
     function serve() {
-      state = 'serve'; serveT = 0.8; rally = 0; trail = [];
+      state = 'serve'; serveT = 0.8; rally = 0; trailHead = 0; trailLen = 0;
       ball.smash = false; hud();
       ui.status.textContent = server === 'me' ? '🎾 你發球！' : '🎾 教練發球，準備接球！';
     }
@@ -6865,8 +7151,9 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       }
     }
     function moveTo(e) { ptx = clamp(canvasPoint(ui.cvs, e, W, H).x, X0 + PW / 2 - 10, X1 - PW / 2 + 10); }
+    ui.cvs.addEventListener('pointerenter', function () { refreshRect(ui.cvs); });
     ui.cvs.addEventListener('pointermove', moveTo);
-    ui.cvs.addEventListener('pointerdown', function (e) { e.preventDefault(); moveTo(e); });
+    ui.cvs.addEventListener('pointerdown', function (e) { e.preventDefault(); refreshRect(ui.cvs); moveTo(e); });
     var unkeys = keys(function (e) {
       if (e.key === 'ArrowLeft') { keyDir = -1; return true; }
       if (e.key === 'ArrowRight') { keyDir = 1; return true; }
@@ -6912,18 +7199,24 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
           if (ball.vy > 0 && ball.y >= PY - 8 && ball.y <= PY + 8 && Math.abs(ball.x - px) <= PW / 2 + 6) hit(true, px);
           else if (ball.vy < 0 && ball.y <= AY + 8 && ball.y >= AY - 8 && Math.abs(ball.x - ax) <= PW / 2 + 6) hit(false, ax);
         }
-        trail.push({ x: ball.x, y: ball.y });
-        if (trail.length > 8) trail.shift();
+        var tSlot = trail[trailHead] || (trail[trailHead] = { x: 0, y: 0 });
+        tSlot.x = ball.x; tSlot.y = ball.y;
+        trailHead = (trailHead + 1) & 7;
+        if (trailLen < 8) trailLen++;
         if (ball.y > H + 10) point(false);
         else if (ball.y < -10) point(true);
       }
       ctx.drawImage(bg, 0, 0, W, H);
-      for (var i = 0; i < trail.length; i++) {
-        ctx.globalAlpha = (i / trail.length) * 0.35;
+      if (trailLen > 0) {
         ctx.fillStyle = ball.smash ? '#facc15' : '#d9f99d';
-        ctx.beginPath(); ctx.arc(trail[i].x, trail[i].y, 5, 0, 6.283); ctx.fill();
+        var tStart = (trailHead - trailLen + 8) & 7;
+        for (var i = 0; i < trailLen; i++) {
+          var tp = trail[(tStart + i) & 7];
+          ctx.globalAlpha = ((i + 1) / (trailLen + 1)) * 0.35;
+          ctx.beginPath(); ctx.arc(tp.x, tp.y, 5, 0, 6.283); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
       }
-      ctx.globalAlpha = 1;
       ctx.fillStyle = '#ef4444'; rr(ctx, ax - PW / 2, AY - 6, PW, 12, 6); ctx.fill();
       ctx.fillStyle = '#10b981'; rr(ctx, px - PW / 2, PY - 6, PW, 12, 6); ctx.fill();
       ctx.fillStyle = '#fde047'; ctx.fillRect(px - 7, PY - 6, 14, 12);
@@ -6937,7 +7230,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
         if (banner.a <= 0) banner = null;
         else { ctx.globalAlpha = Math.min(1, banner.a); text(ctx, banner.s, 320, H / 2 + 26, 24, banner.c); ctx.globalAlpha = 1; }
       }
-    });
+    }, ui.cvs);
     ui.status.textContent = '準備好就開始吧！';
     overlay(ui.ov, { icon: '🎾', title: '網球對決', sub: '先拿 <b>5 分</b>獲勝！教練會預判你的球路，打大角度才容易得分。', btn: '▶ 開打', onBtn: reset });
     return function () { stop(); unkeys(); };
@@ -6964,6 +7257,8 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   var ST = F.ST;
   var SVGNS = 'http://www.w3.org/2000/svg';
   var STU_KEY = 'okayell.campus.student.v1';
+  var STU_COOKIE = 'okayell_campus_stu_v1';
+  var MAX_RENAMES = 1;
   var SESSION_KEY = 'okayell.campus.stu_session.v1';
   var NTFY_TOPIC = 'okayell_happy_campus_v3';
   var BC_NAME = 'okayell.campus.presence.v1';
@@ -6971,7 +7266,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   var BRAKE = 1600;
   function bubble(x, y, t, c) { if (F.bubble) F.bubble(x, y, t, c); }
 
-  /* ------------------------------------------------------------ 🪪 學生證資料 */
+  /* ------------------------------------------------------------ 🪪 學生證資料（Cookie ＋ localStorage 雙重永久保存，限改名 1 次） */
   var CAR_CATALOG = [
     { idx: 0, color: '#f87171', name: '🏎️ 烈焰紅跑車', cx: 411, cy: 1085 },
     { idx: 1, color: '#60a5fa', name: '🚙 晴空藍轎車', cx: 471, cy: 1085 },
@@ -6991,17 +7286,45 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function isAutoGeneratedName(n) {
     return !n || n === '學員' || n === '開心學員' || NAMES.indexOf(n) >= 0;
   }
+  function readStuCookie() {
+    if (C.env && C.env.mode === 'file') return {};
+    try {
+      var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + STU_COOKIE + '=([^;]*)'));
+      if (!m || !m[1]) return {};
+      var parsed = JSON.parse(decodeURIComponent(m[1]));
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) { return {}; }
+  }
+  function writeStuCookie(stu) {
+    if (C.env && C.env.mode === 'file') return;
+    try {
+      var min = {
+        uid: stu.uid,
+        stuNo: stu.stuNo,
+        name: stu.name,
+        confirmed: !!stu.confirmed,
+        renameCount: +stu.renameCount || 0,
+        avatar: stu.avatar,
+        title: stu.title,
+        carIdx: stu.carIdx,
+        buildingId: stu.buildingId,
+      };
+      document.cookie = STU_COOKIE + '=' + encodeURIComponent(JSON.stringify(min)) + '; path=/; max-age=31536000; SameSite=Lax';
+    } catch (e) { /* ignore */ }
+  }
 
   function loadStudent() {
-    var raw = {};
-    try { raw = JSON.parse(localStorage.getItem(STU_KEY) || '{}') || {}; } catch (e) { raw = {}; }
-    var uid = String(raw.uid || '') || 'stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+    var lsRaw = {}, ckRaw = readStuCookie();
+    try { lsRaw = JSON.parse(localStorage.getItem(STU_KEY) || '{}') || {}; } catch (e) { lsRaw = {}; }
+    var raw = Object.assign({}, ckRaw, lsRaw);
+    var uid = String(raw.uid || ckRaw.uid || '') || 'stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
     var h = hashStr(uid);
     var urlUser = (C.util.qs('u') || C.util.qs('user') || '').trim().slice(0, 16);
-    var rawName = String(raw.name || '').trim().slice(0, 16);
-    var confirmed = !!(urlUser || (raw.confirmed === true && rawName));
+    var rawName = String(raw.name || ckRaw.name || '').trim().slice(0, 16);
+    var confirmed = !!(urlUser || ((raw.confirmed === true || ckRaw.confirmed === true) && rawName));
     // 清除舊版自動指派的隨機假名字（如「筱涵」「晨曦」「宇恩」「學員」），必須由本人親自設定確認
     if (!confirmed && isAutoGeneratedName(rawName)) rawName = '';
+    var renameCount = clamp(Math.max(+lsRaw.renameCount || 0, +ckRaw.renameCount || 0), 0, MAX_RENAMES);
     var car = CAR_CATALOG[typeof raw.carIdx === 'number' ? clamp(raw.carIdx, 0, 6) : h % 7];
     var fromB = C.building(C.util.qs('from'));
     var lastB = C.building(raw.buildingId);
@@ -7009,9 +7332,10 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     var b = fromB || lastB || (recent.length ? recent[0].b : null) || C.building('english');
     return {
       uid: uid,
-      stuNo: raw.stuNo || 'HC-' + (1000 + (h % 9000)),
-      name: urlUser || rawName,
+      stuNo: raw.stuNo || ckRaw.stuNo || 'HC-' + (1000 + (h % 9000)),
+      name: (ckRaw.confirmed && ckRaw.renameCount >= MAX_RENAMES && ckRaw.name) ? String(ckRaw.name).slice(0, 16) : (urlUser || rawName),
       confirmed: confirmed,
+      renameCount: renameCount,
       avatar: AVATARS.indexOf(raw.avatar) >= 0 ? raw.avatar : AVATARS[h % AVATARS.length],
       title: raw.title || TITLES[h % TITLES.length],
       carIdx: car.idx, carColor: car.color, carName: car.name,
@@ -7022,6 +7346,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function myDispName() { return MY.confirmed && MY.name ? MY.name : '設定學生證'; }
   function saveStudent() {
     try { localStorage.setItem(STU_KEY, JSON.stringify(MY)); } catch (e) { /* ignore */ }
+    writeStuCookie(MY);
     var t = document.getElementById('stuBtnTxt');
     if (t) t.textContent = MY.confirmed && MY.name ? (MY.avatar + ' ' + MY.name) : '設定名稱';
   }
@@ -7122,7 +7447,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       g.setAttribute('data-ped-act', def.type === 'walk' ? '散步中' : '打球中');
       g.innerHTML = pedSvg(def, i);
       layer.appendChild(g);
-      var p = { def: def, el: g, flipEl: g.querySelector('.ped-flip'), x: 0, y: 0, face: 1, ph: Math.random() * 6.28 };
+      var p = { def: def, el: g, flipEl: g.querySelector('.ped-flip'), x: 0, y: 0, face: 1, ph: Math.random() * 6.28, lastTr: '' };
       if (def.type === 'walk') {
         var segs = [], tot = 0;
         for (var k = 0; k < def.pts.length - 1; k++) {
@@ -7162,7 +7487,8 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       var face = nx < p.x - 0.05 ? -1 : nx > p.x + 0.05 ? 1 : p.face;
       if (face !== p.face) { p.face = face; p.flipEl.setAttribute('transform', 'scale(' + face + ',1)'); }
       p.x = nx; p.y = ny;
-      p.el.setAttribute('transform', 'translate(' + nx.toFixed(1) + ',' + ny.toFixed(1) + ')');
+      var tr = 'translate(' + nx.toFixed(1) + ',' + ny.toFixed(1) + ')';
+      if (tr !== p.lastTr) { p.lastTr = tr; p.el.setAttribute('transform', tr); }
     }
   }
   function pedAhead(x, y, angDeg, look) {
@@ -7181,7 +7507,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function Mover(el, pts, o) {
     o = o || {};
     this.el = el;
-    this.rot = el.querySelector('.veh-rot');
+    this.rot = el._rot || el.querySelector('.veh-rot');
     this.segs = [];
     this.total = 0;
     for (var i = 0; i < pts.length - 1; i++) {
@@ -7201,6 +7527,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     this.honkAt = 0;
     this.pos = pts.length ? { x: pts[0].x, y: pts[0].y, ang: this.segs.length ? this.segs[0].ang : 0 } : { x: 0, y: 0, ang: 0 };
     this.lastAng = null;
+    this.lastTr = '';
     this.done = !this.segs.length;
   }
   Mover.prototype.step = function (dt, now) {
@@ -7226,7 +7553,8 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     p.x = sg.a.x + (sg.b.x - sg.a.x) * u;
     p.y = sg.a.y + (sg.b.y - sg.a.y) * u;
     p.ang = sg.ang;
-    this.el.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ',' + p.y.toFixed(1) + ')');
+    var tr = 'translate(' + p.x.toFixed(1) + ',' + p.y.toFixed(1) + ')';
+    if (tr !== this.lastTr) { this.lastTr = tr; this.el.setAttribute('transform', tr); }
     if (this.rot && this.lastAng !== p.ang) { this.lastAng = p.ang; this.rot.setAttribute('transform', 'rotate(' + p.ang.toFixed(1) + ')'); }
     if (this.onMove) this.onMove(p);
     if (!this.loop && this.d >= this.total) {
@@ -7237,20 +7565,30 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function addMover(m) { movers.push(m); return m; }
   function dropMover(m) { var i = movers.indexOf(m); if (i >= 0) movers.splice(i, 1); }
 
-  /* ------------------------------------------------------------ 共用動畫時鐘（地圖隱藏時暫停） */
+  /* ------------------------------------------------------------ 共用動畫時鐘（分頁隱藏、目錄頁、開彈窗時完全暫停） */
   var plane = null;
   var tickLast = performance.now();
+  var pedAcc = 0;
   function tick(now) {
     var dt = Math.min(0.05, (now - tickLast) / 1000);
     tickLast = now;
-    if (!document.hidden && !document.body.classList.contains('view-dir')) {
-      stepPeds(dt, now);
+    var bcl = document.body.classList;
+    if (!document.hidden && !bcl.contains('view-dir') && !bcl.contains('modal-open')) {
+      var busy = !!(C.map && C.map.isBusy && C.map.isBusy());
+      pedAcc += dt;
+      if (!busy && pedAcc >= 0.032) {
+        stepPeds(pedAcc, now);
+        pedAcc = 0;
+      } else if (pedAcc > 0.1) {
+        pedAcc = 0.032;
+      }
       for (var i = movers.length - 1; i >= 0; i--) {
         var m = movers[i];
+        if (busy && m.loop) continue;
         m.step(dt, now);
         if (m.done && !m.loop) movers.splice(i, 1);
       }
-      if (plane) stepPlane(dt);
+      if (plane && !busy) stepPlane(dt);
     }
     requestAnimationFrame(tick);
   }
@@ -7277,9 +7615,19 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       '<text y="3.7" text-anchor="middle" font-size="10.5">' + esc(avatar) + '</text>' +
       (me ? '<rect x="5" y="-14" width="15" height="10" rx="5" fill="#0ea5e9"/><text x="12.5" y="-6.6" text-anchor="middle" font-size="7.5" font-weight="900" fill="#fff">你</text>' : '') + '</g>';
   }
+  function cacheVehRefs(el, cls) {
+    if (!el) return;
+    el._rot = el.querySelector('.veh-rot');
+    if (cls) {
+      el._tagTxt = el.querySelector('.' + cls + '-txt');
+      el._tagBg = el.querySelector('.' + cls + '-bg');
+    }
+  }
   function setTag(el, cls, label) {
-    var t = el && el.querySelector('.' + cls + '-txt'), bg = el && el.querySelector('.' + cls + '-bg');
-    if (!t) return;
+    if (!el) return;
+    var t = el._tagTxt || el.querySelector('.' + cls + '-txt');
+    var bg = el._tagBg || el.querySelector('.' + cls + '-bg');
+    if (!t || !bg) return;
     t.textContent = label;
     var w = Math.max(80, Math.min(196, label.length * 9.8 + 18));
     bg.setAttribute('x', -w / 2);
@@ -7300,6 +7648,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       '<path d="M-14 -7.5h6v2h-6zM-5 -7.5h6v2h-6zM3 -7.5h5v2h-5zM-14 5.5h6v2h-6zM-5 5.5h6v2h-6zM3 5.5h5v2h-5z" fill="#e0f2fe"/>' +
       '<circle cx="19" cy="-5.5" r="2" fill="#fef08a"/><circle cx="19" cy="5.5" r="2" fill="#fef08a"/></g>' +
       tagSvg('🚌 開心校車', '#fffbeb', '#f59e0b', '#92400e', 'bus-tag');
+    cacheVehRefs(bus, 'bus-tag');
     V.layer.appendChild(bus);
     V.bus = bus;
     V.busMover = addMover(new Mover(bus, BUS_LOOP, { loop: true, vmax: 62, acc: 90, d: 260, v0: 62 }));
@@ -7319,8 +7668,9 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     V.car.setAttribute('data-my-bld', MY.buildingName);
     V.car.innerHTML = '<rect class="hit" x="-28" y="-30" width="56" height="46" rx="10" fill="transparent"/>' + carBody(MY.carColor) +
       tagSvg(myLabel(), '#0f172a', '#38bdf8', '#ffffff', 'car-tag') + badgeSvg(MY.avatar, '#0ea5e9', true);
+    cacheVehRefs(V.car, 'car-tag');
     V.car.setAttribute('transform', 'translate(' + V.carPos.x.toFixed(1) + ',' + V.carPos.y.toFixed(1) + ')');
-    V.car.querySelector('.veh-rot').setAttribute('transform', 'rotate(' + V.carPos.ang + ')');
+    if (V.car._rot) V.car._rot.setAttribute('transform', 'rotate(' + V.carPos.ang + ')');
     var stalls = document.querySelectorAll('#campusMap .parked-car');
     for (var i = 0; i < stalls.length; i++) stalls[i].classList.toggle('car-out', +stalls[i].getAttribute('data-car') === MY.carIdx);
     return V.car;
@@ -7340,7 +7690,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       onDone: function () {
         V.carMover = null;
         V.carPos.ang = endAng == null ? V.carPos.ang : endAng;
-        car.querySelector('.veh-rot').setAttribute('transform', 'rotate(' + V.carPos.ang + ')');
+        if (car._rot) car._rot.setAttribute('transform', 'rotate(' + V.carPos.ang + ')');
         setTag(car, 'car-tag', myLabel());
         car.classList.remove('moving');
         if (done) done();
@@ -7543,7 +7893,8 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function myPayload() {
     var badges = F.myBadges();
     return {
-      uid: MY.uid, stuNo: MY.stuNo, name: MY.name, confirmed: !!MY.confirmed, avatar: MY.avatar, title: MY.title,
+      uid: MY.uid, stuNo: MY.stuNo, name: MY.name, confirmed: !!MY.confirmed,
+      renameCount: +MY.renameCount || 0, avatar: MY.avatar, title: MY.title,
       carIdx: MY.carIdx, carColor: MY.carColor, carName: MY.carName,
       buildingId: MY.buildingId, buildingName: MY.buildingName, buildingIcon: MY.buildingIcon,
       badges: badges, score: F.scoreOf(badges), ts: Math.floor(Date.now() / 1000),
@@ -7557,7 +7908,15 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     if (C.env.mode === 'cloudtop') {
       fetch('/api/presence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true })
         .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) { if (j && Array.isArray(j.peers)) ingestList(j.peers); })
+        .then(function (j) {
+          if (j && j.me && j.me.uid === MY.uid && (+j.me.renameCount || 0) > (+MY.renameCount || 0)) {
+            MY.renameCount = clamp(+j.me.renameCount || 0, 0, MAX_RENAMES);
+            if (j.me.name) MY.name = String(j.me.name).slice(0, 16);
+            saveStudent();
+            renderHud();
+          }
+          if (j && Array.isArray(j.peers)) ingestList(j.peers);
+        })
         .catch(function () { /* 離線 */ });
     }
     var now = Date.now();
@@ -7573,12 +7932,24 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function ingest(u) {
     if (!u || typeof u !== 'object') return;
     var uid = String(u.uid || '').trim();
-    if (!uid || uid === MY.uid) return;
+    if (!uid) return;
     var isSim = uid.indexOf('sim_') === 0 || !!u.is_sim;
     if (isSim && !ST.simEnabled) return;
     var uname = String(u.name || '').trim().slice(0, 16);
     // 忽略未經本人確認（!u.confirmed）或空白／預設名稱的訪客，避免任何虛擬或未設定分身出現在名單
     if (!isSim && (!u.confirmed || !uname || uname === '學員' || uname === '開心學員')) return;
+    if (uid === MY.uid) {
+      if (!MY._ntfyFirst) MY._ntfyFirst = uname;
+      else if (uname !== MY._ntfyFirst && (+MY.renameCount || 0) < MAX_RENAMES) {
+        MY.renameCount = MAX_RENAMES;
+        saveStudent();
+      }
+      if ((+u.renameCount || 0) > (+MY.renameCount || 0)) {
+        MY.renameCount = clamp(+u.renameCount || 0, 0, MAX_RENAMES);
+        saveStudent();
+      }
+      return;
+    }
     C.emit('presence-msg', u); // 📢 校園公告（news.js）累積今日人次
     var c = CAR_CATALOG[clamp(+u.carIdx || 0, 0, 6)];
     var b = C.building(u.buildingId);
@@ -7587,8 +7958,14 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     var p = PEERS[uid];
     if (p && ts < p.ts) return;
     var prevB = p ? p.buildingId : null;
-    p = p || { uid: uid, el: null, pos: null, mover: null };
+    p = p || { uid: uid, el: null, pos: null, mover: null, renameCount: 0 };
+    var pRenames = clamp(Math.max(+p.renameCount || 0, +u.renameCount || 0), 0, MAX_RENAMES);
+    if (!isSim && p.name && uname !== p.name) {
+      if ((+p.renameCount || 0) >= MAX_RENAMES) uname = p.name;
+      else pRenames = MAX_RENAMES;
+    }
     p.name = uname || '學員';
+    p.renameCount = pRenames;
     p.confirmed = true;
     p.avatar = String(u.avatar || '🧑‍🎓').slice(0, 8);
     p.title = String(u.title || '開心學園學員').slice(0, 24);
@@ -7618,7 +7995,8 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function placePeer(p, sp) {
     p.pos = { x: sp.x, y: sp.y, ang: sp.ang || 0 };
     p.el.setAttribute('transform', 'translate(' + sp.x.toFixed(1) + ',' + sp.y.toFixed(1) + ')');
-    p.el.querySelector('.veh-rot').setAttribute('transform', 'rotate(' + (sp.ang || 0) + ')');
+    var rot = p.el._rot || p.el.querySelector('.veh-rot');
+    if (rot) rot.setAttribute('transform', 'rotate(' + (sp.ang || 0) + ')');
   }
   function renderPeer(p, animate) {
     if (!ensureLayer()) return;
@@ -7645,6 +8023,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     p.el.innerHTML = '<rect class="hit" x="-26" y="-30" width="52" height="44" rx="10" fill="transparent"/>' + carBody(p.carColor) +
       tagSvg('🚗 ' + p.avatar + ' ' + p.name + ' → ' + shortName(p.buildingName), '#fffdf8', '#22c55e', '#1e293b', 'peer-tag') +
       badgeSvg(p.avatar, on ? '#22c55e' : '#94a3b8', false);
+    cacheVehRefs(p.el, 'peer-tag');
     if (p.mover) { dropMover(p.mover); p.mover = null; }
     if (animate && p.pos && !document.hidden) {
       var slot = peerSlot(p);
@@ -7812,20 +8191,24 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
   function openStudentModal(opts) {
     opts = opts && typeof opts === 'object' && !opts.target ? opts : {};
     var isSetup = !MY.confirmed || !MY.name || opts.mode === 'setup';
-    var isConfirm = !isSetup && opts.mode === 'confirm';
+    var isLocked = !isSetup && (+MY.renameCount || 0) >= MAX_RENAMES;
     var bd = modal('stuModal', 'stu-modal', '開心學園學生證');
     var body = openModal(bd);
     var draft = { name: MY.name || '', avatar: MY.avatar, title: MY.title, carIdx: MY.carIdx };
     var badges = F.myBadges(), score = F.scoreOf(badges), rank = F.myRank();
+    function isNameChanged() {
+      return !isSetup && !isLocked && !!draft.name && draft.name !== MY.name;
+    }
     function saveBtnLabel() {
       if (isSetup) return '🚀 確認名稱並進入學園';
-      if (isConfirm) return '✅ 確認以「' + (draft.name || MY.name || '學員') + '」進入學園';
-      return '💾 儲存學生證';
+      if (isNameChanged()) return '💾 確認改名為「' + draft.name + '」（用掉唯一 1 次改名機會）';
+      return '💾 儲存學生證設定';
     }
     function card() {
       var c = CAR_CATALOG[draft.carIdx];
       var hasName = !!draft.name;
-      return '<div class="idcard"><div class="idcard-top"><span>🏫 開心學園 · STUDENT ID</span><span class="idcard-no">學號 ' + esc(MY.stuNo) + '</span></div>' +
+      var quotaBadge = isSetup ? '🆕 首次設定' : isLocked ? '🔒 名稱已鎖定' : '✏️ 改名機會剩 1 次';
+      return '<div class="idcard"><div class="idcard-top"><span>🏫 開心學園 · STUDENT ID</span><span class="idcard-no">學號 ' + esc(MY.stuNo) + ' · ' + quotaBadge + '</span></div>' +
         '<div class="idcard-main"><div class="idcard-av">' + esc(draft.avatar) + '</div><div class="idcard-info">' +
         '<div class="idcard-name-row"><h3>' + esc(draft.name || '請輸入你的名稱…') + '</h3><span class="idcard-online' + (hasName ? '' : ' idle') + '">' + (hasName ? '🟢 在線中' : '✏️ 待設定') + '</span></div>' +
         '<div class="idcard-title">' + esc(draft.title) + '</div>' +
@@ -7839,44 +8222,82 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
         return '<button type="button" class="' + cls + (draft[key] === val ? ' on' : '') + '" data-k="' + key + '" data-v="' + esc(String(val)) + '">' + render(v) + '</button>';
       }).join('') + '</div>';
     }
-    var headTitle = isSetup ? '🎓 歡迎來到開心學園！請先設定你的名稱與學生證' : isConfirm ? '👋 歡迎回到開心學園！請確認你的學員身分' : '🪪 校園學生證 ＆ 專屬座駕';
+    var headTitle = isSetup ? '🎓 歡迎來到開心學園！請先設定你的名稱與學生證' : '🪪 校園學生證 ＆ 專屬座駕';
     var headSub = isSetup
-      ? '首次進入請先輸入你的名字或暱稱，並挑選頭像、稱號與專屬座駕；設定確認後才會顯示在「目前在線學員」名單中（100% 真人學員，無虛擬人物）。'
-      : isConfirm
-        ? '確認目前使用的學員名稱與座駕即可進入學園，也可以隨時直接修改名稱或換車。'
-        : '點進哪間學院，你的車就會開過去停在門口；其他真實上線的學員在地圖上、在線名單與排行榜都看得到你！';
+      ? '首次進入請先輸入你的名字或暱稱，並挑選頭像、稱號與專屬座駕；設定後將透過 Cookie 與本機紀錄永久綁定此裝置，且未來僅有 1 次改名機會。'
+      : '你的學生證已透過 Cookie 與本機存檔綁定於此裝置；點進哪間學院，你的車就會開過去停在門口！';
+    var nameLabel = isSetup
+      ? '✏️ 你的名稱／學員暱稱（必填 · 首次設定後僅有 1 次改名機會）'
+      : isLocked
+        ? '🔒 你的名稱／學員暱稱（已使用過唯一 1 次改名機會，名稱已永久鎖定）'
+        : '✏️ 你的名稱／學員暱稱（⚠️ 剩餘 1 次改名機會，改名後即永久鎖定）';
+    var nameRowHtml = isLocked
+      ? '<div class="stu-name-row"><input id="stuName" class="locked" maxlength="16" value="' + esc(MY.name) + '" disabled readonly><span class="stu-lock-tag">🔒 已鎖定</span></div>'
+      : '<div class="stu-name-row"><input id="stuName" maxlength="16" placeholder="請輸入你的名字或暱稱（例：Yichao、小傑）" value="' + esc(draft.name) + '"><button type="button" class="btn sm" id="stuRand">🎲 隨機暱稱</button></div>';
+    var initHint = isSetup
+      ? '💡 請輸入你想在校園顯示的名稱（首次設定不扣改名次數，設定完成後未來僅有 1 次改名機會）'
+      : isLocked
+        ? '🔒 此裝置已使用過唯一 1 次改名機會，名稱「' + esc(MY.name) + '」已永久綁定；你仍可隨時更換下方的頭像、稱號與專屬座駕！'
+        : '💡 你的紀錄已儲存於此裝置（Cookie + 本機存檔）。尚有 1 次改名機會；單純換頭像、稱號或座駕不會消耗改名次數。';
     body.innerHTML = '<div class="fg-head"><div><h2>' + headTitle + '</h2><p class="fg-sub">' + headSub + '</p></div></div>' +
       '<div id="idPrev">' + card() + '</div><div class="stu-form">' +
-      '<div class="stu-field"><label for="stuName">✏️ 你的名稱／學員暱稱（必填）</label><div class="stu-name-row"><input id="stuName" maxlength="16" placeholder="請輸入你的名字或暱稱（例：Yichao、小傑）" value="' + esc(draft.name) + '"><button type="button" class="btn sm" id="stuRand">🎲 隨機暱稱</button></div>' +
-      '<div class="stu-name-hint" id="stuNameHint">' + (isSetup ? '💡 請輸入你想在校園顯示的名稱（可隨時修改），或點右側「🎲 隨機暱稱」' : '💡 可直接按 Enter 或下方按鈕確認進入，也能隨時修改名稱') + '</div></div>' +
+      '<div class="stu-field"><label for="stuName">' + nameLabel + '</label>' + nameRowHtml +
+      '<div class="stu-name-hint" id="stuNameHint">' + initHint + '</div></div>' +
       '<div class="stu-field"><label>🎭 頭像</label>' + picks(AVATARS, 'avatar', 'stu-av-btn', esc) + '</div>' +
       '<div class="stu-field"><label>🏅 稱號</label>' + picks(TITLES, 'title', 'stu-tt-btn', esc) + '</div>' +
       '<div class="stu-field"><label>🚗 專屬座駕</label>' + picks(CAR_CATALOG, 'carIdx', 'stu-car-btn', function (c) { return '<span class="car-dot" style="background:' + c.color + '"></span>' + esc(c.name); }) + '</div>' +
       '<div class="stu-actions"><button type="button" class="btn primary big" id="stuSave">' + esc(saveBtnLabel()) + '</button>' +
       (isSetup ? '' : '<button type="button" class="btn big" id="stuOnline">🏆 看排行榜與在線名單</button>') + '</div></div>';
     var inp = body.querySelector('#stuName'), prev = body.querySelector('#idPrev'), hint = body.querySelector('#stuNameHint'), saveBtn = body.querySelector('#stuSave');
+    function updateHint() {
+      if (!hint || isLocked) return;
+      hint.classList.remove('err', 'warn');
+      if (isSetup) {
+        hint.textContent = draft.name
+          ? '✅ 首次設定名稱為「' + draft.name + '」（儲存後仍保有 1 次改名機會）'
+          : '💡 請輸入你想在校園顯示的名稱（首次設定不扣改名次數，設定完成後未來僅有 1 次改名機會）';
+      } else if (isNameChanged()) {
+        hint.classList.add('warn');
+        hint.textContent = '⚠️ 即將把名稱從「' + MY.name + '」改為「' + draft.name + '」——儲存後將用掉唯一 1 次改名機會，名稱永久鎖定！';
+      } else {
+        hint.textContent = '💡 你的紀錄已儲存於此裝置（Cookie + 本機存檔）。尚有 1 次改名機會；單純換頭像、稱號或座駕不會消耗改名次數。';
+      }
+    }
     function refresh() {
       prev.innerHTML = card();
       if (saveBtn) saveBtn.textContent = saveBtnLabel();
+      updateHint();
     }
-    inp.addEventListener('input', function () {
-      draft.name = inp.value.trim().slice(0, 16);
-      if (draft.name) {
-        inp.classList.remove('err');
-        if (hint) { hint.classList.remove('err'); hint.textContent = '✅ 名稱設定為「' + draft.name + '」，按下方按鈕即可進入學園'; }
-      }
-      refresh();
-    });
+    if (!isLocked) {
+      inp.addEventListener('input', function () {
+        draft.name = inp.value.trim().slice(0, 16);
+        if (draft.name) inp.classList.remove('err');
+        refresh();
+      });
+    }
     function doSave() {
-      var val = inp.value.trim().slice(0, 16);
+      var val = isLocked ? MY.name : inp.value.trim().slice(0, 16);
       if (!val) {
         inp.classList.add('err');
-        if (hint) { hint.classList.add('err'); hint.textContent = '⚠️ 請先輸入你的名字或暱稱（或點右側「🎲 隨機暱稱」）'; }
+        if (hint) { hint.classList.remove('warn'); hint.classList.add('err'); hint.textContent = '⚠️ 請先輸入你的名字或暱稱（或點右側「🎲 隨機暱稱」）'; }
         inp.focus();
         return;
       }
-      MY.name = val;
-      MY.confirmed = true;
+      var usedRename = false;
+      if (isSetup) {
+        MY.name = val;
+        MY.confirmed = true;
+        MY.renameCount = clamp(+MY.renameCount || 0, 0, MAX_RENAMES);
+      } else if (!isLocked && val !== MY.name) {
+        MY.prevName = MY.name;
+        MY.name = val;
+        MY.confirmed = true;
+        MY.renameCount = MAX_RENAMES;
+        usedRename = true;
+      } else {
+        MY.name = MY.name || val;
+        MY.confirmed = true;
+      }
       MY.avatar = draft.avatar;
       MY.title = draft.title;
       try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) { /* ignore */ }
@@ -7884,7 +8305,9 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       renderHud();
       closeModal(bd);
       bubble(V.carPos.x, V.carPos.y, '🪪 ' + MY.avatar + ' ' + MY.name + ' 乘著 ' + MY.carName + ' 進入學園！', '#1d6b57');
-      C.toast('✅ 已確認學生證：' + MY.avatar + ' ' + MY.name);
+      C.toast(usedRename
+        ? '🔒 已改名為「' + MY.name + '」（已用完唯一 1 次改名機會，名稱永久鎖定）'
+        : '✅ 已儲存學生證：' + MY.avatar + ' ' + MY.name);
     }
     inp.addEventListener('keydown', function (e) {
       if (C.isEnterSend && C.isEnterSend(e)) { e.preventDefault(); doSave(); }
@@ -7898,17 +8321,19 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
         refresh();
       }
     };
-    body.querySelector('#stuRand').addEventListener('click', function () {
-      draft.name = NAMES[Math.floor(Math.random() * NAMES.length)];
-      inp.value = draft.name;
-      inp.classList.remove('err');
-      if (hint) { hint.classList.remove('err'); hint.textContent = '🎲 已隨機挑選暱稱「' + draft.name + '」，也可自行修改'; }
-      refresh();
-    });
+    var randBtn = body.querySelector('#stuRand');
+    if (randBtn && !isLocked) {
+      randBtn.addEventListener('click', function () {
+        draft.name = NAMES[Math.floor(Math.random() * NAMES.length)];
+        inp.value = draft.name;
+        inp.classList.remove('err');
+        refresh();
+      });
+    }
     saveBtn.addEventListener('click', doSave);
     var onlineBtn = body.querySelector('#stuOnline');
     if (onlineBtn) onlineBtn.addEventListener('click', function () { closeModal(bd); openOnline('rank'); });
-    setTimeout(function () { try { inp.focus(); if (isConfirm) inp.select(); } catch (e) { /* ignore */ } }, 60);
+    if (!isLocked) setTimeout(function () { try { inp.focus(); } catch (e) { /* ignore */ } }, 60);
   }
   F.openStudent = openStudentModal;
 
@@ -7926,6 +8351,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     var peers = Object.keys(PEERS).map(function (k) { return PEERS[k]; }).filter(isVisible);
     peers.sort(function (a, b) { return (isOnline(b) - isOnline(a)) || (a.isSim - b.isSim) || (b.ts - a.ts); });
     var meConfirmed = !!(MY.confirmed && MY.name);
+    var meLocked = meConfirmed && (+MY.renameCount || 0) >= MAX_RENAMES;
     var onlineN = (meConfirmed ? 1 : 0) + peers.filter(isOnline).length;
     var parkedN = (meConfirmed ? 1 : 0) + peers.length;
     var html = '<div class="fg-head"><div><h2>' + (onlineTab === 'rank' ? '🏆 成就排行榜' : '🟢 目前在線學員') + '</h2>' +
@@ -7935,7 +8361,7 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
       '<button type="button" class="seg-tab' + (onlineTab === 'rank' ? ' on' : '') + '" data-otab="rank">🏆 排行榜</button>' +
       '<span class="seg-sp"></span>' +
       (C.util.qs('sim') === '1' ? '<button type="button" class="btn sm" data-oact="sim">' + (ST.simEnabled ? '🧹 隱藏模擬同學' : '🎪 測試：召喚模擬同學') + '</button>' : '') +
-      '<button type="button" class="btn sm" data-oact="card">🪪 ' + (meConfirmed ? '修改我的學生證' : '設定我的名稱') + '</button></div>';
+      '<button type="button" class="btn sm" data-oact="card">🪪 ' + (meConfirmed ? '我的學生證' : '設定我的名稱') + '</button></div>';
     if (onlineTab === 'rank') {
       html += '<div class="rank-list">' + rankList().map(function (r, i) {
         var medal = ['🥇', '🥈', '🥉'][i] || '<span class="rk-n">' + (i + 1) + '</span>';
@@ -7953,11 +8379,12 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
             '<div class="or-acts"><button type="button" class="btn primary sm" data-oact="card">🪪 立即設定名稱</button></div></div>';
         }
         var on = me || isOnline(u);
+        var cardBtnText = meLocked ? '🪪 學生證' : '✏️ 改名(剩1次)';
         return '<div class="online-row' + (me ? ' is-me' : '') + '"><span class="or-av">' + esc(u.avatar) + '<i class="or-dot ' + (on ? 'on' : 'idle') + '"></i></span>' +
           '<div class="or-main"><div class="or-top"><b>' + esc(u.name) + '</b>' + (me ? '<span class="stu-role-tag me">你</span>' : u.isSim ? '<span class="stu-role-tag sim">🤖 模擬</span>' : '<span class="stu-role-tag real">👤 學員</span>') +
           '<span class="or-title">' + esc(u.title) + '</span></div>' +
           '<div class="or-sub"><span class="or-car"><span class="car-dot" style="background:' + esc(u.carColor) + '"></span>' + esc(u.carName) + '</span><span class="or-loc">📍 <b>' + esc(u.buildingIcon + ' ' + u.buildingName) + '</b></span></div></div>' +
-          '<div class="or-acts">' + (me ? '<button type="button" class="btn sm" data-oact="card">✏️ 改名稱</button><button type="button" class="btn primary sm" data-oact="me">📍 我的車</button>'
+          '<div class="or-acts">' + (me ? '<button type="button" class="btn sm" data-oact="card">' + cardBtnText + '</button><button type="button" class="btn primary sm" data-oact="me">📍 我的車</button>'
             : '<button type="button" class="btn sm" data-oact="see" data-uid="' + esc(u.uid) + '">📍 看他的車</button><button type="button" class="btn primary sm" data-oact="join" data-uid="' + esc(u.uid) + '">🚗 開車找他</button>') + '</div></div>';
       };
       html += '<div class="online-list">' + row(MY, true) + peers.map(function (p) { return row(p, false); }).join('') + '</div>';
@@ -8076,15 +8503,11 @@ textarea.rel-input{resize:vertical;min-height:84px;line-height:1.5}
     var sb = document.getElementById('studentIdBtn'), ob = document.getElementById('onlineListBtn');
     if (sb) sb.addEventListener('click', function () { openStudentModal(); });
     if (ob) ob.addEventListener('click', function () { openOnline('online'); });
-    // 首次進入（尚未設定並確認名稱）或新工作階段進入時，自動彈出學生證視窗讓使用者設定／確認名稱
-    var sessionOk = false;
-    try { sessionOk = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { sessionOk = false; }
+    // 首次進入此裝置（Cookie / localStorage 尚無已確認的學生證紀錄）時，自動彈出學生證視窗讓使用者設定名稱；
+    // 一旦設定完成，Cookie（365 天）與 localStorage 會自動記住該裝置的學員身分，下次進入直接載入不再重複打擾。
     var skipAutoModal = (IS_BOT && C.util.qs('welcome') !== '1') || C.util.qs('shot') === '1' || C.util.qs('nomodal') === '1';
     if (!MY.confirmed || !MY.name) {
       if (!skipAutoModal) setTimeout(function () { openStudentModal({ mode: 'setup' }); }, 120);
-    } else if (!sessionOk && !C.util.qs('from') && !C.util.qs('go') && !C.util.qs('b')) {
-      if (!skipAutoModal) setTimeout(function () { openStudentModal({ mode: 'confirm' }); }, 120);
-      else { try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) { /* ignore */ } }
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(init, 0); });
@@ -8845,7 +9268,7 @@ window.CAMPUS_NEWS = {
     var g = document.createElementNS(SVGNS, 'g');
     g.setAttribute('class', 'm-news');
     g.setAttribute('id', 'mapNews');
-    svg.insertBefore(g, svg.querySelector('#mapSky'));
+    svg.insertBefore(g, svg.querySelector('#mapSky') || svg.querySelector('.m-fx'));
     g.addEventListener('click', function (e) {
       var mk = e.target.closest ? e.target.closest('.heat-mk') : null;
       if (mk) heatTap(mk.getAttribute('data-heat'));
