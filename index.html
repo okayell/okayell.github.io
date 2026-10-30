@@ -421,7 +421,17 @@ body.modal-open { overflow: hidden; }
 .campus-map .parked-car,
 .campus-map .parking-sign,
 .campus-map .campus-vehicle,
-.campus-map .animal { cursor: pointer; outline: none; }
+.campus-map .animal,
+.campus-map .lake-fish { cursor: pointer; outline: none; }
+.campus-map .bld-in,
+.campus-map .spot-in,
+.campus-map .car-in,
+.campus-map .animal-in,
+.campus-map .fish-swim,
+.campus-map .court-ball,
+.campus-map .bobber-float,
+.campus-map .bobber-ring,
+.campus-map .lbl:not(.lbl-banner) .lbl-s > :not(.lbl-hit) { pointer-events: none; }
 .campus-map .lake-fish .fish-swim {
   transform-box: fill-box; transform-origin: center;
   animation: cm-fish 6.5s ease-in-out infinite;
@@ -443,24 +453,31 @@ body.modal-open { overflow: hidden; }
 @keyframes cm-bobber { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 @keyframes cm-ripple { 0% { transform: scale(.7); opacity: .85; } 100% { transform: scale(1.7); opacity: 0; } }
 
-.campus-map .parked-car {
+.campus-map .parked-car { transition: opacity .25s ease; }
+.campus-map .parked-car .car-in {
   transform-box: fill-box; transform-origin: center;
-  transition: transform .18s ease, opacity .25s ease, filter .18s ease;
+  transition: transform .18s ease, filter .18s ease;
 }
-.campus-map .parked-car:hover, .campus-map .parked-car.hover {
+.campus-map .parked-car.hover .car-in,
+.campus-map .parked-car:focus-visible .car-in {
   transform: translateY(-4px) scale(1.08);
   filter: drop-shadow(0 4px 6px rgba(59, 47, 37, .28));
 }
 .campus-map .parked-car.car-out { opacity: .25; }
+.campus-map .parking-sign.hover rect,
 .campus-map .parking-sign:hover rect { stroke: #fbbf24; stroke-width: 2.5; }
 .campus-map .campus-vehicle {
   filter: drop-shadow(0 4px 7px rgba(59, 47, 37, .28));
 }
-.campus-map .campus-vehicle:hover .veh-body { filter: brightness(1.06); }
+.campus-map .campus-vehicle.hover .veh-rot,
+.campus-map .campus-vehicle:hover .veh-rot { filter: brightness(1.06); }
 
-.campus-map .fun-spot { transition: transform .18s ease, filter .18s ease; transform-box: fill-box; transform-origin: center; }
-.campus-map .fun-spot:hover, .campus-map .fun-spot.hover, .campus-map .fun-spot:focus-visible {
-  transform: translateY(-4px);
+.campus-map .fun-spot .spot-in {
+  transition: transform .18s ease, filter .18s ease;
+}
+.campus-map .fun-spot.hover .spot-in,
+.campus-map .fun-spot:focus-visible .spot-in {
+  transform: translateY(-5px);
   filter: drop-shadow(0 8px 14px rgba(29, 107, 87, .24));
 }
 .campus-map .court-ball {
@@ -476,7 +493,8 @@ body.modal-open { overflow: hidden; }
 }
 .campus-map .animal:nth-child(2n) .animal-in { animation-delay: -1.4s; }
 .campus-map .animal:nth-child(3n) .animal-in { animation-delay: -2.5s; }
-.campus-map .animal:hover .animal-in, .campus-map .animal.hover .animal-in, .campus-map .animal:focus-visible .animal-in {
+.campus-map .animal.hover .animal-in,
+.campus-map .animal:focus-visible .animal-in {
   transform: translateY(-6px) scale(1.14);
 }
 .campus-map .animal.animal-jump .animal-in {
@@ -2440,13 +2458,14 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       var cx = x + 10, cy = y + 15;
       var lightsY = c[1] ? y + 2 : y + 26;
       cars += '<g class="parked-car" data-car="' + idx + '" data-car-color="' + c[2] + '" data-car-name="' + esc(c[3]) + '" data-cx="' + cx + '" data-cy="' + cy + '" tabindex="0" role="button" aria-label="' + esc(c[3] + '：點一下發動兜風或開往指定學院') + '">' +
-        '<rect x="' + (x - 3) + '" y="' + (y - 3) + '" width="26" height="36" rx="7" fill="transparent"/>' +
+        '<rect class="hit" x="' + (x - 4) + '" y="' + (y - 4) + '" width="28" height="38" rx="7" fill="transparent"/>' +
+        '<g class="car-in" pointer-events="none">' +
         '<rect class="car-body" x="' + x + '" y="' + y + '" width="20" height="30" rx="6" fill="' + c[2] + '" stroke="' + INK + '" stroke-width="1.2"/>' +
         '<rect x="' + (x + 3) + '" y="' + (y + (c[1] ? 18 : 6)) + '" width="14" height="7" rx="2" fill="#e0f2fe" stroke="' + INK + '" stroke-width=".6"/>' +
         '<rect x="' + (x + 4) + '" y="' + (y + (c[1] ? 7 : 16)) + '" width="12" height="5" rx="1.5" fill="rgba(255,255,255,.35)"/>' +
         '<circle cx="' + (x + 5) + '" cy="' + lightsY + '" r="1.6" fill="#fef08a"/>' +
         '<circle cx="' + (x + 15) + '" cy="' + lightsY + '" r="1.6" fill="#fef08a"/>' +
-        '</g>';
+        '</g></g>';
     });
     roads += '<g class="m-parking">' +
       '<rect x="' + P[0] + '" y="' + P[1] + '" width="' + P[2] + '" height="' + P[3] + '" rx="12" fill="#e7dfd0" stroke="#c8b898" stroke-width="2"/>' +
@@ -2701,8 +2720,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     items.forEach(function (e) {
       if (e.svc) {
         bSvg.push('<g class="svc" tabindex="0" role="button" aria-label="學園服務中心：關於本站與使用說明" transform="translate(' + sc.x + ',' + sc.y + ')">' +
-          '<g class="bld-in"><rect class="hit" x="' + (-sc.w / 2 - 12) + '" y="' + (-sc.h - 10) + '" width="' + (sc.w + 24) + '" height="' + (sc.h + 48) + '" rx="10" fill="transparent"/>' +
-          call('serviceCenter', [{ w: sc.w, h: sc.h, name: '學園服務中心' }], fbService) + '</g></g>');
+          '<rect class="hit" x="' + (-sc.w / 2 - 12) + '" y="' + (-sc.h - 10) + '" width="' + (sc.w + 24) + '" height="' + (sc.h + 48) + '" rx="10" fill="transparent"/>' +
+          '<g class="bld-in">' + call('serviceCenter', [{ w: sc.w, h: sc.h, name: '學園服務中心' }], fbService) + '</g></g>');
         return;
       }
       if (e.gate) {
@@ -2716,7 +2735,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       var aria = labelName(b) + '（' + d.name + '，' + st.t.replace('🆕 ', '').replace('🚧 ', '') + '）：' + (b.tagline || '');
       bSvg.push('<g class="bld st-' + esc(b.status) + '" data-id="' + esc(b.id) + '" tabindex="0" role="button" aria-label="' + esc(aria) + '" transform="translate(' + sl.x + ',' + sl.y + ')">' +
         '<ellipse class="bld-ring" cx="0" cy="2" rx="' + n(sl.w * 0.62) + '" ry="' + n(Math.max(14, sl.h * 0.14)) + '"/>' +
-        '<g class="bld-in"><rect class="hit" x="' + n(-sl.w / 2 - 12) + '" y="' + n(-sl.h - 10) + '" width="' + (sl.w + 24) + '" height="' + (sl.h + 48) + '" rx="10" fill="transparent"/>' +
+        '<rect class="hit" x="' + n(-sl.w / 2 - 12) + '" y="' + n(-sl.h - 10) + '" width="' + (sl.w + 24) + '" height="' + (sc ? sl.h + 48 : sl.h + 48) + '" rx="10" fill="transparent"/>' +
+        '<g class="bld-in">' +
         call('draw', [b.art || '', { w: sl.w, h: sl.h, color: d.color, soft: d.soft, status: b.status, icon: b.icon, id: b.id }], fbBuilding) +
         '</g></g>');
       // 標籤
@@ -2774,8 +2794,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     ];
     return specs.map(function (f) {
       return '<g class="lake-fish ' + f.cls + '" data-fun="fishing" data-fish-name="' + esc(f.name) + '" transform="translate(' + f.x + ',' + f.y + ') rotate(' + f.rot + ')">' +
-        '<g class="fish-swim">' +
-        '<circle cx="0" cy="0" r="14" fill="transparent"/>' +
+        '<circle class="hit" cx="0" cy="0" r="18" fill="transparent"/>' +
+        '<g class="fish-swim" pointer-events="none">' +
         '<ellipse cx="2" cy="0" rx="11" ry="5.5" fill="rgba(255,255,255,.22)"/>' +
         '<path d="M-8,0 L-14,-4.5 L-12.5,0 L-14,4.5 Z" fill="' + f.col + '" opacity=".9"/>' +
         '<ellipse cx="0" cy="0" rx="8.5" ry="3.8" fill="' + f.col + '" stroke="rgba(74,59,47,.35)" stroke-width=".7"/>' +
@@ -2792,7 +2812,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       planks += '<rect x="-15" y="' + py + '" width="30" height="4.8" rx="1.2" fill="#d9a066" stroke="#6b4a32" stroke-width="1"/>';
     }
     return '<g class="fun-spot fishing-dock" data-fun="fishing" tabindex="0" role="button" aria-label="學園湖垂釣木棧道：點一下開始釣魚小遊戲" transform="translate(' + x + ',' + y + ')">' +
-      '<rect x="-42" y="-56" width="84" height="72" rx="10" fill="transparent"/>' +
+      '<rect class="hit" x="-58" y="-56" width="116" height="96" rx="12" fill="transparent"/>' +
+      '<g class="spot-in" pointer-events="none">' +
       '<ellipse cx="0" cy="-42" rx="12" ry="5.5" fill="none" stroke="#e0f2fe" stroke-width="1.6" stroke-dasharray="4 3" class="bobber-ring"/>' +
       '<ellipse cx="0" cy="-42" rx="6" ry="2.8" fill="none" stroke="#ffffff" stroke-width="1.3"/>' +
       '<path d="M-12,-28 V8 M12,-28 V8 M-12,-12 V6 M12,-12 V6" stroke="#5c3d28" stroke-width="3.2" stroke-linecap="round"/>' +
@@ -2805,7 +2826,7 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
       '<circle cx="0" cy="-42" r="3.8" fill="#ffffff" stroke="' + INK + '" stroke-width=".9"/>' +
       '<path d="M-3.6,-42 A3.6,3.6 0 0,1 3.6,-42 Z" fill="#ef4444"/>' +
       '<path d="M0,-45.8 V-48.5" stroke="#ef4444" stroke-width="1.4" stroke-linecap="round"/>' +
-      '</g></g>';
+      '</g></g></g>';
   }
   function courtSvg(c) {
     var w = c.w, h = c.h, x0 = -w / 2, y0 = -h;
@@ -2853,10 +2874,9 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         '<g class="court-ball"><circle cx="10" cy="' + (y0 + h / 2 + 3) + '" r="5" fill="#ffffff" stroke="#1e293b" stroke-width="1.2"/><circle cx="10" cy="' + (y0 + h / 2 + 3) + '" r="1.8" fill="#1e293b"/></g>';
     }
     return '<g class="fun-spot court" data-fun="' + esc(c.game) + '" data-court="' + esc(c.id) + '" tabindex="0" role="button" aria-label="' + esc(c.name + '：' + c.sub) + '" transform="translate(' + c.x + ',' + c.y + ')">' +
-      '<ellipse cx="0" cy="' + (-h / 2 + 3) + '" rx="' + n(w * 0.53) + '" ry="' + n(h * 0.54) + '" fill="rgba(74,59,47,.14)"/>' +
-      '<g class="bld-in">' + inner +
-      '<rect class="hit" x="' + (x0 - 8) + '" y="' + (y0 - 8) + '" width="' + (w + 16) + '" height="' + (h + 36) + '" rx="12" fill="transparent"/>' +
-      '</g></g>';
+      '<rect class="hit" x="' + (x0 - 10) + '" y="' + (y0 - 8) + '" width="' + (w + 20) + '" height="' + (h + 42) + '" rx="12" fill="transparent"/>' +
+      '<ellipse cx="0" cy="' + (-h / 2 + 3) + '" rx="' + n(w * 0.53) + '" ry="' + n(h * 0.54) + '" fill="rgba(74,59,47,.14)" pointer-events="none"/>' +
+      '<g class="spot-in" pointer-events="none">' + inner + '</g></g>';
   }
   function animalSvg(a) {
     var body = '';
@@ -2933,8 +2953,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
         '<circle cx="6" cy="-10.5" r="1" fill="#e11d48"/><circle cx="8.5" cy="-9.2" r="1" fill="#fb7185"/>';
     }
     return '<g class="animal" data-animal="' + esc(a.id) + '" data-animal-name="' + esc(a.name) + '" data-animal-msg="' + esc(a.msg) + '" tabindex="0" role="button" aria-label="' + esc(a.name + '：點一下互動') + '" transform="translate(' + a.x + ',' + a.y + ')">' +
-      '<rect x="-18" y="-26" width="36" height="32" rx="10" fill="transparent"/>' +
-      '<g class="animal-in">' + body + '</g></g>';
+      '<rect class="hit" x="-20" y="-28" width="40" height="36" rx="10" fill="transparent"/>' +
+      '<g class="animal-in" pointer-events="none">' + body + '</g></g>';
   }
   function signW(d, count) {
     var planned = d.status === 'planned';
@@ -3200,7 +3220,8 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     }
     M.tip.innerHTML = html;
     M.tip.hidden = false;
-    var r = el.getBoundingClientRect(), wr = M.wrap.getBoundingClientRect();
+    var hitEl = (el.querySelector && el.querySelector('.hit')) || el;
+    var r = hitEl.getBoundingClientRect(), wr = M.wrap.getBoundingClientRect();
     var tw = M.tip.offsetWidth, th = M.tip.offsetHeight;
     var x = clamp(r.left + r.width / 2 - wr.left - tw / 2, 8, wr.width - tw - 8);
     var y = r.top - wr.top - th - 10;
@@ -3291,7 +3312,18 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
     svg.addEventListener('pointermove', function (e) {
       if (!pts[e.pointerId]) {
         if (e.pointerType === 'mouse') {
-          var el = e.target && e.target.closest ? e.target.closest('.bld, .svc, .sign, .lot, .fun-spot, .parked-car, .parking-sign, .campus-vehicle, .animal, .lake-fish') : null;
+          var raw = e.target && e.target.closest ? e.target.closest('.bld, .svc, .sign, .lot, .fun-spot, .parked-car, .parking-sign, .campus-vehicle, .animal, .lake-fish, .lbl-fun, .lbl[data-id], .lbl-svc') : null;
+          var el = raw;
+          if (raw) {
+            if (raw.classList.contains('lbl-fun')) {
+              var fk = raw.getAttribute('data-fun');
+              el = (fk && M.svg.querySelector('.fun-spot[data-fun="' + fk + '"]')) || raw;
+            } else if (raw.classList.contains('lbl') && raw.hasAttribute('data-id')) {
+              el = M.svg.querySelector('.bld[data-id="' + raw.getAttribute('data-id') + '"]') || raw;
+            } else if (raw.classList.contains('lbl-svc')) {
+              el = M.svg.querySelector('.svc') || raw;
+            }
+          }
           if (el !== M.hoverEl) {
             if (M.hoverEl) M.hoverEl.classList.remove('hover');
             M.hoverEl = el;
@@ -3961,8 +3993,19 @@ window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy 
   'use strict';
   const CAMPUS = (window.CAMPUS = window.CAMPUS || {});
   CAMPUS.RELEASES_DATA = {
-    "current_version": "1.3.0",
+    "current_version": "1.3.1",
     "releases": [
+      {
+        "version": "1.3.1",
+        "date": "2026-10-30",
+        "bump": "patch",
+        "title": "修復小遊戲球場、垂釣木棧道與停車場轎車滑鼠移入閃爍問題",
+        "highlights": [
+          "修正 SVG 外層 <g transform=\"translate(...)\"> 與 CSS :hover transform 衝突導致滑鼠移到籃球場、網球場、足球場、垂釣木棧道與停車場轎車時座標跳動閃爍的問題",
+          "將固定感應區 <rect class=\"hit\"> 與內層動畫圖層（.spot-in、.car-in、.animal-in、.bld-in）分離並設為 pointer-events: none，滑鼠移動於設施與標籤膠囊之間穩定不閃爍"
+        ],
+        "files_count": 2
+      },
       {
         "version": "1.3.0",
         "date": "2026-10-30",
