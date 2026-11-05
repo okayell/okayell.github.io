@@ -1578,8 +1578,24 @@ textarea.inp { width: 100%; resize: vertical; }
     '.campus-ach-toast .cat-body{display:flex;flex-direction:column;gap:2px}',
     '.campus-ach-toast .cat-body b{color:#fde68a;font-size:13.5px}',
     '.campus-ach-toast .cat-body span{color:#cbd5e1;font-size:12px}',
+    '.campus-name-gate-backdrop{position:fixed;inset:0;z-index:2147483640;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.72);backdrop-filter:blur(6px)}',
+    '.campus-name-gate-card{width:100%;max-width:440px;border-radius:20px;background:#ffffff;border:2px solid #fbbf24;box-shadow:0 22px 50px rgba(15,23,42,.42);padding:22px 22px 20px;color:#0f172a;font:500 14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;box-sizing:border-box}',
+    '.campus-name-gate-hd{display:flex;align-items:center;gap:10px;margin-bottom:8px}',
+    '.campus-name-gate-hd .cng-ic{font-size:28px;line-height:1}',
+    '.campus-name-gate-hd h3{margin:0;font-size:18px;font-weight:800;color:#0f172a}',
+    '.campus-name-gate-sub{margin:0 0 14px;font-size:13px;color:#475569;line-height:1.55}',
+    '.campus-name-gate-lbl{display:block;font-size:12.5px;font-weight:700;color:#334155;margin:10px 0 6px}',
+    '.campus-name-gate-avs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}',
+    '.campus-name-gate-av{height:38px;border-radius:10px;border:1.5px solid #e2e8f0;background:#f8fafc;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .14s}',
+    '.campus-name-gate-av:hover{background:#fef3c7;border-color:#fcd34d}',
+    '.campus-name-gate-av.on{background:#fef3c7;border-color:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.25);transform:scale(1.05)}',
+    '.campus-name-gate-inp{width:100%;box-sizing:border-box;height:42px;padding:0 13px;border-radius:11px;border:1.5px solid #cbd5e1;background:#fff;color:#0f172a;font-size:15px;font-weight:700;outline:none;transition:border-color .15s,box-shadow .15s}',
+    '.campus-name-gate-inp:focus{border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.18)}',
+    '.campus-name-gate-err{min-height:18px;margin:6px 0 8px;font-size:12.5px;font-weight:700;color:#dc2626}',
+    '.campus-name-gate-btn{width:100%;height:44px;border-radius:12px;border:0;background:linear-gradient(135deg,#059669,#047857);color:#fff;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(5,150,105,.28);transition:transform .12s,filter .15s}',
+    '.campus-name-gate-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}',
     '@media (max-width:640px){.campus-home{padding:0 8px;margin-right:5px}.campus-home:not(.campus-sibling) .ch-txt{display:none}.cfb-btns{display:grid;grid-template-columns:1fr 1fr}.cfb-btn.primary{grid-column:1/-1}}',
-    '@media print{.campus-home,.campus-acad-bar,.cfb-box,.campus-ach-toast{display:none!important}}',
+    '@media print{.campus-home,.campus-acad-bar,.cfb-box,.campus-ach-toast,.campus-name-gate-backdrop{display:none!important}}',
   ].join('');
 
   var DEFAULT_FB_EMAIL = 'okayell@hotmail.com';
@@ -2052,6 +2068,120 @@ textarea.inp { width: 100%; resize: vertical; }
     } catch (e) { /* ignore */ }
   }
 
+  function ensureAcademyNameGate(toolId) {
+    if (!toolId || !TOOL_MAP[toolId] || !document.body) return;
+    var qs = (window.location && window.location.search) || '';
+    var forceGate = /(^|[?&])welcome=1(&|$)/.test(qs);
+    if (!forceGate) {
+      if (isNavBot() || /(^|[?&])(shot|nomodal|bot)=1(&|$)/.test(qs)) return;
+    }
+    var lsStu = {}, ckStu = readStuCookie() || {}, legacyStu = {};
+    try { lsStu = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {}; } catch (e) { lsStu = {}; }
+    try { legacyStu = JSON.parse(window.localStorage.getItem('campus_student_v1') || '{}') || {}; } catch (e2) { legacyStu = {}; }
+    var candName = String((lsStu.confirmed && lsStu.name) || (ckStu.confirmed && ckStu.name) || legacyStu.name || '').trim();
+    if (candName && !TEST_NAMES[candName] && !/^訪客\s*#/i.test(candName) && (lsStu.confirmed || ckStu.confirmed || legacyStu.name)) {
+      if (!lsStu.confirmed || !lsStu.name) {
+        var synced = Object.assign({}, ckStu, lsStu, {
+          uid: lsStu.uid || ckStu.uid || legacyStu.id || ('stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7)),
+          stuNo: lsStu.stuNo || ckStu.stuNo || String(1000 + Math.floor(Math.random() * 9000)),
+          name: candName.slice(0, 16),
+          avatar: lsStu.avatar || ckStu.avatar || legacyStu.avatar || '🧑‍🎓',
+          title: lsStu.title || ckStu.title || '🌱 開心學園新生',
+          confirmed: true,
+          guest: false,
+        });
+        try { window.localStorage.setItem(STU_KEY, JSON.stringify(synced)); } catch (e3) { /* ignore */ }
+        writeStuCookie(synced);
+      }
+      return;
+    }
+    if (document.getElementById('campusAcademyNameGate')) return;
+    var tInfo = TOOL_MAP[toolId] || { name: '開心學園', icon: '🏫' };
+    var avList = ['🧑‍🎓', '🦊', '🐱', '🐶', '🐼', '🐰', '🦉', '🐧', '🦄', '🐉', '🍀', '🧋'];
+    var pickedAv = (lsStu && lsStu.avatar) || (ckStu && ckStu.avatar) || '🧑‍🎓';
+    if (avList.indexOf(pickedAv) < 0) pickedAv = '🧑‍🎓';
+
+    var wrap = document.createElement('div');
+    wrap.id = 'campusAcademyNameGate';
+    wrap.className = 'campus-name-gate-backdrop';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.innerHTML =
+      '<div class="campus-name-gate-card">' +
+        '<div class="campus-name-gate-hd"><span class="cng-ic">' + fbEsc(tInfo.icon || '🏫') + '</span>' +
+          '<h3>歡迎進入「' + fbEsc(tInfo.name) + '」！請先設定學員暱稱</h3></div>' +
+        '<p class="campus-name-gate-sub">設定專屬暱稱與頭像後即可開始進修，你的學習紀錄、成就點數與座駕會在全校 19 間學院與校園地圖自動同步（取名後享有 1 次免費改名機會）。</p>' +
+        '<label class="campus-name-gate-lbl">1. 選擇你的學員頭像</label>' +
+        '<div class="campus-name-gate-avs">' +
+          avList.map(function (av) {
+            return '<button type="button" class="campus-name-gate-av' + (av === pickedAv ? ' on' : '') + '" data-cng-av="' + fbEsc(av) + '">' + fbEsc(av) + '</button>';
+          }).join('') +
+        '</div>' +
+        '<label class="campus-name-gate-lbl" for="cngNameInput">2. 輸入你的學員暱稱（2～16 字）</label>' +
+        '<input id="cngNameInput" class="campus-name-gate-inp" type="text" maxlength="16" placeholder="例如：小傑夫、Livia、阿哲…" autocomplete="off">' +
+        '<div id="cngErrMsg" class="campus-name-gate-err"></div>' +
+        '<button type="button" id="cngSubmitBtn" class="campus-name-gate-btn">🎓 完成入學報到，開始進修！</button>' +
+      '</div>';
+    document.body.appendChild(wrap);
+
+    var inp = wrap.querySelector('#cngNameInput');
+    var errEl = wrap.querySelector('#cngErrMsg');
+    var subBtn = wrap.querySelector('#cngSubmitBtn');
+    wrap.addEventListener('click', function (e) {
+      var avBtn = e.target && e.target.closest ? e.target.closest('[data-cng-av]') : null;
+      if (!avBtn) return;
+      pickedAv = avBtn.getAttribute('data-cng-av') || '🧑‍🎓';
+      var all = wrap.querySelectorAll('[data-cng-av]');
+      for (var i = 0; i < all.length; i++) {
+        all[i].classList.toggle('on', all[i] === avBtn);
+      }
+    });
+
+    function submitGate() {
+      var val = String((inp && inp.value) || '').trim();
+      if (val.length < 2) {
+        if (errEl) errEl.textContent = '⚠️ 請輸入至少 2 個字的學員暱稱喔！';
+        if (inp) inp.focus();
+        return;
+      }
+      if (TEST_NAMES[val] || /^訪客\s*#?/i.test(val)) {
+        if (errEl) errEl.textContent = '⚠️ 請使用專屬暱稱，不要使用「訪客」或預設測試名稱喔！';
+        if (inp) inp.focus();
+        return;
+      }
+      var curLs = {}, curCk = readStuCookie() || {};
+      try { curLs = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {}; } catch (e) { curLs = {}; }
+      var uid = curLs.uid || curCk.uid || ('stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7));
+      var stuNo = curLs.stuNo || curCk.stuNo || String(1000 + Math.floor(Math.random() * 9000));
+      var saved = Object.assign({}, curCk, curLs, {
+        uid: uid,
+        stuNo: stuNo,
+        name: val.slice(0, 16),
+        avatar: pickedAv,
+        title: curLs.title || curCk.title || '🌱 開心學園新生',
+        carId: curLs.carId || curCk.carId || 'campus-bike',
+        confirmed: true,
+        guest: false,
+        renameCount: 0,
+      });
+      try { window.localStorage.setItem(STU_KEY, JSON.stringify(saved)); } catch (e2) { /* ignore */ }
+      writeStuCookie(saved);
+      wrap.remove();
+      sendPresenceHeartbeat(toolId, { forceRemote: true, event: 'join' });
+    }
+
+    if (subBtn) subBtn.addEventListener('click', submitGate);
+    if (inp) {
+      inp.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) {
+          e.preventDefault();
+          submitGate();
+        }
+      });
+      setTimeout(function () { try { inp.focus(); } catch (e) { /* ignore */ } }, 80);
+    }
+  }
+
   function init() {
     injectCss();
     var toolId = window.CAMPUS_TOOL_ID || '';
@@ -2104,6 +2234,7 @@ textarea.inp { width: 100%; resize: vertical; }
       }
     }, true);
     ensureAcademyIcon(toolId);
+    ensureAcademyNameGate(toolId);
     wrapFeedbackFetch();
     recordVisit(toolId);
     startAcademyPresenceLoop(toolId);
