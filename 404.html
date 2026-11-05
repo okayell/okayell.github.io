@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <script>window.CAMPUS_STATIC_ONLY = true;</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>找不到這棟建築 · 開心學園</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#1d6b57">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E">
+  <style>
+    :root { --ink: #3b2f25; --muted: #6b5a4a; --line: #eadfcd; --brand: #1d6b57; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: var(--font); color: var(--ink); background: #f3ead7; display: flex; align-items: center; justify-content: center; padding: 22px 14px; }
+    [hidden] { display: none !important; }
+    .nf { width: min(640px, 100%); background: #fffdf8; border: 1.5px solid #e2d3b4; border-radius: 24px; box-shadow: 0 22px 60px rgba(59, 47, 37, .16); overflow: hidden; }
+    .nf-art { display: block; width: 100%; height: auto; background: #d5e7bb; }
+    .nf-body { padding: 20px 26px 26px; }
+    h1 { margin: 0 0 6px; font-size: 25px; }
+    p { margin: 6px 0; line-height: 1.7; color: #4f3f31; font-size: 15px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #f6efe1; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: .92em; word-break: break-all; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; padding: 0 18px; border-radius: 13px; border: 1.5px solid #dccdb2; background: #fff; color: var(--ink); font: inherit; font-weight: 800; font-size: 15px; text-decoration: none; cursor: pointer; }
+    .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .acts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .sug { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .sug a { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 999px; background: #eef7f3; border: 1px solid #cfe3da; color: var(--brand); font-weight: 800; text-decoration: none; font-size: 14px; }
+    details { margin-top: 18px; border-top: 1px dashed var(--line); padding-top: 12px; }
+    summary { cursor: pointer; font-weight: 800; color: var(--muted); font-size: 14px; }
+    .all { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 14px; }
+    .all a { color: var(--ink); text-decoration: none; font-weight: 700; font-size: 14px; }
+    .all small { display: block; color: var(--muted); font-weight: 500; font-size: 12px; }
+    .going { font-size: 17px; font-weight: 800; }
+    .muted { color: var(--muted); font-size: 13.5px; }
+    @media (max-width: 480px) { .nf-body { padding: 16px 18px 20px; } h1 { font-size: 22px; } .btn { width: 100%; } }
+  </style>
+  <script>/* js/registry_data.js */
+window.CAMPUS_REGISTRY = {"schema":1,"brand":{"name":"開心學園","en":"Happy Campus","icon":"🏫","tagline":"一張校園地圖，走進每一間學院與實戰館"},"campus":{"repo":"okayell.github.io","public_url":"https://okayell.github.io/","backend_port":8918,"local_port":8919},"districts":[{"id":"language","name":"語言學區","en":"Language Quarter","icon":"🌏","color":"#0284c7","soft":"#e0f2fe","desc":"英、日、韓三大語言學院全員到齊：聽、說、讀、寫與單字依 CEFR A1–C2 分級，從零基礎發音到流利會話一步到位！"},{"id":"finance","name":"財經學區","en":"Finance Quarter","icon":"💹","color":"#d97706","soft":"#fef3c7","desc":"🏛️ 財經學院（完整整合技術分析、基本面、籌碼面、消息面四大分析維度）＋📈 台股戰情室實戰驗證，🪙 區塊鏈學院＆🗽 美股戰情室建設中。"},{"id":"games","name":"策略與賽事學區","en":"Strategy & Sports Analytics Quarter","icon":"♟️","color":"#7c3aed","soft":"#ede9fe","desc":"♟️ GTO 賽局策略學院＋🏟️ 賽事戰情學院（1F NBA・2F 台籃 P+/TPBL・3F 英超・4F F1・5F MLB 五層樓一站直達）：用機率、期望值（EV）與數理統計模型做理性決策。"},{"id":"care","name":"運動與健康照護學區","en":"Sports, Health & Care Quarter","icon":"🌿","color":"#059669","soft":"#ecfdf5","desc":"💪 健身學院（24 種器材操作圖解・正背面 12 大肌群解剖・重訓安全與營養課表）＆🩺 醫療保健學院（自我檢傷・16 項黃金急救 SOP・安全用藥與疾病百科）雙院開課（藥癮個管專院收錄於目錄）。"},{"id":"tech","name":"智慧科技學區","en":"Tech, Cloud, IoT & Coding Quarter","icon":"🤖","color":"#0e7490","soft":"#ecfeff","desc":"💻 程式語言學院＆🏡 智慧生活與物聯網學院雙院開張（Python 全棧自動化＋16 種智慧家電、Matter／Thread／Zigbee／MQTT 協定圖解與 4 房全屋情境模擬器），☁️ 雲端與系統維運學院（Linux・Shell・Docker 容器・K8s・AWS／GCP）與🍓 嵌入式與樹莓派學院建設中。"},{"id":"arts","name":"藝能生活學區","en":"Arts & Life Skills Quarter","icon":"🎨","color":"#db2777","soft":"#fce7f3","desc":"🍳 烹飪學院（10 大基本功・107 道食譜・31 個世界菜系）＆🎵 音樂學院（古典大師故事集・白話樂理・交響樂器圖鑑）雙院開張。"},{"id":"liberal","name":"通識學區","en":"Liberal Arts Quarter","icon":"🧠","color":"#4f46e5","soft":"#eef2ff","desc":"💡 冷知識學院（18 大類 580 則冷知識）＆🔧 居家水電修繕學院（110V／220V 配電・給排水止漏與 5 座互動實驗室）雙院聯合開課，🏘️ 房地產學院（預售屋・中古屋驗屋・法拍屋・凶宅與稅貸全解析）建設中！"},{"id":"farm","name":"開心家園","en":"Happy Home Quarter","icon":"🏡","color":"#b45309","soft":"#fef3c7","desc":"🏡 開心家園：🏠 開心宿舍（專屬房間裝潢、60 款家具、🐾 寵物屋 8 種寵物塔麻可吉式四階段分歧進化、每種 33 型）＋ 🌾 開心農場（12 種蔬果真實時間生長，收成餵寵物）。在校園砍樹、後山採石場收集材料，打造理想的家！"}],"buildings":[{"id":"english","district":"language","kind":"academy","name":"英語學院","en":"English Academy","icon":"🇬🇧","art":"clock-tower","status":"live","repo":"okayell.github.io","path":"english-speak-listen/","url":"https://okayell.github.io/english-speak-listen/","local_port":8919,"aliases":["english","en"],"tagline":"A1–C2 分級：聽力、口說、單字一次學齊","desc":"72+ 篇分級生活對話，逐句朗讀、跟讀發音評分、角色扮演、聽寫與理解測驗；新增分級單字學習，搭配 SM-2 間隔複習的個人單字本。","features":["🔤 A1–C2 分級單字學習","🎧 男女聲分角色朗讀・盲聽","🗣️ 跟讀發音評分・角色扮演","🧠 單字卡間隔複習（SM-2）"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"🔤 單字學習","hash":"#/words"},{"label":"📚 分級文章","hash":"#/library"},{"label":"🧠 複習","hash":"#/review"}],"local_path":"english-speak-listen/"},{"id":"japanese","district":"language","kind":"academy","name":"日語學院","en":"Japanese Academy","icon":"🇯🇵","art":"pagoda","status":"new","repo":"okayell.github.io","path":"japanese/","url":"https://okayell.github.io/japanese/","local_port":8919,"aliases":["japanese","ja","jp"],"tagline":"從五十音開始：A1–C2 分級，真人語速發音","desc":"平假名、片假名五十音（清音・濁音・拗音）點字即發音與測驗，A1–C2（對應 JLPT N5–N1）分級對話課程、文法重點與分級單字，跟讀口說評分與間隔複習。","features":["あ 五十音表・點字發音・認字測驗","🗣️ 日語朗讀與跟讀評分","📚 A1–C2 分級對話與文法","🔤 分級單字・間隔複習"],"links":[{"label":"🏠 今日練習","hash":"#/home"},{"label":"あ 五十音","hash":"#/kana"},{"label":"📚 分級課程","hash":"#/library"},{"label":"🔤 單字學習","hash":"#/words"}],"local_path":"japanese/"},{"id":"korean","district":"language","kind":"academy","name":"韓語學院","en":"Korean Academy","icon":"🇰🇷","art":"hanok","status":"new","repo":"okayell.github.io","path":"korean/","url":"https://okayell.github.io/korean/","local_port":8919,"aliases":["korean","ko","kr","hangul","topik"],"tagline":"從四十音開始：A1–C2（TOPIK 1–6級）對話、自動連音標示與口說跟讀","desc":"韓文字母四十音（基本／複合母音、平音／激音／雙子音、終聲收音與 190 格拼字表）點字即發音與測驗；35 堂 A1–C2（對應 TOPIK I 1級～TOPIK II 6級）情境會話課，支援韓語自動連音／音變標示、跟讀評分、聽寫與 1,214 個分級單字（附繁體漢字詞源）SM-2 間隔複習。","features":["🇰🇷 四十音・190 格拼字表・6 大連音規則","🗣️ 韓語自動連音標示・口說跟讀評分","📚 A1–C2（TOPIK 1–6級）對話與核心文法","🔤 1,214 詞分級單字庫（附漢字詞源）・SM-2 複習"],"links":[{"label":"🏠 今日學習","hash":"#/home"},{"label":"🇰🇷 四十音","hash":"#/hangul"},{"label":"📚 分級課程","hash":"#/library"},{"label":"🔤 單字學習","hash":"#/words"}],"local_path":"korean/"},{"id":"finance","district":"finance","kind":"academy","name":"財經學院","en":"Finance Academy","icon":"🏛️","art":"classical-hall","status":"new","repo":"okayell.github.io","path":"finance/","url":"https://okayell.github.io/finance/","local_port":8919,"aliases":["finance","fin","ta","fa","chip","news","finance-ta","finance-fa","finance-chip","finance-news"],"tagline":"整合技術分析、基本面、籌碼面、消息面四大維度，一次系統化學會","desc":"財經學院總部：完整整合「技術分析、基本面、籌碼面、消息面」四大分析維度的 36 堂圖解課程、10 大互動實驗室、隨堂測驗與 42 則術語百科，學完理論可直接連到台股戰情室實戰驗證。","features":["📈 技術分析（K線・均線・KD/MACD・量價）","📊 基本面（財報三表・EPS・ROE・估值）","🧮 籌碼面（三大法人・融資融券・主力分點）","📰 消息面（總經數據・法說會・事件催化）"],"links":[{"label":"🏛️ 學院首頁","hash":"#/home"},{"label":"📈 技術分析","hash":"#/track/ta"},{"label":"📊 基本面","hash":"#/track/fa"},{"label":"🧮 籌碼面","hash":"#/track/chip"},{"label":"📰 消息面","hash":"#/track/news"},{"label":"📖 術語百科","hash":"#/glossary"}],"related":[{"id":"stock","label":"📈 台股選股 · 今日推薦","hash":"#/"},{"id":"stock","label":"🔎 2,000 檔選股器","hash":"#/screener"},{"id":"stock","label":"🧠 台積電 K 線一鍵技術分析","hash":"#/stock/2330"},{"id":"stock","label":"🌅 盤前美股與重大事件戰情","hash":"#/morning"},{"id":"crypto","label":"🪙 區塊鏈學院 · 虛擬貨幣與鏈上金融（建設中）"},{"id":"us-stock","label":"🗽 美股戰情室 · 美股四大指數與科技巨頭（建設中）"}],"local_path":"finance/"},{"id":"us-stock","district":"finance","kind":"arena","name":"美股戰情室","en":"US Stock War Room","icon":"🗽","art":"us-exchange","status":"planned","aliases":["us-stock","us","nyse","nasdaq","sp500","sox","wallstreet"],"tagline":"建設中・敬請期待","desc":"規劃中：美股四大指數（S&P 500、Nasdaq、道瓊、費城半導體 SOX）、美股七巨頭（Magnificent 7）與台股 ADR 即時連動戰情室。","features":[],"links":[],"related":[{"id":"finance","label":"🏛️ 財經學院 · 四大分析維度","hash":"#/home"},{"id":"stock","label":"📈 台股戰情室 · 盤前美股與台股連動","hash":"#/morning"}]},{"id":"crypto","district":"finance","kind":"academy","name":"區塊鏈學院","en":"Blockchain & Crypto Academy","icon":"🪙","art":"crypto-vault","status":"planned","aliases":["crypto","blockchain","btc","eth","web3","defi","coin"],"tagline":"區塊鏈底層原理・比特幣與以太坊虛擬貨幣・智慧合約・DeFi 去中心化金融與冷熱錢包資安","desc":"規劃中：從雜湊函數、公私鑰簽章、區塊結構與 PoW／PoS 共識機制出發，白話圖解比特幣（BTC）、以太坊（ETH）與穩定幣運作邏輯、EVM 智慧合約、DEX 自動做市商（AMM）與鏈上籌碼數據判讀，並完整建立助記詞保管、授權釣魚防範與冷熱錢包資安觀念。","features":["⛓️ 區塊鏈底層圖解：雜湊鏈・公私鑰簽章・UTXO vs 帳戶模型・PoW／PoS 共識","🪙 主流虛擬貨幣剖析：比特幣減半週期・以太坊 Gas 與 Layer 2・穩定幣儲備機制","📜 智慧合約＆DeFi 原理：流動性池 AMM・無常損失計算・質押借貸與鏈上數據","🛡️ 鏈上資安防坑指南：冷熱錢包助記詞・惡意合約授權撤銷・常見詐騙手法識破"],"links":[],"related":[{"id":"finance","label":"🏛️ 財經學院 · 技術分析與總經資金面","hash":"#/home"},{"id":"stock","label":"📈 台股戰情室 · 盤前國際市場與風險情緒","hash":"#/morning"}]},{"id":"poker","district":"games","kind":"academy","name":"GTO 賽局策略學院","en":"GTO Game Theory Academy","icon":"♟️","art":"card-hall","status":"live","repo":"okayell.github.io","path":"poker-gto/","url":"https://okayell.github.io/poker-gto/","local_port":8919,"aliases":["poker","gto"],"tagline":"賽局理論最佳解（GTO）：範圍矩陣、決策樹與期望值（EV）模型","desc":"以數學期望值（EV）與納許均衡（GTO）為核心的賽局策略學習工具：54 堂圖解課程、6 人桌 40 組範圍矩陣、11 種無限隨機情境決策訓練、200+ 術語百科與期望值／風險預算計算模型。","features":["🎓 54 堂賽局理論圖解課","📊 6-Max GTO 範圍矩陣","🎯 11 種無限隨機決策訓練","📖 200+ 賽局術語百科"],"links":[{"label":"🎓 策略課程","hash":"#/learn"},{"label":"📊 範圍矩陣","hash":"#/ranges"},{"label":"🎯 決策訓練","hash":"#/quiz"},{"label":"📖 術語百科","hash":"#/wiki"}],"related":[{"id":"nba","label":"🏀 NBA 戰情室 · 凱利風險模型","hash":"#/bankroll"},{"id":"epl","label":"⚽ 英超戰情室 · 本輪賽事模型","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 戰情室 · 本站數據模型","hash":"#/picks"}],"local_path":"poker-gto/"},{"id":"sports-arena","district":"games","kind":"tower","name":"賽事戰情學院","en":"Sports Analytics Academy","icon":"🏟️","art":"sports-tower","status":"live","url":"https://okayell.github.io/?b=sports-arena","aliases":["sports-arena","sports-tower","warroom","war-room","arenas"],"floors":[{"floor":"1F","id":"nba","theme":"#ea580c","badge":"1F 職業籃球"},{"floor":"2F","id":"twbasket","theme":"#2563eb","badge":"2F 台灣職籃"},{"floor":"3F","id":"epl","theme":"#059669","badge":"3F 歐洲足球"},{"floor":"4F","id":"f1","theme":"#dc2626","badge":"4F 頂級賽車"},{"floor":"5F","id":"baseball-odds","theme":"#d97706","badge":"5F 職業棒球"}],"tagline":"五層樓賽事數據總部：1F NBA・2F 台籃・3F 英超・4F F1・5F MLB 一鍵搭電梯直達","desc":"將全校五大運動賽事數據戰情室整合於同一棟五層樓旗艦地標！點一下大樓即可開啟「🛗 樓層快速電梯」，一鍵直達 1F 🏀 NBA 戰情室、2F ⛹️ 台籃戰情室（P+／TPBL）、3F ⚽ 英超戰情室、4F 🏎️ F1 戰情室與 5F ⚾ MLB 戰情室（建設中）。","features":["1F 🏀 NBA 戰情室：每日勝率分差模型・多場組合模擬・傷兵雷達","2F ⛹️ 台籃戰情室：P. LEAGUE+ 與 TPBL 雙聯盟切換・賽前勝率與比分模型","3F ⚽ 英超戰情室：主客場進球期望值（xG）・1X2 和局機率雷達","4F 🏎️ F1 戰情室 ＆ 5F ⚾ MLB 戰情室：車手 H2H 圈速奪冠模型・職棒先發牛棚模型（5F 建設中）"],"links":[],"related":[{"id":"poker","label":"♟️ GTO 賽局策略學院 · 數學期望值（EV）與凱利風險管理","hash":"#/learn"}]},{"id":"stock","district":"finance","kind":"arena","name":"台股戰情室","en":"TW Stock War Room","icon":"📈","art":"exchange","status":"live","repo":"okayell.github.io","path":"tw-stock-insight/","url":"https://okayell.github.io/tw-stock-insight/","local_port":8919,"aliases":["stock","tw"],"tagline":"財經實戰戰情室：今日推薦、2,000 檔選股器、K 線一鍵技術分析","desc":"與財經學院深度連動的實戰戰情室！每天收盤後自動更新：大盤與三大法人、今日推薦 20 檔、約 2,000 檔即時選股器、個股 K 線與一鍵技術分析、產業鏈、ETF 專區與盤前戰情；看盤時可隨時一鍵跳回財經學院四大分析維度對照觀念。","features":["🎯 每日推薦 20 檔","🔎 2,000 檔選股器","🧠 K 線一鍵技術分析","🌅 盤前戰情・ETF 專區"],"links":[{"label":"🎯 今日推薦","hash":"#/"},{"label":"🌅 盤前戰情","hash":"#/morning"},{"label":"🔎 選股器","hash":"#/screener"},{"label":"🧠 個股分析","hash":"#/stock/2330"}],"related":[{"id":"finance","label":"📈 財經學院 · 技術分析（K線／均線／指標）","hash":"#/track/ta"},{"id":"finance","label":"📊 財經學院 · 基本面（EPS／本益比／殖利率）","hash":"#/track/fa"},{"id":"finance","label":"🧮 財經學院 · 籌碼面（三大法人／主力）","hash":"#/track/chip"},{"id":"finance","label":"📰 財經學院 · 消息面（總經／法說／事件）","hash":"#/track/news"},{"id":"finance","label":"📖 財經術語百科","hash":"#/glossary"}],"local_path":"tw-stock-insight/"},{"id":"nba","district":"games","kind":"arena","inside":true,"parent":"sports-arena","floor":"1F","name":"NBA 戰情室","en":"NBA War Room","icon":"🏀","art":"arena","status":"live","repo":"okayell.github.io","path":"nba-betting-iq/","url":"https://okayell.github.io/nba-betting-iq/","local_port":8919,"aliases":["nba"],"tagline":"勝率分差模型、多場組合模擬、傷兵出賽雷達","desc":"每日 NBA 賽事勝率與總分預測模型、跨場組合機率模擬、傷兵出賽雷達、凱利風險控管試算，賽後自動驗證並檢討調整模型權重。","features":["🎯 每日賽事模型","🔗 多場組合模擬","🏥 傷兵出賽雷達","🧠 賽後模型檢討"],"links":[{"label":"🎯 賽事模型","hash":"#/picks"},{"label":"🔗 組合模擬","hash":"#/parlay"},{"label":"📊 模型準確率","hash":"#/results"},{"label":"📝 風險控管＆凱利","hash":"#/bankroll"}],"related":[{"id":"twbasket","label":"⛹️ 台籃戰情室（P+／TPBL）","hash":"#/"},{"id":"poker","label":"♟️ GTO 賽局策略學院（EV 期望值與風險控管）","hash":"#/learn"},{"id":"epl","label":"⚽ 英超戰情室","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 戰情室","hash":"#/picks"}],"local_path":"nba-betting-iq/"},{"id":"epl","district":"games","kind":"arena","inside":true,"parent":"sports-arena","floor":"3F","name":"英超戰情室","en":"EPL War Room","icon":"⚽","art":"stadium","status":"live","repo":"okayell.github.io","path":"epl-odds-iq/","url":"https://okayell.github.io/epl-odds-iq/","local_port":8919,"aliases":["epl"],"tagline":"戰術對陣模型、進球期望值（xG）、和局機率雷達","desc":"英超每輪主客場實力差與進球數預測模型、1X2 和局機率雷達、多場組合模擬，整合官方 FPL xG 與傷停資訊，賽後自動檢討。","features":["🎯 本輪賽事模型","🔗 多場組合模擬","📈 FPL xG・傷停數據","🧠 賽後模型檢討"],"links":[{"label":"🎯 賽事模型","hash":"#/picks"},{"label":"🔗 組合模擬","hash":"#/parlay"},{"label":"🏆 積分排行","hash":"#/stats"},{"label":"📝 風險控管＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♟️ GTO 賽局策略學院（EV 期望值與風險控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 戰情室","hash":"#/picks"},{"id":"f1","label":"🏎️ F1 戰情室","hash":"#/picks"}],"local_path":"epl-odds-iq/"},{"id":"f1","district":"games","kind":"arena","inside":true,"parent":"sports-arena","floor":"4F","name":"F1 戰情室","en":"F1 War Room","icon":"🏎️","art":"circuit","status":"live","repo":"okayell.github.io","path":"f1-odds-iq/","url":"https://okayell.github.io/f1-odds-iq/","local_port":8919,"aliases":["f1"],"tagline":"車手配對 H2H 圈速、奪冠與頒獎台模型、罰退雷達","desc":"每站車手配對 H2H 圈速比較、分站奪冠與頒獎台機率模型、引擎罰退雷達與組合模擬，逐站自動檢討進化。","features":["🎯 本站數據模型","🏁 車手 H2H 對決","🔧 罰退與套件雷達","🧠 逐站模型檢討"],"links":[{"label":"🎯 數據模型","hash":"#/picks"},{"label":"🔗 組合模擬","hash":"#/parlay"},{"label":"🏎️ 車隊車手","hash":"#/team"},{"label":"📝 風險控管＆凱利","hash":"#/bankroll"}],"related":[{"id":"poker","label":"♟️ GTO 賽局策略學院（EV 期望值與風險控管）","hash":"#/learn"},{"id":"nba","label":"🏀 NBA 戰情室","hash":"#/picks"},{"id":"epl","label":"⚽ 英超戰情室","hash":"#/picks"}],"local_path":"f1-odds-iq/"},{"id":"baseball-odds","district":"games","kind":"arena","inside":true,"parent":"sports-arena","floor":"5F","name":"MLB 戰情室","en":"MLB War Room","icon":"⚾","art":"baseball-hub","status":"planned","aliases":["baseball","mlb","cpbl","baseball-odds"],"tagline":"建設中・敬請期待","desc":"規劃中：MLB 美國職棒大聯盟數據科學戰情室（先發投手對決模型、牛棚負荷與得分期望值）。","features":[],"links":[]},{"id":"twbasket","district":"games","kind":"arena","inside":true,"parent":"sports-arena","floor":"2F","name":"台籃戰情室","en":"Taiwan Hoops War Room","icon":"⛹️","art":"tw-hoops","status":"new","repo":"okayell.github.io","path":"tw-basketball/","url":"https://okayell.github.io/tw-basketball/","local_port":8919,"aliases":["twbasket","tpbl","plg","pleague","hoops","twhoops"],"tagline":"P. LEAGUE+ 與 TPBL 分開看：賽前勝率模型、戰績與球員數據","desc":"台灣職籃數據戰情室：P. LEAGUE+（P+）與 TPBL 兩個聯盟一鍵切換、各自獨立計算；每日賽程比分與即時比數、戰績排行、球隊與球員數據，加上 Elo 賽前勝率與預測比分模型，賽後自動驗證命中率並調整模型。","features":["🔀 P+／TPBL 雙聯盟切換","🎯 賽前勝率與預測比分","🏆 戰績與球員排行","🧠 賽後模型檢討"],"links":[{"label":"🟣 P. LEAGUE+","hash":"#/?lg=plg"},{"label":"🔵 TPBL","hash":"#/?lg=tpbl"},{"label":"🏆 戰績排行","hash":"#/standings"},{"label":"📊 模型準確率","hash":"#/model"}],"related":[{"id":"nba","label":"🏀 NBA 戰情室","hash":"#/picks"},{"id":"poker","label":"♟️ GTO 賽局策略學院（機率與期望值）","hash":"#/learn"}],"local_path":"tw-basketball/"},{"id":"addiction-cm","district":"care","kind":"academy","map_hidden":true,"name":"藥癮個管師學院","en":"Addiction Case Manager Academy","icon":"💚","art":"care-center","status":"new","repo":"okayell.github.io","path":"addiction-cm/","url":"https://okayell.github.io/addiction-cm/","local_port":8919,"aliases":["addiction-cm","dpcp","cm","care-cm"],"tagline":"毒防中心甄試上榜＋藥癮個管四大實務雙軌培訓","desc":"專為各縣市衛生局毒品危害防制中心與醫療院所「藥癮個案管理員（毒防個管師）」打造：涵蓋報考任用資格檢核、毒品危害防制條例法規筆試題庫與口試情境擬答，以及追蹤關懷（電訪／家訪／BSRS-5）、資源媒合（醫療戒癮／心理／就業／法律／社福）、減害支持與動機式晤談（MI／OARS）、SOAP 個管紀錄與 0800-770-885 專線實務演練。","features":["🎓 衛生局毒防中心報考資格檢核・筆試法規＆口試題庫","📞 追蹤與關懷：電訪／家訪安全評估・BSRS-5 與復發預警","🤝 資源媒合＆減害：替代治療・心理・就業・法律・社福轉介與 MI 晤談","📋 行政與協調：SOAP 個管紀錄撰寫・0800-770-885 專線與出入監銜接"],"links":[{"label":"🏠 學院首頁","hash":"#/home"},{"label":"🧪 實務演練室","hash":"#/lab"},{"label":"🎯 甄試題庫","hash":"#/quiz"},{"label":"📖 毒防百科","hash":"#/glossary"}],"related":[{"id":"health-care","label":"🩺 醫療保健學院 · 16 項急救 SOP 與中毒處置","hash":"#/first-aid"},{"id":"health-care","label":"💊 醫療保健學院 · 台灣藥品三級分級與安全用藥","hash":"#/pharmacy"}],"local_path":"addiction-cm/"},{"id":"health-care","district":"care","kind":"academy","name":"醫療保健學院","en":"Health & First Aid Academy","icon":"🩺","art":"clinic-hall","status":"new","repo":"okayell.github.io","path":"health-care/","url":"https://okayell.github.io/health-care/","local_port":8919,"aliases":["health-care","health","clinic","first-aid","firstaid","med"],"tagline":"校園保健室自我檢傷・16 項黃金急救圖解・安全用藥三級分級・24 種常見疾病與健檢紅字判讀","desc":"就像隨時開門的校園保健室！提供 12 大常見症狀自我檢傷與紅旗危急警訊分流（何時居家觀察、門診或立即撥打 119）、16 項緊急傷病黃金處置 SOP 與臨床圖解（CPR＋AED、哈姆立克、腦中風 FAST、心肌梗塞、過敏性休克 EpiPen、止血、燒燙傷沖脫泡蓋送、扭傷 PEACE & LOVE、中暑、癲癇、中毒與蜂蛇咬傷）、台灣處方／指示／成藥三級制度與 18 種常備藥安全指南、家庭用藥備品清單與廢棄藥品回收，以及 24 種六大系統常見疾病百科、生命徵象＆健檢紅字互動判讀器與 CPR 100–120 BPM 節拍演練室。","features":["🏥 保健室自我檢傷：12 大症狀紅旗警訊（Red Flags）與就醫分流","🚑 16 項黃金急救 SOP 圖解：CPR＋AED・哈姆立克・FAST・沖脫泡蓋送","💊 安全用藥指南：三級藥品制度・18 種常備藥・交互作用與家庭備藥箱","🦠 24 種常見疾病百科 ＋ 健檢紅字判讀器・18 大迷思破解・CPR 節拍演練"],"links":[{"label":"🏥 保健室檢傷","hash":"#/home"},{"label":"🚑 急救處置 SOP","hash":"#/first-aid"},{"label":"💊 安全用藥指南","hash":"#/pharmacy"},{"label":"🦠 常見疾病百科","hash":"#/diseases"}],"related":[{"id":"addiction-cm","label":"💚 藥癮個管師學院 · 醫療戒癮與心理衛教資源","hash":"#/home"},{"id":"fitness","label":"💪 健身學院 · 運動傷害預防與 TDEE 營養","hash":"#/safety"}],"local_path":"health-care/"},{"id":"coding","district":"tech","kind":"academy","name":"程式語言學院","en":"Coding Academy","icon":"💻","art":"code-hall","status":"new","repo":"okayell.github.io","path":"coding/","url":"https://okayell.github.io/coding/","local_port":8919,"aliases":["coding","code","cs","prog","python","py","pytest","pyqt","pyside","crawler","clang","c","javascript","js","golang","go"],"tagline":"🐍 Python 專院新開幕：基礎語法・進階技巧・單元測試・PyQt/PySide・網路爬蟲・自動化測試全棧","desc":"程式語言學院首波重磅開課【🐍 Python 全方位工程與自動化專院】：完整收錄 6 大專章共 36 堂圖解實戰課（基礎語法與記憶體模型、裝飾器／生成器／非同步／Type Hints 進階工程、unittest／pytest／Fixtures／Mock 單元測試、PySide6／PyQt6 桌面 GUI 與 QThread 防卡死架構、httpx／BS4／Playwright／asyncio 網路爬蟲工程，以及 Playwright POM、API 契約、Mobly 多裝置實機與 Locust 壓測全棧自動化測試），搭配 5 座免安裝瀏覽器互動實驗室、速查表、60 詞術語百科與 36 題隨堂測驗（C、JavaScript、Go 專院陸續籌備中）。","features":["🌱 Python 基礎語法＆進階技巧：記憶體參照・容器複雜度・裝飾器・生成器・asyncio・Typing","🧪 單元測試＆桌面 GUI：pytest・Fixtures・Mock autospec・PySide6/PyQt6・Signal/Slot 與 QThread","🕷️ 網路爬蟲工程：httpx 連線池・BeautifulSoup4・Playwright SPA 攔截・Semaphore 高併發與 UPSERT","🤖 自動化測試全棧：Playwright POM・Pydantic API 契約・Mobly 多裝置硬體實機・Locust 壓測・5 座互動實驗室"],"links":[{"label":"🏛️ 學院總覽","hash":"#/home"},{"label":"🐍 Python 六大專章","hash":"#/courses"},{"label":"🔬 互動實驗室","hash":"#/lab"},{"label":"🎯 隨堂測驗","hash":"#/quiz"}],"related":[{"id":"cloud-devops","label":"☁️ 雲端與系統維運學院（Linux・Shell・Docker 容器・K8s・AWS／GCP）"},{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（C 韌體＋Python 硬體實戰）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（JS 面板＋Go 物聯網閘道）"}],"local_path":"coding/"},{"id":"smart-iot","district":"tech","kind":"academy","name":"智慧生活與物聯網學院","en":"Smart Living & IoT Academy","icon":"🏡","art":"smart-home","status":"new","repo":"okayell.github.io","path":"smart-iot/","url":"https://okayell.github.io/smart-iot/","local_port":8919,"aliases":["iot","smarthome","smart-iot","matter","thread","zigbee","ha","homeassistant"],"tagline":"16 種智慧家電實物圖解・Matter／Thread／Zigbee／MQTT 協定剖析・4 房全屋情境模擬器","desc":"專為智慧家庭規劃與物聯網工程打造的互動學院：涵蓋照明遮陽、門鎖感測安防、空調環控能源與中樞閘道 4 大類共 16 種主流智慧家電的實物圖解、內部感測與控制原理、台灣 110V 零火線配電規範與防踩雷清單；深度拆解 Matter 1.4 節點／端點／叢集資料模型、PASE／CASE 配網流程、Thread 自癒網狀網路、Zigbee 3.0、Wi-Fi、BLE 與 MQTT 發布訂閱；內建 4 房全屋互動平面圖模擬器（支援毫米波、漏水斷水閥連動與即時 Home Assistant YAML 產生器）、6 大裝潢佈線與資安防坑專章（含 2.4GHz 頻譜干擾計算器）、36 詞百科與 24 題隨堂測驗。","features":["🏠 16 種主流智慧家電圖鑑：台灣 110V 零火線・毫米波雷達・電子鎖・電動窗簾","📡 6 大物聯網協定＆Matter 互動樹：Node/Endpoint/Cluster・PASE/CASE・Thread Mesh","🎛️ 4 房全屋情境模擬器：即時協定事件匯流排 ＋ Trigger-Condition-Action 自動化 YAML","🛠️ 6 大裝潢佈線＆資安防坑：深底盒零線預留・2.4GHz 頻道防衝突圖・IoT VLAN 隔離"],"links":[{"label":"🏛️ 學院總覽","hash":"#/home"},{"label":"🏠 智慧家電圖鑑","hash":"#/devices"},{"label":"📡 通訊協定與 Matter","hash":"#/protocols"},{"label":"🎛️ 全屋情境模擬器","hash":"#/simulator"}],"related":[{"id":"cloud-devops","label":"☁️ 雲端與系統維運學院（Docker 容器化部署 Home Assistant ＆ MQTT 雲端中樞）"},{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院（自製樹莓派中樞與感測節點）"},{"id":"coding","label":"💻 程式語言學院（Python／C／JavaScript／Go）","hash":"#/home"},{"id":"home-repair","label":"🔧 居家水電修繕學院（台灣 110V／220V 配電與深底盒施工）","hash":"#/courses/hr-e5"}],"local_path":"smart-iot/"},{"id":"cloud-devops","district":"tech","kind":"academy","name":"雲端與系統維運學院","en":"Cloud, Linux & DevOps Academy","icon":"☁️","art":"cloud-center","status":"planned","aliases":["cloud-devops","devops","cloud","docker","container","containers","k8s","kubernetes","linux","shell","bash","aws","gcp","sre"],"tagline":"Linux 與 Shell 自動化・Container 容器與 Docker・Kubernetes (K8s) 叢集編排・AWS／GCP 雙雲架構","desc":"規劃中：從伺服器底層一路貫通到雲端原生（Cloud-Native）架構的實戰維運學院！由 Linux 核心檔案權限、行程與網路診斷、systemd 服務管理與 Bash Shell Script 自動化腳本出發，深入理解 Container 容器隔離原理（Namespace／cgroups）、Dockerfile 多階段建置與映像檔最佳化、Docker Compose 多服務編排；再進階至 Kubernetes（K8s）叢集架構（Pod／Deployment／Service／Ingress／ConfigMap）、HPA 自動擴縮容與滾動更新，最後結合 AWS 與 GCP 兩大公有雲（IAM 權限控管、VPC 虛擬私有網路、EC2／GCE、S3／GCS、EKS／GKE 與 CI/CD 持續部署管線）。","features":["🐧 Linux 系統與 Shell Script：檔案權限・行程與網路排查・systemd・Bash 管線與排程自動化","🐳 Container 容器與 Docker：Namespace／cgroups 隔離・Dockerfile 多階段建置・映像檔瘦身與 Compose","☸️ Kubernetes (K8s) 叢集編排：Pod／Deployment／Service／Ingress・HPA 自動擴縮容與 Helm 部署","☁️ AWS ＆ GCP 雙雲基礎設施：IAM 最小權限・VPC 網路架構・EC2／GCE・S3／GCS 與 EKS／GKE 實戰"],"links":[],"related":[{"id":"coding","label":"💻 程式語言學院 · Python 自動化與後端測試實戰","hash":"#/courses"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院 · MQTT 與全屋中樞服務","hash":"#/protocols"},{"id":"embedded-rpi","label":"🍓 嵌入式與樹莓派學院 · 樹莓派 Linux 單板系統建置"}]},{"id":"embedded-rpi","district":"tech","kind":"academy","name":"嵌入式與樹莓派學院","en":"Embedded & Raspberry Pi Academy","icon":"🍓","art":"rpi-lab","status":"planned","aliases":["rpi","embedded","raspberrypi","mcu"],"tagline":"樹莓派 Linux 單板實作、MCU 單晶片、電子電路與 GPIO 韌體控制","desc":"規劃中：結合 Raspberry Pi 單板電腦與 ESP32／STM32 微控制器，從麵包板基礎電子電路、GPIO／PWM／ADC 到 I2C／SPI／UART 通訊匯流排、中斷與 RTOS 即時系統，動手做出能感知與控制真實世界的硬體專案。","features":["🍓 樹莓派 Raspberry Pi 系統建置與 GPIO 實戰","🔌 基礎電子電路・感測器・馬達與麵包板接線","📟 I2C／SPI／UART 匯流排與數位邏輯波形圖解","⚡ ESP32／MCU 暫存器、中斷處理與 RTOS 韌體"],"links":[],"related":[{"id":"cloud-devops","label":"☁️ 雲端與系統維運學院（Linux 系統管理・Shell 腳本與邊緣容器部署）"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院（把自製感測器接入全屋自動化）"},{"id":"coding","label":"💻 程式語言學院（Python／C／JavaScript／Go）"}]},{"id":"cooking","district":"arts","kind":"academy","name":"烹飪學院","en":"Culinary Academy","icon":"🍳","art":"culinary-hall","status":"new","repo":"okayell.github.io","path":"cooking/","url":"https://okayell.github.io/cooking/","local_port":8919,"aliases":["cooking","cook","culinary","recipe","recipes","cuisine","cuisines","kitchen","chef"],"tagline":"10 大廚藝基本功・107 道零失敗食譜・31 個世界與中華菜系圖鑑","desc":"從零下廚到環遊世界餐桌的互動料理學院：完整收錄刀工備料、火候油溫、烹調技法、調味醬汁、食材處理、米飯麵食、高湯基底、料理科學、食品安全與廚具換算 10 大基本功共 49 堂圖文課；嚴選台灣家常與夜市小吃、客家與港式、中國八大菜系（川菜、湘菜、粵菜、魯菜、蘇菜、浙菜、閩菜、徽菜與北方麵食）、日韓、東南亞（泰國菜、越南菜、星馬、印尼、菲律賓）、印度、中東地中海與歐美美洲共 31 個菜系與 107 道實景照片食譜（支援人份自動換算、全螢幕料理模式與步驟計時器）；內建清冰箱找菜、今天吃什麼、單位換算、多組廚房計時器、購物清單、80 詞料理百科與 100 題隨堂測驗。","features":["🔪 10 大廚藝基本功（49 課）：刀工切法・火候油溫・勾芡梅納反應・食安保存","📖 107 道零失敗食譜：份量自動換算・全螢幕料理模式・步驟倒數計時・防翻車重點","🌏 31 個世界與中華菜系圖鑑：台菜・川湘粵八大菜系・泰越日韓・歐美口味雷達與比較","🧰 6 大廚房實用工具：清冰箱配菜・今天吃什麼・台斤／湯匙換算・多組計時器・購物清單"],"links":[{"label":"🏠 學院大廳","hash":"#/home"},{"label":"📖 107 道食譜","hash":"#/recipes"},{"label":"🌏 31 大世界菜系","hash":"#/cuisines"},{"label":"🔪 廚藝基本功","hash":"#/basics"}],"related":[{"id":"health-care","label":"🩺 醫療保健學院 · 廚房燒燙傷沖脫泡蓋送與食安急救","hash":"#/first-aid"},{"id":"fitness","label":"💪 健身學院 · TDEE 熱量與增肌減脂蛋白質計算","hash":"#/home"},{"id":"music","label":"🎵 音樂學院 · 下廚與餐桌時光的古典名曲陪伴","hash":"#/home"}],"local_path":"cooking/"},{"id":"music","district":"arts","kind":"academy","name":"音樂學院","en":"Classical Music Academy","icon":"🎵","art":"concert-hall","status":"new","repo":"okayell.github.io","path":"music/","url":"https://okayell.github.io/music/","local_port":8919,"aliases":["music","classical","classic","theory","opera","bach","beethoven","mozart","chopin","puccini"],"tagline":"從大師的故事開始，輕鬆聽懂古典音樂","desc":"專為非音樂本科設計：巴哈、莫札特、貝多芬、蕭邦、布拉姆斯、華格納、普契尼等 20 位古典大師的生平與 104 則歷史故事集，每首代表作附 YouTube／Spotify 完整錄音連結；《魔笛》《卡門》《杜蘭朵》歌劇專區；24 鍵虛擬鋼琴＋16 堂零基礎樂理課與視唱聽音練習；交響樂團舞台席位圖與 20 種樂器圖鑑。","features":["👑 20 位大師・104 則歷史故事・代表作完整錄音連結","🎭 歌劇專區：《魔笛》《卡門》《杜蘭朵》劇情與名曲","🎹 24 鍵虛擬鋼琴・16 堂白話樂理・🎧 視唱聽音練習","🎻 交響樂團舞台席位圖・20 種樂器模擬音色"],"links":[{"label":"🏛️ 學院總覽","hash":"#/home"},{"label":"👑 音樂家故事","hash":"#/composers"},{"label":"🎭 歌劇專區","hash":"#/opera"},{"label":"🎧 視唱聽音","hash":"#/ear"}],"local_path":"music/"},{"id":"fitness","district":"care","kind":"academy","name":"健身學院","en":"Fitness & Strength Academy","icon":"💪","art":"gymnasium","status":"new","repo":"okayell.github.io","path":"fitness/","url":"https://okayell.github.io/fitness/","local_port":8919,"aliases":["fitness","gym","gymnasium","workout","sports","muscle","weight"],"tagline":"24 種器材操作全圖解・全身 12 大肌群互動解剖・6 大重訓安全守則與課表營養","desc":"專為健身新手到進階訓練者打造的科學化互動健身學院：涵蓋胸部、背部、臀腿、肩臂纜繩、自由重量與有氧共 24 種主流器材的結構示意圖、座椅與轉軸三步驟設定、呼吸節奏與 3 大常見錯誤修正；互動式正背面 12 大肌群解剖圖鑑（含 35 個子肌束起止點、發力力線與代償預防）；6 大重訓安全專章（動態暖身、腹內壓呼吸、四大關節紅線、DOMS 痠痛 vs 運動傷害判別、10 大迷思破解與臥推自救）；以及 4 套分級實戰週課表、1RM 最大肌力與 TDEE 蛋白質計算機。","features":["🏋️ 24 種主流器材操作圖解：座椅轉軸設定・發力軌跡・3 大錯誤修正","🧬 互動正背面 12 大肌群解剖：35 個子肌束起止點・代償預防・伸展","🛡️ 6 大健身安全專章：暖身呼吸・關節紅線・DOMS vs 受傷・10 大迷思","📋 4 套分級實戰週課表 ＋ 1RM 配重換算・TDEE 蛋白質計算・組間計時器"],"links":[{"label":"🏛️ 學院總覽","hash":"#/home"},{"label":"🏋️ 器材操作圖鑑","hash":"#/equipment"},{"label":"🧬 肌肉解剖圖鑑","hash":"#/muscles"},{"label":"🛡️ 健身安全守則","hash":"#/safety"}],"related":[{"id":"health-care","label":"🩺 醫療保健學院 · 運動傷害 PEACE & LOVE 處置與急救 SOP","hash":"#/first-aid"}],"local_path":"fitness/"},{"id":"trivia","district":"liberal","kind":"academy","name":"冷知識學院","en":"Fun Facts Academy","icon":"💡","art":"trivia-hall","status":"new","repo":"okayell.github.io","path":"trivia/","url":"https://okayell.github.io/trivia/","local_port":8919,"aliases":["trivia","facts","funfacts","fun-facts"],"tagline":"十八大類 580 則冷知識：每日一則・轉蛋抽卡・真假挑戰","desc":"五花八門的冷知識大全：動物、植物與自然、人體、宇宙、物理化學、歷史、世界各國、台灣在地、美食、生活、語言、科技、運動、影視藝術、數學、心理、品牌經濟與迷思破解 18 大類共 580 則，每則附「猜猜看」提問、答案、背後原因與冷度 🧊 分級，還有冷知識轉蛋、真的假的是非挑戰、收藏與分類徽章。","features":["📅 每日一則冷知識・🧊 冷度分級","📚 18 大分類圖書館：子分類標籤／冷度／搜尋","🎰 冷知識轉蛋：先猜問題再揭曉","🤔 真的假的？是非挑戰＋錯題本"],"links":[{"label":"🏠 學院大廳","hash":"#/home"},{"label":"📚 冷知識圖書館","hash":"#/browse"},{"label":"🎰 冷知識轉蛋","hash":"#/random"},{"label":"🤔 真假挑戰","hash":"#/quiz"}],"related":[{"id":"home-repair","label":"🔧 居家水電修繕學院 · 台灣 110V／220V 配電安全與日常修繕實戰","hash":"#/home"}],"local_path":"trivia/"},{"id":"happy-farm","district":"farm","kind":"venue","name":"開心宿舍","en":"Happy Dormitory","icon":"🏠","art":"happy-dorm","status":"new","repo":"okayell.github.io","path":"?dorm=1","url":"https://okayell.github.io/?dorm=1","local_port":8919,"aliases":["dorm","happy-dorm","happydorm","happy-farm","farm","room","house","build"],"tagline":"3D 立體大空間個人宿舍：校園砍樹與後山採石場尋材・60 款擬真家具・60fps 自由拖曳擺放","desc":"專屬每位學員的 3D 立體溫馨個人宿舍！點進去是一間挑高採光的三面立體透視大房間（標配贈送一張實木單人床）。你可以前往校園各處砍樹收集原木、去東北「後山採石場・工坊」開採石材、鍛鐵、晶石、棉麻與陶泥，或在北境瀑布潭、學園湖與馬路角落尋寶（所有樹木與材料點皆為 6 小時自然恢復，把全校樹砍光真的會只剩樹樁！），集齊材料即可建造 60 款立體擬真書桌、人體工學椅、L 型沙發、雙門大冰箱、65 吋大電視、雙螢幕工作站、貓跳台與真火壁爐，並直接拖曳到房間任意位置！","features":["🏠 3D 立體透視大空間：三面立體斜牆、線板踢腳板、透視木地板與落地採光光影，支援全景放大模式","🛋️ 60 款擬真立體家具＋12 款地板牆面：床鋪、沙發、櫃體、家電視聽、燈具地毯與植栽細節全面升級","🖱️ 60fps 絲滑拖曳擺放：支援滑鼠／觸控直接拖曳家具定位、左右翻轉、圖層前後調整與倉庫收納","🌲 後山採石場＆校園尋材（6 小時重生）：校園砍樹、後山採石場與湖畔角落尋材，6 小時後自然恢復"],"links":[]},{"id":"home-repair","district":"liberal","kind":"academy","name":"居家水電修繕學院","en":"Home Repair, Plumbing & Electrical Academy","icon":"🔧","art":"home-workshop","status":"new","repo":"okayell.github.io","path":"home-repair/","url":"https://okayell.github.io/home-repair/","local_port":8919,"local_path":"home-repair/","aliases":["home-repair","diy","plumbing","electrical","handyman","repair"],"tagline":"台灣 110V／220V 配電安全・給排水馬桶止漏・矽利康壁癌防水・電鑽五金與 5 座互動實驗室","desc":"專為台灣居家生活打造的實用修繕與水電百科！內建「🚦 安全紅綠燈分流器（12 大狀況 DIY 與合格水電／燃氣技師界線）」、6 大專章 36 堂全向量圖解課程（單相三線 110V／220V、NFB／ELCB 跳電復歸、插座與雙切 0-1-3 開關、陶瓷閥芯與止水帶、馬桶水箱與 P 管防臭、矽利康防霉重打、壁癌補土油漆、電鑽壁虎與西德鉸鏈調整）、5 座互動工程模擬器、6 張台灣五金規格速查表、60 詞水電五金師傅黑話辭典與 36 題實戰測驗。","features":["🚦 安全紅綠燈分流＆36 堂圖解課：明確標示安心 DIY、斷電斷水操作與法規強制技師紅線","⚡ 配電箱＆三用電表雙切實驗室：模擬 110V／220V 過載與 30mA 漏電跳脫、插座極性盲測與 0-1-3 接線","🚰 馬桶色素抓漏＆存水彎解剖台：動態演示落水皮滲漏、S 管虹吸破封沼氣倒灌與止水帶正纏手法","🔩 牆體壁虎選型＆西德鉸鏈微調：5 種台灣牆體鑽孔避雷計算機、廚櫃門縫三顆螺絲 X／Y／Z 軸即時校正"],"links":[{"label":"🏛️ 學院總覽＆安全分流","hash":"#/home"},{"label":"📘 六大修繕專章 (36課)","hash":"#/courses"},{"label":"🔬 5 座互動實驗室","hash":"#/lab"},{"label":"📋 台灣水電規格速查","hash":"#/cheatsheet"}],"related":[{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院 · 智慧開關零火線與預留佈線","hash":"#/devices"},{"id":"health-care","label":"🩺 醫療保健學院 · 感電、割傷與燒燙傷緊急處置 SOP","hash":"#/first-aid"},{"id":"happy-farm","label":"🏠 開心宿舍 · 動手打造與佈置理想房間"},{"id":"real-estate","label":"🏘️ 房地產學院 · 預售屋與中古屋驗屋交屋檢查重點（建設中）"}]},{"id":"real-estate","district":"liberal","kind":"academy","name":"房地產學院","en":"Real Estate & Housing Academy","icon":"🏘️","art":"real-estate-hall","status":"planned","aliases":["real-estate","realestate","housing","property","presale","foreclosure"],"tagline":"預售屋契約與履約保證・中古屋看屋驗屋・法拍屋點交・凶宅避雷・房貸成數與房地合一稅全解析","desc":"規劃中：專為台灣買房自住、換屋與資產配置打造的房地產全方位知識百科！完整涵蓋「預售屋」（紅單規定、定型化契約審閱、五種履約保證機制、客變與交屋驗屋實戰）、「中古屋」（實價登錄拆解、公設比與車位產權、斡旋金 vs 要約書、漏水壁癌與機電驗屋）、「法拍屋」（法院查封筆錄判讀、點交與不點交風險、代墊尾款實務）、「凶宅與嫌惡屋況避雷」（內政部凶宅函釋定義、海砂屋氯離子、輻射屋、傾斜與周邊嫌惡設施調查），以及青年安心成家／首購房貸試算、契稅、地價稅、土地增值稅與房地合一稅 2.0 重購退稅節稅指南。","features":["🏗️ 預售屋全攻略：定型化契約紅線・5 種履約保證優劣・客變圖面與交屋驗屋清單","⚖️ 法拍屋實戰解密：法院公告與查封筆錄判讀・點交 vs 不點交排雷・保證金與代墊貸款","🔍 凶宅＆屋況避雷針：凶宅認定判準與查證管道・海砂／輻射／漏水壁癌・產權謄本三部曲","💰 房貸試算＆房產稅務：實價登錄識讀・新青安與寬限期月付試算・房地合一稅 2.0 與重購退稅"],"links":[],"related":[{"id":"home-repair","label":"🔧 居家水電修繕學院 · 交屋配電箱檢測、漏水抓漏與壁癌防水實戰","hash":"#/home"},{"id":"finance","label":"🏛️ 財經學院 · 利率週期、通膨與家庭資產負債配置","hash":"#/home"},{"id":"smart-iot","label":"🏡 智慧生活與物聯網學院 · 新成屋弱電箱、中性線與全屋智慧家電佈線","hash":"#/devices"}]}]};
+window.CAMPUS_ROSTER_SEED = [{"uid":"stu_mvumldam_ig42c","stuNo":"HC-4200","name":"小傑夫","confirmed":true,"renameCount":0,"avatar":"pkmn:145","title":"🪨 後山採石人","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike","youbike-2e"],"buildingId":"nba","buildingName":"NBA 戰情室","buildingIcon":"🏀","badges":["acad_welcome","acad_en_1","acad_jp_1","acad_kr_1","acad_fin_1","acad_stk_1","acad_cm_1","acad_hc_1","acad_mus_1","acad_cook_1","acad_hr_1","acad_fit_1","acad_py_1","acad_iot_1","acad_pkr_1","acad_nba_1","acad_f1_1","acad_twb_1","acad_en_2","acad_stk_2","acad_mus_2","time_3m","time_5m","time_10m","time_30m","time_60m","time_120m","time_180m","time_acad10m","streak_3d","streak_7d","daily_full_1","visit3","tour6","visit_all","visit_19","farm_visit","blueprint_3","blueprint_6","trip5","trip20","fish1","fishwin","fish4","fish10sp","fish25","fish_rare","fish_epic","bbwin","bb25","bb_fire","pkwin","pk5","tn10","tn_item5","vbwin","vbspike","pet1","frog","pkmn_5","pkmn_legend","wood1","fruit1","fruit10","car_first","car_scooter","wacky_junk5","combo_chop3","wacky_zoom_in","wacky_zoom_out","wacky_boot","night_owl","early_bird","wacky_lunch","ach_50","pet_adopt1","farm_plant1","acad_trv_1","acad_kr_2","acad_pkr_2","acad_nba_2","acad_en_3","acad_master_5"],"score":2149,"ts":1793854935989},{"uid":"stu_mvv3nvz4_l6150","stuNo":"HC-5922","name":"開心老頭子","confirmed":true,"renameCount":0,"avatar":"🐱","title":"🃏 德州撲克GTO","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike","sym-duke125"],"buildingId":"poker","buildingName":"GTO 賽局策略學院","buildingIcon":"♠️","badges":["acad_nba_1","acad_welcome","acad_nba_2","time_3m","trip5","visit3","acad_trv_1","wacky_dizzy","acad_f1_1","acad_cook_1","tour6","acad_hc_1","acad_hc_2","acad_deep20","acad_hc_3","acad_acts50","time_10m","frog","wood1","combo_chop3","trip20","wacky_brake5","blueprint_3","acad_jp_1","night_owl","acad_mus_1","acad_mus_2","early_bird","acad_mus_3","wacky_lunch","acad_pkr_1","acad_pkr_2","time_30m","acad_fit_1","time_acad10m","acad_pkr_3","acad_acts100","acad_grad_3","time_60m","streak_3d","acad_hr_1","acad_en_1","time_acad30m","acad_kr_1","acad_fin_1","acad_stk_1","acad_cm_1","acad_py_1","acad_iot_1","acad_epl_1","acad_kr_2","acad_py_2","acad_iot_2","acad_tech_pair","farm_visit","car_first","car_scooter","fish1","fish4","fish_rare","wacky_boot","blueprint_6"],"score":1309,"ts":1793802377356},{"uid":"stu_mvw2tlsi_cpl2u","stuNo":"HC-1816","name":"馬可夫斯雞","confirmed":true,"renameCount":0,"avatar":"pkmn:149","title":"🥇 釣魚大賽紀錄保持人","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"nba","buildingName":"NBA 戰情室","buildingIcon":"🏀","badges":["acad_welcome","acad_nba_1","acad_epl_1","acad_nba_2","acad_epl_2","time_3m","time_10m","wood1","fruit1","fruit10","wacky_stump","night_owl","visit3","wood10","combo_chop3","acad_kr_1","trip5","acad_fin_1","acad_stk_1","acad_fit_1","tour6","fish1","bbwin","bb25","acad_stk_2","acad_nba_3","time_30m","time_acad10m","streak_3d","vbwin","vbspike","frog","pkmn_5","pkmn_15","acad_deep20","acad_cook_1","pkmn_legend","time_60m","time_acad30m","tn10","pkwin","wacky_boot","fishwin","fish4","fish10sp","fish20sp","fish25","fish_rare","fish_epic","fish400","fishlv10","wacky_junk5","pkmn_50","plane"],"score":1999,"ts":1793841694183},{"uid":"stu_mvyqf6n1_6ussr","stuNo":"HC-7117","name":"Tony","confirmed":true,"renameCount":0,"avatar":"pkmn:133","title":"⚡ 旋風快斧手","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"finance","buildingName":"財經學院","buildingIcon":"🏛️","badges":["acad_welcome","acad_jp_1","acad_fin_1","acad_stk_1","acad_trv_1","acad_hr_1","acad_pkr_1","acad_nba_1","acad_trv_2","acad_hr_2","acad_pkr_2","acad_deep20","acad_acts50","acad_hr_3","acad_pkr_3","time_3m","time_10m","time_30m","visit3","tour6","trip5","fish1","fish4","wood1","wood10","wood30","wood50","wood100","fruit1","frog","pkmn_5","pkmn_15","pkmn_legend","wacky_stump","wacky_bald_campus","combo_chop3","wacky_zoom_in","wacky_zoom_out","wacky_lunch","acad_cook_1","time_60m","fish_rare","bbwin","bb25","pkwin","pk5","tn10","vbwin","vbspike","pet4","streak_3d","fish_epic","fish_legend","fish25","fish10sp","fishwin","bb_fire"],"score":2011,"ts":1793787778783},{"uid":"stu_mvuretez_l1ojb","stuNo":"HC-2208","name":"馬開朗雞羅","confirmed":true,"renameCount":1,"avatar":"pkmn:151","title":"🏆 151 奇幻生物圖鑑大師","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"crypto","buildingName":"區塊鏈學院","buildingIcon":"🪙","badges":["acad_welcome","acad_jp_1","acad_kr_1","acad_fin_1","acad_stk_1","acad_cm_1","acad_hc_1","acad_mus_1","acad_cook_1","acad_trv_1","acad_pkr_1","acad_nba_1","acad_epl_1","acad_f1_1","time_3m","time_10m","time_30m","time_60m","visit3","tour6","blueprint_3","blueprint_6","trip5","fish1","fish4","fishall","fish25","bbwin","bb25","pkwin","vbspike","pet4","petall","wood1","wood10","wood30","wood50","wood100","fruit1","frog","pkmn_5","pkmn_15","pkmn_50","pkmn_legend","bus_hi","wacky_stump","wacky_bald_campus","combo_chop3","wacky_zoom_out","wacky_boot","wacky_lunch","acad_en_1","acad_fit_1","acad_py_1","acad_iot_1","visit_all","trip20","fish100","tn10","wacky_zoom_in","streak_3d","fish_rare","fish_epic","fish_legend","fish10sp","wacky_junk5","wacky_avatar10","fishwin","rod1","bb_fire","vbwin","fishlv10","acad_hr_1","time_180m","acad_epl_2","acad_f1_2","acad_nba_2","acad_sport_4","time_acad10m","acad_pkr_2","acad_pkr_3","acad_fit_2","acad_master_5","acad_trv_2","acad_cook_2","acad_cook_3","acad_mus_2","acad_life_trio","ped_talk5","pkmn_151","tn_item5","time_360m","fish20sp","plane","tnrally","fishdex"],"score":4709,"ts":1793852246761},{"uid":"stu_mvv5xubp_1rdjg","stuNo":"HC-3569","name":"無谷妍蘇姬","confirmed":true,"renameCount":0,"avatar":"🍕","title":"🐾 萌寵守護者","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"nba","buildingName":"NBA 戰情室","buildingIcon":"🏀","badges":["acad_welcome","acad_en_1","acad_trv_1","acad_fit_1","acad_nba_1","acad_en_2","acad_trv_2","acad_nba_2","acad_deep20","acad_trv_3","time_3m","time_10m","streak_3d","visit3","tour6","farm_visit","blueprint_3","blueprint_6","trip5","wood1","wood10","fruit1","fruit10","frog","wacky_stump","combo_chop3","night_owl","wacky_lunch","time_30m","acad_fit_2","fish1","fish25","pet4","petall","acad_jp_1","acad_fin_1","acad_stk_1","acad_cm_1","acad_epl_1","acad_f1_1","fish4","acad_mus_1","wacky_zoom_out","wacky_zoom_in","plane"],"score":1160,"ts":1793799815290},{"uid":"stu_mvuskcnf_ggyfz","stuNo":"HC-6488","name":"Russell","confirmed":true,"renameCount":0,"avatar":"pkmn:109","title":"🏎️ 校園車神","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"stock","buildingName":"台股戰情室","buildingIcon":"📈","badges":["acad_welcome","acad_en_1","acad_fin_1","acad_stk_1","acad_fit_1","acad_pkr_1","acad_nba_1","acad_f1_1","time_3m","time_10m","visit3","tour6","blueprint_3","trip5","wood1","wood10","wood30","wood50","frog","bus_hi","wacky_bald_campus","combo_chop3","wacky_zoom_out","wacky_lunch","acad_iot_1","acad_stk_2","time_30m","blueprint_6","fish1","fish4","fish_rare","wood100","fruit1","wacky_boot","fish10sp","fish25","wacky_junk5","tn_item5","tnwin","trip20","acad_f1_2","bb_fire","farm_visit","pkmn_5","wacky_zoom_in","pkmn_15"],"score":1041,"ts":1793841694188},{"uid":"stu_mw1vbgy4_0kmy3","stuNo":"HC-3615","name":"宣利","confirmed":true,"renameCount":0,"avatar":"🐶","title":"🇬🇧 英語留學生","carId":"youbike-2e","carColor":"#f97316","carName":"🚲 YouBike 微笑單車 YouBike 2.0E 電輔單車","cars":["campus-bike","youbike-2e"],"buildingId":"poker","buildingName":"GTO 賽局策略學院","buildingIcon":"♟️","badges":["acad_welcome","acad_stk_1","time_3m","fish1","fish4","fishwin","fish_rare","fish10sp","wacky_boot","fish25","rod1","wacky_junk5","wacky_zoom_out","acad_en_1","time_10m","bus_hi","wacky_brake5","trip5","visit3","acad_hc_1","acad_hc_2","acad_deep20","acad_acts50","acad_hc_3","acad_acts100","wood1","combo_chop3","acad_fit_1","acad_fit_2","time_30m","acad_fit_3","tour6","acad_cm_1","acad_trv_1","acad_trv_2","acad_trv_3","acad_grad_3","acad_hr_1","blueprint_3","vbwin","vbspike","acad_kr_1","wacky_zoom_in","night_owl","time_60m","wacky_bus5","wacky_lunch","fish_epic","bb_fire","frog","acad_kr_2","acad_f1_1","car_first","car_scooter","acad_pkr_1","wood10"],"score":1341,"ts":1793855020824},{"uid":"stu_mw1wgee4_nbg8o","stuNo":"8461","name":"Livia","confirmed":true,"renameCount":0,"avatar":"🦆","title":"🌱 開心學園新生","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"nba","buildingName":"NBA 戰情室","buildingIcon":"🏀","badges":["acad_en_1","acad_pkr_1","fish1","wacky_boot","fish4","wacky_junk5","time_3m","fish_rare","rod1","fish10sp","fishwin","fish25","bus_hi","wood1","wacky_zoom_out","acad_welcome","acad_en_2","time_10m","tn10","tn_item5","tnwin","visit3","acad_cook_1","acad_nba_1"],"score":427,"ts":1793843089714},{"uid":"stu_mw1s16mm_0jsf2","stuNo":"HC-9130","name":"bluekw","confirmed":true,"renameCount":0,"avatar":"🐻","title":"🌱 開心學園新生","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"coding","buildingName":"程式語言學院","buildingIcon":"💻","badges":["acad_welcome","time_3m","night_owl","acad_py_1","acad_py_2","time_10m","time_acad10m","wacky_lunch","time_30m","wacky_zoom_out","time_60m","acad_hr_1","fish1","streak_3d","acad_deep20","acad_py_3","time_acad30m","acad_jp_1","visit3"],"score":426,"ts":1793854987387},{"uid":"stu_mvus1c80_p8yy0","stuNo":"HC-9141","name":"森上梅友前","confirmed":true,"renameCount":1,"avatar":"🐶","title":"🏎️ 校園車神","carId":"campus-bike","carColor":"#10b981","carName":"🚲 輕快校園單車","cars":["campus-bike"],"buildingId":"korean","buildingName":"韓語學院","buildingIcon":"🇰🇷","badges":["acad_welcome","acad_en_1","acad_trv_1","acad_nba_1","acad_en_2","acad_trv_2","acad_nba_2","acad_deep20","acad_trv_3","time_3m","time_10m","visit3","farm_visit","blueprint_3","trip5","wood1","wood10","fruit1","fruit10","wacky_stump","combo_chop3","night_owl","wacky_lunch","acad_fit_1","tour6","blueprint_6","frog","acad_fit_2","fish1","fish25","pet4","petall","acad_jp_1","acad_fin_1","acad_stk_1","acad_cm_1","acad_epl_1","acad_f1_1","fish4","acad_mus_1","wacky_zoom_out","wacky_zoom_in","streak_3d","time_30m","time_60m","wood30","acad_kr_1","acad_hc_1","acad_kr_2","acad_acts50","acad_kr_3","time_acad10m","visit_all","bridge_cross","trip20","wood50","pkmn_5","pkmn_15","pkmn_legend","bus_hi","wacky_bald_campus"],"score":1528,"ts":1793854923393}];
+</script>
+  <script>/* js/core.js */
+(function () {
+'use strict';
+var C = (window.CAMPUS = window.CAMPUS || {});
+var VISITS_KEY = 'okayell.campus.visits.v1';
+var CAMPUS_PORTS = ['8918', '8919'];
+function esc(s) {
+return String(s == null ? '' : s)
+.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function qs(name, search) {
+try { return new URLSearchParams(search == null ? location.search : search).get(name); }
+catch (e) { return null; }
+}
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function stripHash(u) { var i = String(u || '').indexOf('#'); return i >= 0 ? u.slice(0, i) : String(u || ''); }
+function normHash(h) {
+h = String(h || '').trim();
+if (!h) return '';
+if (h.charAt(0) === '#') return h;
+if (h.charAt(0) !== '/') h = '/' + h;
+return '#' + h;
+}
+var raw = window.CAMPUS_REGISTRY;
+var reg = { brand: {}, campus: {}, districts: [], buildings: [] };
+if (raw && typeof raw === 'object') {
+reg.brand = raw.brand || {};
+reg.campus = raw.campus || {};
+reg.districts = Array.isArray(raw.districts) ? raw.districts.filter(function (d) { return d && d.id; }) : [];
+reg.buildings = Array.isArray(raw.buildings) ? raw.buildings.filter(function (b) { return b && b.id; }) : [];
+}
+reg.buildings.forEach(function (b) {
+b.features = Array.isArray(b.features) ? b.features : [];
+b.links = Array.isArray(b.links) ? b.links : [];
+b.related = Array.isArray(b.related) ? b.related : [];
+b.aliases = Array.isArray(b.aliases) ? b.aliases : [];
+b.floors = Array.isArray(b.floors) ? b.floors : [];
+b.status = b.status || 'live';
+b.kind = b.kind || 'academy';
+});
+var byId = {};
+var districtById = {};
+reg.buildings.forEach(function (b) { byId[b.id] = b; });
+reg.districts.forEach(function (d) { districtById[d.id] = d; });
+var aliasMap = {};
+function addAlias(k, id, weak) {
+k = String(k || '').toLowerCase().replace(/^\/+|\/+$/g, '');
+if (!k) return;
+if (weak && aliasMap[k]) return;
+aliasMap[k] = id;
+}
+reg.buildings.forEach(function (b) { addAlias(b.id, b.id); });
+reg.buildings.forEach(function (b) { b.aliases.forEach(function (a) { addAlias(a, b.id, true); }); });
+reg.buildings.forEach(function (b) {
+if (b.repo && b.repo !== reg.campus.repo) addAlias(b.repo, b.id, true);
+if (b.path) addAlias(b.path, b.id, true);
+});
+function building(idOrAlias) {
+if (!idOrAlias) return null;
+var k = String(idOrAlias).toLowerCase().trim().replace(/^\/+|\/+$/g, '');
+if (byId[k]) return byId[k];
+var id = aliasMap[k];
+return id ? byId[id] : null;
+}
+function districtOf(b) { return b ? districtById[b.district] || null : null; }
+function district(id) {
+if (!id) return null;
+var k = String(id).toLowerCase().trim();
+if (districtById[k]) return districtById[k];
+for (var i = 0; i < reg.districts.length; i++) {
+var d = reg.districts[i];
+if (d.name === id || String(d.name || '').replace('學區', '') === id) return d;
+}
+return null;
+}
+function detectEnv() {
+var loc = window.location;
+var host = loc.hostname || '';
+if (loc.protocol === 'file:') return { mode: 'file' };
+if (/(^|\.)github\.io$/i.test(host)) return { mode: 'github' };
+if (loc.protocol === 'http:' || loc.protocol === 'https:') {
+return { mode: 'cloudtop', host: host, proto: loc.protocol };
+}
+return { mode: 'other' };
+}
+var env = detectEnv();
+function isLive(b) { return !!(b && b.status !== 'planned' && b.url); }
+function localOrigin(port) {
+var p = parseInt(port, 10);
+if (env.mode !== 'cloudtop' || !(p > 0 && p < 65536)) return '';
+var host = env.host || '';
+var dot = host.indexOf('.');
+if (dot > 0) {
+var label = host.slice(0, dot);
+var pHex = ('0000' + p.toString(16)).slice(-4).toLowerCase();
+if (label.length === 31 && /^a[0-9a-f]{30}$/i.test(label)) {
+return env.proto + '//' + (label.slice(0, 9) + pHex + label.slice(13)).toLowerCase() + host.slice(dot);
+}
+if (label.length === 55 && /^b[0-9a-f]{54}$/i.test(label)) {
+return env.proto + '//' + (label.slice(0, 33) + pHex + label.slice(37)).toLowerCase() + host.slice(dot);
+}
+}
+return env.proto + '//' + host + ':' + p;
+}
+function currentLocalPort() {
+if (window.location.port) return window.location.port;
+var host = env.host || '';
+var dot = host.indexOf('.');
+if (dot > 0) {
+var label = host.slice(0, dot);
+if (label.length === 31 && /^a[0-9a-f]{30}$/i.test(label)) return String(parseInt(label.slice(9, 13), 16));
+if (label.length === 55 && /^b[0-9a-f]{54}$/i.test(label)) return String(parseInt(label.slice(33, 37), 16));
+}
+return '';
+}
+function localBase(b) {
+if (env.mode !== 'cloudtop' || !b || !b.local_port) return '';
+var orig = localOrigin(b.local_port);
+return orig ? orig + '/' + (b.local_path || '') : '';
+}
+function publicUrl(b) { return b && b.url ? b.url : ''; }
+function primaryUrl(b) {
+if (!isLive(b)) return '';
+if (b.floors && b.floors.length) return campusHome() + '?b=' + encodeURIComponent(b.id);
+var lb = localBase(b);
+if (lb) return lb + (b.local_hash || '');
+return publicUrl(b);
+}
+function linkUrl(b, hash) {
+if (!isLive(b)) return '';
+var h = normHash(hash);
+var lb = localBase(b);
+if (lb) return lb + h;
+return stripHash(publicUrl(b)) + h;
+}
+function localUrl(b) {
+var lb = localBase(b);
+return lb ? lb + (b.local_hash || '') : '';
+}
+function campusHome() {
+if (env.mode === 'file') return 'index.html';
+if (env.mode === 'github') return window.location.origin + '/';
+if (env.mode === 'cloudtop') {
+var p = currentLocalPort();
+if (p && CAMPUS_PORTS.indexOf(p) >= 0) return window.location.origin + '/';
+return localOrigin(CAMPUS_PORTS[0]) + '/';
+}
+return reg.campus.public_url || 'https://okayell.github.io/';
+}
+function shortUrl(b) {
+var a = b && (b.aliases[0] || b.id);
+if (env.mode === 'cloudtop') {
+return a ? window.location.host + '/' + a : '';
+}
+var base = String(reg.campus.public_url || 'https://okayell.github.io/').replace(/^https?:\/\//, '');
+return a ? base + a : '';
+}
+var status = { ports: null, at: 0, inflight: null };
+C.portUp = function (b) {
+if (!b || !b.local_port || !status.ports) return null;
+var v = status.ports[String(b.local_port)];
+return v == null ? null : !!v;
+};
+C.refreshStatus = function (force) {
+if (env.mode !== 'cloudtop') return Promise.resolve(null);
+if (status.inflight) return status.inflight;
+if (!force && status.ports && Date.now() - status.at < 8000) return Promise.resolve(status.ports);
+status.inflight = fetch('/api/status', { cache: 'no-store' })
+.then(function (r) { return r.ok ? r.json() : null; })
+.then(function (j) {
+status.inflight = null;
+if (j && j.ports) {
+status.ports = j.ports;
+status.at = Date.now();
+C.emit('status', status.ports);
+}
+return status.ports;
+})
+.catch(function () { status.inflight = null; return null; });
+return status.inflight;
+};
+function readVisits() {
+try {
+var v = JSON.parse(window.localStorage.getItem(VISITS_KEY) || '{}');
+return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+} catch (e) { return {}; }
+}
+function recentVisits(limit) {
+var v = readVisits();
+return Object.keys(v)
+.filter(function (id) { return byId[id] && isLive(byId[id]) && !(byId[id].floors && byId[id].floors.length) && typeof v[id] === 'number'; })
+.sort(function (a, b) { return v[b] - v[a]; })
+.slice(0, limit || 6)
+.map(function (id) { return { b: byId[id], at: v[id] }; });
+}
+function recordVisit(id) {
+if (!id || !byId[id] || (byId[id].floors && byId[id].floors.length)) return;
+try {
+var v = readVisits();
+v[id] = Date.now();
+window.localStorage.setItem(VISITS_KEY, JSON.stringify(v));
+} catch (e) { /* 無痕模式：略過 */ }
+C.emit('visit', id);
+}
+function timeAgo(ts) {
+var s = Math.max(0, (Date.now() - ts) / 1000);
+if (s < 60) return '剛剛';
+if (s < 3600) return Math.floor(s / 60) + ' 分鐘前';
+if (s < 86400) return Math.floor(s / 3600) + ' 小時前';
+if (s < 86400 * 30) return Math.floor(s / 86400) + ' 天前';
+return new Date(ts).toLocaleDateString('zh-TW');
+}
+function norm(s) { return String(s || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+var searchIndex = reg.buildings.map(function (b) {
+var d = districtById[b.district] || {};
+return {
+b: b,
+name: norm(b.name), en: norm(b.en), aliases: b.aliases.map(norm).concat([norm(b.id)]),
+district: norm((d.name || '') + ' ' + (d.en || '')),
+meta: norm([b.tagline].concat(b.features, b.links.map(function (l) { return l.label; })).join(' ')),
+desc: norm(b.desc),
+};
+});
+function scoreToken(e, t) {
+var s = 0;
+if (e.aliases.indexOf(t) >= 0) s = Math.max(s, 100);
+if (e.name === t) s = Math.max(s, 100);
+else if (e.name.indexOf(t) === 0) s = Math.max(s, 90);
+else if (e.name.indexOf(t) >= 0) s = Math.max(s, 80);
+if (e.en.indexOf(t) >= 0) s = Math.max(s, e.en.indexOf(t) === 0 ? 70 : 60);
+if (e.aliases.some(function (a) { return a.indexOf(t) === 0; })) s = Math.max(s, 65);
+if (e.district.indexOf(t) >= 0) s = Math.max(s, 45);
+if (e.meta.indexOf(t) >= 0) s = Math.max(s, 35);
+if (e.desc.indexOf(t) >= 0) s = Math.max(s, 18);
+return s;
+}
+function search(q) {
+var tokens = norm(q).split(' ').filter(Boolean);
+if (!tokens.length) return [];
+var res = [];
+searchIndex.forEach(function (e, i) {
+var total = 0;
+for (var k = 0; k < tokens.length; k++) {
+var s = scoreToken(e, tokens[k]);
+if (!s) return;
+total += s;
+}
+if (e.b.status === 'planned') total -= 5;
+res.push({ b: e.b, score: total, order: i });
+});
+res.sort(function (a, b) { return b.score - a.score || a.order - b.order; });
+return res;
+}
+var ime = { composing: false, endAt: 0 };
+document.addEventListener('compositionstart', function () { ime.composing = true; }, true);
+document.addEventListener('compositionend', function () { ime.composing = false; ime.endAt = Date.now(); }, true);
+function isEnterSend(ev) {
+return ev.key === 'Enter' && !ev.isComposing && ev.keyCode !== 229 && !ime.composing && Date.now() - ime.endAt >= 150;
+}
+var listeners = {};
+C.on = function (name, fn) { (listeners[name] = listeners[name] || []).push(fn); };
+C.emit = function (name, data) { (listeners[name] || []).forEach(function (fn) { try { fn(data); } catch (e) { /* 單一監聽失敗不影響其他 */ } }); };
+var toastTimer = 0;
+function toast(msg, kind) {
+var el = document.getElementById('toast');
+if (!el) {
+el = document.createElement('div');
+el.id = 'toast';
+el.className = 'toast';
+el.setAttribute('role', 'status');
+el.setAttribute('aria-live', 'polite');
+document.body.appendChild(el);
+}
+el.textContent = msg;
+el.className = 'toast show ' + (kind || '');
+clearTimeout(toastTimer);
+toastTimer = setTimeout(function () { el.className = 'toast ' + (kind || ''); }, 2600);
+}
+function copyText(text) {
+function fallback() {
+try {
+var ta = document.createElement('textarea');
+ta.value = text;
+ta.setAttribute('readonly', '');
+ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+document.body.appendChild(ta);
+ta.select();
+var ok = document.execCommand('copy');
+document.body.removeChild(ta);
+return Promise.resolve(ok);
+} catch (e) { return Promise.resolve(false); }
+}
+if (navigator.clipboard && window.isSecureContext) {
+return navigator.clipboard.writeText(text).then(function () { return true; }, fallback);
+}
+return fallback();
+}
+var DEFAULT_FB_EMAIL = 'okayell@hotmail.com';
+var GH_ISSUES_URL = 'https://github.com/okayell/okayell.github.io/issues/new';
+var FB_NTFY_TOPIC = 'okayell_campus_fb_0f3731b06b';
+var FB_QUEUE_KEY = 'okayell.campus.fbqueue.v1';
+var FB_MARK = '#開心學園意見回饋';
+var FB_STU_KEY = 'okayell.campus.student.v1';
+var FB_STU_COOKIE = 'okayell_campus_stu_v1';
+function fbHashStr(s) {
+var h = 0;
+for (var i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+return Math.abs(h);
+}
+function fbReadStuCookie() {
+if (env.mode === 'file') return {};
+try {
+var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + FB_STU_COOKIE + '=([^;]*)'));
+if (!m || !m[1]) return {};
+var parsed = JSON.parse(decodeURIComponent(m[1]));
+return parsed && typeof parsed === 'object' ? parsed : {};
+} catch (e) { return {}; }
+}
+function fbWriteStuCookie(min) {
+if (env.mode === 'file') return;
+try {
+var val = encodeURIComponent(JSON.stringify(min));
+document.cookie = FB_STU_COOKIE + '=' + val + '; path=/; max-age=31536000; SameSite=Lax';
+var hParts = String(location.hostname || '').split('.');
+if (hParts.length >= 4 && /^[ab][0-9a-f]{20,}$/i.test(hParts[0])) {
+document.cookie = FB_STU_COOKIE + '=' + val + '; domain=.' + hParts.slice(1).join('.') + '; path=/; max-age=31536000; SameSite=Lax';
+}
+} catch (e) { /* ignore */ }
+}
+function detectDeviceInfo() {
+var ua = (typeof navigator !== 'undefined' && navigator.userAgent) ? String(navigator.userAgent) : '';
+var touch = (typeof navigator !== 'undefined' && navigator.maxTouchPoints) ? +navigator.maxTouchPoints : 0;
+var os = '未知系統';
+var m;
+if (/iPhone/i.test(ua)) {
+m = ua.match(/OS (\d+[._]\d+)/);
+os = 'iPhone' + (m ? ' (iOS ' + m[1].replace('_', '.') + ')' : '');
+} else if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && touch > 1)) {
+m = ua.match(/OS (\d+[._]\d+)/);
+os = 'iPad' + (m ? ' (iPadOS ' + m[1].replace('_', '.') + ')' : '');
+} else if (/Android/i.test(ua)) {
+m = ua.match(/Android (\d+(?:\.\d+)?)/i);
+os = 'Android' + (m ? ' ' + m[1] : '') + (/Mobile/i.test(ua) ? ' 手機' : ' 平板');
+} else if (/Windows NT/i.test(ua)) {
+os = 'Windows 桌機/筆電';
+} else if (/Macintosh|Mac OS X/i.test(ua)) {
+os = 'Mac 桌機/筆電';
+} else if (/CrOS/i.test(ua)) {
+os = 'Chromebook';
+} else if (/Linux/i.test(ua)) {
+os = 'Linux 桌機';
+}
+var br = '';
+if (/Line\//i.test(ua)) br = 'LINE 內建瀏覽器';
+else if (/Instagram/i.test(ua)) br = 'IG 內建瀏覽器';
+else if (/FBAN|FBAV/i.test(ua)) br = 'FB 內建瀏覽器';
+else if (/EdgA?\//i.test(ua)) br = 'Edge';
+else if (/CriOS\//i.test(ua) || (/Chrome\//i.test(ua) && !/Edg/i.test(ua))) br = 'Chrome';
+else if (/FxiOS\//i.test(ua) || /Firefox\//i.test(ua)) br = 'Firefox';
+else if (/Safari\//i.test(ua)) br = 'Safari';
+var vp = (typeof window !== 'undefined' && window.innerWidth && window.innerHeight)
+? (window.innerWidth + '×' + window.innerHeight)
+: '';
+return [os, br, vp].filter(Boolean).join(' · ');
+}
+function formatAvatarLabel(av) {
+if (!av) return '';
+var s = String(av);
+if (s.indexOf('pkmn:') === 0) {
+var pid = parseInt(s.slice(5), 10);
+var pk = pid && window.CAMPUS_POKEDEX_GEN1 && window.CAMPUS_POKEDEX_GEN1.BY_ID && window.CAMPUS_POKEDEX_GEN1.BY_ID[pid];
+return pk && pk.name ? ('🦋 ' + pk.name) : ('🦋#' + (pid || ''));
+}
+return s;
+}
+function getReporterInfo() {
+var lsRaw = {}, ckRaw = fbReadStuCookie();
+try { lsRaw = JSON.parse(window.localStorage.getItem(FB_STU_KEY) || '{}') || {}; } catch (e) { lsRaw = {}; }
+var raw = Object.assign({}, ckRaw, lsRaw);
+var uid = String(raw.uid || ckRaw.uid || '').trim();
+var createdNew = false;
+if (!uid) {
+uid = 'stu_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+createdNew = true;
+}
+var stuNo = String(raw.stuNo || ckRaw.stuNo || '').trim() || ('HC-' + (1000 + (fbHashStr(uid) % 9000)));
+if (createdNew || (!lsRaw.uid && !ckRaw.uid)) {
+var seed = Object.assign({}, lsRaw, { uid: uid, stuNo: stuNo, confirmed: !!raw.confirmed });
+try { window.localStorage.setItem(FB_STU_KEY, JSON.stringify(seed)); } catch (e2) { /* ignore */ }
+if (!ckRaw.uid) fbWriteStuCookie({ uid: uid, stuNo: stuNo, confirmed: !!raw.confirmed, name: raw.name || '' });
+}
+var rawName = String(raw.name || ckRaw.name || '').trim().slice(0, 20);
+var confirmed = !!((raw.confirmed === true || ckRaw.confirmed === true) && rawName);
+var name = confirmed ? rawName : '';
+var av = formatAvatarLabel(raw.avatar || ckRaw.avatar || '');
+var title = String(raw.title || ckRaw.title || '').trim().slice(0, 32);
+var device = detectDeviceInfo();
+var shortTag = name ? (name + ' · ' + stuNo) : ('未命名 · ' + stuNo);
+var summary = name
+? ((av ? av + ' ' : '') + name + '（學號 ' + stuNo + (title ? ' · 稱號：' + title : '') + ' · UID: ' + uid + '）')
+: ('未命名學員（學號 ' + stuNo + ' · UID: ' + uid + '）');
+return {
+confirmed: confirmed,
+name: name,
+avatar: av,
+stuNo: stuNo,
+uid: uid,
+title: title,
+device: device,
+shortTag: shortTag,
+summary: summary
+};
+}
+function normalizeFeedback(opts, extra) {
+var o = {};
+var src = typeof opts === 'string' ? (extra || {}) : (opts || {});
+for (var k in src) if (Object.prototype.hasOwnProperty.call(src, k)) o[k] = src[k];
+var tool = typeof opts === 'string' ? opts : (o.toolTitle || o.toolName || o.tool);
+tool = String(tool || '開心學園');
+o.tool = tool;
+o.kindLabel = String(o.kindLabel || o.kind_label || o.categoryLabel || o.category || o.kind || '💬 意見回饋');
+o.title = String(o.title || o.subject || o.name || '').trim();
+o.description = String(o.description || o.message || o.content || o.desc || o.body || '').trim();
+return o;
+}
+function feedbackLinks(opts, extra) {
+var o = normalizeFeedback(opts, extra);
+var rep = o._rep || getReporterInfo();
+var email = o.email || DEFAULT_FB_EMAIL;
+var subject = '[' + o.tool + ' 意見回饋] ' + o.kindLabel + ' — ' + o.title + '（' + rep.shortTag + '）';
+var body = '工具名稱：' + o.tool + '\n回饋類型：' + o.kindLabel + '\n回饋學員：' + rep.summary + '\n使用裝置：' + rep.device + '\n標題：' + o.title + '\n\n內容描述：\n' + o.description + '\n';
+var copyPayload = '收件信箱：' + email + '\n主旨：' + subject + '\n\n' + body;
+return {
+email: email,
+subject: subject,
+body: body,
+copyPayload: copyPayload,
+mailto: 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body),
+gmail: 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(email) + '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body),
+outlook: 'https://outlook.live.com/mail/0/deeplink/compose?to=' + encodeURIComponent(email) + '&subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body),
+github: (o.repoIssues || GH_ISSUES_URL) + '?title=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body)
+};
+}
+function twNowText() {
+return new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 19).replace('T', ' ');
+}
+function fetchWithTimeout(url, init, ms) {
+var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+var timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (e) { /* ignore */ } }, ms) : 0;
+if (ctrl) init.signal = ctrl.signal;
+return fetch(url, init).then(function (r) { clearTimeout(timer); return r; },
+function (err) { clearTimeout(timer); throw err; });
+}
+function utf8Len(s) {
+return typeof TextEncoder !== 'undefined' ? new TextEncoder().encode(String(s)).length : String(s).length * 3;
+}
+function utf8Clip(text, maxBytes) {
+var s = String(text || '');
+if (typeof TextEncoder === 'undefined') return s.length > maxBytes / 3 ? s.slice(0, Math.floor(maxBytes / 3)) + '…（內容過長已截斷）' : s;
+var enc = new TextEncoder();
+if (enc.encode(s).length <= maxBytes) return s;
+var lo = 0, hi = s.length;
+while (lo < hi) {
+var mid = (lo + hi + 1) >> 1;
+if (enc.encode(s.slice(0, mid)).length <= maxBytes - 48) lo = mid; else hi = mid - 1;
+}
+return s.slice(0, lo) + '…（內容過長已截斷）';
+}
+function fbViaNtfy(item) {
+var url = 'https://ntfy.sh/' + FB_NTFY_TOPIC + '?title=' + encodeURIComponent(String(item.subject).slice(0, 180)) + '&tags=speech_balloon';
+return fetchWithTimeout(url, { method: 'POST', body: item.message }, 8000)
+.then(function (r) { return !!(r && r.ok); }, function () { return false; });
+}
+function fbViaFormSubmit(item) {
+return fetchWithTimeout('https://formsubmit.co/ajax/' + item.email, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+body: JSON.stringify({
+_subject: item.subject,
+_template: 'table',
+_captcha: 'false',
+'工具名稱': item.tool,
+'回饋類型': item.kindLabel,
+'回饋學員': item.reporter || '未命名學員',
+'使用裝置': item.device || '',
+'標題': item.title,
+'內容描述': item.description,
+'送出時間': item.createdAt,
+'來源頁面': item.page
+})
+}, 10000).then(function (r) {
+return r.json().catch(function () { return {}; }).then(function (d) {
+return !!(r.ok && (d.success === true || String(d.success).toLowerCase() === 'true'));
+});
+}, function () { return false; });
+}
+function fbDeliver(item) {
+var relay = window.CAMPUS_FEEDBACK_RELAY || '';
+var first = relay
+? fetchWithTimeout(relay, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(item) }, 8000)
+.then(function (r) { return !!(r && r.ok); }, function () { return false; })
+: Promise.resolve(false);
+return first.then(function (ok0) {
+if (ok0) return 'relay';
+return fbViaNtfy(item).then(function (ok) {
+if (ok) return 'ntfy';
+return fbViaFormSubmit(item).then(function (ok2) { return ok2 ? 'formsubmit' : ''; });
+});
+});
+}
+function fbQueueLoad() {
+try {
+var q = JSON.parse(localStorage.getItem(FB_QUEUE_KEY) || '[]');
+return Array.isArray(q) ? q : [];
+} catch (e) { return []; }
+}
+function fbQueueSave(q) {
+try {
+if (q.length) localStorage.setItem(FB_QUEUE_KEY, JSON.stringify(q.slice(-30)));
+else localStorage.removeItem(FB_QUEUE_KEY);
+} catch (e) { /* storage full or disabled */ }
+}
+var fbFlushing = null;
+function flushFeedbackQueue() {
+if (fbFlushing) return fbFlushing;
+var q = fbQueueLoad();
+if (!q.length || (typeof navigator !== 'undefined' && navigator.onLine === false)) return Promise.resolve(0);
+var done = {}, sent = 0;
+fbFlushing = q.reduce(function (p, item) {
+return p.then(function () {
+return fbDeliver(item).then(function (ch) { if (ch) { done[item.qid] = 1; sent++; } });
+});
+}, Promise.resolve()).then(function () {
+fbQueueSave(fbQueueLoad().filter(function (x) { return !done[x.qid]; }));
+fbFlushing = null;
+return sent;
+}, function () { fbFlushing = null; return sent; });
+return fbFlushing;
+}
+var fbHandled = {};  // feedback content key → time handed to sendStaticFeedback (fallback de-duplication)
+function fbKey(o) { return [o.tool, o.kindLabel, o.title, o.description].join('\u0001'); }
+function sendStaticFeedback(opts, extra) {
+var o = normalizeFeedback(opts, extra);
+var rep = getReporterInfo();
+o._rep = rep;
+fbHandled[fbKey(o)] = Date.now();
+var links = feedbackLinks(o);
+var loc = window.location;
+var item = {
+qid: 'fb' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+email: links.email,
+subject: links.subject,
+tool: o.tool,
+kindLabel: o.kindLabel,
+reporter: rep.summary,
+stuName: rep.name,
+stuNo: rep.stuNo,
+stuUid: rep.uid,
+stuTitle: rep.title,
+device: rep.device,
+title: o.title,
+description: o.description,
+createdAt: o.createdAt || twNowText(),
+page: loc.protocol === 'file:' ? '離線單一檔' : String(loc.origin + loc.pathname).slice(0, 300)
+};
+var head = '工具名稱：' + o.tool + '\n回饋類型：' + o.kindLabel + '\n回饋學員：' + rep.summary + '\n使用裝置：' + rep.device + '\n標題：' + o.title + '\n\n內容描述：\n';
+var tail = '\n送出時間：' + item.createdAt + '\n來源頁面：' + item.page +
+'\n學員UID：' + rep.uid + '\n學員學號：' + rep.stuNo +
+(rep.name ? '\n學員暱稱：' + rep.name : '') + '\n' + FB_MARK;
+item.message = head + utf8Clip(o.description, 3800 - utf8Len(head + tail)) + tail;
+return fbDeliver(item).then(function (ch) {
+if (ch) {
+flushFeedbackQueue();
+return { sent: true, channel: ch, links: links };
+}
+var q = fbQueueLoad();
+q.push(item);
+fbQueueSave(q);
+return { sent: false, queued: true, channel: 'queued', links: links };
+});
+}
+function feedbackFallbackHtml(opts) {
+if (opts && (opts.title || opts.description || opts.message || opts.content)) {
+var t = fbHandled[fbKey(normalizeFeedback(opts))];
+if (!t || Date.now() - t > 600000) sendStaticFeedback(opts);
+}
+return '<div class="cfb-box cfb-queued">' +
+'<div class="cfb-hd">✅ <b>已收到你的回饋！</b></div>' +
+'<div class="cfb-sub">系統會自動轉寄給站長；若目前網路不穩，會在恢復連線或下次開啟開心學園時自動補寄，不需要任何操作。</div>' +
+'</div>';
+}
+setTimeout(flushFeedbackQueue, 3000);
+window.addEventListener('online', function () { flushFeedbackQueue(); });
+document.addEventListener('click', function (e) {
+var cp = e.target && e.target.closest ? e.target.closest('[data-campus-fb-copy]') : null;
+if (!cp) return;
+e.preventDefault();
+var txt = cp.getAttribute('data-campus-fb-copy') || '';
+var em = cp.getAttribute('data-campus-fb-email') || DEFAULT_FB_EMAIL;
+copyText(txt).then(function (ok) {
+var orig = cp.getAttribute('data-orig-label') || cp.textContent;
+cp.setAttribute('data-orig-label', orig);
+cp.textContent = ok ? ('✅ 已複製！可貼到信箱寄至 ' + em) : ('信箱：' + em);
+toast(ok ? ('✅ 已複製信件內容與收件信箱 ' + em) : ('收件信箱：' + em));
+setTimeout(function () { cp.textContent = orig; }, 3800);
+});
+}, true);
+function goTarget(search) {
+var go = qs('go', search);
+if (!go) return null;
+var b = building(go);
+if (!b) return { error: go };
+if (!isLive(b)) return { planned: b };
+if (b.id === 'happy-farm') return { b: b, inCampus: 'dorm' };
+if (b.floors && b.floors.length) return { b: b, inCampus: 'floors' };
+var to = qs('to', search);
+return { b: b, url: to ? linkUrl(b, to) : primaryUrl(b) };
+}
+var _prefetched = {};
+function prefetchUrl(url) {
+if (!url || env.mode === 'file') return;
+var base = stripHash(url);
+if (!base || _prefetched[base]) return;
+try {
+var u = new URL(base, window.location.href);
+if (u.protocol !== 'http:' && u.protocol !== 'https:') return;
+if (u.origin === window.location.origin && u.pathname === window.location.pathname) return;
+_prefetched[base] = 1;
+var lk = document.createElement('link');
+lk.rel = 'prefetch';
+lk.href = u.href;
+lk.as = 'document';
+(document.head || document.documentElement).appendChild(lk);
+} catch (e) { /* ignore */ }
+}
+function prefetchBuilding(b) {
+if (!b) return;
+if (b.floors && b.floors.length) {
+b.floors.forEach(function (fl) {
+var fb = building(fl.id);
+if (fb && isLive(fb)) prefetchUrl(primaryUrl(fb));
+});
+return;
+}
+if (isLive(b) && b.id !== 'happy-farm') prefetchUrl(primaryUrl(b));
+}
+var _navTimer = 0;
+function startNavProgress() {
+var bar = document.getElementById('campusNavBar');
+if (!bar) {
+bar = document.createElement('div');
+bar.id = 'campusNavBar';
+bar.className = 'campus-nav-bar';
+document.body.appendChild(bar);
+}
+bar.classList.remove('done');
+void bar.offsetWidth;
+bar.classList.add('active');
+clearTimeout(_navTimer);
+_navTimer = setTimeout(resetNavProgress, 4500);
+}
+function resetNavProgress() {
+clearTimeout(_navTimer);
+var bar = document.getElementById('campusNavBar');
+if (bar) {
+bar.classList.remove('active');
+bar.classList.add('done');
+}
+}
+window.addEventListener('pageshow', resetNavProgress);
+C.VERSION_KEY = 'okayell.campus';
+C.reg = reg;
+C.aliases = aliasMap;
+C.env = env;
+C.util = { esc: esc, qs: qs, clamp: clamp, normHash: normHash, stripHash: stripHash, timeAgo: timeAgo };
+C.building = building;
+C.district = district;
+C.districtOf = districtOf;
+C.isLive = isLive;
+C.primaryUrl = primaryUrl;
+C.publicUrl = publicUrl;
+C.linkUrl = linkUrl;
+C.localUrl = localUrl;
+C.campusHome = campusHome;
+C.shortUrl = shortUrl;
+C.recentVisits = recentVisits;
+C.recordVisit = recordVisit;
+C.search = search;
+C.isEnterSend = isEnterSend;
+C.toast = toast;
+var lazyDone = {};
+C.lazyScript = function (name) {
+if (lazyDone[name]) return lazyDone[name];
+lazyDone[name] = new Promise(function (resolve, reject) {
+var holder = document.querySelector('script[data-lazy="' + name + '"]');
+if (!holder) { reject(new Error('lazy script not found: ' + name)); return; }
+var code = holder.textContent && holder.textContent.trim();
+var s = document.createElement('script');
+if (code) { s.textContent = code; document.head.appendChild(s); resolve(); return; }
+var src = holder.getAttribute('src');
+if (!src) { reject(new Error('lazy script has no src: ' + name)); return; }
+s.src = src; s.onload = function () { resolve(); }; s.onerror = function () { delete lazyDone[name]; reject(new Error('lazy load failed: ' + name)); };
+document.head.appendChild(s);
+});
+return lazyDone[name];
+};
+C.copyText = copyText;
+C.prefetchUrl = prefetchUrl;
+C.prefetchBuilding = prefetchBuilding;
+C.startNavProgress = startNavProgress;
+C.resetNavProgress = resetNavProgress;
+C.feedbackLinks = feedbackLinks;
+C.getReporterInfo = getReporterInfo;
+C.detectDeviceInfo = detectDeviceInfo;
+C.sendStaticFeedback = sendStaticFeedback;
+C.feedbackFallbackHtml = feedbackFallbackHtml;
+C.flushFeedbackQueue = flushFeedbackQueue;
+C.goTarget = goTarget;
+C.registryError = window.CAMPUS_REGISTRY_ERROR || (raw ? '' : '找不到校園資料（registry）');
+var go = goTarget();
+if (go && go.url) {
+C.redirecting = go;
+document.documentElement.className += ' redirecting';
+recordVisit(go.b.id);
+window.location.replace(go.url);
+}
+})();
+</script>
+</head>
+<body>
+  <main class="nf">
+    <svg class="nf-art" viewBox="0 0 640 200" role="img" aria-label="校園裡的路標" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="200" fill="#e8f1e0"/>
+      <path d="M0,120 C90,90 170,110 260,96 C360,80 450,104 540,92 C590,86 620,92 640,96 V200 H0 Z" fill="#cfe3b4"/>
+      <path d="M0,150 C120,132 230,150 330,140 C440,128 540,146 640,136 V200 H0 Z" fill="#bfd9a0"/>
+      <path d="M262,200 C292,170 330,160 380,150 C420,142 470,140 520,136" fill="none" stroke="#efe3c9" stroke-width="22" stroke-linecap="round"/>
+      <g stroke="#4a3b2f" stroke-width="1.4" stroke-linejoin="round">
+        <rect x="314" y="58" width="9" height="112" fill="#a0784f"/>
+        <path d="M232,66 H318 V90 H232 L220,78 Z" fill="#fffaf0"/>
+        <path d="M320,96 H412 L424,108 L412,120 H320 Z" fill="#fffaf0"/>
+        <path d="M244,128 H318 V150 H244 L232,139 Z" fill="#ffedd5"/>
+        <circle cx="318" cy="56" r="6" fill="#e3a72f"/>
+      </g>
+      <g font-family="-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif" font-weight="800" font-size="13" fill="#3b2f25">
+        <text x="270" y="83" text-anchor="middle">← 校門</text>
+        <text x="366" y="113" text-anchor="middle">服務中心 →</text>
+        <text x="278" y="144" text-anchor="middle" fill="#9a3412">？？？</text>
+      </g>
+      <g stroke="#4a3b2f" stroke-width="1.2">
+        <rect x="96" y="104" width="6" height="26" fill="#8a6d52"/><circle cx="99" cy="92" r="22" fill="#7fb46a"/>
+        <rect x="150" y="116" width="5" height="20" fill="#8a6d52"/><circle cx="152" cy="106" r="16" fill="#8cc077"/>
+        <rect x="508" y="100" width="6" height="28" fill="#8a6d52"/><circle cx="511" cy="88" r="22" fill="#f6b8cf"/>
+        <rect x="560" y="110" width="5" height="22" fill="#8a6d52"/><circle cx="562" cy="100" r="16" fill="#7fb46a"/>
+      </g>
+      <g fill="#fffdf8" opacity=".9"><ellipse cx="120" cy="36" rx="34" ry="11"/><ellipse cx="146" cy="30" rx="22" ry="10"/><ellipse cx="500" cy="44" rx="30" ry="10"/></g>
+    </svg>
+    <div class="nf-body">
+      <div id="nfGo" hidden>
+        <p class="going">🚌 正在前往 <span id="nfGoName"></span>…</p>
+        <p class="muted">沒有自動跳轉？<a id="nfGoLink" href="#">點這裡前往</a></p>
+      </div>
+      <div id="nfMsg">
+        <h1 id="nfTitle">找不到這棟建築</h1>
+        <p id="nfText">你要找的網址不在校園地圖上，可能打錯字，或這間學院還沒開張。</p>
+        <div class="sug" id="nfSug" hidden></div>
+        <div class="acts">
+          <a class="btn primary" id="nfHome" href="/">🗺️ 回到校園地圖</a>
+          <a class="btn" id="nfSearch" href="/" hidden>🔍 在地圖上搜尋</a>
+        </div>
+        <details>
+          <summary>所有建築與短網址</summary>
+          <ul class="all" id="nfAll"></ul>
+        </details>
+      </div>
+    </div>
+  </main>
+  <script>/* js/notfound.js */
+(function () {
+'use strict';
+var C = window.CAMPUS;
+if (!C || C.redirecting) return;
+var esc = C.util.esc;
+var qs = C.util.qs;
+var GUARD_KEY = 'okayell.campus.404guard.v1';
+var dry = qs('dry') === '1';
+function $(id) { return document.getElementById(id); }
+function dec(s) { try { return decodeURIComponent(s); } catch (e) { return s; } }
+function normPath(p) { return String(p || '/').replace(/\/index\.html?$/i, '/').replace(/\/+$/, '').toLowerCase() || '/'; }
+var override = qs('path');
+var rawPath = override != null ? override : (C.env.mode === 'file' ? '' : window.location.pathname);
+var segs = String(rawPath).split('/').filter(Boolean).map(dec);
+if (segs.length && /^(index|404)\.html?$/i.test(segs[segs.length - 1])) segs.pop();
+var first = (segs[0] || '').toLowerCase().trim();
+var rest = segs.slice(1);
+if (first === 'go' && rest.length) { first = rest[0].toLowerCase(); rest = rest.slice(1); }
+var home = C.campusHome();
+$('nfHome').setAttribute('href', home);
+function samePage(target) {
+if (override != null) return false;
+try {
+var u = new URL(target, window.location.href);
+return u.origin === window.location.origin && normPath(u.pathname) === normPath(window.location.pathname);
+} catch (e) { return false; }
+}
+function guardHit(target) {
+try {
+var g = JSON.parse(window.sessionStorage.getItem(GUARD_KEY) || 'null');
+var now = Date.now();
+if (g && g.t === target && now - g.at < 8000 && g.n >= 2) return true;
+var n = g && g.t === target && now - g.at < 8000 ? g.n + 1 : 1;
+window.sessionStorage.setItem(GUARD_KEY, JSON.stringify({ t: target, at: now, n: n }));
+} catch (e) { /* 無痕模式：只靠 samePage 判斷 */ }
+return false;
+}
+function go(target, name) {
+window.CAMPUS_404 = { target: target, name: name, path: rawPath };
+$('nfMsg').hidden = true;
+$('nfGo').hidden = false;
+$('nfGoName').textContent = name;
+$('nfGoLink').setAttribute('href', target);
+document.title = '前往 ' + name + ' · 開心學園';
+if (dry) { $('nfGoName').textContent = name + '（測試模式：' + target + '）'; return; }
+window.location.replace(target);
+}
+function show(title, html) {
+$('nfTitle').textContent = title;
+$('nfText').innerHTML = html;
+}
+function renderAll() {
+$('nfAll').innerHTML = C.reg.buildings.filter(C.isLive).map(function (b) {
+return '<li><a href="' + esc(C.primaryUrl(b)) + '" data-visit="' + esc(b.id) + '">' + esc((b.icon || '') + ' ' + b.name) +
+'<small>' + esc(C.shortUrl(b)) + '</small></a></li>';
+}).join('');
+}
+function lev(a, b) {
+if (a === b) return 0;
+var m = a.length, n = b.length;
+if (!m || !n) return m || n;
+var prev = [], cur = [];
+for (var j = 0; j <= n; j++) prev[j] = j;
+for (var i = 1; i <= m; i++) {
+cur = [i];
+for (var k = 1; k <= n; k++) {
+cur[k] = Math.min(prev[k] + 1, cur[k - 1] + 1, prev[k - 1] + (a.charAt(i - 1) === b.charAt(k - 1) ? 0 : 1));
+}
+prev = cur;
+}
+return prev[n];
+}
+function suggest(q) {
+if (!q) return [];
+var seen = {}, out = [];
+Object.keys(C.aliases).forEach(function (k) {
+var id = C.aliases[k];
+var b = C.building(id);
+if (!b || !C.isLive(b) || seen[id]) return;
+var d = lev(q, k);
+var ok = d <= (k.length <= 3 ? 1 : 2) || (q.length >= 2 && (k.indexOf(q) === 0 || q.indexOf(k) === 0));
+if (ok) { seen[id] = 1; out.push({ b: b, d: d }); }
+});
+C.search(q).slice(0, 3).forEach(function (r) {
+if (!seen[r.b.id] && C.isLive(r.b)) { seen[r.b.id] = 1; out.push({ b: r.b, d: 9 }); }
+});
+out.sort(function (x, y) { return x.d - y.d; });
+return out.slice(0, 4).map(function (x) { return x.b; });
+}
+renderAll();
+document.addEventListener('click', function (e) {
+var t = e.target.closest ? e.target.closest('[data-visit]') : null;
+if (t) C.recordVisit(t.getAttribute('data-visit'));
+});
+var b = first ? C.building(first) : null;
+var dist = !b && first ? C.district(first) : null;
+if (b && C.isLive(b)) {
+var target = C.primaryUrl(b);
+var to = qs('to');
+var sub = rest.join('/').replace(/\/+$/, '');
+if (to) target = C.linkUrl(b, to);
+else if (sub) {
+var want = '#/' + sub.toLowerCase();
+var hit = b.links.filter(function (l) { return String(l.hash || '').toLowerCase() === want; })[0];
+if (hit) target = C.linkUrl(b, hit.hash);
+} else if (window.location.hash && window.location.hash.length > 2 && target.indexOf('#') < 0) {
+target += window.location.hash;
+}
+if (samePage(target) || guardHit(target)) {
+window.CAMPUS_404 = { target: null, blocked: target, path: rawPath };
+show('🚧 ' + b.name + ' 還沒搬進這個網址', '這間' + (b.kind === 'arena' ? '實戰館' : '學院') + '的網址 <code>' + esc(target) +
+'</code> 目前還沒有上線（可能還沒發布到 GitHub Pages）。先回校園地圖看看其他建築吧！');
+$('nfHome').setAttribute('href', home + (home.indexOf('?') >= 0 ? '&' : '?') + 'b=' + encodeURIComponent(b.id));
+} else {
+go(target, (b.icon ? b.icon + ' ' : '') + b.name);
+}
+} else if (b) {
+window.CAMPUS_404 = { target: null, planned: b.id, path: rawPath };
+show('🚧 ' + b.name + ' 建設中', esc(b.desc || b.tagline || '這間學院還在規劃中') + '，敬請期待！');
+$('nfHome').setAttribute('href', home + (home.indexOf('?') >= 0 ? '&' : '?') + 'b=' + encodeURIComponent(b.id));
+} else if (dist) {
+go(home + (home.indexOf('?') >= 0 ? '&' : '?') + 'd=' + encodeURIComponent(dist.id), (dist.icon ? dist.icon + ' ' : '') + dist.name);
+} else {
+window.CAMPUS_404 = { target: null, notFound: true, path: rawPath };
+var label = segs.length ? '/' + segs.join('/') : '';
+if (label) show('找不到這棟建築', '網址 <code>' + esc(label) + '</code> 不在校園地圖上，可能打錯字，或這間學院還沒開張。');
+var sug = suggest(first);
+if (sug.length) {
+var box = $('nfSug');
+box.hidden = false;
+box.innerHTML = '<p class="muted" style="width:100%;margin:0">你是不是要找：</p>' + sug.map(function (x) {
+return '<a href="' + esc(C.primaryUrl(x)) + '" data-visit="' + esc(x.id) + '">' + esc((x.icon || '') + ' ' + x.name) + '</a>';
+}).join('');
+}
+if (first) {
+var s = $('nfSearch');
+s.hidden = false;
+s.setAttribute('href', home + (home.indexOf('?') >= 0 ? '&' : '?') + 'q=' + encodeURIComponent(first));
+}
+}
+})();
+</script>
+</body>
+</html>

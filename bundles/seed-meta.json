@@ -1,0 +1,27 @@
+{
+  "tw-stock-insight": {
+    "freshness": "2026-11-05|2026-11-05T12:34:17+08:00",
+    "bytes": 1152861
+  },
+  "nba-betting-iq": {
+    "freshness": "2026-11-05T11:40:28+08:00",
+    "bytes": 1236485
+  },
+  "epl-odds-iq": {
+    "freshness": "2026-11-05T12:30:13+08:00",
+    "bytes": 577668
+  },
+  "f1-odds-iq": {
+    "freshness": "2026-11-05T12:30:38+08:00",
+    "bytes": 341126
+  },
+  "tw-basketball": {
+    "freshness": "2026-11-05T12:30:41+08:00",
+    "bytes": 486877
+  },
+  "_stock_seed": {
+    "v": 2,
+    "max_date": "2026-11-05",
+    "bytes": 7637616
+  }
+}
