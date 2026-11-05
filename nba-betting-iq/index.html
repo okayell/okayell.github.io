@@ -207,11 +207,15 @@ a:hover { text-decoration: underline; }
   padding: 12px 14px;
   cursor: pointer;
   text-align: left;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
   transition: border-color 0.14s, background-color 0.14s, box-shadow 0.14s;
 }
 .kpi-card:hover { border-color: #93c5fd; box-shadow: var(--shadow-sm); }
 .kpi-card.active { border-color: var(--primary); background: #f8fbff; box-shadow: inset 0 0 0 1px var(--primary); }
 .kpi-card.static-kpi { cursor: default; }
+.kpi-card.static-kpi:hover { border-color: var(--border); box-shadow: none; }
 .kpi-lbl { font-size: 12px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; }
 .kpi-val { font-size: 22px; font-weight: 800; color: var(--text); margin-top: 3px; letter-spacing: -0.02em; }
 .kpi-sub { font-size: 11.5px; color: var(--text-sub); margin-top: 2px; }
@@ -237,6 +241,9 @@ a:hover { text-decoration: underline; }
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -399,7 +406,7 @@ table.data-tbl tr:hover td { background: #f8fafc; }
 }
 
 /* Sub-tabs */
-.sub-tabs { display: inline-flex; background: #e2e8f0; padding: 3px; border-radius: 9px; gap: 3px; margin-bottom: 14px; }
+.sub-tabs { display: inline-flex; background: #e2e8f0; padding: 3px; border-radius: 9px; gap: 3px; margin-bottom: 14px; position: relative; z-index: 3; }
 .sub-tab {
   border: none;
   background: transparent;
@@ -409,8 +416,37 @@ table.data-tbl tr:hover td { background: #f8fafc; }
   font-weight: 700;
   color: var(--text-sub);
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  position: relative;
+  z-index: 3;
 }
+.sub-tab:hover { color: var(--text); background: rgba(255, 255, 255, 0.55); }
 .sub-tab.active { background: #ffffff; color: var(--primary); box-shadow: var(--shadow-sm); }
+.sub-tab * { pointer-events: none; }
+
+/* Sortable Table Headers */
+table.data-tbl th[data-rkesort],
+table.data-tbl th[data-psort],
+table.data-tbl th[data-tsort],
+table.data-tbl th[data-rsort] {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.14s, color 0.14s;
+}
+table.data-tbl th[data-rkesort]:hover,
+table.data-tbl th[data-psort]:hover,
+table.data-tbl th[data-tsort]:hover,
+table.data-tbl th[data-rsort]:hover {
+  background: #e2e8f0;
+  color: var(--primary);
+}
+table.data-tbl th.th-active {
+  background: #eff6ff;
+  color: var(--primary);
+}
 
 /* Modals */
 .modal-backdrop, .rel-modal-bd {
@@ -3311,7 +3347,7 @@ window.__STATIC_SNAPSHOT__ = {"meta":{"generated_at_tw":"2026-11-05 23:00:29","t
 
 </script>
 <script>
-window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0","date":"2026-10-31","bump":"minor","title":"NBA 戰情室 v1.6.0：雙階段抓盤（18:00 初盤首析 ＋ 23:00 尾盤變盤重析）","notes":"新增每日 18:00 台灣時間早盤初盤擷取與第一輪量化解盤，傍晚即可查看當晚／隔日讓分與大小分建議，不必等到 23:00。","highlights":["新增每日 18:00 台灣時間早盤初盤擷取與第一輪量化解盤，傍晚即可查看當晚／隔日讓分與大小分建議，不必等到 23:00。","鎖定保留 18:00 初盤基準（open_spread_home／open_total），每晚 23:00 再抓尾盤並依 5 小時升退盤變化（順向聰明錢加碼 vs 逆向誘盤護欄）執行第二輪重析與對獎定盤。","單場解盤卡片新增「📈 盤勢變化重析（18:00→23:00）」專欄，並同步升級 GitHub Actions 與校園排程器雙時段補抓。"],"files_count":9},{"version":"1.5.0","date":"2026-10-31","bump":"minor","title":"⚡ GitHub 公開版新增「ESPN 瀏覽器即時比分／盤口同步」＋ GitHub Actions 全時段防延遲自動更新","notes":"⚡ 打開 GitHub 公開版（okayell.github.io/nba-betting-iq）時，瀏覽器會直接向 ESPN 官方公開 API 同步近 4 日即時比分、各節分數、開打狀態、賽前讓分／大小分盤口與戰績，每 90 秒自動刷新，右上角開放「↻ 即時同步比分」按鈕並自動替本機注單與串關對獎。","highlights":["⚡ 打開 GitHub 公開版（okayell.github.io/nba-betting-iq）時，瀏覽器會直接向 ESPN 官方公開 API 同步近 4 日即時比分、各節分數、開打狀態、賽前讓分／大小分盤口與戰績，每 90 秒自動刷新，右上角開放「↻ 即時同步比分」按鈕並自動替本機注單與串關對獎。","🛠️ 修復 GitHub Actions 免費排程因排隊延遲 1～3.5 小時而落入時間空窗（deploy=skipped）的問題：每次排程觸發一律更新全部運彩實戰館，且 23:03 鎖盤若延遲跨過午夜仍會自動補抓盤口。","🎨 新增專屬學院立體徽章圖示（Favicon 與左上角標題圖示），並同步校園地圖最新版導覽列（可在學院頂端觀看愛車於校園道路巡航）。"],"files_count":4},{"version":"1.4.1","date":"2026-10-30","bump":"patch","title":"📝 記讓分單／記大小單改成三步驟引導，手動新增注單補上欄位說明","notes":"「➕ 記讓分單」「➕ 記大小單」改成三步驟引導：① 點選你看好的球隊（或大分／小分）→ ② 讓分／總分與賠率 → ③ 投注金額；最上方用一句話說明怎麼算輸贏，原本要自己打字的「下注方向」改成點選卡片。","highlights":["「➕ 記讓分單」「➕ 記大小單」改成三步驟引導：① 點選你看好的球隊（或大分／小分）→ ② 讓分／總分與賠率 → ③ 投注金額；最上方用一句話說明怎麼算輸贏，原本要自己打字的「下注方向」改成點選卡片。","選球隊時讓分會自動換成那一隊的角度（例如主隊 −5.5 ↔ 客隊 +5.5），卡片直接寫出「贏 6 分以上就算過盤」「輸 5 分以內或贏球就算過盤」，整數盤會提醒走水；賠率提供「台灣運彩 1.75／國際盤 1.91」快選，並即時試算押中可領回多少。","修正：以前在「下注方向」改填另一隊，系統仍依模型推薦的方向對獎；現在一律依你點選的球隊與讓分自動對獎。","「📝 注單追蹤」的手動新增表單補上每個欄位的標籤與範例，會依玩法（讓分／大小分／獨贏／串關）切換提示並即時試算，也說明手動注單需要賽後自行按「贏／輸／走」結算。","GitHub 公開版的單場注單與串關（只存在這台裝置的瀏覽器）也會在網站更新最終比分後自動對獎。","一併發布先前尚未發布的修改：意見回饋送出時顯示寄送狀態，通知信寄送失敗時提供備援寄送方式（Gmail、Outlook、信箱 App、複製內容、GitHub Issue）。","🏫 校園按鈕程式（campus_nav.js）同步校園地圖最新版：跨工具深連結、校園在線學員狀態、共用回饋寄送，以及 🎵 音樂學院、💡 冷知識學院的連結。"],"files_count":7},{"version":"1.4.0","date":"2026-10-30","bump":"minor","title":"新增「🍿 戰舊主（打老東家）· 宿敵恩怨 · 休息室話題八卦」雙向引擎與量化模型戰意因子","notes":"新增 storylines.py 話題戲碼與戰舊主引擎：即時比對全聯盟 30 隊最新陣容（如 2026 休賽季 Ja Morant 轉披拓荒者對決灰熊母隊、Jerami Grant 與 Kris Murray 披灰熊戰袍重返波特蘭形成「雙向戰舊主」、字母哥轉戰熱火、Jaylen Brown 轉戰 76 人、Luka 打獨行俠、KD 迎戰雷霆／太陽等），自動附上賽後實戰數據回顧，若球星傷退 Out 則自動歸零戰意加成。","highlights":["新增 storylines.py 話題戲碼與戰舊主引擎：即時比對全聯盟 30 隊最新陣容（如 2026 休賽季 Ja Morant 轉披拓荒者對決灰熊母隊、Jerami Grant 與 Kris Murray 披灰熊戰袍重返波特蘭形成「雙向戰舊主」、字母哥轉戰熱火、Jaylen Brown 轉戰 76 人、Luka 打獨行俠、KD 迎戰雷霆／太陽等），自動附上賽後實戰數據回顧，若球星傷退 Out 則自動歸零戰意加成。","納入量化模型第 8 項讓分因子「戰舊主與宿敵戰意加成（revenge_drama）」與第 7 項大小分因子「恩怨話題節奏催化（drama_tempo）」，並同步整合至「🤖 AI 深度解盤（場外話題與戰舊主八卦視角）」。","於「🎯 隔日／今日解盤」新增「🍿 話題戲碼與八卦」篩選卡與賽事話題專欄、「🎰 每日串關」標示戰舊主關卡徽章，並於「🏥 傷兵與新聞」新增「🍿 戰舊主與話題八卦」專屬分頁一覽全聯盟吃瓜焦點戰。"],"files_count":12},{"version":"1.3.2","date":"2026-10-30","bump":"patch","title":"NBA 運彩智庫 v1.3.2 功能更新","notes":"【專案檔案】static/js/campus_nav.js（static/js/campus_nav.js +1/-4）","highlights":["【專案檔案】static/js/campus_nav.js（static/js/campus_nav.js +1/-4）"],"files_count":1},{"version":"1.3.1","date":"2026-10-29","bump":"patch","title":"🏫 校園按鈕：一鍵回到 開心學園校園地圖","notes":"標題列最前面新增「🏫 校園」按鈕，一鍵回到 開心學園校園地圖（https://okayell.github.io/），地圖會標示你剛從 NBA 運彩智庫過來；在 Cloudtop 本機版會連到本機的校園地圖。","highlights":["標題列最前面新增「🏫 校園」按鈕，一鍵回到 開心學園校園地圖（https://okayell.github.io/），地圖會標示你剛從 NBA 運彩智庫過來；在 Cloudtop 本機版會連到本機的校園地圖。","手機窄螢幕（400px 以下）按鈕縮成圓形圖示，品牌列不會被擠出畫面。"],"files_count":3},{"version":"1.3.0","date":"2026-10-29","bump":"minor","title":"新增「🎰 每日串關推薦」專頁（2串1／3串1／3串4 複式容錯、台彩與國際盤試算、完賽自動對獎）","notes":"新增「🎰 每日串關」專頁（#/parlay）與「🎯 隔日／今日解盤」當日最佳串關快覽橫幅：嚴格依每日晚上 11 點（23:00 台灣時間）鎖定之讓分盤與大小分，自動跨場嚴選不重複賽事組合，生成「方案 A：雙星主推 2串1」、「方案 B：黃金三星 3串1」、「方案 C：3串4 防斷龍複式保險（3過2回血）」與大比賽日「方案 D：副推 2串1」。","highlights":["新增「🎰 每日串關」專頁（#/parlay）與「🎯 隔日／今日解盤」當日最佳串關快覽橫幅：嚴格依每日晚上 11 點（23:00 台灣時間）鎖定之讓分盤與大小分，自動跨場嚴選不重複賽事組合，生成「方案 A：雙星主推 2串1」、「方案 B：黃金三星 3串1」、「方案 C：3串4 防斷龍複式保險（3過2回血）」與大比賽日「方案 D：副推 2串1」。","支援一鍵切換「🌏 國際盤（-110 / 約 1.91x）」與「🇹🇼 台灣運彩盤（參考 1.75x）」及自訂每注本金（NT$），即時算出綜合賠率、聯立勝率、期望值（EV%）與 3過2 保本回血金額。","內建「🛠️ 自選跨場串關 ＆ 複式過關組合試算器」（2串1～6串1 直串與 3串3／3串4／4串11 容錯對照），強制同場不重複選關，支援一鍵複製串關單與存入「📝 注單追蹤」（完賽自動對獎，遇走水自動依規降關以 1.0x 結算），並附上本季每日推薦串關 Walk-Forward 歷史對獎帳本。"],"files_count":9},{"version":"1.2.1","date":"2026-10-29","bump":"patch","title":"NBA 運彩智庫 v1.2.1 — 頁面顯著標示「讓分盤與大小分固定抓每天晚上 11 點資訊」","notes":"於「隔日／今日解盤」與「完賽過盤紀錄」頁面頂部新增顯眼藍色提示列，明確標示「讓分盤（Spread）與大小分（Over/Under）固定抓取每天晚上 11 點（台灣時間 23:00）的資訊並鎖定」。","highlights":["於「隔日／今日解盤」與「完賽過盤紀錄」頁面頂部新增顯眼藍色提示列，明確標示「讓分盤（Spread）與大小分（Over/Under）固定抓取每天晚上 11 點（台灣時間 23:00）的資訊並鎖定」。","於每場賽事卡片標題列、讓分盤／大小分欄位標題、完賽帳本表頭與「球隊專區」戰績表同步標註「固定抓每晚 11 點資訊」。"],"files_count":5},{"version":"1.2.0","date":"2026-10-29","bump":"minor","title":"NBA 運彩智庫 v1.2.0 — 每日 23:00（台灣時間）固定抓盤與鎖盤對獎機制","notes":"固定每日晚上 23:00（台灣時間）自動抓取並鎖定隔日讓分盤（Spread）與大小分（Over/Under）盤口，避免臨場跳盤影響參考基準。","highlights":["固定每日晚上 23:00（台灣時間）自動抓取並鎖定隔日讓分盤（Spread）與大小分（Over/Under）盤口，避免臨場跳盤影響參考基準。","其餘排程（06:40 賽前傷兵、11:40 / 14:15 完賽結算）與手動「↻ 更新比分與對獎」僅更新比分、單場球員數據、傷兵新聞與模型權重，絕不覆蓋已鎖定之 23:00 盤口。","賽後過盤判定（ATS 讓分過盤／大小分開大開小）與球隊連勝連開趨勢一律嚴格依據前晚 23:00 鎖定盤進行結算，並加入服務重啟跨 23:00 自動補抓保護。"],"files_count":12},{"version":"1.1.1","date":"2026-10-29","bump":"patch","title":"全站新增法律與運彩風險自負免責聲明（頂部按鈕、首頁提示條、全站頁尾與完整條款視窗）","notes":"頂部導覽列新增「⚖️ 免責聲明」按鈕與完整法律條款彈窗，明確載明純體育數據統計研究性質、不構成投注建議或獲利保證。","highlights":["頂部導覽列新增「⚖️ 免責聲明」按鈕與完整法律條款彈窗，明確載明純體育數據統計研究性質、不構成投注建議或獲利保證。","「隔日／今日解盤」首頁與全站底部新增常駐免責與風險自負聲明：任何投注決策之盈虧與財務損失概由使用者自行完全承擔，與本站及開發者無關。"],"files_count":5},{"version":"1.1.0","date":"2026-10-29","bump":"minor","title":"新增 30 隊逐場球員數據與連續過讓／小分雷達、NBA.com 28 欄數據排行、意見回饋專區","notes":"新增「🏀 球隊專區（#/team）」：全站點擊任一球隊即可查看過往各場比數、各節得分、雙方先發與替補球員單場完整數據（Boxscore）及個人逐場明細。","highlights":["新增「🏀 球隊專區（#/team）」：全站點擊任一球隊即可查看過往各場比數、各節得分、雙方先發與替補球員單場完整數據（Boxscore）及個人逐場明細。","新增「連續盤路標示與全聯盟連莊雷達」：自動偵測並高亮標示連續 3 場以上過讓／輸盤、連續開小分／大分（含主客場、讓分／受讓細分與近 10 場走勢圓點）。","新增「🏆 數據排行（#/stats）」：對齊 NBA.com 官方 Traditional Stats 完整 28 欄數據（支援場均 / 總計 / 每 36 分鐘切換）與球員／球隊單項數據王 Top 5。","新增「💬 意見回饋（#/feedback）」與版本視窗雙模式分流：支援問題回報與功能許願自動寄信通知，並區分本機匯出版與 GitHub 公開純 Release Notes 檢視。"],"files_count":12},{"version":"1.0.0","date":"2026-10-29","bump":"major","title":"NBA 運彩智庫 v1.0.0 初版發布","notes":"整合每日 NBA 開盤／即時讓分受讓與大小分盤口分析、完賽過盤紀錄、30 隊傷兵隔日出賽雷達、新聞專區與自我檢討進化模型。","highlights":["每日盤口解盤（隔日／今日推薦）：完整對照初盤與即時讓分／受讓、大小分變盤方向、ESPN BPI 勝率、背靠背體能與先發傷兵，給出分級推薦（🔥 強推精選／✅ 順勢推薦／⚖️ 觀望不碰）與建議注碼。","完賽過盤紀錄與 30 隊排行榜：自動結算每場最終比分、讓分盤過盤／輸盤／走水、大小分開大／開小，並統計全聯盟 30 隊本季過盤率與大分率排行。","傷兵出賽雷達與新聞專區：整合 ESPN 官方傷兵報告、RotoWire 即時預計先發與 GTD 名單、以及中英文 NBA 傷兵新聞，標示每位傷兵隔日上場機率與預估影響分數。","自我檢討與勝率進化中心：嚴格依時間序（Walk-Forward）逐場賽後對獎，自動歸納失誤原因（三分極端變異、末節犯規／OT、背靠背崩盤、變盤誘盤），動態調整 13 項量化因子權重與防呆護欄。"],"files_count":0}]};
+window.NBA_RELEASES = {"current_version":"1.6.1","releases":[{"version":"1.6.1","date":"2026-11-06","bump":"patch","title":"全面強化子分頁與排行榜點擊互動＆修正 ESPN 背景同步搶焦點問題","notes":"全域事件委派＆防選字拖曳保護：所有 .sub-tab、.date-pill、KPI 卡片與排行榜切換改為 document 級別事件委派 + pointerdown/pointerup 容錯，任何微幅滑鼠移動皆可 100% 觸發切換","highlights":["全域事件委派＆防選字拖曳保護：所有 .sub-tab、.date-pill、KPI 卡片與排行榜切換改為 document 級別事件委派 + pointerdown/pointerup 容錯，任何微幅滑鼠移動皆可 100% 觸發切換","修正背景 ESPN 即時同步無變動時強制重繪 main.innerHTML 導致點擊瞬間被刷掉的競態問題","完賽過盤紀錄（#/results）：「🏆 30 隊過盤率＆大小分排行」新增一鍵排行切換（讓分過盤率／大分率／小分率／例行賽勝率／場均淨勝分）、東西區篩選與可點擊排序表頭，上方 4 張 KPI 卡片亦可直接點擊篩選","傷兵與新聞（#/news）：上方 4 張 KPI 卡片全面支援點擊切換對應子分頁與 GTD 篩選，並統一處理 LIVE / IN_PROGRESS 比賽狀態標籤"],"files_count":7},{"version":"1.6.0","date":"2026-10-31","bump":"minor","title":"NBA 戰情室 v1.6.0：雙階段抓盤（18:00 初盤首析 ＋ 23:00 尾盤變盤重析）","notes":"新增每日 18:00 台灣時間早盤初盤擷取與第一輪量化解盤，傍晚即可查看當晚／隔日讓分與大小分建議，不必等到 23:00。","highlights":["新增每日 18:00 台灣時間早盤初盤擷取與第一輪量化解盤，傍晚即可查看當晚／隔日讓分與大小分建議，不必等到 23:00。","鎖定保留 18:00 初盤基準（open_spread_home／open_total），每晚 23:00 再抓尾盤並依 5 小時升退盤變化（順向聰明錢加碼 vs 逆向誘盤護欄）執行第二輪重析與對獎定盤。","單場解盤卡片新增「📈 盤勢變化重析（18:00→23:00）」專欄，並同步升級 GitHub Actions 與校園排程器雙時段補抓。"],"files_count":9},{"version":"1.5.0","date":"2026-10-31","bump":"minor","title":"⚡ GitHub 公開版新增「ESPN 瀏覽器即時比分／盤口同步」＋ GitHub Actions 全時段防延遲自動更新","notes":"⚡ 打開 GitHub 公開版（okayell.github.io/nba-betting-iq）時，瀏覽器會直接向 ESPN 官方公開 API 同步近 4 日即時比分、各節分數、開打狀態、賽前讓分／大小分盤口與戰績，每 90 秒自動刷新，右上角開放「↻ 即時同步比分」按鈕並自動替本機注單與串關對獎。","highlights":["⚡ 打開 GitHub 公開版（okayell.github.io/nba-betting-iq）時，瀏覽器會直接向 ESPN 官方公開 API 同步近 4 日即時比分、各節分數、開打狀態、賽前讓分／大小分盤口與戰績，每 90 秒自動刷新，右上角開放「↻ 即時同步比分」按鈕並自動替本機注單與串關對獎。","🛠️ 修復 GitHub Actions 免費排程因排隊延遲 1～3.5 小時而落入時間空窗（deploy=skipped）的問題：每次排程觸發一律更新全部運彩實戰館，且 23:03 鎖盤若延遲跨過午夜仍會自動補抓盤口。","🎨 新增專屬學院立體徽章圖示（Favicon 與左上角標題圖示），並同步校園地圖最新版導覽列（可在學院頂端觀看愛車於校園道路巡航）。"],"files_count":4},{"version":"1.4.1","date":"2026-10-30","bump":"patch","title":"📝 記讓分單／記大小單改成三步驟引導，手動新增注單補上欄位說明","notes":"「➕ 記讓分單」「➕ 記大小單」改成三步驟引導：① 點選你看好的球隊（或大分／小分）→ ② 讓分／總分與賠率 → ③ 投注金額；最上方用一句話說明怎麼算輸贏，原本要自己打字的「下注方向」改成點選卡片。","highlights":["「➕ 記讓分單」「➕ 記大小單」改成三步驟引導：① 點選你看好的球隊（或大分／小分）→ ② 讓分／總分與賠率 → ③ 投注金額；最上方用一句話說明怎麼算輸贏，原本要自己打字的「下注方向」改成點選卡片。","選球隊時讓分會自動換成那一隊的角度（例如主隊 −5.5 ↔ 客隊 +5.5），卡片直接寫出「贏 6 分以上就算過盤」「輸 5 分以內或贏球就算過盤」，整數盤會提醒走水；賠率提供「台灣運彩 1.75／國際盤 1.91」快選，並即時試算押中可領回多少。","修正：以前在「下注方向」改填另一隊，系統仍依模型推薦的方向對獎；現在一律依你點選的球隊與讓分自動對獎。","「📝 注單追蹤」的手動新增表單補上每個欄位的標籤與範例，會依玩法（讓分／大小分／獨贏／串關）切換提示並即時試算，也說明手動注單需要賽後自行按「贏／輸／走」結算。","GitHub 公開版的單場注單與串關（只存在這台裝置的瀏覽器）也會在網站更新最終比分後自動對獎。","一併發布先前尚未發布的修改：意見回饋送出時顯示寄送狀態，通知信寄送失敗時提供備援寄送方式（Gmail、Outlook、信箱 App、複製內容、GitHub Issue）。","🏫 校園按鈕程式（campus_nav.js）同步校園地圖最新版：跨工具深連結、校園在線學員狀態、共用回饋寄送，以及 🎵 音樂學院、💡 冷知識學院的連結。"],"files_count":7},{"version":"1.4.0","date":"2026-10-30","bump":"minor","title":"新增「🍿 戰舊主（打老東家）· 宿敵恩怨 · 休息室話題八卦」雙向引擎與量化模型戰意因子","notes":"新增 storylines.py 話題戲碼與戰舊主引擎：即時比對全聯盟 30 隊最新陣容（如 2026 休賽季 Ja Morant 轉披拓荒者對決灰熊母隊、Jerami Grant 與 Kris Murray 披灰熊戰袍重返波特蘭形成「雙向戰舊主」、字母哥轉戰熱火、Jaylen Brown 轉戰 76 人、Luka 打獨行俠、KD 迎戰雷霆／太陽等），自動附上賽後實戰數據回顧，若球星傷退 Out 則自動歸零戰意加成。","highlights":["新增 storylines.py 話題戲碼與戰舊主引擎：即時比對全聯盟 30 隊最新陣容（如 2026 休賽季 Ja Morant 轉披拓荒者對決灰熊母隊、Jerami Grant 與 Kris Murray 披灰熊戰袍重返波特蘭形成「雙向戰舊主」、字母哥轉戰熱火、Jaylen Brown 轉戰 76 人、Luka 打獨行俠、KD 迎戰雷霆／太陽等），自動附上賽後實戰數據回顧，若球星傷退 Out 則自動歸零戰意加成。","納入量化模型第 8 項讓分因子「戰舊主與宿敵戰意加成（revenge_drama）」與第 7 項大小分因子「恩怨話題節奏催化（drama_tempo）」，並同步整合至「🤖 AI 深度解盤（場外話題與戰舊主八卦視角）」。","於「🎯 隔日／今日解盤」新增「🍿 話題戲碼與八卦」篩選卡與賽事話題專欄、「🎰 每日串關」標示戰舊主關卡徽章，並於「🏥 傷兵與新聞」新增「🍿 戰舊主與話題八卦」專屬分頁一覽全聯盟吃瓜焦點戰。"],"files_count":12},{"version":"1.3.2","date":"2026-10-30","bump":"patch","title":"NBA 運彩智庫 v1.3.2 功能更新","notes":"【專案檔案】static/js/campus_nav.js（static/js/campus_nav.js +1/-4）","highlights":["【專案檔案】static/js/campus_nav.js（static/js/campus_nav.js +1/-4）"],"files_count":1},{"version":"1.3.1","date":"2026-10-29","bump":"patch","title":"🏫 校園按鈕：一鍵回到 開心學園校園地圖","notes":"標題列最前面新增「🏫 校園」按鈕，一鍵回到 開心學園校園地圖（https://okayell.github.io/），地圖會標示你剛從 NBA 運彩智庫過來；在 Cloudtop 本機版會連到本機的校園地圖。","highlights":["標題列最前面新增「🏫 校園」按鈕，一鍵回到 開心學園校園地圖（https://okayell.github.io/），地圖會標示你剛從 NBA 運彩智庫過來；在 Cloudtop 本機版會連到本機的校園地圖。","手機窄螢幕（400px 以下）按鈕縮成圓形圖示，品牌列不會被擠出畫面。"],"files_count":3},{"version":"1.3.0","date":"2026-10-29","bump":"minor","title":"新增「🎰 每日串關推薦」專頁（2串1／3串1／3串4 複式容錯、台彩與國際盤試算、完賽自動對獎）","notes":"新增「🎰 每日串關」專頁（#/parlay）與「🎯 隔日／今日解盤」當日最佳串關快覽橫幅：嚴格依每日晚上 11 點（23:00 台灣時間）鎖定之讓分盤與大小分，自動跨場嚴選不重複賽事組合，生成「方案 A：雙星主推 2串1」、「方案 B：黃金三星 3串1」、「方案 C：3串4 防斷龍複式保險（3過2回血）」與大比賽日「方案 D：副推 2串1」。","highlights":["新增「🎰 每日串關」專頁（#/parlay）與「🎯 隔日／今日解盤」當日最佳串關快覽橫幅：嚴格依每日晚上 11 點（23:00 台灣時間）鎖定之讓分盤與大小分，自動跨場嚴選不重複賽事組合，生成「方案 A：雙星主推 2串1」、「方案 B：黃金三星 3串1」、「方案 C：3串4 防斷龍複式保險（3過2回血）」與大比賽日「方案 D：副推 2串1」。","支援一鍵切換「🌏 國際盤（-110 / 約 1.91x）」與「🇹🇼 台灣運彩盤（參考 1.75x）」及自訂每注本金（NT$），即時算出綜合賠率、聯立勝率、期望值（EV%）與 3過2 保本回血金額。","內建「🛠️ 自選跨場串關 ＆ 複式過關組合試算器」（2串1～6串1 直串與 3串3／3串4／4串11 容錯對照），強制同場不重複選關，支援一鍵複製串關單與存入「📝 注單追蹤」（完賽自動對獎，遇走水自動依規降關以 1.0x 結算），並附上本季每日推薦串關 Walk-Forward 歷史對獎帳本。"],"files_count":9},{"version":"1.2.1","date":"2026-10-29","bump":"patch","title":"NBA 運彩智庫 v1.2.1 — 頁面顯著標示「讓分盤與大小分固定抓每天晚上 11 點資訊」","notes":"於「隔日／今日解盤」與「完賽過盤紀錄」頁面頂部新增顯眼藍色提示列，明確標示「讓分盤（Spread）與大小分（Over/Under）固定抓取每天晚上 11 點（台灣時間 23:00）的資訊並鎖定」。","highlights":["於「隔日／今日解盤」與「完賽過盤紀錄」頁面頂部新增顯眼藍色提示列，明確標示「讓分盤（Spread）與大小分（Over/Under）固定抓取每天晚上 11 點（台灣時間 23:00）的資訊並鎖定」。","於每場賽事卡片標題列、讓分盤／大小分欄位標題、完賽帳本表頭與「球隊專區」戰績表同步標註「固定抓每晚 11 點資訊」。"],"files_count":5},{"version":"1.2.0","date":"2026-10-29","bump":"minor","title":"NBA 運彩智庫 v1.2.0 — 每日 23:00（台灣時間）固定抓盤與鎖盤對獎機制","notes":"固定每日晚上 23:00（台灣時間）自動抓取並鎖定隔日讓分盤（Spread）與大小分（Over/Under）盤口，避免臨場跳盤影響參考基準。","highlights":["固定每日晚上 23:00（台灣時間）自動抓取並鎖定隔日讓分盤（Spread）與大小分（Over/Under）盤口，避免臨場跳盤影響參考基準。","其餘排程（06:40 賽前傷兵、11:40 / 14:15 完賽結算）與手動「↻ 更新比分與對獎」僅更新比分、單場球員數據、傷兵新聞與模型權重，絕不覆蓋已鎖定之 23:00 盤口。","賽後過盤判定（ATS 讓分過盤／大小分開大開小）與球隊連勝連開趨勢一律嚴格依據前晚 23:00 鎖定盤進行結算，並加入服務重啟跨 23:00 自動補抓保護。"],"files_count":12},{"version":"1.1.1","date":"2026-10-29","bump":"patch","title":"全站新增法律與運彩風險自負免責聲明（頂部按鈕、首頁提示條、全站頁尾與完整條款視窗）","notes":"頂部導覽列新增「⚖️ 免責聲明」按鈕與完整法律條款彈窗，明確載明純體育數據統計研究性質、不構成投注建議或獲利保證。","highlights":["頂部導覽列新增「⚖️ 免責聲明」按鈕與完整法律條款彈窗，明確載明純體育數據統計研究性質、不構成投注建議或獲利保證。","「隔日／今日解盤」首頁與全站底部新增常駐免責與風險自負聲明：任何投注決策之盈虧與財務損失概由使用者自行完全承擔，與本站及開發者無關。"],"files_count":5},{"version":"1.1.0","date":"2026-10-29","bump":"minor","title":"新增 30 隊逐場球員數據與連續過讓／小分雷達、NBA.com 28 欄數據排行、意見回饋專區","notes":"新增「🏀 球隊專區（#/team）」：全站點擊任一球隊即可查看過往各場比數、各節得分、雙方先發與替補球員單場完整數據（Boxscore）及個人逐場明細。","highlights":["新增「🏀 球隊專區（#/team）」：全站點擊任一球隊即可查看過往各場比數、各節得分、雙方先發與替補球員單場完整數據（Boxscore）及個人逐場明細。","新增「連續盤路標示與全聯盟連莊雷達」：自動偵測並高亮標示連續 3 場以上過讓／輸盤、連續開小分／大分（含主客場、讓分／受讓細分與近 10 場走勢圓點）。","新增「🏆 數據排行（#/stats）」：對齊 NBA.com 官方 Traditional Stats 完整 28 欄數據（支援場均 / 總計 / 每 36 分鐘切換）與球員／球隊單項數據王 Top 5。","新增「💬 意見回饋（#/feedback）」與版本視窗雙模式分流：支援問題回報與功能許願自動寄信通知，並區分本機匯出版與 GitHub 公開純 Release Notes 檢視。"],"files_count":12},{"version":"1.0.0","date":"2026-10-29","bump":"major","title":"NBA 運彩智庫 v1.0.0 初版發布","notes":"整合每日 NBA 開盤／即時讓分受讓與大小分盤口分析、完賽過盤紀錄、30 隊傷兵隔日出賽雷達、新聞專區與自我檢討進化模型。","highlights":["每日盤口解盤（隔日／今日推薦）：完整對照初盤與即時讓分／受讓、大小分變盤方向、ESPN BPI 勝率、背靠背體能與先發傷兵，給出分級推薦（🔥 強推精選／✅ 順勢推薦／⚖️ 觀望不碰）與建議注碼。","完賽過盤紀錄與 30 隊排行榜：自動結算每場最終比分、讓分盤過盤／輸盤／走水、大小分開大／開小，並統計全聯盟 30 隊本季過盤率與大分率排行。","傷兵出賽雷達與新聞專區：整合 ESPN 官方傷兵報告、RotoWire 即時預計先發與 GTD 名單、以及中英文 NBA 傷兵新聞，標示每位傷兵隔日上場機率與預估影響分數。","自我檢討與勝率進化中心：嚴格依時間序（Walk-Forward）逐場賽後對獎，自動歸納失誤原因（三分極端變異、末節犯規／OT、背靠背崩盤、變盤誘盤），動態調整 13 項量化因子權重與防呆護欄。"],"files_count":0}]};
 
 </script>
 <script>
@@ -3340,6 +3376,9 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
       resultsFilter: 'ALL',
       resultsTeam: 'ALL',
       resultsTab: 'ledger',
+      resultsTeamSort: 'ats_pct',
+      resultsTeamDir: 'desc',
+      resultsTeamConf: 'ALL',
       activeTeam: 'LAL',
       teamTab: 'games',
       teamGameId: '',
@@ -4469,6 +4508,21 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
         NBA.state.activeTeam = sub;
         NBA.state.teamGameId = '';
       }
+      if (parts[2] && ['games', 'roster'].includes(parts[2].toLowerCase())) {
+        NBA.state.teamTab = parts[2].toLowerCase();
+      }
+    }
+    if (route === 'results' && parts[1]) {
+      const rtab = parts[1].toLowerCase();
+      if (['ledger', 'teams'].includes(rtab)) {
+        NBA.state.resultsTab = rtab;
+      }
+    }
+    if (route === 'news' && parts[1]) {
+      const ntab = parts[1].toLowerCase();
+      if (['injuries', 'drama', 'feed'].includes(ntab)) {
+        NBA.state.newsTab = ntab;
+      }
     }
     if (route === 'stats' && parts[1]) {
       const ent = parts[1].toLowerCase();
@@ -4489,7 +4543,12 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
     }
     const prevScroll = document.documentElement.style.scrollBehavior;
     document.documentElement.style.scrollBehavior = 'auto';
-    NBA.pages[NBA.route](main);
+    try {
+      NBA.pages[NBA.route](main);
+    } catch (err) {
+      console.error('[NBA.render error]', err);
+      main.innerHTML = `<div class="empty-box">⚠️ 頁面渲染發生例外：${NBA.esc(err && err.message ? err.message : String(err))}</div>`;
+    }
     document.documentElement.style.scrollBehavior = prevScroll;
   };
 
@@ -4662,12 +4721,19 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
           if (!opts || !opts.keepDate) {
             if (!NBA.state.picksDate || NBA.state.picksDate === oldDef) {
               const oldHasLive = NBA.snap.games.some((g) => g.tw_date === NBA.state.picksDate && g.status !== 'FINAL');
-              if (!oldHasLive) NBA.state.picksDate = upcomingDates[0];
+              if (!oldHasLive && NBA.state.picksDate !== upcomingDates[0]) {
+                NBA.state.picksDate = upcomingDates[0];
+                touched++;
+              }
             }
           }
         }
       }
-      await NBA.refreshAllData();
+      if (touched > 0 || (opts && opts.forceRender)) {
+        await NBA.refreshAllData();
+      } else {
+        updateHeaderBadges(NBA.health.version || '1.0.0', Boolean(NBA.relHasChanges));
+      }
       return { updated: touched, stamp: nowStamp };
     };
 
@@ -4678,7 +4744,7 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
         syncBtn.disabled = true;
         syncBtn.textContent = '⏳ 連線 ESPN 同步中…';
         try {
-          const r = await NBA.syncStaticLiveEspn({ keepDate: true });
+          const r = await NBA.syncStaticLiveEspn({ keepDate: true, forceRender: true });
           NBA.toast(`✅ 已即時同步 ESPN 最新 NBA 比分、盤口與注單對獎！（更新 ${r.updated} 場狀態）`);
         } catch (e) {
           NBA.toast('⚠️ 即時同步失敗：' + e.message);
@@ -4711,32 +4777,30 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
 
     window.addEventListener('hashchange', () => requestAnimationFrame(NBA.render));
 
-    // Global delegated clicks for any Team Link, Player Profile, Single-Game Boxscore, or Disclaimer Modal
-    document.addEventListener('click', (ev) => {
-      const discTrigger = ev.target.closest('[data-open-disclaimer]');
+    // Global delegated clicks for any Sub-Tab, Filter, KPI Card, Sortable Header, Team Link, Player Profile, Single-Game Boxscore, or Disclaimer Modal
+    const handleDelegatedAction = (targetEl, ev) => {
+      if (!targetEl || !targetEl.closest) return false;
+      const discTrigger = targetEl.closest('[data-open-disclaimer]');
       if (discTrigger) {
-        ev.preventDefault();
+        if (ev) ev.preventDefault();
         NBA.openDisclaimerModal();
-        return;
+        return true;
       }
-      const boxBtn = ev.target.closest('[data-boxscore-gid]');
+      const boxBtn = targetEl.closest('[data-boxscore-gid]');
       if (boxBtn) {
-        ev.preventDefault();
-        ev.stopPropagation();
+        if (ev) { ev.preventDefault(); ev.stopPropagation(); }
         NBA.openGameBoxscoreModal(boxBtn.getAttribute('data-boxscore-gid'));
-        return;
+        return true;
       }
-      const plEl = ev.target.closest('[data-player-id]');
+      const plEl = targetEl.closest('[data-player-id]');
       if (plEl) {
-        ev.preventDefault();
-        ev.stopPropagation();
+        if (ev) { ev.preventDefault(); ev.stopPropagation(); }
         NBA.openPlayerModal(plEl.getAttribute('data-player-id'));
-        return;
+        return true;
       }
-      const tmEl = ev.target.closest('[data-team-link]');
+      const tmEl = targetEl.closest('[data-team-link]');
       if (tmEl) {
-        ev.preventDefault();
-        ev.stopPropagation();
+        if (ev) { ev.preventDefault(); ev.stopPropagation(); }
         const ab = (tmEl.getAttribute('data-team-link') || '').toUpperCase();
         if (ab) {
           NBA.closeModal();
@@ -4748,8 +4812,192 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
             window.location.hash = `#/team/${ab}`;
           }
         }
+        return true;
       }
+      const rtabBtn = targetEl.closest('[data-rtab]');
+      if (rtabBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.resultsTab = rtabBtn.getAttribute('data-rtab');
+        NBA.render();
+        return true;
+      }
+      const rkeFilter = targetEl.closest('[data-rkefilter]');
+      if (rkeFilter) {
+        if (ev) ev.preventDefault();
+        const f = rkeFilter.getAttribute('data-rkefilter');
+        if (f === 'TEAMS') {
+          NBA.state.resultsTab = 'teams';
+        } else {
+          NBA.state.resultsTab = 'ledger';
+          NBA.state.resultsFilter = NBA.state.resultsFilter === f ? 'ALL' : f;
+        }
+        NBA.render();
+        return true;
+      }
+      const rkeSort = targetEl.closest('[data-rkesort]');
+      if (rkeSort) {
+        if (ev) ev.preventDefault();
+        const k = rkeSort.getAttribute('data-rkesort');
+        const dirAttr = rkeSort.getAttribute('data-rkedir');
+        if (dirAttr) {
+          NBA.state.resultsTeamSort = k;
+          NBA.state.resultsTeamDir = dirAttr;
+        } else if (NBA.state.resultsTeamSort === k) {
+          NBA.state.resultsTeamDir = NBA.state.resultsTeamDir === 'desc' ? 'asc' : 'desc';
+        } else {
+          NBA.state.resultsTeamSort = k;
+          NBA.state.resultsTeamDir = 'desc';
+        }
+        NBA.render();
+        return true;
+      }
+      const rkeConf = targetEl.closest('[data-rkeconf]');
+      if (rkeConf) {
+        if (ev) ev.preventDefault();
+        NBA.state.resultsTeamConf = rkeConf.getAttribute('data-rkeconf');
+        NBA.render();
+        return true;
+      }
+      const ntabBtn = targetEl.closest('[data-ntab]');
+      if (ntabBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.newsTab = ntabBtn.getAttribute('data-ntab');
+        NBA.render();
+        return true;
+      }
+      const nkpiBtn = targetEl.closest('[data-nkpi]');
+      if (nkpiBtn) {
+        if (ev) ev.preventDefault();
+        const k = nkpiBtn.getAttribute('data-nkpi');
+        if (k === 'DRAMA') {
+          NBA.state.newsTab = 'drama';
+        } else if (k === 'FEED') {
+          NBA.state.newsTab = 'feed';
+        } else if (k === 'GTD') {
+          NBA.state.newsTab = 'injuries';
+          NBA.state.injSlateOnly = false;
+          NBA.state.injStatus = NBA.state.injStatus === 'Questionable' ? 'ALL' : 'Questionable';
+        } else if (k === 'STAR') {
+          NBA.state.newsTab = 'injuries';
+          NBA.state.injSlateOnly = false;
+          NBA.state.injStatus = 'ALL';
+        } else {
+          NBA.state.newsTab = 'injuries';
+          NBA.state.injSlateOnly = false;
+          NBA.state.injStatus = 'ALL';
+        }
+        NBA.render();
+        return true;
+      }
+      const ncatBtn = targetEl.closest('[data-ncat]');
+      if (ncatBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.newsCat = ncatBtn.getAttribute('data-ncat');
+        NBA.render();
+        return true;
+      }
+      const ttabBtn = targetEl.closest('[data-ttab]');
+      if (ttabBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.teamTab = ttabBtn.getAttribute('data-ttab');
+        NBA.render();
+        return true;
+      }
+      const bsideBtn = targetEl.closest('[data-bside]');
+      if (bsideBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.teamBoxSide = bsideBtn.getAttribute('data-bside');
+        NBA.render();
+        return true;
+      }
+      const sentBtn = targetEl.closest('[data-sent]');
+      if (sentBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.statsEntity = sentBtn.getAttribute('data-sent');
+        NBA.state.statsPage = 1;
+        NBA.render();
+        return true;
+      }
+      const dtBtn = targetEl.closest('[data-dt]');
+      if (dtBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.picksDate = dtBtn.getAttribute('data-dt');
+        NBA.render();
+        return true;
+      }
+      const pfBtn = targetEl.closest('[data-pf]');
+      if (pfBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.picksFilter = pfBtn.getAttribute('data-pf');
+        NBA.render();
+        return true;
+      }
+      const pdtBtn = targetEl.closest('[data-pdt]');
+      if (pdtBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.parlayDate = pdtBtn.getAttribute('data-pdt');
+        NBA.render();
+        return true;
+      }
+      const jumpPdtBtn = targetEl.closest('[data-jump-pdt]');
+      if (jumpPdtBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.parlayDate = jumpPdtBtn.getAttribute('data-jump-pdt');
+        NBA.render();
+        return true;
+      }
+      const bookBtn = targetEl.closest('[data-book]');
+      if (bookBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.parlayBook = bookBtn.getAttribute('data-book');
+        NBA.render();
+        return true;
+      }
+      const jumpPicksBtn = targetEl.closest('[data-jump-picks-date]');
+      if (jumpPicksBtn) {
+        if (ev) ev.preventDefault();
+        NBA.state.picksDate = jumpPicksBtn.getAttribute('data-jump-picks-date');
+        NBA.state.picksFilter = 'DRAMA';
+        if (window.location.hash === '#/picks') {
+          NBA.render();
+        } else {
+          window.location.hash = '#/picks';
+        }
+        return true;
+      }
+      return false;
+    };
+
+    let _pDownTarget = null;
+    let _pClickFired = false;
+    document.addEventListener('click', (ev) => {
+      _pClickFired = true;
+      handleDelegatedAction(ev.target, ev);
     });
+
+    // Pointer-drag tolerance: if the user presses down and releases on the same tab/pill button with slight mouse movement, still fire the action
+    document.addEventListener('pointerdown', (ev) => {
+      if (ev.button && ev.button !== 0) return;
+      _pClickFired = false;
+      _pDownTarget = ev.target && ev.target.closest
+        ? ev.target.closest('[data-rtab],[data-rkefilter],[data-rkesort],[data-rkeconf],[data-ntab],[data-nkpi],[data-ncat],[data-ttab],[data-bside],[data-sent],[data-dt],[data-pf],[data-pdt],[data-jump-pdt],[data-book]')
+        : null;
+    }, { passive: true });
+    document.addEventListener('pointerup', (ev) => {
+      if (!_pDownTarget) return;
+      const upTarget = ev.target && ev.target.closest
+        ? ev.target.closest('[data-rtab],[data-rkefilter],[data-rkesort],[data-rkeconf],[data-ntab],[data-nkpi],[data-ncat],[data-ttab],[data-bside],[data-sent],[data-dt],[data-pf],[data-pdt],[data-jump-pdt],[data-book]')
+        : null;
+      const matched = upTarget && upTarget === _pDownTarget;
+      _pDownTarget = null;
+      if (matched) {
+        setTimeout(() => {
+          if (!_pClickFired) {
+            handleDelegatedAction(matched, null);
+          }
+        }, 25);
+      }
+    }, { passive: true });
 
     try {
       if (!NBA.isStatic) {
@@ -4953,9 +5201,9 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
 
     const stChip = g.status === 'FINAL'
       ? `<span class="chip muted">已完賽 Final</span>`
-      : g.status === 'IN_PROGRESS'
-      ? `<span class="chip bad">🔴 比賽進行中 · ${NBA.esc(g.status_detail)}</span>`
-      : `<span class="chip info">🕒 台灣 ${NBA.esc(g.tipoff_tw.slice(5))} 開打</span>`;
+      : (g.status === 'IN_PROGRESS' || g.status === 'LIVE')
+      ? `<span class="chip bad">🔴 比賽進行中 · ${NBA.esc(g.status_detail || '')}</span>`
+      : `<span class="chip info">🕒 台灣 ${NBA.esc(String(g.tipoff_tw || '').slice(5))} 開打</span>`;
 
     const lockStr = String(g.odds_locked_tw || '');
     const isEarlyStage = lockStr.includes('初盤') || lockStr.includes('18:00');
@@ -6108,8 +6356,8 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
       return `
         <tr>
           <td style="white-space:nowrap">
-            <strong>${NBA.esc(g.tw_date)}</strong>
-            <div style="font-size:11px;color:#64748b">美東 ${NBA.esc(g.et_date.slice(5))}</div>
+            <strong>${NBA.esc(g.tw_date || '')}</strong>
+            <div style="font-size:11px;color:#64748b">美東 ${NBA.esc(String(g.et_date || '').slice(5))}</div>
           </td>
           <td>
             <div style="display:flex;align-items:center;gap:6px;font-weight:700;flex-wrap:wrap">
@@ -6119,7 +6367,7 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
               <button type="button" class="btn btn-soft btn-sm" data-boxscore-gid="${NBA.esc(g.game_id)}" style="padding:2px 7px;font-size:11.5px">📊 球員數據</button>
             </div>
             <div style="font-size:11px;color:#64748b;margin-top:2px">
-              各節：客 ${(g.away_q_scores || []).join('-')} ｜ 主 ${(g.home_q_scores || []).join('-')}（主分差 ${g.margin_home >= 0 ? '+' + g.margin_home : g.margin_home}，總分 ${g.total_points}）
+              各節：客 ${(g.away_q_scores || []).join('-')} ｜ 主 ${(g.home_q_scores || []).join('-')}（主分差 ${Number(g.margin_home || 0) >= 0 ? '+' + Number(g.margin_home || 0) : Number(g.margin_home || 0)}，總分 ${g.total_points || 0}）
             </div>
           </td>
           <td>
@@ -6181,25 +6429,72 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
   }
 
   function renderTeamAtsBoard(snap) {
-    const sorted = (snap.teams || []).slice().sort((a, b) => (b.ats_pct - a.ats_pct) || (b.ats_w - a.ats_w));
+    const sk = NBA.state.resultsTeamSort || 'ats_pct';
+    const dir = NBA.state.resultsTeamDir === 'asc' ? 1 : -1;
+    const conf = NBA.state.resultsTeamConf || 'ALL';
+
+    const valOf = (t, key) => {
+      if (key === 'win_pct') {
+        const gp = (Number(t.wins) || 0) + (Number(t.losses) || 0);
+        return gp > 0 ? Number(t.wins || 0) / gp : Number(t.win_pct || 0);
+      }
+      if (key === 'under_pct') return 100 - Number(t.over_pct || 50);
+      return Number(t[key] != null ? t[key] : 0);
+    };
+
+    const sorted = (snap.teams || [])
+      .filter((t) => conf === 'ALL' || t.conf === conf)
+      .slice()
+      .sort((a, b) => {
+        const d = (valOf(a, sk) - valOf(b, sk)) * dir;
+        if (Math.abs(d) > 1e-6) return d;
+        return (Number(b.ats_pct || 0) - Number(a.ats_pct || 0)) || (Number(b.ats_w || 0) - Number(a.ats_w || 0));
+      });
+
+    const arrow = (key) => (sk === key ? (dir === -1 ? ' ▼' : ' ▲') : ' ↕');
+    const thCls = (key) => `num ${sk === key ? 'th-active' : ''}`;
+
     return `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:700;color:#475569">⚡ 排行切換：</span>
+          <button type="button" class="date-pill ${sk === 'ats_pct' ? 'active' : ''}" data-rkesort="ats_pct" data-rkedir="desc">🏆 讓分過盤率排行</button>
+          <button type="button" class="date-pill ${sk === 'over_pct' ? 'active' : ''}" data-rkesort="over_pct" data-rkedir="desc">🔴 大分開出率排行</button>
+          <button type="button" class="date-pill ${sk === 'under_pct' ? 'active' : ''}" data-rkesort="under_pct" data-rkedir="desc">🔵 小分開出率排行</button>
+          <button type="button" class="date-pill ${sk === 'win_pct' ? 'active' : ''}" data-rkesort="win_pct" data-rkedir="desc">📈 例行賽勝率排行</button>
+          <button type="button" class="date-pill ${sk === 'diff' ? 'active' : ''}" data-rkesort="diff" data-rkedir="desc">⚡ 場均淨勝分排行</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <button type="button" class="date-pill ${conf === 'ALL' ? 'active' : ''}" data-rkeconf="ALL">全部 30 隊</button>
+          <button type="button" class="date-pill ${conf === 'East' ? 'active' : ''}" data-rkeconf="East">東區 15 隊</button>
+          <button type="button" class="date-pill ${conf === 'West' ? 'active' : ''}" data-rkeconf="West">西區 15 隊</button>
+        </div>
+      </div>
+
       <div class="tbl-wrap">
         <table class="data-tbl">
           <thead>
             <tr>
               <th>排名</th>
-              <th>球隊</th>
+              <th>球隊（點擊看逐場過盤＆球員數據）</th>
               <th>分區</th>
-              <th class="num">例行賽戰績</th>
-              <th class="num">場均得分 / 失分 (淨勝)</th>
-              <th class="num">讓分過盤戰績 (ATS)</th>
-              <th class="num">讓分過盤率</th>
-              <th class="num">大小分戰績 (大-小-走)</th>
-              <th class="num">大分開出率</th>
+              <th class="${thCls('win_pct')}" data-rkesort="win_pct" title="點擊依例行賽勝率排序">例行賽戰績${arrow('win_pct')}</th>
+              <th class="${thCls('diff')}" data-rkesort="diff" title="點擊依場均淨勝分排序">場均得分 / 失分 (淨勝)${arrow('diff')}</th>
+              <th class="${thCls('ats_w')}" data-rkesort="ats_w" title="點擊依過盤勝場數排序">讓分過盤戰績 (ATS)${arrow('ats_w')}</th>
+              <th class="${thCls('ats_pct')}" data-rkesort="ats_pct" title="點擊依讓分過盤率排序">讓分過盤率${arrow('ats_pct')}</th>
+              <th class="${thCls('ou_over')}" data-rkesort="ou_over" title="點擊依大分場次排序">大小分戰績 (大-小-走)${arrow('ou_over')}</th>
+              <th class="${thCls('over_pct')}" data-rkesort="over_pct" title="點擊依大分開出率排序">大分開出率 / 小分率${arrow('over_pct')}</th>
             </tr>
           </thead>
           <tbody>
-            ${sorted.map((t, i) => `
+            ${sorted.map((t, i) => {
+              const ppg = Number(t.ppg || 0);
+              const oppPpg = Number(t.opp_ppg || 0);
+              const diff = Number(t.diff || 0);
+              const atsPct = Number(t.ats_pct || 0);
+              const overPct = Number(t.over_pct || 0);
+              const underPct = Math.max(0, 100 - overPct);
+              return `
               <tr>
                 <td><strong>#${i + 1}</strong></td>
                 <td>
@@ -6210,14 +6505,17 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
                   </div>
                 </td>
                 <td>${t.conf === 'East' ? '東區' : '西區'}</td>
-                <td class="num">${NBA.esc(t.record)} (${NBA.esc(t.streak || '-')})</td>
-                <td class="num">${t.ppg.toFixed(1)} / ${t.opp_ppg.toFixed(1)} <span style="color:${t.diff >= 0 ? '#15803d' : '#b91c1c'}">(${NBA.fmtSigned(t.diff, 1)})</span></td>
-                <td class="num"><strong>${t.ats_w}勝 - ${t.ats_l}敗${t.ats_p ? ` - ${t.ats_p}走` : ''}</strong></td>
-                <td class="num"><span class="chip ${t.ats_pct >= 58 ? 'ok' : t.ats_pct <= 42 ? 'bad' : 'muted'}">${t.ats_pct.toFixed(1)}%</span></td>
-                <td class="num">${t.ou_over}大 - ${t.ou_under}小${t.ou_push ? ` - ${t.ou_push}走` : ''}</td>
-                <td class="num"><span class="chip ${t.over_pct >= 58 ? 'strong' : t.over_pct <= 42 ? 'info' : 'muted'}">${t.over_pct.toFixed(1)}%</span></td>
-              </tr>
-            `).join('')}
+                <td class="num">${NBA.esc(t.record || `${t.wins || 0}-${t.losses || 0}`)} (${NBA.esc(t.streak || '-')})</td>
+                <td class="num">${ppg.toFixed(1)} / ${oppPpg.toFixed(1)} <span style="color:${diff >= 0 ? '#15803d' : '#b91c1c'};font-weight:700">(${NBA.fmtSigned(diff, 1)})</span></td>
+                <td class="num"><strong>${t.ats_w || 0}勝 - ${t.ats_l || 0}敗${t.ats_p ? ` - ${t.ats_p}走` : ''}</strong></td>
+                <td class="num"><span class="chip ${atsPct >= 58 ? 'ok' : atsPct <= 42 ? 'bad' : 'muted'}">${atsPct.toFixed(1)}%</span></td>
+                <td class="num"><strong>${t.ou_over || 0}大 - ${t.ou_under || 0}小${t.ou_push ? ` - ${t.ou_push}走` : ''}</strong></td>
+                <td class="num">
+                  <span class="chip ${overPct >= 58 ? 'strong' : overPct <= 42 ? 'info' : 'muted'}">大 ${overPct.toFixed(1)}%</span>
+                  <span style="font-size:11.5px;color:#64748b;margin-left:4px">小 ${underPct.toFixed(1)}%</span>
+                </td>
+              </tr>`;
+            }).join('')}
           </tbody>
         </table>
       </div>`;
@@ -6227,6 +6525,7 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
     const snap = NBA.snap;
     const k = snap.kpi || {};
     const tab = NBA.state.resultsTab;
+    const fSel = NBA.state.resultsFilter;
     const favTot = (k.league_fav_cover || 0) + (k.league_dog_cover || 0);
     const ouTot = (k.league_over || 0) + (k.league_under || 0);
 
@@ -6248,43 +6547,37 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
       </div>
 
       <div class="kpi-grid">
-        <div class="kpi-card static-kpi">
-          <div class="kpi-lbl"><span>聯盟讓分方 vs 受讓方過盤</span></div>
+        <div class="kpi-card ${tab === 'ledger' && fSel === 'DOG_COVER' ? 'active' : ''}" data-rkefilter="DOG_COVER" title="點擊篩選受讓方咬盤／爆冷完賽場次">
+          <div class="kpi-lbl"><span>聯盟讓分方 vs 受讓方過盤</span><span class="chip ok">點此篩選受讓</span></div>
           <div class="kpi-val">${k.league_fav_cover} : ${k.league_dog_cover}</div>
           <div class="kpi-sub">受讓咬盤率 ${favTot ? ((k.league_dog_cover / favTot) * 100).toFixed(1) : '50.0'}%</div>
         </div>
-        <div class="kpi-card static-kpi">
-          <div class="kpi-lbl"><span>聯盟大分 vs 小分場次</span></div>
+        <div class="kpi-card ${tab === 'ledger' && fSel === 'OVER' ? 'active' : ''}" data-rkefilter="OVER" title="點擊篩選開出大分 (OVER) 完賽場次">
+          <div class="kpi-lbl"><span>聯盟大分 vs 小分場次</span><span class="chip strong">點此篩選大分</span></div>
           <div class="kpi-val">${k.league_over}大 : ${k.league_under}小</div>
           <div class="kpi-sub">大分率 ${ouTot ? ((k.league_over / ouTot) * 100).toFixed(1) : '50.0'}%</div>
         </div>
-        <div class="kpi-card static-kpi">
-          <div class="kpi-lbl"><span>🔥 模型強推精選戰績</span></div>
+        <div class="kpi-card ${tab === 'ledger' && fSel === 'MODEL_WIN' ? 'active' : ''}" data-rkefilter="MODEL_WIN" title="點擊篩選模型推薦命中場次">
+          <div class="kpi-lbl"><span>🔥 模型強推精選戰績</span><span class="chip info">點此看命中</span></div>
           <div class="kpi-val" style="color:#15803d">${k.strong_w}勝 ${k.strong_l}敗 (${k.strong_win_rate}%)</div>
           <div class="kpi-sub">超越 52.38% 水錢損益兩平線</div>
         </div>
-        <div class="kpi-card static-kpi">
-          <div class="kpi-lbl"><span>模型累積淨利 ＆ ROI</span></div>
+        <div class="kpi-card ${tab === 'teams' ? 'active' : ''}" data-rkefilter="TEAMS" title="點擊切換至 30 隊過盤率＆大小分排行榜">
+          <div class="kpi-lbl"><span>🏆 30 隊過盤率＆大小分排行</span><span class="chip warn">點此看排行</span></div>
           <div class="kpi-val" style="color:${k.units_pnl >= 0 ? '#15803d' : '#b91c1c'}">${NBA.fmtSigned(k.units_pnl, 2)}u</div>
-          <div class="kpi-sub">投報率 ROI ${NBA.fmtSigned(k.roi_pct, 2)}%（以國際盤 1.91 計）</div>
+          <div class="kpi-sub">投報率 ROI ${NBA.fmtSigned(k.roi_pct, 2)}% · 點擊查看 30 隊過盤榜</div>
         </div>
       </div>
 
       ${tab === 'ledger' ? renderLedger(snap) : renderTeamAtsBoard(snap)}
     `;
 
-    root.querySelectorAll('[data-rtab]').forEach((b) => {
-      b.onclick = () => {
-        NBA.state.resultsTab = b.getAttribute('data-rtab');
-        NBA.render();
-      };
-    });
     const dSel = document.getElementById('resDateSel');
     if (dSel) dSel.onchange = () => { NBA.state.resultsDate = dSel.value; NBA.render(); };
     const tSel = document.getElementById('resTeamSel');
     if (tSel) tSel.onchange = () => { NBA.state.resultsTeam = tSel.value; NBA.render(); };
-    const fSel = document.getElementById('resFilterSel');
-    if (fSel) fSel.onchange = () => { NBA.state.resultsFilter = fSel.value; NBA.render(); };
+    const fSelEl = document.getElementById('resFilterSel');
+    if (fSelEl) fSelEl.onchange = () => { NBA.state.resultsFilter = fSelEl.value; NBA.render(); };
   };
 })();
 
@@ -7782,7 +8075,7 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
           const st = g.storylines;
           const statusBadge = g.status === 'FINAL'
             ? `<span class="chip muted">終場 ${g.away_score}:${g.home_score}</span>`
-            : g.status === 'IN_PROGRESS'
+            : (g.status === 'IN_PROGRESS' || g.status === 'LIVE')
             ? `<span class="chip bad">🔴 進行中 ${g.away_score}:${g.home_score}</span>`
             : `<span class="chip info">台灣 ${NBA.esc((g.tipoff_tw || '').slice(5))} 開打</span>`;
           return `
@@ -7843,22 +8136,22 @@ window.NBA_RELEASES = {"current_version":"1.6.0","releases":[{"version":"1.6.0",
       </div>
 
       <div class="kpi-grid">
-        <div class="kpi-card static-kpi">
-          <div class="kpi-lbl"><span>全聯盟列管傷兵總數</span></div>
+        <div class="kpi-card ${tab === 'injuries' && NBA.state.injStatus === 'ALL' ? 'active' : ''}" data-nkpi="ALL" title="點擊查看全聯盟列管傷兵總表">
+          <div class="kpi-lbl"><span>全聯盟列管傷兵總數</span><span class="chip info">點此查看</span></div>
           <div class="kpi-val">${(snap.injuries || []).length} 人</div>
           <div class="kpi-sub">涵蓋 Out / Doubtful / Questionable / Probable</div>
         </div>
-        <div class="kpi-card static-kpi">
-          <div class="kpi-lbl"><span>❓ 賽前決定 (GTD / Doubtful)</span></div>
+        <div class="kpi-card ${tab === 'injuries' && NBA.state.injStatus === 'Questionable' ? 'active' : ''}" data-nkpi="GTD" title="點擊篩選賽前決定 (GTD / Questionable) 球員">
+          <div class="kpi-lbl"><span>❓ 賽前決定 (GTD / Doubtful)</span><span class="chip warn">點此篩選 GTD</span></div>
           <div class="kpi-val" style="color:#b45309">${gtdCount} 人</div>
           <div class="kpi-sub">最容易引發開賽前 1 小時急遽變盤</div>
         </div>
-        <div class="kpi-card static-kpi">
-          <div class="kpi-lbl"><span>⭐ 當家球星缺陣／存疑</span></div>
+        <div class="kpi-card" data-nkpi="FEED" title="點擊切換至傷兵／運彩新聞串流">
+          <div class="kpi-lbl"><span>⭐ 當家球星缺陣／新聞快訊</span><span class="chip bad">點此看新聞</span></div>
           <div class="kpi-val" style="color:#b91c1c">${starOutCount} 人</div>
           <div class="kpi-sub">單一球星缺陣平均牽動讓分 3.0–5.5 分</div>
         </div>
-        <div class="kpi-card" id="kpiJumpDrama" style="cursor:pointer">
+        <div class="kpi-card ${tab === 'drama' ? 'active' : ''}" data-nkpi="DRAMA" id="kpiJumpDrama" title="點擊切換至戰舊主與話題八卦">
           <div class="kpi-lbl"><span>🍿 戰舊主／恩怨八卦場次</span><span class="chip warn">點此查看</span></div>
           <div class="kpi-val" style="color:#9333ea">${dramaCount} 場</div>
           <div class="kpi-sub">打老東家、交易反戈與世仇對決看點</div>
