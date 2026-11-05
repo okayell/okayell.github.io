@@ -1818,6 +1818,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
       var isConfirmed = !!(stu.confirmed === true && stu.name);
       var dispName = isConfirmed ? String(stu.name).trim() : ('訪客 #' + String(stu.stuNo || stu.uid).slice(-4).toUpperCase());
       if (TEST_UID_RE.test(String(stu.uid)) || (isConfirmed && TEST_NAMES[dispName])) return;
+      if (!isConfirmed) return; // 🪪 未在校園地圖取名的訪客不對外廣播（取名後才會出現在在線名單與排行榜）
 
       var wireMsg = Object.assign({}, stu, {
         name: dispName,
