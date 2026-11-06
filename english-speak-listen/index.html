@@ -926,7 +926,7 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
           <span class="brand-logo">🎓</span>
           <span class="brand-txt"><b>英語學院</b><small>聽・說・讀・單字 一次學齊</small></span>
         </a>
-        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes 與未發布檔案修改檢測">v2.0.0</button>
+        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes 與未發布檔案修改檢測">v3.0.0</button>
       </div>
       <nav class="main-nav" id="mainNav" aria-label="主要導覽"></nav>
       <div class="header-right" id="headerStats"></div>
@@ -978,11 +978,11 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
     trivia: { port: '8919', mount: true, path: 'trivia/', name: '冷知識學院', icon: '💡' },
     'home-repair': { port: '8919', mount: true, path: 'home-repair/', name: '居家水電修繕學院', icon: '🔧' },
     fitness: { port: '8919', mount: true, path: 'fitness/', name: '健身學院', icon: '💪' },
-    stock: { port: '8919', mount: true, path: 'tw-stock-insight/', name: '台股智慧選股', icon: '📈' },
+    stock: { port: '8919', mount: true, path: 'tw-stock-insight/', name: '台股戰情室', icon: '📈' },
     poker: { port: '8919', mount: true, path: 'poker-gto/', name: 'GTO 賽局策略學院', icon: '♠️' },
-    nba: { port: '8919', mount: true, path: 'nba-betting-iq/', name: 'NBA 數據智庫', icon: '🏀' },
-    epl: { port: '8919', mount: true, path: 'epl-odds-iq/', name: '英超數據智庫', icon: '⚽' },
-    f1: { port: '8919', mount: true, path: 'f1-odds-iq/', name: 'F1 數據智庫', icon: '🏎️' },
+    nba: { port: '8919', mount: true, path: 'nba-betting-iq/', name: 'NBA 戰情室', icon: '🏀' },
+    epl: { port: '8919', mount: true, path: 'epl-odds-iq/', name: '英超戰情室', icon: '⚽' },
+    f1: { port: '8919', mount: true, path: 'f1-odds-iq/', name: 'F1 戰情室', icon: '🏎️' },
     baseball: { port: '8919', mount: true, path: 'baseball/', name: 'MLB 戰情室', icon: '⚾' },
     twbasket: { port: '8919', mount: true, path: 'tw-basketball/', name: '台籃戰情室', icon: '⛹️' }
   };
@@ -3525,26 +3525,126 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
     return rank ? 'en-AU' : 'en-GB';
   }
 
-  /** 將超過 180 字元的長句依標點或空白切段，並保留在原句中的字元偏移量（供逐字高亮使用）。 */
+  // 自然人說話基準語速微調（1.0x 時約 0.90 倍，避免機器朗讀過快，保留從容換氣感）
+  const NATURAL_BASE_RATE = 0.90;
+
+  /** 分析單一語音片段的語氣、抑揚頓挫倍率與句間換氣停頓（ms）。 */
+  function analyzeEnChunkProsody(rawSeg, idx, total, isAttr) {
+    const s = String(rawSeg || '').trim();
+    const low = s.toLowerCase();
+    let rateMul = 1.0;
+    let pitchDelta = 0;
+    let pauseMs = 210;
+
+    if (isAttr) {
+      // 旁白引述（如 he said. / she asked.）：語速沉穩略慢、音高微降
+      rateMul *= 0.94;
+      pitchDelta -= 0.04;
+      pauseMs = 170;
+    }
+    // 故事開場或時間轉折：放慢鋪陳氣氛
+    if (/^(once upon a time|long ago|one morning|one day|one night|one afternoon|in the end|at last|finally|meanwhile|years later)\b/i.test(s)) {
+      rateMul *= 0.93;
+      pauseMs = 250;
+    } else if (/^(suddenly|however|but |yet |still,|just then|at that moment)\b/i.test(s)) {
+      rateMul *= 0.95;
+      pitchDelta += 0.02;
+    }
+
+    // 情緒與語境關鍵字微調
+    if (/\b(fast|fastest|quick|quickly|hurry|rushed|ran|excited|amazing|wonderful|great|hooray|wow|cheered|laughed|shouted)\b/i.test(low)) {
+      rateMul *= 1.05;
+      pitchDelta += 0.05;
+    } else if (/\b(slow|slowly|tired|sleep|sleepy|asleep|quiet|quietly|soft|softly|sad|sadly|sorry|sighed|whispered|waited|step by step|carefully|gently)\b/i.test(low)) {
+      rateMul *= 0.92;
+      pitchDelta -= 0.04;
+      pauseMs += 40;
+    }
+
+    // 標點符號決定的語調起伏與停頓
+    if (/(\.\.\.|…|—|--)\s*['"”’)]*$/.test(s)) {
+      rateMul *= 0.91;
+      pitchDelta -= 0.04;
+      pauseMs = 330;
+    } else if (/\?\s*['"”’)]*$/.test(s)) {
+      rateMul *= 0.96;
+      pitchDelta += 0.06;
+      pauseMs = 270;
+    } else if (/!\s*['"”’)]*$/.test(s)) {
+      rateMul *= 1.04;
+      pitchDelta += 0.06;
+      pauseMs = 220;
+    }
+
+    // 句內多子句（2 個以上逗號或超過 18 個單字）：稍微放緩讓咬字清楚
+    const commas = (s.match(/[,;:—–]/g) || []).length;
+    const wordCnt = (s.match(/\S+/g) || []).length;
+    if (commas >= 2 || wordCnt >= 18) rateMul *= 0.95;
+    else if (wordCnt <= 4 && !/!/.test(s)) rateMul *= 0.96;
+
+    // 多段子句之間製造自然的微幅流速變化
+    if (total > 1) {
+      const wave = ((idx % 3) - 1) * 0.02;
+      rateMul += wave;
+    }
+
+    return {
+      rateMul: ES.clamp(rateMul, 0.84, 1.08),
+      pitchDelta: ES.clamp(pitchDelta, -0.10, 0.12),
+      pauseMs: idx < total - 1 ? pauseMs : 0,
+    };
+  }
+
+  /**
+   * 將文字依「對話引號與旁白交界」、「句號／問號／驚嘆號／刪節號」及長句切分為自然語氣片段，
+   * 並保留在原句中的字元偏移量 offset（供逐字高亮使用）與每段的抑揚頓挫參數。
+   */
   function splitTtsChunks(text, maxLen) {
-    maxLen = maxLen || 175;
-    const chunks = [];
-    let pos = 0;
-    const len = text.length;
-    while (pos < len) {
-      while (pos < len && /\s/.test(text[pos])) pos++;
-      if (pos >= len) break;
-      if (len - pos <= maxLen) {
-        chunks.push({ text: text.slice(pos), offset: pos });
-        break;
+    maxLen = maxLen || 165;
+    const raw = String(text || '');
+    const len = raw.length;
+    if (!raw.trim()) return [{ text: '', cleanText: '', offset: 0, rateMul: 1, pitchDelta: 0, pauseMs: 0 }];
+
+    // 第一步：在保留原始 offset 的前提下，依句末標點或「引號對話 + 旁白（如 "..." he said.）」切出自然語氣段
+    const segs = [];
+    // 匹配：引號對話結束後接旁白（如 "Hello!" he said.）、旁白逗號後接引號（如 said, "Hello"）、或一般句末標點
+    const boundaryRe = /([.!?…]+['"”’)]*\s+|['"”]\s+(?=(?:he|she|they|it|the\s+\w+|a\s+\w+|[A-Z]\w*)\s+(?:said|asked|replied|shouted|whispered|cried|laughed|thought|answered|added|called)\b)|,\s+(?=["“]))/g;
+    let start = 0;
+    let m;
+    while ((m = boundaryRe.exec(raw)) !== null) {
+      const endPos = m.index + m[0].length;
+      const slice = raw.slice(start, endPos);
+      // 避免在常見縮寫（Mr. / Mrs. / Dr. / St.）處誤切
+      if (/\b(?:Mr|Mrs|Ms|Dr|Prof|St|Jr|Sr|vs)\.\s+$/i.test(slice)) continue;
+      if (slice.trim().length >= 2) {
+        segs.push({ text: slice.trim(), offset: start + slice.search(/\S/) });
+        start = endPos;
       }
-      const slice = text.slice(pos, pos + maxLen);
-      let cut = -1;
-      const punc = [...slice.matchAll(/[.!?]+(?=\s|$)/g)];
-      if (punc.length) {
-        const last = punc[punc.length - 1];
-        cut = last.index + last[0].length;
-      } else {
+    }
+    if (start < len) {
+      const rem = raw.slice(start);
+      if (rem.trim()) segs.push({ text: rem.trim(), offset: start + rem.search(/\S/) });
+    }
+    if (!segs.length) segs.push({ text: raw.trim(), offset: Math.max(0, raw.search(/\S/)) });
+
+    // 第二步：若單一語氣段仍超過 maxLen，再依子句標點或空白細切
+    const chunks = [];
+    for (const seg of segs) {
+      if (seg.text.length <= maxLen) {
+        chunks.push(seg);
+        continue;
+      }
+      let pos = 0;
+      const sLen = seg.text.length;
+      while (pos < sLen) {
+        while (pos < sLen && /\s/.test(seg.text[pos])) pos++;
+        if (pos >= sLen) break;
+        if (sLen - pos <= maxLen) {
+          chunks.push({ text: seg.text.slice(pos), offset: seg.offset + pos });
+          break;
+        }
+        const slice = seg.text.slice(pos, pos + maxLen);
+        let cut = -1;
         const clause = [...slice.matchAll(/[,;:—–]+(?=\s|$)/g)];
         if (clause.length) {
           const last = clause[clause.length - 1];
@@ -3552,12 +3652,34 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
         } else {
           cut = slice.lastIndexOf(' ');
         }
+        if (cut <= 0) cut = maxLen;
+        chunks.push({ text: seg.text.slice(pos, pos + cut), offset: seg.offset + pos });
+        pos += cut;
       }
-      if (cut <= 0) cut = maxLen;
-      chunks.push({ text: text.slice(pos, pos + cut), offset: pos });
-      pos += cut;
     }
-    return chunks.length ? chunks : [{ text, offset: 0 }];
+
+    // 第三步：為每個片段計算 cleanText（去除多餘直引號避免 TTS 唸出 quote）與抑揚頓挫參數
+    return chunks.map((ch, idx) => {
+      const isAttr = /^(?:he|she|they|it|the\s+\w+|a\s+\w+|[A-Z]\w*)\s+(?:said|asked|replied|shouted|whispered|cried|laughed|thought|answered|added|called)\b/i.test(ch.text);
+      const cleanText = ch.text.replace(/["“”]/g, '').replace(/\s+/g, ' ').trim();
+      const prosody = analyzeEnChunkProsody(ch.text, idx, chunks.length, isAttr);
+      const commaRatios = [];
+      const cRe = /[,;:—–]+/g;
+      let cm;
+      while ((cm = cRe.exec(cleanText)) !== null) {
+        commaRatios.push(cm.index / Math.max(1, cleanText.length));
+      }
+      return {
+        text: ch.text,
+        cleanText: cleanText || ch.text,
+        offset: ch.offset,
+        isAttr,
+        commaRatios,
+        rateMul: prosody.rateMul,
+        pitchDelta: prosody.pitchDelta,
+        pauseMs: prosody.pauseMs,
+      };
+    }).filter((ch) => ch.cleanText.length > 0);
   }
 
   function cloudUrlsFor(chunkText, tl) {
@@ -3597,7 +3719,8 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
     return new Promise((resolve) => {
       if (typeof Audio === 'undefined') { resolve(false); return; }
       ensureNoReferrerMeta();
-      const { urls, blobKey, localUrl } = cloudUrlsFor(chunk.text, tl);
+      const ttsText = chunk.cleanText || chunk.text;
+      const { urls, blobKey, localUrl } = cloudUrlsFor(ttsText, tl);
       const words = [];
       const re = /\S+/g;
       let m;
@@ -3605,6 +3728,8 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
         words.push({ charIndex: chunk.offset + m.index, end: m.index + m[0].length });
       }
       const totalChars = Math.max(1, chunk.text.length);
+      const commaRatios = chunk.commaRatios || [];
+      const isExclaim = /!\s*['"”’)]*$/.test(chunk.text);
       let urlIdx = 0;
       let curAttempt = 0;
       let finished = false;
@@ -3624,7 +3749,7 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
         resolve(ok);
       };
 
-      const wd = setTimeout(() => done(false), 20000);
+      const wd = setTimeout(() => done(false), 45000);
 
       const tryUrl = () => {
         clearAttemptTimers();
@@ -3649,18 +3774,27 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
         a.src = url;
         a.playbackRate = effRate;
         loadTimer = setTimeout(() => { if (!playStartedAt) failOnce(); }, 4500);
+        let lastCurTime = -1;
         const armEndTimer = () => {
           if (!playStartedAt || finished || myAttempt !== curAttempt) return;
           if (endTimer) clearTimeout(endTimer);
           const hasDur = a.duration && isFinite(a.duration) && a.duration > 0;
-          const durSec = hasDur ? a.duration : Math.max(1.0, words.length / 2.2);
+          const durSec = hasDur ? a.duration : Math.max(2.2, words.length / 1.7);
           const curSec = a.currentTime > 0 ? a.currentTime : ((Date.now() - playStartedAt) / 1000) * effRate;
-          const remMs = Math.max(160, Math.ceil((Math.max(0, durSec - curSec) / effRate) * 1000) + 420);
+          const remMs = Math.max(300, Math.ceil((Math.max(0, durSec - curSec) / effRate) * 1000) + 650);
           endTimer = setTimeout(() => {
-            if (myAttempt === curAttempt && !finished) {
-              stopCloudAudio();
-              done(true);
+            if (myAttempt !== curAttempt || finished) return;
+            if (!a.paused && !a.ended) {
+              const curT = a.currentTime || 0;
+              const durT = (a.duration && isFinite(a.duration) && a.duration > 0) ? a.duration : 0;
+              if ((durT > 0 && curT < durT - 0.08) || curT > lastCurTime + 0.01) {
+                lastCurTime = curT;
+                armEndTimer();
+                return;
+              }
             }
+            stopCloudAudio();
+            done(true);
           }, remMs);
         };
         a.onplaying = () => {
@@ -3671,16 +3805,28 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
           if (localUrl && url === localUrl) warmLocalBlob(blobKey, localUrl);
           if (onFirstStart) { const fn = onFirstStart; onFirstStart = null; fn(); }
           armEndTimer();
-          if (onBoundary && words.length) {
-            let lastWi = -1;
-            if (cloudTimer) clearInterval(cloudTimer);
-            cloudTimer = setInterval(() => {
-              if (!checkAlive() || a.paused) return;
-              const dur = a.duration && isFinite(a.duration) && a.duration > 0
-                ? a.duration
-                : Math.max(0.8, (words.length / (2.6 * (a.playbackRate || 1))));
-              const cur = a.currentTime > 0 ? a.currentTime : ((Date.now() - playStartedAt) / 1000) * effRate;
-              const ratio = ES.clamp(cur / Math.max(0.15, dur * 0.92), 0, 0.999);
+          let lastWi = -1;
+          if (cloudTimer) clearInterval(cloudTimer);
+          cloudTimer = setInterval(() => {
+            if (!checkAlive() || a.paused) return;
+            const dur = a.duration && isFinite(a.duration) && a.duration > 0
+              ? a.duration
+              : Math.max(0.8, (words.length / (2.6 * (a.playbackRate || 1))));
+            const cur = a.currentTime > 0 ? a.currentTime : ((Date.now() - playStartedAt) / 1000) * effRate;
+            const ratio = ES.clamp(cur / Math.max(0.15, dur * 0.92), 0, 0.999);
+            // 句內自然呼吸律動（Rubato）：逗號處微幅放緩 7%，句尾收音自然放緩 9%
+            let rubato = 1.0;
+            for (let ci = 0; ci < commaRatios.length; ci++) {
+              if (Math.abs(ratio - commaRatios[ci]) < 0.075) { rubato = 0.93; break; }
+            }
+            if (!isExclaim && ratio > 0.74) {
+              rubato *= 1 - ((ratio - 0.74) / 0.26) * 0.09;
+            }
+            const targetRate = ES.clamp(effRate * rubato, 0.48, 1.8);
+            if (Math.abs((a.playbackRate || effRate) - targetRate) > 0.012) {
+              try { a.playbackRate = targetRate; } catch (e) { /* ignore */ }
+            }
+            if (onBoundary && words.length) {
               const targetChar = ratio * totalChars;
               let wi = 0;
               for (let i = 0; i < words.length; i++) {
@@ -3691,8 +3837,8 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
                 lastWi = wi;
                 onBoundary({ name: 'word', charIndex: words[wi].charIndex });
               }
-            }, 45);
-          }
+            }
+          }, 45);
         };
         a.ondurationchange = () => { if (playStartedAt) armEndTimer(); };
         a.onended = () => { if (myAttempt === curAttempt) { activeCloudAudio = null; done(true); } };
@@ -3711,10 +3857,49 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
     });
   }
 
+  const preloadAudioPool = new Map();
+  function preloadText(text, opts) {
+    opts = opts || {};
+    const raw = String(text || '').trim();
+    if (!raw) return;
+    const baseTl = cloudLangFor(opts.gender || 'F', opts.rank || 0);
+    const narTl = cloudLangFor('F', 0);
+    const chunks = splitTtsChunks(raw, 165);
+    for (const ch of chunks) {
+      const tl = ch.isAttr ? narTl : baseTl;
+      const ttsText = ch.cleanText || ch.text;
+      const { urls, blobKey, localUrl } = cloudUrlsFor(ttsText, tl);
+      if (blobCache.has(blobKey)) continue;
+      if (localUrl) {
+        warmLocalBlob(blobKey, localUrl);
+      } else if (urls.length && typeof Audio !== 'undefined' && !preloadAudioPool.has(blobKey)) {
+        try {
+          if (preloadAudioPool.size >= 32) {
+            const oldest = preloadAudioPool.keys().next().value;
+            preloadAudioPool.delete(oldest);
+          }
+          const pa = new Audio();
+          pa.preload = 'auto';
+          pa.src = urls[0];
+          preloadAudioPool.set(blobKey, pa);
+        } catch (e) { /* ignore */ }
+      }
+    }
+  }
+
   async function speakCloud(text, opts, myGen) {
-    const tl = cloudLangFor(opts.gender || 'F', opts.rank || 0);
-    const rate = ES.clamp(opts.rate || ES.settings().rate || 1, 0.5, 1.8);
-    const chunks = splitTtsChunks(String(text || '').trim(), 175);
+    const baseTl = cloudLangFor(opts.gender || 'F', opts.rank || 0);
+    const narTl = cloudLangFor('F', 0);
+    const rawRate = opts.rate || ES.settings().rate || 1;
+    const baseRate = ES.clamp(rawRate * (opts.natural === false ? 1 : NATURAL_BASE_RATE), 0.48, 1.8);
+    const chunks = splitTtsChunks(String(text || '').trim(), 165);
+    if (chunks.length > 1) {
+      for (let i = 1; i < chunks.length; i++) {
+        const tl = chunks[i].isAttr ? narTl : baseTl;
+        const { blobKey, localUrl } = cloudUrlsFor(chunks[i].cleanText || chunks[i].text, tl);
+        if (localUrl) warmLocalBlob(blobKey, localUrl);
+      }
+    }
     cloudPlaying = true;
     let started = false;
     const onFirstStart = () => {
@@ -3724,10 +3909,16 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
       }
     };
     let allOk = true;
-    for (const ch of chunks) {
+    for (let i = 0; i < chunks.length; i++) {
       if (myGen !== gen) { allOk = false; break; }
-      const ok = await playCloudChunk(ch, tl, rate, opts.onBoundary, onFirstStart, () => myGen === gen);
+      const ch = chunks[i];
+      const tl = ch.isAttr ? narTl : baseTl;
+      const chunkRate = ES.clamp(baseRate * (ch.rateMul || 1), 0.48, 1.8);
+      const ok = await playCloudChunk(ch, tl, chunkRate, opts.onBoundary, onFirstStart, () => myGen === gen);
       if (!ok) { allOk = false; break; }
+      if (i < chunks.length - 1 && ch.pauseMs > 0 && myGen === gen) {
+        await ES.sleep(Math.round(ch.pauseMs / Math.max(0.75, rawRate)));
+      }
     }
     cloudPlaying = false;
     if (opts.onEnd) opts.onEnd();
@@ -3804,11 +3995,16 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
       if (my !== gen) return { ok: false, canceled: true };
 
       const browserRes = await new Promise((resolve) => {
-        const u = new SpeechSynthesisUtterance(text);
+        const cleanSay = String(text).replace(/["“”]/g, '').trim();
+        const pros = analyzeEnChunkProsody(text, 0, 1, false);
+        const rawRate = opts.rate || ES.settings().rate || 1;
+        const baseRate = rawRate * (opts.natural === false ? 1 : NATURAL_BASE_RATE);
+        const u = new SpeechSynthesisUtterance(cleanSay || text);
         const v = opts.voice || this.voiceFor(opts.gender || 'F', opts.rank || 0);
         if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = ES.settings().accent || 'en-US'; }
-        u.rate = ES.clamp(opts.rate || ES.settings().rate || 1, 0.4, 1.8);
-        u.pitch = opts.pitch || this.pitchFor(opts.gender || 'F', opts.rank || 0);
+        u.rate = ES.clamp(baseRate * pros.rateMul, 0.4, 1.8);
+        const basePitch = opts.pitch || this.pitchFor(opts.gender || 'F', opts.rank || 0);
+        u.pitch = ES.clamp(basePitch + pros.pitchDelta, 0.5, 1.6);
         let done = false;
         let started = false;
         let startAt = 0;
@@ -3819,10 +4015,16 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
           done = true;
           clearTimeout(wd);
           clearTimeout(startWd);
+          clearInterval(keepAlive);
           if (!fallbackCloud && opts.onEnd) opts.onEnd();
           resolve({ ok: !!ok, canceled: !!canceled, fallbackCloud: !!fallbackCloud });
         };
-        const wd = setTimeout(() => finish(my === gen, my !== gen, false), est * 2 + 4000);
+        const wd = setTimeout(() => finish(my === gen, my !== gen, false), Math.max(8000, est * 2.5 + 6000));
+        const keepAlive = setInterval(() => {
+          if (!done && my === gen && synth && synth.speaking) {
+            try { synth.resume(); } catch (e) { /* ignore */ }
+          }
+        }, 5000);
         const startWd = setTimeout(() => {
           if (!started && !done && my === gen && mode !== 'browser') {
             browserTtsBroken = true;
@@ -3866,6 +4068,8 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
       }
       return browserRes;
     },
+    /** 預先快取下一句語音，讓全文連續播放零停頓。 */
+    preload(text, opts) { preloadText(text, opts); },
     /** 一個「播放代號」：每次 stop() 都讓舊的逐句播放迴圈失效（speak() 本身不會）。 */
     token() { return session; },
     alive(tok) { return tok === session; },
@@ -3905,7 +4109,7 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
     get listening() { return !!curRec; },
     /**
      * 聽一段話。resolve {text, alts, confidence, error, msg}（不會 reject）。
-     * opts: lang, continuous, maxMs, onInterim(text), onStart()
+     * opts: lang, continuous, maxMs, silenceMs, onInterim(text), onStart()
      */
     listen(opts) {
       opts = opts || {};
@@ -3917,18 +4121,45 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
         rec.lang = opts.lang || ES.settings().accent || 'en-US';
         rec.interimResults = true;
         rec.maxAlternatives = 4;
-        rec.continuous = !!opts.continuous;
+        // 預設啟用 continuous = true，避免使用者講長句中間換氣停頓 0.5 秒就被瀏覽器強制切斷
+        rec.continuous = opts.continuous !== undefined ? !!opts.continuous : true;
         const finals = [];
         let interim = '';
         let err = null;
         let done = false;
+        let silenceTimer = null;
+        const silenceWait = opts.silenceMs || 3800;
+        const resetSilenceTimer = () => {
+          if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
+          if (opts.noAutoSilenceStop) return;
+          if (finals.length > 0 || interim.trim().length > 0) {
+            silenceTimer = setTimeout(() => {
+              try { rec.stop(); } catch (e) { /* ignore */ }
+            }, silenceWait);
+          }
+        };
         const finish = () => {
           if (done) return;
           done = true;
           clearTimeout(timer);
+          if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
           if (curRec === rec) curRec = null;
-          const text = (finals.map((f) => f[0].t).join(' ') || interim).trim();
-          const alts = finals.length === 1 ? finals[0].map((a) => a.t) : (text ? [text] : []);
+          const joinedFinal = finals.map((f) => f[0].t).join(' ').trim();
+          const text = (`${joinedFinal} ${interim}`).trim() || joinedFinal;
+          let alts = [];
+          if (finals.length === 1) {
+            alts = finals[0].map((a) => (interim ? `${a.t} ${interim}`.trim() : a.t));
+          } else if (finals.length > 1) {
+            const altSet = new Set();
+            for (let k = 0; k < 4; k++) {
+              const s = finals.map((f) => (f[k] || f[0]).t).join(' ').trim();
+              if (s) altSet.add(interim ? `${s} ${interim}`.trim() : s);
+            }
+            if (text) altSet.add(text);
+            alts = [...altSet];
+          } else if (text) {
+            alts = [text];
+          }
           const confs = finals.map((f) => f[0].c).filter((c) => c > 0);
           resolve({ text, alts, confidence: confs.length ? confs.reduce((a, b) => a + b, 0) / confs.length : 0,
             error: text ? null : err, msg: text ? '' : this.message(err) });
@@ -3941,12 +4172,14 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
             else interim += r[0].transcript;
           }
           ES.markActive();
+          resetSilenceTimer();
           if (opts.onInterim) opts.onInterim(`${finals.map((f) => f[0].t).join(' ')} ${interim}`.trim());
         };
         rec.onerror = (e) => { if (e.error !== 'aborted') err = e.error; };
         rec.onend = finish;
         rec.onstart = () => { if (opts.onStart) opts.onStart(); };
-        const timer = setTimeout(() => { try { rec.stop(); } catch (e) { /* ignore */ } }, opts.maxMs || 15000);
+        const maxDuration = Math.max(30000, opts.maxMs || 45000);
+        const timer = setTimeout(() => { try { rec.stop(); } catch (e) { /* ignore */ } }, maxDuration);
         curRec = rec;
         try { rec.start(); } catch (e) { err = 'start-failed'; finish(); }
       });
@@ -4023,12 +4256,25 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
         }
         resolve();
       };
+      let lastCurTime = -1;
       const armEnd = () => {
         if (finished) return;
         if (endTimer) clearTimeout(endTimer);
         const hasDur = a.duration && isFinite(a.duration) && a.duration > 0;
-        const ms = hasDur ? Math.max(180, Math.ceil((a.duration - (a.currentTime || 0)) * 1000) + 400) : 12000;
-        endTimer = setTimeout(done, ms);
+        const ms = hasDur ? Math.max(250, Math.ceil((a.duration - (a.currentTime || 0)) * 1000) + 500) : 2500;
+        endTimer = setTimeout(() => {
+          if (finished) return;
+          if (!a.paused && !a.ended) {
+            const curT = a.currentTime || 0;
+            const durT = (a.duration && isFinite(a.duration) && a.duration > 0) ? a.duration : 0;
+            if ((durT > 0 && curT < durT - 0.08) || curT > lastCurTime + 0.01) {
+              lastCurTime = curT;
+              armEnd();
+              return;
+            }
+          }
+          done();
+        }, ms);
       };
       a.onplaying = armEnd;
       a.ondurationchange = () => { if (!a.paused) armEnd(); };
@@ -12952,12 +13198,40 @@ ES.WORDS.push(
       ES.$$('.w.hl', chat).forEach((x) => x.classList.remove('hl'));
       if (hit) hit.classList.add('hl');
     }
+    function calcLineProsody(i, baseRate) {
+      const ln = L.lines[i] || {};
+      const next = L.lines[i + 1] || null;
+      const raw = String(ln.en || '').trim();
+      const speakerChanged = next && next.s !== ln.s;
+      let rateMul = 1.0;
+      if (i === 0) rateMul *= 0.94;
+      else if (i === L.lines.length - 1) rateMul *= 0.92;
+      if (/(\.\.\.|…|—|--)/.test(raw)) rateMul *= 0.92;
+      else if (/!/.test(raw)) rateMul *= 1.04;
+      else if (/\?/.test(raw)) rateMul *= 0.96;
+      const wave = Math.sin(i * 1.3) * 0.028;
+      rateMul = ES.clamp(rateMul + wave, 0.84, 1.08);
+
+      let pauseMs = 240;
+      if (/(\.\.\.|…|—|--)\s*['"”’)]*$/.test(raw)) pauseMs = 460;
+      else if (/\?\s*['"”’)]*$/.test(raw)) pauseMs = 400;
+      else if (/!\s*['"”’)]*$/.test(raw)) pauseMs = 310;
+      else if (speakerChanged) pauseMs = 350;
+      else if (raw.length > 75) pauseMs = 290;
+      else pauseMs = 235 + Math.round(Math.cos(i * 1.6) * 25);
+
+      return {
+        rate: ES.clamp(baseRate * rateMul, 0.5, 1.7),
+        pauseAfterMs: Math.round(pauseMs / Math.max(0.75, baseRate)),
+      };
+    }
     function playLine(i, slow) {
       const ln = L.lines[i];
-      const sp = ES.speakerOf(L, ln.s);
       setCur(i, true);
-      const rate = +ES.settings().rate || 1;
-      return ES.tts.speak(ln.en, { ...ES.voiceOf(L, ln.s), rate: slow ? Math.min(rate, 0.7) : rate, onBoundary: (e) => boundary(i, e) });
+      const baseRate = +ES.settings().rate || 1;
+      const prosody = calcLineProsody(i, baseRate);
+      const effRate = slow ? Math.min(baseRate, 0.7) : prosody.rate;
+      return ES.tts.speak(ln.en, { ...ES.voiceOf(L, ln.s), rate: effRate, natural: !slow, onBoundary: (e) => boundary(i, e) });
     }
     function onListenedAll() {
       const today = ES.todayKey();
@@ -12973,14 +13247,24 @@ ES.WORDS.push(
       playing = true;
       updateBtn();
       let k = Math.max(0, i);
+      if (k < L.lines.length && ES.tts.preload) {
+        ES.tts.preload(L.lines[k].en, ES.voiceOf(L, L.lines[k].s));
+        if (k + 1 < L.lines.length) ES.tts.preload(L.lines[k + 1].en, ES.voiceOf(L, L.lines[k + 1].s));
+      }
       while (k < L.lines.length && ES.tts.alive(tok)) {
+        if (ES.tts.preload) {
+          if (k + 1 < L.lines.length) ES.tts.preload(L.lines[k + 1].en, ES.voiceOf(L, L.lines[k + 1].s));
+          if (k + 2 < L.lines.length) ES.tts.preload(L.lines[k + 2].en, ES.voiceOf(L, L.lines[k + 2].s));
+        }
+        const baseRate = +ES.settings().rate || 1;
+        const prosody = calcLineProsody(k, baseRate);
         const r = await playLine(k);
         if (!ES.tts.alive(tok) || !r || r.canceled) break;
         if (!r.ok) {
           ES.toast('⚠️ 無法播放語音，請確認網路連線或點擊播放器上方「🌐 雲端語音」重試', 'bad');
           break;
         }
-        await ES.sleep(view.loop ? 700 : 280);
+        await ES.sleep(view.loop ? 650 : prosody.pauseAfterMs);
         if (!ES.tts.alive(tok)) break;
         if (!view.loop) k++;
       }
@@ -13304,7 +13588,12 @@ ES.WORDS.push(
       live.textContent = '🎙️ 請開始說…';
       const recOn = await ES.rec.start();
       const words = (u.text.match(/\S+/g) || []).length;
-      const r = await ES.asr.listen({ maxMs: 5000 + words * 750, onInterim: (t) => { live.textContent = `🎙️ ${t}`; } });
+      const r = await ES.asr.listen({
+        continuous: true,
+        maxMs: Math.max(30000, 12000 + words * 1200),
+        silenceMs: 3800,
+        onInterim: (t) => { live.textContent = `🎙️ ${t}`; },
+      });
       lastRec = recOn ? await ES.rec.stop() : null;
       if (units[idx] !== u) return null;
       if (!r.text) {
@@ -13612,7 +13901,9 @@ ES.WORDS.push(
       const words = (ln.en.match(/\S+/g) || []).length;
       const recStarted = await ES.rec.start();
       const r = await ES.asr.listen({
-        maxMs: 6500 + words * 800,
+        continuous: true,
+        maxMs: Math.max(30000, 12000 + words * 1200),
+        silenceMs: 3800,
         onInterim: (t) => {
           const live = ES.$(`[data-rlive="${i}"]`, pane);
           if (live) live.textContent = `🎙️ ${t}`;
@@ -13866,10 +14157,14 @@ ES.WORDS.push(
       ES.tts.stop();
       const tok = ES.tts.token();
       ES.$('#qStop', pane).hidden = false;
-      for (const ln of L.lines) {
+      for (let idx = 0; idx < L.lines.length; idx++) {
         if (!ES.tts.alive(tok)) break;
+        const ln = L.lines[idx];
+        if (ES.tts.preload && idx + 1 < L.lines.length) {
+          ES.tts.preload(L.lines[idx + 1].en, ES.voiceOf(L, L.lines[idx + 1].s));
+        }
         await ES.tts.speak(ln.en, ES.voiceOf(L, ln.s));
-        await ES.sleep(250);
+        await ES.sleep(45);
       }
       if (ES.tts.alive(tok)) ES.$('#qStop', pane).hidden = true;
     };
@@ -15823,8 +16118,23 @@ ES.WORDS.push(
   'use strict';
   const ES = (window.ES = window.ES || {});
   ES.RELEASES_DATA = {
-  "current_version": "2.1.0",
+  "current_version": "3.0.0",
   "releases": [
+    {
+      "version": "3.0.0",
+      "date": "2026-11-06",
+      "bump": "major",
+      "title": "更新AI 引擎、介面互動、口說特訓（共 15 個檔案）",
+      "highlights": [
+        "[頁面骨架] 更新 static/index.html：主網頁結構、版號徽章與腳本載入清單（+5 / -1 行）",
+        "[AI 引擎] 更新 ai.py：Connect-RPC 語境解釋、口說回饋與新對話產生器（+18 / -3 行）",
+        "[介面互動] 更新 static/js/app.js：頂部導覽、連續天數徽章與啟動同步流程（+1 / -1 行）",
+        "[校園導覽] 更新 static/js/campus_nav.js：🏫 校園按鈕：回到開心學園校園地圖（共用片段）（+852 / -117 行）",
+        "[課程閱讀] 更新 static/js/lesson.js：對話閱讀、逐句播放控制與重點單字句型頁（+42 / -4 行）",
+        "[口說聽力] 更新 static/js/practice.js：跟讀發音評分、角色扮演、聽寫、理解測驗與口說回饋（+15 / -4 行）"
+      ],
+      "files_count": 15
+    },
     {
       "version": "2.1.0",
       "date": "2026-11-02",
@@ -16468,6 +16778,95 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: '狼出現後，羊群怎麼了？', opts: ['躲到村子裡', '被村民救了', '安靜地吃草', '被狼追進森林'], a: 3 },
       { q: '這個故事想告訴我們什麼？', opts: ['不要在山上放羊', '說謊的人說真話也沒人信', '狼是很可怕的動物'], a: 1 }
     ]
+  },
+  {
+    id: 'en-s17',
+    level: 'A1',
+    icon: '🦁',
+    title: 'The Lion and the Mouse',
+    zh: '獅子與老鼠',
+    tag: '寓言',
+    summary: '大獅子放過了不小心吵醒牠的小老鼠；沒想到幾天後獅子掉進獵人的網子，小老鼠用尖牙咬斷繩子救了獅子一命。',
+    lines: [
+      { t: 'One hot afternoon, a big lion was sleeping under a tree.', zh: '在一個炎熱的午後，一隻大獅子正在樹下睡覺。', p: 1 },
+      { t: 'A little mouse ran over the lion\'s nose by mistake.', zh: '一隻小老鼠不小心跑過獅子的鼻子。' },
+      { t: 'The lion woke up and caught the mouse with his big paw.', zh: '獅子醒了過來，用大爪子抓住了小老鼠。' },
+      { t: '"Please don\'t eat me!" cried the little mouse.', zh: '「拜託不要吃我！」小老鼠哭喊著。', g: 'F' },
+      { t: '"If you let me go, I will help you one day."', zh: '「如果你放我走，有一天我會幫你的。」', g: 'F' },
+      { t: 'The lion laughed loudly.', zh: '獅子大聲笑了出來。', p: 1 },
+      { t: '"You are so small! How can you help a king like me?" he said.', zh: '「妳這麼小！怎麼可能幫得了我這樣的國王？」牠說。', g: 'M' },
+      { t: 'Still, the lion was in a good mood, so he opened his paw.', zh: '不過獅子心情很好，還是鬆開了爪子。' },
+      { t: '"Go home, little friend," said the lion.', zh: '「回家吧，小傢伙。」獅子說。', g: 'M' },
+      { t: 'The mouse thanked him and ran away quickly.', zh: '小老鼠向牠道謝，飛快地跑走了。' },
+      { t: 'A few days later, the lion was walking in the forest.', zh: '幾天後，獅子在森林裡散步。', p: 1 },
+      { t: 'Suddenly, he stepped into a hunter\'s trap.', zh: '突然，牠踩進了獵人的陷阱。' },
+      { t: 'A strong net fell down and caught him.', zh: '一張結實的大網掉下來把牠困住了。' },
+      { t: 'The lion pulled and bit the rope, but he could not get out.', zh: '獅子又拉又咬繩子，卻怎麼也逃不出來。' },
+      { t: 'He roared loudly, and the whole forest heard him.', zh: '牠大聲吼叫，整座森林都聽見了。' },
+      { t: 'The little mouse heard the lion\'s roar too.', zh: '小老鼠也聽見了獅子的吼聲。', p: 1 },
+      { t: 'She ran to the lion as fast as she could.', zh: '她用最快的速度跑到獅子身邊。' },
+      { t: '"Don\'t worry! I will save you," she said.', zh: '「別擔心！我來救你。」她說。', g: 'F' },
+      { t: 'She used her sharp little teeth to bite the thick ropes.', zh: '她用尖尖的小牙齒咬著粗粗的繩子。' },
+      { t: 'One by one, the ropes broke, and the lion was free!', zh: '繩子一根接一根斷掉，獅子終於自由了！' },
+      { t: '"Thank you, my little friend. You were right," said the lion.', zh: '「謝謝妳，我的小ペ友，妳說得對。」獅子說。', g: 'M', p: 1 },
+      { t: 'Even a small friend can be a great help.', zh: '就算是小小的朋友，也能幫上大忙。' }
+    ],
+    vocab: [
+      { w: 'paw', zh: '（動物的）爪子' },
+      { w: 'by mistake', zh: '不小心；誤打誤撞' },
+      { w: 'in a good mood', zh: '心情好' },
+      { w: 'trap', zh: '陷阱' },
+      { w: 'net', zh: '網子' },
+      { w: 'rope', zh: '繩索' },
+      { w: 'roar', zh: '吼叫' },
+      { w: 'sharp', zh: '鋒利的；尖的' }
+    ],
+    quiz: [
+      { q: '獅子為什麼會醒過來？', opts: ['天亮了', '小老鼠跑過牠的鼻子', '獵人開槍'], a: 1 },
+      { q: '獅子最後怎麼脫困的？', opts: ['自己掙脫', '獵人放了牠', '小老鼠咬斷繩網'], a: 2 },
+      { q: '這個故事想告訴我們什麼？', opts: ['小人物也能幫上大忙', '不要在樹下睡覺', '森林裡很危險'], a: 0 }
+    ]
+  },
+  {
+    id: 'en-s18',
+    level: 'A1',
+    icon: '🥞',
+    title: 'Sunday Morning Breakfast',
+    zh: '週日早晨的早餐店',
+    tag: '生活',
+    summary: '星期天早上，Mia 和弟弟一起去巷口的台灣早餐店買蛋餅、冰豆漿和烤吐司，帶回家給爸媽一個溫暖的驚喜。',
+    lines: [
+      { t: 'It is Sunday morning, and the sun is shining brightly.', zh: '今天是星期天早上，陽光燦爛。', p: 1 },
+      { t: 'Mia wakes up early, at seven o\'clock.', zh: 'Mia 七點就早早起床了。' },
+      { t: 'Her parents are still sleeping because they worked hard all week.', zh: '她的爸媽還在睡覺，因為他們辛苦工作了一整週。' },
+      { t: 'Mia whispers to her little brother, Leo, "Let\'s buy breakfast for Mom and Dad!"', zh: 'Mia 小聲對弟弟 Leo 說：「我們去幫爸媽買早餐吧！」', g: 'F' },
+      { t: '"Great idea!" says Leo with a big smile.', zh: '「好主意！」Leo 開心地笑著說。', g: 'M' },
+      { t: 'They take their wallet and walk to the breakfast shop on the corner.', zh: '他們帶著錢包，走到轉角的早餐店。', p: 1 },
+      { t: 'The shop smells wonderful, like eggs and toasted bread.', zh: '店裡聞起來好香，都是雞蛋和烤吐司的味道。' },
+      { t: '"Good morning, kids! What would you like today?" asks the auntie.', zh: '「早安啊，小朋友！今天想吃什麼？」早餐店阿姨問。', g: 'F' },
+      { t: '"Two cheese egg rolls and two sandwiches, please," says Mia.', zh: '「請給我兩份起司蛋餅和兩個三明治。」Mia 說。', g: 'F' },
+      { t: '"And two warm soy milks and two iced black teas!" adds Leo.', zh: '「還要兩杯溫豆漿和兩杯冰紅茶！」Leo 補充說。', g: 'M' },
+      { t: 'The auntie cooks the eggs on the hot pan.', zh: '阿姨在熱呼呼的鐵板上煎蛋。', p: 1 },
+      { t: 'In five minutes, the food is ready in a warm paper bag.', zh: '五分鐘後，熱騰騰的食物就裝進紙袋裡了。' },
+      { t: 'Mia pays the money and says, "Thank you! Have a nice day!"', zh: 'Mia 付了錢，說：「謝謝阿姨！祝您有美好的一天！」', g: 'F' },
+      { t: 'At home, Mia and Leo put the breakfast on the dining table.', zh: '回到家，Mia 和 Leo 把早餐擺在餐桌上。', p: 1 },
+      { t: 'Just then, Mom and Dad walk out of their bedroom.', zh: '就在這時，爸爸媽媽走出房間。' },
+      { t: '"Surprise! Breakfast is ready!" shout Mia and Leo.', zh: '「驚喜！早餐準備好囉！」Mia 和 Leo 一起喊道。' },
+      { t: 'Mom hugs them and says, "This is the best Sunday breakfast ever!"', zh: '媽媽抱住他們說：「這是有史以來最棒的週日早餐！」', g: 'F' }
+    ],
+    vocab: [
+      { w: 'whisper', zh: '小聲說；耳語' },
+      { w: 'corner', zh: '轉角；街角' },
+      { w: 'toasted bread', zh: '烤吐司' },
+      { w: 'egg roll', zh: '蛋餅' },
+      { w: 'soy milk', zh: '豆漿' },
+      { w: 'surprise', zh: '驚喜' }
+    ],
+    quiz: [
+      { q: 'Mia 和弟弟為什麼想自己去買早餐？', opts: ['爸媽工作一週很累還在睡，想給他們驚喜', '家裡沒電了', '學校老師規定的作業'], a: 0 },
+      { q: '他們點了什麼飲料？', opts: ['牛奶和咖啡', '溫豆漿和冰紅茶', '柳橙汁和綠茶'], a: 1 },
+      { q: '媽媽看到早餐時有什麼反應？', opts: ['覺得太貴了', '說已經吃飽了', '擁抱他們並說是最棒的週日早餐'], a: 2 }
+    ]
   }
 ]);
 
@@ -16769,6 +17168,87 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: '陳奶奶第一次來時帶了什麼給 Kevin？', opts: ['水果', '一盆植物', '雞湯', '便利商店的便當'], a: 2 },
       { q: 'Kevin 用什麼方式回報陳奶奶？', opts: ['幫她煮飯', '帶她去加拿大', '幫她打掃陽台', '修好她的電視和手機，教她視訊'], a: 3 },
       { q: '現在他們每週日會做什麼？', opts: ['一起散步', '一起喝茶', '一起去市場'], a: 1 }
+    ]
+  },
+  {
+    id: 'en-s19',
+    level: 'A2',
+    icon: '🚴',
+    title: 'A Bike Ride Around Sun Moon Lake',
+    zh: '日月潭單車環湖記',
+    tag: '旅行',
+    summary: 'Ben 和外國室友 Sam 在秋天租單車環日月潭，途中Sam車胎沒氣，幸好遇到熱心的茶葉蛋老闆娘幫忙打氣，還看到絕美的湖面夕陽。',
+    lines: [
+      { t: 'Last October, Ben took his American roommate, Sam, to Sun Moon Lake.', zh: '去年十月，Ben 帶他的美國室友 Sam 去日月潭。', p: 1 },
+      { t: 'The autumn air was cool, and the sky was clear and blue.', zh: '秋天的空氣很涼爽，天空湛藍又清澈。' },
+      { t: '"I heard this bike path is one of the most beautiful in the world," Sam said excitedly.', zh: '「我聽說這條自行車道是全世界最美的車道之一。」Sam 興奮地說。', g: 'M' },
+      { t: 'They rented two mountain bikes near the visitor center and started riding along the lake.', zh: '他們在遊客中心附近租了兩台登山車，開始沿著湖邊騎行。' },
+      { t: 'Green mountains stood around the quiet water like a painting.', zh: '翠綠的群山環繞著平靜的湖水，就像一幅畫。', p: 1 },
+      { t: 'They stopped at a small pier to buy famous tea eggs.', zh: '他們在一座小碼頭停下來買有名的茶葉蛋。' },
+      { t: '"Wow, these eggs smell amazing! How do they make them?" Sam asked.', zh: '「哇，這茶葉蛋聞起來太香了！是怎麼做的？」Sam 問。', g: 'M' },
+      { t: '"They boil them for hours with black tea and mushrooms," Ben explained.', zh: '「他們用紅茶和香菇滷了好幾個小時。」Ben 解釋道。', g: 'M' },
+      { t: 'When they were ready to leave, Sam noticed a problem with his back tire.', zh: '當他們準備離開時，Sam 發現他的後輪出問題了。', p: 1 },
+      { t: '"Oh no! My tire is flat, and the rental shop is five kilometers behind us," Sam said.', zh: '「糟了！我的車胎沒氣了，而且租車店在我們後面五公里遠。」Sam 說。', g: 'M' },
+      { t: 'The woman selling tea eggs heard them and waved.', zh: '賣茶葉蛋的老闆娘聽見了，向他們招手。' },
+      { t: '"Don\'t worry, boys! My husband repairs bikes. Let me get his pump," she said.', zh: '「別擔心，小夥子！我先生會修腳踏車，我去拿他的打氣筒。」她說。', g: 'F' },
+      { t: 'Luckily, there was no hole in the tire; the valve was just a little loose.', zh: '幸好輪胎沒有破洞，只是氣嘴稍微鬆了一點。' },
+      { t: 'They tightened the valve, pumped up the tire, and thanked the kind woman.', zh: '他們鎖緊氣嘴、打飽了氣，向親切的老闆娘道謝。' },
+      { t: 'By five o\'clock, they reached the wooden bridge over the water.', zh: '到了五點，他們抵達跨越水面的木棧橋。', p: 1 },
+      { t: 'The setting sun turned the whole lake golden and orange.', zh: '夕陽把整座湖面染成了金橘色。' },
+      { t: '"This trip was worth every pedal," Sam said, taking a photo of the sunset.', zh: '「這趟旅程每踩一下踏板都太值得了。」Sam 一邊拍下夕陽一邊說。', g: 'M' }
+    ],
+    vocab: [
+      { w: 'roommate', zh: '室友' },
+      { w: 'visitor center', zh: '遊客中心' },
+      { w: 'pier', zh: '碼頭' },
+      { w: 'flat tire', zh: '沒氣的輪胎；爆胎' },
+      { w: 'pump', zh: '打氣筒；打氣' },
+      { w: 'sunset', zh: '夕陽；日落' }
+    ],
+    quiz: [
+      { q: '他們在碼頭買了什麼點心？', opts: ['香腸', '茶葉蛋', '鳳梨酥'], a: 1 },
+      { q: 'Sam 的腳踏車出了什麼問題？', opts: ['鏈條斷了', '煞車壞了', '後輪氣嘴鬆了沒氣'], a: 2 },
+      { q: '誰幫他們解決了問題？', opts: ['賣茶葉蛋的老闆娘', '警察', '其他單車客'], a: 0 }
+    ]
+  },
+  {
+    id: 'en-s20',
+    level: 'A2',
+    icon: '🍲',
+    title: 'Stone Soup',
+    zh: '石頭湯',
+    tag: '寓言',
+    summary: '飢餓的旅人來到互不往來的村莊，沒有人願意分食物給他；他用一顆圓石頭煮「石頭湯」，讓全村村民紛紛拿出食材共享溫暖大餐。',
+    lines: [
+      { t: 'A tired traveler arrived at a small village on a cold evening.', zh: '一個寒冷的傍晚，一位疲憊的旅人來到一座小村莊。', p: 1 },
+      { t: 'He knocked on several doors and asked for a little food.', zh: '他敲了好幾戶人家的門，想討一點食物。' },
+      { t: '"Sorry, we have nothing to share," every villager said and closed the door.', zh: '「抱歉，我們沒有東西可以分給你。」每個村民都這麼說，然後把門關上。', g: 'F' },
+      { t: 'The traveler did not get angry; instead, he smiled and walked to the village square.', zh: '旅人沒有生氣，反而笑著走到村莊廣場。', p: 1 },
+      { t: 'He filled a big iron pot with water and built a fire under it.', zh: '他在大鐵鍋裡裝滿水，在底下生起火來。' },
+      { t: 'Then he took a smooth, clean stone from his bag and dropped it into the pot.', zh: '接著他從袋子裡拿出一顆光滑乾淨的石頭，放進鍋裡。' },
+      { t: 'Curious villagers came out of their houses to watch him.', zh: '好奇的村民從屋裡走出來看他在做什麼。', p: 1 },
+      { t: '"What are you cooking?" asked a baker.', zh: '「你在煮什麼？」一位麵包師傅問。', g: 'M' },
+      { t: '"I am making delicious stone soup," said the traveler, tasting a spoonful.', zh: '「我在煮美味的石頭湯。」旅人嚐了一口說。', g: 'M' },
+      { t: '"It is good, but it would taste even better with a few carrots."', zh: '「很好喝，不過如果有一點紅蘿蔔就更棒了。」', g: 'M' },
+      { t: '"I have some carrots at home!" said a woman, and she ran to get them.', zh: '「我家有一些紅蘿蔔！」一位婦人說完就跑回家拿。', g: 'F' },
+      { t: 'Soon, another villager brought potatoes, and a farmer added beef and onions.', zh: '不久，另一個村民帶來馬鈴薯，一位農夫又加進牛肉和洋蔥。', p: 1 },
+      { t: 'The baker brought fresh bread for everyone.', zh: '麵包師傅還拿來新鮮麵包給大家。' },
+      { t: 'In an hour, a rich, wonderful soup was ready.', zh: '一小時後，一鍋濃郁美味的濃湯煮好了。' },
+      { t: 'All the villagers sat together, ate happily, and talked like old friends.', zh: '所有村民坐在一起開心地吃著，像老朋友一樣聊天。' },
+      { t: 'They learned that when everyone shares a little, everyone has a feast.', zh: '他們明白了：當每個人都分享一點點，大家就能擁有一場盛宴。' }
+    ],
+    vocab: [
+      { w: 'traveler', zh: '旅人' },
+      { w: 'village square', zh: '村莊廣場' },
+      { w: 'smooth', zh: '光滑的' },
+      { w: 'curious', zh: '好奇的' },
+      { w: 'spoonful', zh: '一湯匙的量' },
+      { w: 'feast', zh: '盛宴；大餐' }
+    ],
+    quiz: [
+      { q: '村民一開始為什麼不給旅人食物？', opts: ['他們不想分享', '村莊沒有人住', '他們聽不懂旅人的話'], a: 0 },
+      { q: '旅人最先放進鍋子裡的是什麼？', opts: ['紅蘿蔔', '一顆乾淨的石頭', '牛肉'], a: 1 },
+      { q: '這個故事教了村民什麼道理？', opts: ['石頭很有營養', '每個人分享一點點，大家都能享受豐盛大餐', '不要跟陌生人說話'], a: 1 }
     ]
   }
 ]);
@@ -17118,6 +17598,84 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: 'Leo 為什麼把手機關機？', opts: ['手機壞掉了', '不想被打擾', '要保留電量以備緊急使用'], a: 2 },
       { q: '他們用什麼方法求救？', opts: ['打電話報警', '生火冒煙', '每隔幾分鐘吹三聲哨子'], a: 2 },
       { q: '這次經驗之後，他們會怎麼做？', opts: ['再也不爬山', '只在晚上爬山', '只走自己熟悉的山', '登山前先查天氣並準備好裝備'], a: 3 }
+    ]
+  },
+  {
+    id: 'en-s21',
+    level: 'B1',
+    icon: '🎻',
+    title: 'The Midnight Violinist at the Station',
+    zh: '車站裡的午夜小提琴手',
+    tag: '溫馨',
+    summary: '加班到深夜的工程師 Ryan 在地下道遇見拉小提琴的退休音樂老師，一首溫柔的曲子撫平了他的焦慮，也讓他找回對音樂與生活的熱情。',
+    lines: [
+      { t: 'Ryan had been working late every night for a month to finish a major software project.', zh: '為了完成一個大型軟體專案，Ryan 已經連續一個月每天加班到深夜。', p: 1 },
+      { t: 'By the time he walked into the subway station at eleven thirty, he was completely exhausted.', zh: '當他在十一點半走進捷運站時，已經筋疲力盡。' },
+      { t: 'His eyes were sore from staring at code, and his shoulders felt as heavy as lead.', zh: '他的雙眼因為盯著程式碼而痠痛，肩膀沉重得像灌了鉛。' },
+      { t: 'As he walked through the long underground passage, he heard the gentle sound of a violin.', zh: '當他走過長長的地下通道時，聽見一陣溫柔的小提琴聲。', p: 1 },
+      { t: 'An elderly man in a neat gray coat was playing a slow, familiar melody near the exit.', zh: '一位穿著整齊灰色外套的老先生正在出口附近拉著緩慢而熟悉的旋律。' },
+      { t: 'Most commuters hurried past to catch the last train, but Ryan stopped to listen.', zh: '大多數通勤族都匆匆走過趕搭末班車，但 Ryan 停下腳步聆聽。' },
+      { t: 'It was the very same piece Ryan\'s mother used to play when he was a child.', zh: '那正是 Ryan 小時候媽媽常彈的那首曲子。' },
+      { t: 'When the song ended, Ryan put a hundred-dollar bill into the open violin case.', zh: '曲子結束時，Ryan 把一張百元鈔票放進打開的琴盒裡。', p: 1 },
+      { t: '"That was beautiful. I haven\'t heard that song in ten years," Ryan said softly.', zh: '「太美了。我已經十年沒聽過這首歌了。」Ryan 輕聲說。', g: 'M' },
+      { t: '"Thank you, young man. Music has a way of finding us when we need a rest," the violinist smiled.', zh: '「謝謝你，年輕人。當我們需要休息時，音樂總會找到我們。」小提琴手微笑著說。', g: 'M' },
+      { t: 'The man explained that he was a retired music teacher who played here twice a week just for joy.', zh: '老先生解釋說他是一位退休音樂老師，每週來這裡拉琴兩次，純粹是為了快樂。' },
+      { t: '"Do you play an instrument yourself?" the teacher asked.', zh: '「你自己也彈奏樂器嗎？」老師問。', g: 'M' },
+      { t: '"I used to play the guitar in college, but I gave it up when I started working," Ryan admitted.', zh: '「我大學時常彈吉他，但開始工作後就放棄了。」Ryan 坦承。', g: 'M', p: 1 },
+      { t: '"A busy life needs music even more than a quiet one. Pick it up again for ten minutes a day," the old man advised.', zh: '「忙碌的生活比平靜的生活更需要音樂。每天再拿起琴彈個十分鐘吧。」老人建議道。', g: 'M' },
+      { t: 'That weekend, Ryan took his old guitar out of the closet, wiped off the dust, and tuned the strings.', zh: '那個週末，Ryan 把舊吉他從衣櫃裡拿出來，擦掉灰塵，調好琴弦。' },
+      { t: 'Playing a few simple chords made his small apartment feel warm and alive again.', zh: '彈奏幾個簡單的和弦，讓他的小公寓重新變得溫暖而充滿生機。' }
+    ],
+    vocab: [
+      { w: 'exhausted', zh: '筋疲力盡的' },
+      { w: 'commuter', zh: '通勤族' },
+      { w: 'melody', zh: '旋律' },
+      { w: 'retired', zh: '退休的' },
+      { w: 'give up', zh: '放棄' },
+      { w: 'tune', zh: '調音；曲調' }
+    ],
+    quiz: [
+      { q: 'Ryan 為什麼在深夜十一點半才走進車站？', opts: ['去聽音樂會', '為了軟體專案加班到深夜', '去接朋友'], a: 1 },
+      { q: '為什麼那首小提琴曲特別打動 Ryan？', opts: ['那是他小時候媽媽常彈的曲子', '那是流行排行榜第一名', '是他自己寫的歌'], a: 0 },
+      { q: '退休音樂老師給了 Ryan 什麼建議？', opts: ['辭掉工作去學小提琴', '每天再拿起吉他彈十分鐘', '買一把昂貴的新吉他'], a: 1 }
+    ]
+  },
+  {
+    id: 'en-s22',
+    level: 'B1',
+    icon: '🏺',
+    title: 'The Cracked Water Pot',
+    zh: '有裂縫的水罐',
+    tag: '寓言',
+    summary: '挑水夫的兩只水罐中，有一只帶著裂縫，每天只能送達半罐水而感到自責；挑水夫卻帶它看路邊盛開的野花，讓它發現自己獨特的價值。',
+    lines: [
+      { t: 'A water bearer in India had two large clay pots, each hanging on one end of a pole across his shoulders.', zh: '印度有一位挑水夫，有兩只大陶罐，分別掛在他肩上扁擔的兩端。', p: 1 },
+      { t: 'One of the pots was perfect and always delivered a full portion of water from the stream to the master\'s house.', zh: '其中一只陶罐完好無缺，從小溪到主人家的路上總是能送達滿滿一罐水。' },
+      { t: 'The other pot had a small crack in its side, so by the end of the long walk, it was only half full.', zh: '另一只陶罐側邊有一道小裂縫，所以走完長長的路後，總是只剩半罐水。' },
+      { t: 'For two years, this happened every single day.', zh: '整整兩年，天天都是如此。', p: 1 },
+      { t: 'The perfect pot was proud of its work, while the cracked pot felt ashamed of its imperfection.', zh: '完好的水罐為自己的表現感到驕傲，而有裂縫的水罐則為自己的缺陷感到羞愧。' },
+      { t: 'One morning by the stream, the cracked pot spoke to the water bearer.', zh: '一天早上在小溪邊，有裂縫的水罐對挑水夫開口了。' },
+      { t: '"I am sorry that my crack causes water to leak all the way back to the house," it said sadly.', zh: '「很抱歉我的裂縫讓水一路漏到家門口。」它難過地說。', g: 'F' },
+      { t: '"Because of me, you work hard but only get half the value for your effort."', zh: '「因為我，你辛苦工作卻只得到一半的成果。」', g: 'F' },
+      { t: 'The water bearer smiled gently at the pot.', zh: '挑水夫對水罐溫柔地笑了笑。', p: 1 },
+      { t: '"As we walk back today, please look at the wildflowers along the side of the path," he said.', zh: '「今天我們走回去的時候，請看看小路旁邊的野花吧。」他說。', g: 'M' },
+      { t: 'On the way up the hill, the cracked pot noticed bright, colorful flowers blooming only on its side of the path.', zh: '走上山坡的路上，有裂縫的水罐注意到，只有自己這一側的路邊開滿了鮮豔繽紛的花朵。' },
+      { t: '"Did you see that?" the bearer asked. "I knew about your crack, so I planted flower seeds on your side."', zh: '「妳看到了嗎？」挑水夫問，「我知道妳有裂縫，所以在妳那一側種了花種子。」', g: 'M', p: 1 },
+      { t: '"Every day as we walked back, you watered them without even knowing it."', zh: '「每天我們走回來時，妳都在不知不覺中替它們澆了水。」', g: 'M' },
+      { t: '"Without you being just the way you are, there would not be this beauty to grace our table."', zh: '「如果妳不是現在這個樣子，我們的餐桌上就不會有這份美麗的花朵了。」', g: 'M' }
+    ],
+    vocab: [
+      { w: 'clay pot', zh: '陶罐' },
+      { w: 'crack', zh: '裂縫' },
+      { w: 'ashamed', zh: '感到羞愧的' },
+      { w: 'imperfection', zh: '不完美；缺陷' },
+      { w: 'leak', zh: '漏（水）' },
+      { w: 'bloom', zh: '開花；盛開' }
+    ],
+    quiz: [
+      { q: '為什麼有裂縫的水罐感到羞愧？', opts: ['它長得不好看', '它每天走到家時只剩半罐水', '它比另一只水罐小'], a: 1 },
+      { q: '挑水夫在有裂縫的水罐那一側的路邊做了什麼？', opts: ['鋪了石頭', '種了花種子', '挖了一條水溝'], a: 1 },
+      { q: '這個故事想傳達什麼？', opts: ['壞掉的東西要馬上丟掉', '看似不完美的地方，也能創造獨特的美好價值', '挑水是一件很辛苦的工作'], a: 1 }
     ]
   }
 ]);
@@ -17488,6 +18046,82 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: '到了花蓮，Emma 做了什麼？', opts: ['參加原本的日出行程', '照著餐巾紙地圖去漁夫的海灘', '立刻搭機回倫敦'], a: 1 },
       { q: '「a blessing in disguise」在故事中是什麼意思？', opts: ['偽裝的禮物', '祝福別人旅途平安', '因禍得福'], a: 2 }
     ]
+  },
+  {
+    id: 'en-s23',
+    level: 'B2',
+    icon: '🫖',
+    title: 'The Tea Master on Alishan',
+    zh: '阿里山上的製茶師',
+    tag: '文化',
+    summary: '在台北行銷公司工作的 Claire 上阿里山採訪老茶農，原本只想快速拍完短影音，卻在兩天一夜的製茶過程中體會到「慢工出細活」的人生哲學。',
+    lines: [
+      { t: 'Claire worked at a fast-paced digital marketing agency in Taipei, where everything had to be done yesterday.', zh: 'Claire 在台北一家步調極快的數位行銷公司上班，在那裡所有事情都恨不得昨天就完成。', p: 1 },
+      { t: 'When her boss assigned her to film a three-minute promotional video about high-mountain oolong tea, she figured she could wrap it up in a single afternoon.', zh: '當主管指派她去拍一支三分鐘的高山烏龍茶宣傳片時，她以為只要一個下午就能搞定。' },
+      { t: 'After a winding three-hour drive up Alishan, she arrived at a modest wooden tea house surrounded by terraced hills.', zh: '開了三小時蜿蜒的山路上了阿里山後，她抵達一間被梯田山丘環繞的樸素木造茶屋。' },
+      { t: 'Master Lin, a sixty-five-year-old tea maker with weathered hands, greeted her with a warm pot of tea.', zh: '六十五歲、雙手佈滿歲月痕跡的製茶師林師傅，端著一壺熱茶迎接她。', p: 1 },
+      { t: '"If we shoot the interview now and take a few shots of the tea fields, I can head back before dark," Claire said, checking her watch.', zh: '「如果我們現在拍訪談、再補幾個茶園鏡頭，我天黑前就能下山。」Claire 看著手錶說。', g: 'F' },
+      { t: 'Master Lin chuckled softly and shook his head.', zh: '林師傅輕聲笑了笑，搖了搖頭。' },
+      { t: '"You cannot film the soul of oolong tea in two hours, Miss. Real tea takes a whole night to breathe," he said.', zh: '「小姐，妳沒辦法在兩小時內拍出烏龍茶的靈魂。真正的茶需要一整晚的時間呼吸。」他說。', g: 'M' },
+      { t: 'Reluctantly, Claire agreed to stay overnight and follow the entire process from harvest to roasting.', zh: 'Claire 半推半就地答應留下來過夜，完整記錄從採茶到烘焙的過程。', p: 1 },
+      { t: 'All afternoon, the leaves were spread out under the weak mountain sun to wither, and then moved indoors onto bamboo trays.', zh: '整個下午，茶葉被攤在柔和的高山陽光下日光萎凋，接著移入室內放在竹篩上。' },
+      { t: 'Every two hours through the night, Master Lin gently tossed the leaves by hand and smelled them with his eyes closed.', zh: '整晚每隔兩小時，林師傅就親手輕輕翻動茶葉，閉著眼睛聞茶香。' },
+      { t: '"Why don\'t you use a timer or a machine to do this automatically?" Claire asked at two in the morning.', zh: '「您為什麼不用計時器或機器自動處理呢？」凌晨兩點時 Claire 問道。', g: 'F' },
+      { t: '"Because the weather, the humidity, and the leaves are different every single day," Master Lin replied.', zh: '「因為每天的天氣、濕度和茶葉都不一樣。」林師傅回答。', g: 'M', p: 1 },
+      { t: '"If you rush the leaves, they turn bitter; if you wait patiently and listen to them, they release a fragrance like mountain orchids."', zh: '「如果妳急著催促茶葉，它就會變苦；如果妳耐心等待、傾聽它們，就會散發出如高山蘭花般的香氣。」', g: 'M' },
+      { t: 'At dawn, when Master Lin brewed the first cup of the newly finished tea, Claire took a sip and was left speechless.', zh: '黎明時分，當林師傅沖泡出第一杯剛製好的新茶，Claire 啜飲了一口，驚豔得說不出話來。' },
+      { t: 'The golden liquid was smooth and sweet, carrying the crisp scent of morning mist and pine trees.', zh: '金黃色的茶湯溫潤甘甜，帶著清晨薄霧與松樹的清新氣息。' },
+      { t: 'On her way back to Taipei, Claire deleted her rushed script and wrote a story about patience—a lesson she intended to keep for herself as well.', zh: '在回台北的路上，Claire 刪掉了原本倉促的腳本，寫下一個關於「耐心」的故事——這也是她打算留給自己的人生課題。' }
+    ],
+    vocab: [
+      { w: 'fast-paced', zh: '步調快速的' },
+      { w: 'wrap up', zh: '完成；收尾' },
+      { w: 'weathered', zh: '飽經風霜的' },
+      { w: 'reluctantly', zh: '不情願地；勉為其難地' },
+      { w: 'humidity', zh: '濕度' },
+      { w: 'fragrance', zh: '香氣；芬芳' }
+    ],
+    quiz: [
+      { q: 'Claire 原本打算花多少時間拍完宣傳片？', opts: ['一個下午', '一個星期', '三天兩夜'], a: 0 },
+      { q: '林師傅為什麼不用計時器自動翻動茶葉？', opts: ['因為沒有電', '因為每天的天氣、濕度與茶葉狀態都不同', '因為機器壞了'], a: 1 },
+      { q: 'Claire 從製茶過程中學到了什麼？', opts: ['如何快速賺錢', '真正美好的事物需要耐心等待與細心傾聽', '高山比較適合睡覺'], a: 1 }
+    ]
+  },
+  {
+    id: 'en-s24',
+    level: 'B2',
+    icon: '📫',
+    title: 'Letters in the Old Desk',
+    zh: '舊書桌裡的信件',
+    tag: '溫馨',
+    summary: '建築師 Daniel 在二手家具店買下一張老樟木書桌，修復抽屜時發現夾層裡五十年前的未寄出信件，並循著線索將信交還給當事人的女兒。',
+    lines: [
+      { t: 'Daniel, a young architect with a fondness for vintage furniture, spotted a camphor-wood desk at a flea market in Tainan.', zh: '喜愛老家具的年輕建築師 Daniel，在台南的跳蚤市場看中了一張樟木書桌。', p: 1 },
+      { t: 'Its surface was scratched and faded, yet the craftsmanship of the joints was unmistakable.', zh: '桌面雖然有刮痕且褪色了，但榫接處的精湛工藝卻顯而易見。' },
+      { t: 'When he brought it home and removed the bottom drawer to sand the wood, a small wooden panel came loose at the back.', zh: '當他把書桌搬回家、拆下最底層抽屜準備打磨木頭時，後方一塊小木板鬆脫了。' },
+      { t: 'Tucked inside the hidden compartment was a bundle of letters tied with a faded red ribbon, dated 1974.', zh: '藏在暗格裡的是一疊用褪色紅絲帶綁著的信件，日期是一九七四年。', p: 1 },
+      { t: 'The letters were written by a young sailor named A-Hsiung to a woman named Shu-Fen, who lived near Anping Harbor.', zh: '這些信是一位名叫阿雄的年輕水手，寫給住在安平港附近的女子淑芬的。' },
+      { t: 'In the final letter, A-Hsiung wrote that his ship had been delayed by a typhoon, and he begged her to wait for him under the old banyan tree.', zh: '在最後一封信裡，阿雄寫道他的船因為颱風延誤，懇求她在老榕樹下等他回來。' },
+      { t: 'Moved by the earnest words, Daniel decided to track down the family mentioned on the envelopes.', zh: 'Daniel 被信中真摯的字句深深打動，決定循著信封上的地址尋找這家人。', p: 1 },
+      { t: 'Although the street numbers had changed over the decades, an elderly postmaster helped him locate the original house.', zh: '雖然門牌號碼幾十年來已經變更，但一位年長的郵局局長幫他找到了原本的老屋。' },
+      { t: 'A woman in her forties opened the door and listened in amazement as Daniel explained how he had found the bundle.', zh: '一位四十多歲的女士打開門，驚訝地聽著 Daniel 解釋他是如何發現這疊信的。' },
+      { t: '"A-Hsiung and Shu-Fen are my parents!" she said, her eyes filling with tears.', zh: '「阿雄和淑芬就是我的父母！」她熱淚盈眶地說。', g: 'F', p: 1 },
+      { t: '"My father did make it back after the storm, and they were married for forty years, though he always wondered where his notebook and letters had gone."', zh: '「我父親在暴風雨後真的趕回來了，他們結婚四十年，只是他一直納悶當年的筆記和信件去了哪裡。」', g: 'F' },
+      { t: 'Seeing the ninety-year-old couple read their youthful letters hand in hand, Daniel knew the old desk had given him a story far more precious than wood.', zh: '看著這對九十歲的老夫妻手牽手讀著年輕時的信件，Daniel 知道這張老書桌給了他一段比木頭珍貴得多的故事。' }
+    ],
+    vocab: [
+      { w: 'vintage', zh: '復古的；古董級的' },
+      { w: 'craftsmanship', zh: '工藝；手藝' },
+      { w: 'compartment', zh: '隔間；暗格' },
+      { w: 'earnest', zh: '真摯的；誠懇的' },
+      { w: 'track down', zh: '追查到；尋獲' },
+      { w: 'in amazement', zh: '驚訝地' }
+    ],
+    quiz: [
+      { q: 'Daniel 是怎麼發現那些信件的？', opts: ['書店老闆送他的', '拆下老書桌底層抽屜打磨時發現暗格', '在郵局撿到的'], a: 1 },
+      { q: '誰幫助 Daniel 找到信封上原本的老屋？', opts: ['一位年長的郵局局長', '計程車司機', '家具店老闆'], a: 0 },
+      { q: '信件中的男女主角後來怎麼樣了？', opts: ['從此沒有再見面', '水手在暴風雨後趕回來，兩人結婚相守四十年', '搬到外國去了'], a: 1 }
+    ]
   }
 ]);
 
@@ -17495,9 +18129,9 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
   <script>/* /js/stories.js */
 /* 開心學園語言學院 — stories.js（📖 故事聽力分頁，英語／日語／韓語學院共用同一份引擎）
  *   - 內容來源：static/js/content/stories.js（window.STORIES_DATA）
- *   - 逐句朗讀＋目前句子高亮／自動捲動、單句重播、慢速、盲聽（隱藏原文）、顯示中文／讀音、循環播放
- *   - 重點單字點一下發音、理解小測驗；聽完全文或測驗全對會標記「已聽完」（存在 localStorage）
- *   - 語音一律走各學院自己的 tts.speak()（遵守 CAMPUS_CONTRACT §7：每次播放新 Audio、多鏡像備援、可無限重播）
+ *   - 整篇文章自然段落排版（無逐句播放按鈕），點選文章中任一句即可直接播放該句，全文播放預載下一句零停頓無縫銜接
+ *   - 支援慢速、盲聽（隱藏原文）、顯示中文／讀音、循環播放、重點單字點一下發音、理解小測驗
+ *   - 語音一律走各學院自己的 tts.speak() + tts.preload()（遵守 CAMPUS_CONTRACT §7：每次播放新 Audio、多鏡像備援、可無限重播）
  */
 (function () {
   'use strict';
@@ -17508,9 +18142,9 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
   const A = window[NS];
   const LANG = { ES: 'en', JA: 'ja', KO: 'ko' }[NS];
   const LANG_META = {
-    en: { name: '英語', reading: '', blind: '盲聽（隱藏英文）', hint: '先盲聽抓大意，再打開英文與中文逐句精聽，最後跟著唸！' },
-    ja: { name: '日語', reading: '假名', blind: '盲聽（隱藏日文）', hint: '先盲聽抓大意，再打開假名與中文逐句精聽，最後跟著唸！' },
-    ko: { name: '韓語', reading: '羅馬拼音', blind: '盲聽（隱藏韓文）', hint: '先盲聽抓大意，再打開羅馬拼音與中文逐句精聽，最後跟著唸！' },
+    en: { name: '英語', reading: '', blind: '盲聽（隱藏英文）', hint: '先盲聽抓大意，再打開英文與中文整篇閱讀，想重聽哪一句直接點選句子即可播放！' },
+    ja: { name: '日語', reading: '假名', blind: '盲聽（隱藏日文）', hint: '先盲聽抓大意，再打開假名與中文整篇閱讀，想重聽哪一句直接點選句子即可播放！' },
+    ko: { name: '韓語', reading: '羅馬拼音', blind: '盲聽（隱藏韓文）', hint: '先盲聽抓大意，再打開羅馬拼音與中文整篇閱讀，想重聽哪一句直接點選句子即可播放！' },
   }[LANG];
   const STORE_KEY = `${NS.toLowerCase()}.stories.v1`;
   const esc = A.esc || ((s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
@@ -17522,11 +18156,78 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     if (NS === 'KO') A.toast(msg, 2600);
     else A.toast(msg, 'ok');
   }
+  function cleanStoryText(text) {
+    return String(text || '').trim();
+  }
+  /**
+   * 計算故事每一句的真人朗讀韻律（抑揚頓挫速度微調 + 依語境動態調整句間換氣停頓）。
+   * 由於下一句已在背景預載完成，此處的停頓完全是模擬自然人說故事的呼吸與情緒留白。
+   */
+  function lineProsody(lines, i, userRate) {
+    const base = userRate || 1;
+    const ln = lines[i] || {};
+    const next = lines[i + 1] || null;
+    const raw = String(ln.t || '').trim();
+    const isParaStart = i === 0 || !!ln.p;
+    const isParaEnd = !next || !!next.p || i === lines.length - 1;
+    const hasQuote = /["“”「」『』]/.test(raw);
+    const nextHasQuote = next ? /["“”「」『』]/.test(String(next.t || '')) : false;
+    const speakerChanged = next && ((next.g || 'F') !== (ln.g || 'F') || hasQuote !== nextHasQuote);
+
+    let rateMul = 1.0;
+    // 故事開頭與段落起首：語速放緩、鋪陳情境
+    if (i === 0) rateMul *= 0.92;
+    else if (isParaStart) rateMul *= 0.95;
+    // 段落收尾與故事結尾寓意：放慢收束、留有餘韻
+    if (i === lines.length - 1) rateMul *= 0.90;
+    else if (isParaEnd) rateMul *= 0.95;
+
+    // 對話與情緒起伏
+    if (/(\.\.\.|…|—|--)/.test(raw)) rateMul *= 0.92;
+    else if (/[!！]/.test(raw) && hasQuote) rateMul *= 1.05;
+    else if (/[?？]/.test(raw)) rateMul *= 0.96;
+
+    // 相鄰敘述句加入微幅自然正弦律動，避免每句等速的機械感
+    const wave = Math.sin(i * 1.35) * 0.032;
+    rateMul = Math.max(0.82, Math.min(1.08, rateMul + wave));
+
+    // 計算句與句之間的自然呼吸與留白（ms）
+    let pauseMs = 240;
+    if (isParaEnd) {
+      pauseMs = 580; // 段落結束：深呼吸換段留白
+    } else if (/(\.\.\.|…|—|--)\s*['"”’」』）)]*$/.test(raw)) {
+      pauseMs = 480; // 刪節號／破折號：情緒懸疑或沉思停頓
+    } else if (/[?？]\s*['"”’」』）)]*$/.test(raw)) {
+      pauseMs = 410; // 問句結束：留給聽者思考的停頓
+    } else if (/[!！]\s*['"”’」』）)]*$/.test(raw)) {
+      pauseMs = 320; // 驚嘆句結束：語氣落點停頓
+    } else if (speakerChanged) {
+      pauseMs = 360; // 角色／旁白輪替：對話換人開口的自然間隔
+    } else if (raw.length > (LANG === 'en' ? 65 : 34)) {
+      pauseMs = 300; // 長句結束後的換氣
+    } else {
+      // 一般同段落敘述句：在 220~270ms 間微幅自然擺動
+      pauseMs = 235 + Math.round(Math.cos(i * 1.7) * 25);
+    }
+
+    return {
+      rate: Math.max(0.5, Math.min(1.8, +(base * rateMul).toFixed(3))),
+      pauseAfterMs: Math.round(pauseMs / Math.max(0.75, base)),
+    };
+  }
+  function preload(text, opt) {
+    const t = cleanStoryText(text);
+    if (!t || !A.tts || typeof A.tts.preload !== 'function') return;
+    try {
+      A.tts.preload(t, { gender: (opt && opt.g) || 'F' });
+    } catch (e) { /* ignore */ }
+  }
   function speak(text, opt) {
-    text = String(text || '').replace(/["“”]/g, '').trim();
+    text = cleanStoryText(text);
     if (!A.tts || !text) return Promise.resolve({ ok: false });
-    const o = { rate: opt.rate };
+    const o = { rate: opt.rate, natural: opt.natural !== false };
     if (NS !== 'KO') o.gender = opt.g || 'F';
+    else o.gender = opt.g || 'F';
     if (opt.btn) o.btn = opt.btn;
     try {
       return Promise.resolve(A.tts.speak(text, o)).then((r) => r || { ok: true }, () => ({ ok: false }));
@@ -17579,6 +18280,21 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
   function isRailCollapsed() { try { return localStorage.getItem(RAIL_KEY) === '1'; } catch (e) { return false; } }
   function setRailCollapsed(v) { try { localStorage.setItem(RAIL_KEY, v ? '1' : '0'); } catch (e) { /* quota */ } }
   function nfc(s) { return String(s == null ? '' : s).normalize('NFC'); }
+
+  // 將句子切分為自然文章段落（依 ln.p 分段，若超過 6 句未分段則自動分段）
+  function groupParagraphs(lines) {
+    const paras = [];
+    let cur = [];
+    lines.forEach((ln, i) => {
+      if (i > 0 && (ln.p || cur.length >= 6)) {
+        paras.push(cur);
+        cur = [];
+      }
+      cur.push({ ln, i });
+    });
+    if (cur.length) paras.push(cur);
+    return paras;
+  }
 
   // ---------------------------------------------------------------- 樣式（自帶，避免改動各學院 app.css）
   function injectCss() {
@@ -17672,22 +18388,28 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
 .sl-tg input { width: 16px; height: 16px; margin: 0; accent-color: var(--sl-p); }
 .sl-prog { flex: 1 1 100%; height: 5px; background: #eef2f7; border-radius: 999px; overflow: hidden; }
 .sl-prog i { display: block; height: 100%; width: 0; background: var(--sl-p); transition: width .3s; }
-.sl-lines { list-style: none; margin: 0; padding: 6px; }
-.sl-line { display: flex; gap: 10px; align-items: flex-start; padding: 10px 10px; border-radius: 12px; cursor: pointer; transition: background .18s; border: 1px solid transparent; }
-.sl-line:hover { background: #f8fafc; }
-.sl-line.sl-pstart { margin-top: 18px; }
-.sl-line.cur { background: var(--sl-ps); border-color: var(--sl-p); }
-.sl-play { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--sl-b); background: #fff; cursor: pointer; font-size: 13px; display: grid; place-items: center; color: var(--sl-p); }
-.sl-line.cur .sl-play { background: var(--sl-p); color: #fff; border-color: var(--sl-p); }
-.sl-txt { min-width: 0; flex: 1; }
-.sl-t { font-size: 17px; line-height: 1.6; font-weight: 600; word-break: break-word; }
-.sl-who { font-size: 11px; font-weight: 800; border-radius: 6px; padding: 0 5px; margin-right: 6px; vertical-align: 2px; background: #fef3c7; color: #92400e; }
-.sl-who.m { background: #dbeafe; color: #1e40af; }
-.sl-r { font-size: 13px; color: #0f766e; margin-top: 1px; line-height: 1.5; }
-.sl-z { font-size: 13.5px; color: var(--sl-m); margin-top: 2px; line-height: 1.55; }
-.sl.no-zh .sl-z, .sl.no-rd .sl-r { display: none; }
-.sl.blind .sl-t, .sl.blind .sl-r { filter: blur(6px); user-select: none; }
-.sl.blind .sl-line.peek .sl-t, .sl.blind .sl-line.peek .sl-r { filter: none; }
+/* 整篇文章自然段落排版（無逐句按鈕，點選任一句直接播放） */
+.sl-article-card { padding: 22px 26px !important; }
+.sl-article-tip { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 12.5px; color: var(--sl-m); background: #f8fafc; border: 1px dashed var(--sl-b); border-radius: 10px; padding: 7px 12px; margin-bottom: 16px; }
+.sl-article { display: flex; flex-direction: column; gap: 18px; }
+.sl-para { padding: 12px 14px; border-radius: 12px; border: 1px solid transparent; transition: background .15s, border-color .15s; }
+.sl-para:hover { background: #fcfdff; border-color: #eef2f7; }
+.sl-para.cur-para { background: #f8fbff; border-color: #dbeafe; }
+.sl-para-orig { margin: 0; font-size: 18px; line-height: 1.85; font-weight: 560; word-break: break-word; letter-spacing: 0.01em; }
+.sl-sent { display: inline; padding: 3px 5px; margin: 0 1px; border-radius: 7px; cursor: pointer; transition: background .14s, color .14s, box-shadow .14s; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.sl-sent:hover { background: #eef2ff; color: var(--sl-p); }
+.sl-sent.cur { background: var(--sl-ps); color: var(--sl-p); font-weight: 700; box-shadow: 0 0 0 1.5px var(--sl-p); }
+.sl-para-rd { margin: 7px 0 0; font-size: 13.5px; color: #0f766e; line-height: 1.65; }
+.sl-sent-rd { display: inline; padding: 1px 4px; border-radius: 5px; cursor: pointer; transition: background .14s; }
+.sl-sent-rd:hover { background: #ccfbf1; }
+.sl-sent-rd.cur { background: #ccfbf1; color: #115e59; font-weight: 700; }
+.sl-para-zh { margin: 8px 0 0; padding-top: 7px; border-top: 1px dashed #e2e8f0; font-size: 14.5px; color: var(--sl-m); line-height: 1.7; }
+.sl-sent-zh { display: inline; padding: 2px 4px; border-radius: 5px; cursor: pointer; transition: background .14s, color .14s; }
+.sl-sent-zh:hover { background: #f1f5f9; color: #334155; }
+.sl-sent-zh.cur { background: #e0f2fe; color: #0369a1; font-weight: 700; }
+.sl.no-zh .sl-para-zh, .sl.no-rd .sl-para-rd { display: none; }
+.sl.blind .sl-sent, .sl.blind .sl-sent-rd { filter: blur(6px); user-select: none; }
+.sl.blind .sl-sent.peek, .sl.blind .sl-sent.cur, .sl.blind .sl-sent-rd.peek, .sl.blind .sl-sent-rd.cur { filter: none; }
 .sl h2.sl-h2 { font-size: 16px; margin: 0 0 10px; }
 .sl-vocab { display: flex; gap: 8px; flex-wrap: wrap; }
 .sl-vw { border: 1px solid var(--sl-b); background: #fff; border-radius: 12px; padding: 7px 11px; cursor: pointer; font: inherit; text-align: left; color: inherit; }
@@ -17707,15 +18429,16 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
 .sl-empty { text-align: center; padding: 30px 10px; color: var(--sl-m); }
 @media (max-width: 640px) {
   .sl-card { padding: 13px 13px; }
+  .sl-article-card { padding: 15px 14px !important; }
   .sl-hero .sl-hstat { margin-left: 0; text-align: left; }
   .sl-bar { gap: 6px; padding: 8px 9px; }
   .sl-btn { padding: 7px 10px; font-size: 13.5px; }
   .sl-tg { font-size: 12.5px; padding: 3px 4px; }
-  .sl-t { font-size: 16px; }
-  .sl-line { padding: 9px 6px; gap: 8px; }
+  .sl-para-orig { font-size: 16.5px; line-height: 1.75; }
+  .sl-para { padding: 10px 8px; }
   .sl-head h1 { font-size: 18px; }
 }
-@media (prefers-reduced-motion: reduce) { .sl-sc, .sl-line, .sl-prog i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .sl-sc, .sl-sent, .sl-prog i { transition: none; } }
 `;
     document.head.appendChild(st);
   }
@@ -17731,7 +18454,7 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     main.innerHTML = `<div class="sl">
       <section class="sl-card sl-hero">
         <div class="sl-hico">📖</div>
-        <div><h1>${LANG_META.name}故事聽力</h1><p>精選分級小故事：童話、寓言、民間故事與生活小品，一句一句播給你聽。<br>${esc(LANG_META.hint)}</p></div>
+        <div><h1>${LANG_META.name}故事聽力</h1><p>精選分級故事：童話、寓言、民間傳說與在地文化小品，整篇自然流暢朗讀。<br>${esc(LANG_META.hint)}</p></div>
         <div class="sl-hstat"><b>${doneN} / ${all.length}</b>已聽完</div>
       </section>
       <div class="sl-chips" id="slLv">
@@ -17792,8 +18515,14 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     const L = lv(s.level);
     const hasR = s.lines.some((l) => l.r);
     const P = S.prefs;
-    const rates = [[0.75, '🐢 慢速'], [0.9, '稍慢'], [1, '正常']];
+    const rates = [[0.75, '🐢 慢速'], [0.9, '稍慢'], [1, '🎙️ 自然'], [1.2, '1.2×'], [1.5, '1.5×']];
     if (!rates.some((r) => r[0] === P.rate)) P.rate = 1;
+    const paragraphs = groupParagraphs(s.lines);
+    const sep = LANG === 'ja' ? ' ' : ' ';
+
+    // 預先預載前兩句，讓使用者一按播放就能瞬間出聲
+    if (s.lines[0]) preload(s.lines[0].t, { g: s.lines[0].g });
+    if (s.lines[1]) preload(s.lines[1].t, { g: s.lines[1].g });
 
     main.innerHTML = `<div class="sl-shell ${isRailCollapsed() ? 'rail-collapsed' : ''}" id="slShell">
       <div class="slr-backdrop" id="slrBackdrop"></div>
@@ -17832,11 +18561,23 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
           <label class="sl-tg"><input type="checkbox" data-pref="loop" ${P.loop ? 'checked' : ''}>🔁 循環</label>
           <div class="sl-prog"><i id="slProg"></i></div>
         </section>
-        <section class="sl-card" style="padding:6px">
-          <ol class="sl-lines" id="slLines">${s.lines.map((ln, i) => `<li class="sl-line${ln.p && i ? ' sl-pstart' : ''}" data-i="${i}">
-            <button class="sl-play" data-i="${i}" aria-label="播放第 ${i + 1} 句">▶</button>
-            <div class="sl-txt"><div class="sl-t" lang="${LANG}">${ln.g ? `<span class="sl-who ${ln.g === 'M' ? 'm' : ''}">${ln.g === 'M' ? '♂' : '♀'}</span>` : ''}${esc(nfc(ln.t))}</div>
-              ${ln.r && ln.r !== ln.t ? `<div class="sl-r">${esc(ln.r)}</div>` : ''}<div class="sl-z">${esc(ln.zh || '')}</div></div></li>`).join('')}</ol>
+        <section class="sl-card sl-article-card">
+          <div class="sl-article-tip">
+            <span>💡 <b>整篇沉浸閱讀</b>：直接點選文中<b>任一句話</b>（或對應的中文翻譯）即可單獨播放該句；按「▶ 播放全文」則無縫連播整篇故事。</span>
+          </div>
+          <article class="sl-article" id="slLines">${paragraphs.map((para, pi) => {
+            const origHtml = para.map(({ ln, i }) => `<span class="sl-sent" data-i="${i}" title="點擊播放這一句">${esc(nfc(ln.t))}</span>`).join(sep);
+            const hasParaRd = hasR && para.some(({ ln }) => ln.r && ln.r !== ln.t);
+            const rdHtml = hasParaRd
+              ? `<p class="sl-para-rd">${para.map(({ ln, i }) => `<span class="sl-sent-rd" data-i="${i}">${esc(ln.r || '')}</span>`).join(' ')}</p>`
+              : '';
+            const zhHtml = `<p class="sl-para-zh">${para.map(({ ln, i }) => `<span class="sl-sent-zh" data-i="${i}" title="點擊播放對應原句">${esc(ln.zh || '')}</span>`).join(' ')}</p>`;
+            return `<section class="sl-para" data-para="${pi}">
+              <p class="sl-para-orig" lang="${LANG}">${origHtml}</p>
+              ${rdHtml}
+              ${zhHtml}
+            </section>`;
+          }).join('')}</article>
         </section>
         ${(s.vocab || []).length ? `<section class="sl-card"><h2 class="sl-h2">🔤 重點單字（點一下聽發音）</h2><div class="sl-vocab">
           ${s.vocab.map((v, i) => `<button class="sl-vw" data-v="${i}"><b lang="${LANG}">${esc(nfc(v.w))}</b>${v.r ? ` <span class="sl-r" style="display:inline">${esc(v.r)}</span>` : ''}<small>${esc(v.zh || '')}</small></button>`).join('')}</div></section>` : ''}
@@ -17854,7 +18595,10 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     const root = main.querySelector('#slRoot');
     const playBtn = root.querySelector('#slPlay');
     const prog = root.querySelector('#slProg');
-    const rows = Array.from(root.querySelectorAll('.sl-line'));
+    const sents = Array.from(root.querySelectorAll('.sl-sent'));
+    const allIndexedSpans = Array.from(root.querySelectorAll('[data-i]'));
+    const paraEls = Array.from(root.querySelectorAll('.sl-para'));
+    let curIdx = -1;
 
     // 讓播放列與側邊列表吸頂時避開學院自己的固定頁首
     const hd = document.querySelector('.site-header, .app-header, header');
@@ -17931,13 +18675,16 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     shell.querySelector('#slrOpenMob').onclick = () => { shell.classList.add('rail-mob-open'); renderRailItems(true); };
 
     function setCur(i) {
-      rows.forEach((r, k) => r.classList.toggle('cur', k === i));
+      curIdx = i;
+      allIndexedSpans.forEach((el) => el.classList.toggle('cur', +el.dataset.i === i));
+      paraEls.forEach((pEl) => pEl.classList.toggle('cur-para', !!pEl.querySelector('.sl-sent.cur')));
       if (i < 0) return;
-      prog.style.width = `${Math.round(((i + 1) / rows.length) * 100)}%`;
-      const r = rows[i];
+      prog.style.width = `${Math.round(((i + 1) / s.lines.length) * 100)}%`;
+      const target = sents[i];
+      if (!target) return;
       const bar = root.querySelector('#slBar');
-      const top = bar.getBoundingClientRect().bottom + 8;
-      const rr = r.getBoundingClientRect();
+      const top = bar.getBoundingClientRect().bottom + 12;
+      const rr = target.getBoundingClientRect();
       if (rr.top < top || rr.bottom > window.innerHeight - 80) {
         window.scrollBy({ top: rr.top - (top + window.innerHeight) / 2 + rr.height / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
       }
@@ -17957,19 +18704,28 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       setPlaying(true);
       S.plays[s.id] = (S.plays[s.id] || 0) + 1;
       save();
+      if (s.lines[start]) preload(s.lines[start].t, { g: s.lines[start].g });
+      if (s.lines[start + 1]) preload(s.lines[start + 1].t, { g: s.lines[start + 1].g });
+      if (s.lines[start + 2]) preload(s.lines[start + 2].t, { g: s.lines[start + 2].g });
       do {
         for (let i = start; i < s.lines.length; i++) {
           if (my !== session) return;
           setCur(i);
+          if (i + 1 < s.lines.length) preload(s.lines[i + 1].t, { g: s.lines[i + 1].g });
+          if (i + 2 < s.lines.length) preload(s.lines[i + 2].t, { g: s.lines[i + 2].g });
           const ln = s.lines[i];
-          const res = await speak(ln.t, { g: ln.g, rate: P.rate });
+          const prosody = lineProsody(s.lines, i, P.rate);
+          const res = await speak(ln.t, { g: ln.g, rate: prosody.rate, natural: true });
           if (my !== session || (res && res.canceled)) return;
-          await sleep(P.rate < 1 ? 520 : 380);
+          // 下一句已預載完成（0 網路延遲），依語境、標點與段落注入自然人說故事的換氣停頓
+          if (i < s.lines.length - 1) {
+            await sleep(prosody.pauseAfterMs);
+          }
         }
         if (my !== session) return;
         if (markDone(s.id)) { refreshStoryRailDone(s.id); toast(`🎉 聽完「${s.zh || s.title}」了！`); }
         start = 0;
-        if (P.loop) await sleep(900);
+        if (P.loop) await sleep(650);
       } while (P.loop && my === session);
       if (my === session) { setPlaying(false); setCur(-1); }
     }
@@ -17977,27 +18733,38 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       const my = ++session;
       setPlaying(false);
       setCur(i);
-      rows[i].classList.add('peek');
+      if (i + 1 < s.lines.length) preload(s.lines[i + 1].t, { g: s.lines[i + 1].g });
+      const matching = allIndexedSpans.filter((el) => +el.dataset.i === i);
+      matching.forEach((el) => el.classList.add('peek'));
       const ln = s.lines[i];
-      await speak(ln.t, { g: ln.g, rate: P.rate });
-      rows[i].classList.remove('peek');
-      if (my === session) rows[i].classList.remove('cur');
+      const prosody = lineProsody(s.lines, i, P.rate);
+      await speak(ln.t, { g: ln.g, rate: prosody.rate, natural: true });
+      matching.forEach((el) => el.classList.remove('peek'));
+      if (my === session) setCur(-1);
     }
 
-    playBtn.onclick = () => { if (playingAll) stopAll(); else { const c = rows.findIndex((r) => r.classList.contains('cur')); playFrom(c > 0 ? c : 0); } };
+    playBtn.onclick = () => {
+      if (playingAll) stopAll();
+      else playFrom(curIdx > 0 && curIdx < s.lines.length ? curIdx : 0);
+    };
     root.querySelector('#slLines').addEventListener('click', (e) => {
-      const row = e.target.closest('.sl-line');
-      if (!row) return;
-      const i = +row.dataset.i;
-      if (playingAll && !e.target.closest('.sl-play')) { playFrom(i); return; }
+      const span = e.target.closest('[data-i]');
+      if (!span) return;
+      const i = +span.dataset.i;
+      if (playingAll) { playFrom(i); return; }
       playOne(i);
     });
     root.querySelector('#slRate').onclick = (e) => {
       const b = e.target.closest('[data-rate]');
       if (!b) return;
-      P.rate = +b.dataset.rate;
+      const nextRate = +b.dataset.rate;
+      const changed = P.rate !== nextRate;
+      P.rate = nextRate;
       save();
       root.querySelectorAll('#slRate button').forEach((x) => x.classList.toggle('on', x === b));
+      if (changed && playingAll && curIdx >= 0 && curIdx < s.lines.length) {
+        playFrom(curIdx);
+      }
     };
     root.querySelectorAll('[data-pref]').forEach((cb) => {
       cb.onchange = () => {
@@ -18063,6 +18830,1685 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
 })();
 
 </script>
+  <script>/* /js/speaking.js */
+/**
+ * 🗣️ 口說特訓工坊 (speaking.js)
+ * 專為「開口說」設計的三大實戰訓練章節（支援英語 ES / 日語 JA / 韓語 KO）：
+ * 1. 💬 情境開口說 (Situational Missions)：8 大生活與職場情境，含 3 個句型提示＋3 段由淺入深目標句，支援遮字盲說、45 秒充裕錄音與逐字評分。
+ * 2. 🪜 漸進式擴句特訓 (Chunk-by-Chunk Builder)：將長句拆解為「短詞塊 → 半句 → 完整長句」三階梯，解決長句舌頭打結與來不及講完的問題。
+ * 3. ⏱️ 60 秒主題自由說 (Topic Talk Studio)：引導問題＋推薦關鍵詞即點即聽＋60 秒不中斷自由口說錄音＋關鍵詞命中檢測＋母語範例對照。
+ */
+(function () {
+  'use strict';
+  const A = window.ES || window.JA || window.KO;
+  if (!A) return;
+  const LANG = window.ES ? 'en' : window.JA ? 'ja' : 'ko';
+  const ASR_LANG = LANG === 'en' ? 'en-US' : LANG === 'ja' ? 'ja-JP' : 'ko-KR';
+  const esc = A.esc || ((s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
+
+  // ==================== 教材資料庫 ====================
+  const DATA = {
+    en: {
+      title: '🗣️ 英語口說特訓工坊',
+      sub: '從「短詞塊擴句」、「情境對答」到「60 秒主題自由說」，充裕錄音時間不搶拍，放心把整句話講完！',
+      missions: [
+        {
+          id: 'en-m1', level: 'A1', icon: '👋', cat: '破冰自我介紹',
+          title: '第一次見面與介紹自己',
+          scene: '在國際交流聚會或新團隊認識新朋友時，自然地打招呼、介紹自己的工作與興趣。',
+          patterns: [
+            { t: "Hi, I'm Alex. Nice to meet you!", zh: '嗨，我是 Alex，很高興認識你！' },
+            { t: 'I work as a software engineer in Taipei.', zh: '我在台北擔任軟體工程師。' },
+            { t: 'In my free time, I love hiking and trying new cafés.', zh: '空閒時間我喜歡爬山和探索新咖啡廳。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: "Hi! My name is Alex, and it's great to meet you today.", zh: '嗨！我叫 Alex，今天很高興認識你。' },
+            { label: '自然生活句', t: 'I live in Taipei and work in the tech industry, mostly building web apps.', zh: '我住在台北並在科技業工作，主要負責開發網頁應用程式。' },
+            { label: '流暢完整版', t: "On weekends, I usually go cycling along the river or grab coffee with friends.", zh: '週末的時候，我通常會去河濱騎單車，或是和朋友喝杯咖啡。' }
+          ]
+        },
+        {
+          id: 'en-m2', level: 'A1', icon: '☕', cat: '咖啡廳與點餐',
+          title: '客製化點咖啡與餐點',
+          scene: '在國外咖啡廳點餐，清楚表達冰熱、甜度、牛奶選擇以及內用或外帶。',
+          patterns: [
+            { t: 'Could I get an iced oat milk latte, please?', zh: '請問可以給我一杯冰燕麥奶拿鐵嗎？' },
+            { t: 'Less ice and half sugar, please.', zh: '請少冰、半糖。' },
+            { t: "I'll have it for here, and I'd like to pay by card.", zh: '我要內用，並且想刷卡付款。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'Hi there! Could I please get a medium iced Americano for here?', zh: '你好！請問可以給我一杯中杯冰美式內用嗎？' },
+            { label: '自然生活句', t: "I'd like an iced latte with oat milk, and could you make it less sweet?", zh: '我想要一杯換成燕麥奶的冰拿鐵，請問可以幫我做微甜嗎？' },
+            { label: '流暢完整版', t: "Could I also warm up this croissant and pay with Apple Pay, please?", zh: '請問還可以幫我加熱這個可頌，並用 Apple Pay 付款嗎？' }
+          ]
+        },
+        {
+          id: 'en-m3', level: 'A2', icon: '🚉', cat: '問路與交通',
+          title: '在車站詢問轉乘與月台方向',
+          scene: '在東京、倫敦或紐約地鐵站迷路時，禮貌地向站務員確認路線與下車站點。',
+          patterns: [
+            { t: 'Excuse me, which platform is for the airport express?', zh: '不好意思，請問機場快線在哪一個月台？' },
+            { t: 'Do I need to transfer at the next station?', zh: '請問我需要在下一站轉車嗎？' },
+            { t: 'How long does it take to get to downtown from here?', zh: '請問從這裡到市中心大約要多久？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'Excuse me, could you tell me how to get to the central station?', zh: '不好意思，請問您可以告訴我怎麼去中央車站嗎？' },
+            { label: '自然生活句', t: 'Does this train go directly to the airport, or do I need to change lines?', zh: '請問這班列車會直達機場，還是我需要轉乘其他路線？' },
+            { label: '流暢完整版', t: "I accidentally took the wrong exit—which way should I walk to find the museum?", zh: '我不小心走錯出口了，請問我該往哪個方向走才能找到博物館？' }
+          ]
+        },
+        {
+          id: 'en-m4', level: 'A2', icon: '🏨', cat: '飯店入住與需求',
+          title: '辦理入住、寄放行李與房間協助',
+          scene: '提早抵達飯店想寄放行李，或向櫃檯詢問早餐時間與房間設施問題。',
+          patterns: [
+            { t: 'I have a reservation under the name Chen.', zh: '我有訂房，登記的名字是 Chen。' },
+            { t: 'Could we leave our luggage here before check-in?', zh: '請問辦理入住前我們可以先把行李寄放在這裡嗎？' },
+            { t: 'What time is breakfast served in the morning?', zh: '請問早上幾點開始供應早餐？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: "Good afternoon! I'd like to check in, please. My last name is Lin.", zh: '午安！我想辦理入住，我的姓氏是 Lin。' },
+            { label: '自然生活句', t: 'We arrived a bit early—would it be possible to store our bags until three?', zh: '我們稍微提早到了，請問可以把行李寄放到三點嗎？' },
+            { label: '流暢完整版', t: "Excuse me, the air conditioner in room 502 seems a bit noisy. Could someone take a look?", zh: '不好意思，502 號房的冷氣聲音好像有點大，可以請人過來看看嗎？' }
+          ]
+        },
+        {
+          id: 'en-m5', level: 'B1', icon: '🛍️', cat: '購物與退換貨',
+          title: '試穿尺寸、詢問折扣與退稅',
+          scene: '在服飾店想試穿不同尺寸，或結帳時詢問是否有免稅服務與退換貨規定。',
+          patterns: [
+            { t: 'Do you have this jacket in a medium size?', zh: '請問這件外套有中號（M 號）的嗎？' },
+            { t: 'Where is the fitting room, and can I try this on?', zh: '請問試衣間在哪裡？我可以試穿這件嗎？' },
+            { t: 'Do you offer tax-free shopping for tourists?', zh: '請問你們有提供旅客免稅購物服務嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'Excuse me, this shirt is a little too tight. Do you have a larger size?', zh: '不好意思，這件襯衫有點太緊了，請問有大一號的尺寸嗎？' },
+            { label: '自然生活句', t: 'I really like the color, but let me think about it and come back later.', zh: '我很喜歡這個顏色，但讓我考慮一下晚點再過來。' },
+            { label: '流暢完整版', t: "I bought this sweater yesterday, but I noticed a small stain on the sleeve. Could I exchange it?", zh: '我昨天買了這件毛衣，但發現袖子上有個小污漬，請問可以換貨嗎？' }
+          ]
+        },
+        {
+          id: 'en-m6', level: 'B1', icon: '🏥', cat: '藥局與看診求助',
+          title: '在藥局說明感冒或腸胃不適症狀',
+          scene: '旅途中突然喉嚨痛、發燒或胃痛時，向藥師清楚描述症狀並確認服藥方式。',
+          patterns: [
+            { t: "I've had a sore throat and a mild headache since yesterday.", zh: '我從昨天開始就有點喉嚨痛和輕微頭痛。' },
+            { t: 'Do you have anything that won’t make me drowsy?', zh: '請問有吃了不會想睡覺的藥嗎？' },
+            { t: 'How often should I take these tablets?', zh: '請問這個藥錠應該多久吃一次？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'Hi, I have a bad cough and a runny nose. What medicine do you recommend?', zh: '你好，我咳嗽得很厲害而且流鼻水，請問您推薦什麼藥？' },
+            { label: '自然生活句', t: 'Should I take this medicine after meals, and how many pills each time?', zh: '請問這個藥應該飯後吃嗎？每次要吃幾顆？' },
+            { label: '流暢完整版', t: "I'm not allergic to any medication, but I'd prefer something gentle on the stomach.", zh: '我沒有對任何藥物過敏，但我希望能溫和一點、不傷胃的藥。' }
+          ]
+        },
+        {
+          id: 'en-m7', level: 'B2', icon: '💼', cat: '職場會議進度回報',
+          title: '在 Daily Standup 清楚報告進度與瓶頸',
+          scene: '在跨國團隊會議中，條理分明地說明昨天完成的項目、今天的計畫與需要的支援。',
+          patterns: [
+            { t: 'Yesterday, I finished testing the login flow.', zh: '昨天我完成了登入流程的測試。' },
+            { t: "Today, I'm focusing on fixing the audio playback issue.", zh: '今天我正專注於修復語音播放的問題。' },
+            { t: 'One quick blocker: I need the updated API spec from the backend team.', zh: '有一個小卡關：我需要後端團隊提供更新後的 API 規格。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'Everything is on track, and we plan to release the new version this Friday.', zh: '目前一切進度正常，我們預計在本週五發布新版本。' },
+            { label: '自然生活句', t: "I've resolved the main bug, and I'll share the test report with everyone this afternoon.", zh: '我已經解決了主要的錯誤，今天下午會把測試報告分享給大家。' },
+            { label: '流暢完整版', t: "Could we schedule a quick ten-minute sync after this meeting to align on the design details?", zh: '我們可以在會後安排個十分鐘的快速討論，對齊一下設計細節嗎？' }
+          ]
+        },
+        {
+          id: 'en-m8', level: 'B2', icon: '🤝', cat: '跨文化討論與委婉表達',
+          title: '在會議中禮貌提出不同看法與建議',
+          scene: '當你同意對方的目標，但想建議更穩健的替代方案或調整時程時，展現專業高情商。',
+          patterns: [
+            { t: 'I see your point, and I agree that speed is important.', zh: '我明白你的意思，我也同意速度很重要。' },
+            { t: 'However, from a quality perspective, we might need two more days.', zh: '不過從品質的角度來看，我們可能還需要兩天時間。' },
+            { t: 'What if we launch the core feature first and add the rest next week?', zh: '如果我們先上線核心功能，其餘部分下週再補上，大家覺得如何？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: "That's a great idea, and I'd love to add one small suggestion to make it even smoother.", zh: '這是個很棒點子，我想補充一個小建議讓整個流程更順暢。' },
+            { label: '自然生活句', t: 'Instead of changing the whole layout right now, how about testing it with a small group first?', zh: '與其現在改動整個版面，不如我們先找一小群使用者測試看看如何？' },
+            { label: '流暢完整版', t: "I completely understand the tight deadline, so let's prioritize the top three user requests first.", zh: '我完全理解時程非常緊湊，所以我們先優先處理排名前三的使用者需求吧。' }
+          ]
+        }
+      ],
+      drills: [
+        {
+          id: 'en-d1', level: 'A1', icon: '☕', title: '點餐禮貌擴句練習',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'an iced latte', zh: '一杯冰拿鐵' },
+            { stage: 'Step 2・加上禮貌請求', t: 'Could I get an iced latte with oat milk?', zh: '請問可以給我一杯換燕麥奶的冰拿鐵嗎？' },
+            { stage: 'Step 3・完整流暢長句', t: 'Could I get an iced latte with oat milk, less ice, for here please?', zh: '請問可以給我一杯冰燕麥奶拿鐵、少冰、內用嗎？' }
+          ]
+        },
+        {
+          id: 'en-d2', level: 'A2', icon: '🗺️', title: '旅遊問路擴句練習',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'the nearest subway station', zh: '最近的地鐵站' },
+            { stage: 'Step 2・加上問句結構', t: 'Could you tell me how to get to the nearest subway station?', zh: '請問您可以告訴我怎麼去最近的地鐵站嗎？' },
+            { stage: 'Step 3・完整流暢長句', t: 'Excuse me, could you tell me how long it takes to walk to the nearest subway station?', zh: '不好意思，請問走路到最近的地鐵站大約需要多久？' }
+          ]
+        },
+        {
+          id: 'en-d3', level: 'A2', icon: '🍜', title: '推薦台灣美食擴句練習',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'beef noodle soup at the night market', zh: '夜市的牛肉麵' },
+            { stage: 'Step 2・加上個人推薦', t: 'You should definitely try the beef noodle soup at the night market.', zh: '你一定要試試看夜市的牛肉麵。' },
+            { stage: 'Step 3・完整流暢長句', t: 'If you visit Taipei for the first time, you should definitely try the beef noodle soup at the night market.', zh: '如果你是第一次來台北玩，你一定要試試看夜市的牛肉麵。' }
+          ]
+        },
+        {
+          id: 'en-d4', level: 'B1', icon: '💻', title: '職場進度更新擴句練習',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'fixed the audio playback bug', zh: '修復了音訊播放的錯誤' },
+            { stage: 'Step 2・加上結果影響', t: 'We fixed the audio playback bug so the story plays smoothly now.', zh: '我們修復了音訊播放錯誤，現在故事播放非常順暢。' },
+            { stage: 'Step 3・完整流暢長句', t: 'After testing on both mobile and desktop, we fixed the audio playback bug so the story plays smoothly now.', zh: '在手機與桌機測試後，我們修復了音訊播放錯誤，現在故事可以順暢播放了。' }
+          ]
+        },
+        {
+          id: 'en-d5', level: 'B1', icon: '✈️', title: '分享難忘旅程擴句練習',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'watched the sunrise on the mountain', zh: '在山上看了日出' },
+            { stage: 'Step 2・加上時間與同伴', t: 'Last autumn, my friends and I watched the sunrise on the mountain.', zh: '去年秋天，我和朋友一起在山上看了日出。' },
+            { stage: 'Step 3・完整流暢長句', t: 'Last autumn, my friends and I woke up at four in the morning and watched the breathtaking sunrise on the mountain.', zh: '去年秋天，我和朋友凌晨四點起床，在山上欣賞了令人屏息的美麗日出。' }
+          ]
+        },
+        {
+          id: 'en-d6', level: 'B2', icon: '🎯', title: '表達觀點與折衷方案擴句練習',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'test the new feature with a small group', zh: '先找一小群人測試新功能' },
+            { stage: 'Step 2・加上建議語氣', t: 'It might be safer to test the new feature with a small group first.', zh: '先找一小群使用者測試這項新功能可能會比較穩妥。' },
+            { stage: 'Step 3・完整流暢長句', t: 'To make sure everything runs smoothly, it might be safer to test the new feature with a small group first before a full launch.', zh: '為了確保一切運作順暢，在全面上線前先找一小群人測試新功能會比較穩妥。' }
+          ]
+        }
+      ],
+      topics: [
+        {
+          id: 'en-t1', level: 'A1', icon: '🌅', title: '我最喜歡的週末時光 (My Perfect Weekend)',
+          questions: [
+            '你週末通常幾點起床？早上喜歡吃什麼？',
+            '你喜歡待在家裡放鬆，還是出門走走？',
+            '上個週末你做了什麼印象深刻的事？'
+          ],
+          keywords: ['sleep in', 'relax', 'coffee shop', 'hang out with friends', 'go for a walk', 'recharge'],
+          sample: [
+            { t: 'On weekends, I love to sleep in a little and make a cup of hot coffee at home.', zh: '週末的時候，我喜歡稍微睡晚一點，在家泡一杯熱咖啡。' },
+            { t: 'In the afternoon, I usually go for a walk in the park or hang out with my friends at a cozy coffee shop.', zh: '下午我通常會去公園散步，或是在舒適的咖啡廳和朋友聚聚。' },
+            { t: 'Having a slow weekend helps me relax and recharge for the coming week.', zh: '度過慢步調的週末能幫助我放鬆，並為接下來的一週重新充電。' }
+          ]
+        },
+        {
+          id: 'en-t2', level: 'A2', icon: '🍱', title: '一道我想推薦給外國朋友的美食 (My Favorite Dish)',
+          questions: [
+            '這道料理叫什麼名字？在哪裡可以吃到？',
+            '它的口感與味道如何（例如：酥脆、香甜、熱騰騰）？',
+            '為什麼這道菜對你來說特別有意義？'
+          ],
+          keywords: ['night market', 'crispy', 'flavorful', 'comfort food', 'fresh ingredients', 'mouth-watering'],
+          sample: [
+            { t: 'If a friend visits Taiwan, the first dish I would recommend is soup dumplings, also known as Xiaolongbao.', zh: '如果朋友來台灣玩，我第一道推薦的料理就是小籠包。' },
+            { t: 'The skin is very thin, and inside there is hot, flavorful broth with juicy pork.', zh: '它的外皮非常薄，裡面有熱騰騰、味道鮮美的湯汁與多汁的豬肉餡。' },
+            { t: 'With a little ginger and vinegar, it is truly mouth-watering comfort food.', zh: '搭配一點薑絲和醋，真的是令人垂涎三尺的療癒美食。' }
+          ]
+        },
+        {
+          id: 'en-t3', level: 'A2', icon: '🧳', title: '一次難忘的旅行回憶 (An Unforgettable Trip)',
+          questions: [
+            '你去了哪個城市或國家？和誰一起去的？',
+            '旅途中最美的風景或最有趣的小插曲是什麼？',
+            '如果有機會，你還會想再去一次嗎？'
+          ],
+          keywords: ['scenery', 'local food', 'unexpected', 'memorable', 'take photos', 'hospitality'],
+          sample: [
+            { t: 'One of my most memorable trips was visiting Kyoto with my family during autumn.', zh: '我最難忘的一次旅行，是在秋天時和家人一起去京都。' },
+            { t: 'The red maple leaves around the old temples were breathtaking, and we took lots of photos together.', zh: '古老寺廟周圍的紅楓美得令人屏息，我們一起拍了好多照片。' },
+            { t: 'We even got lost in a quiet alley and discovered a wonderful little tea house by accident.', zh: '我們甚至在安靜的小巷裡迷了路，卻意外發現了一間很棒的小茶屋。' }
+          ]
+        },
+        {
+          id: 'en-t4', level: 'B1', icon: '🌱', title: '我最近正在培養的一個好習慣 (A Healthy Habit)',
+          questions: [
+            '你最近開始培養什麼習慣（例如運動、閱讀、早睡或學外語）？',
+            '剛開始練習時最困難的地方是什麼？',
+            '這個習慣為你的日常生活帶來了什麼改變？'
+          ],
+          keywords: ['consistent', 'routine', 'step by step', 'energetic', 'focus', 'sense of achievement'],
+          sample: [
+            { t: 'Over the past few months, I have built a daily routine of practicing languages for fifteen minutes every evening.', zh: '在過去幾個月裡，我養成了每天晚上練習十五分鐘外語的日常習慣。' },
+            { t: 'At first, it was hard to stay consistent after a busy workday, so I started with short stories.', zh: '起初在忙碌的工作日之後很難堅持下去，所以我從簡短的故事開始讀起。' },
+            { t: 'Going step by step gives me a great sense of achievement and makes me more confident when speaking.', zh: '一步一腳印的累積給了我很大的成就感，也讓我開口說話時更有自信。' }
+          ]
+        },
+        {
+          id: 'en-t5', level: 'B1', icon: '🎬', title: '一部讓我印象深刻的電影或書 (A Movie or Book I Love)',
+          questions: [
+            '這部作品的主題是什麼？主角經歷了什麼故事？',
+            '哪一幕或哪一句話最打動你？',
+            '你會推薦給什麼樣的朋友看？'
+          ],
+          keywords: ['inspiring', 'main character', 'touching', 'perspective', 'overcome challenges', 'highly recommend'],
+          sample: [
+            { t: 'A movie that deeply touched me is about a musician who rediscovers his passion for everyday life.', zh: '有一部深深打動我的電影，講述一位音樂家重新找回對日常生活熱情的過程。' },
+            { t: 'Watching the main character overcome challenges changed my perspective on what success really means.', zh: '看著主角克服重重挑戰，改變了我對「何謂真正成功」的看法。' },
+            { t: 'I would highly recommend it to anyone who feels stressed and needs a warm, inspiring story.', zh: '我非常推薦給任何感到壓力大、需要一個溫暖勵志故事的朋友。' }
+          ]
+        },
+        {
+          id: 'en-t6', level: 'B2', icon: '🚀', title: '科技與 AI 如何改變我們的工作與學習 (How AI Helps Us Learn)',
+          questions: [
+            '你平常在工作或學習中如何使用科技工具？',
+            '你認為科技帶來的最大便利是什麼？',
+            '有哪些部分依然需要人類自己的思考與溫度？'
+          ],
+          keywords: ['efficiency', 'personalized', 'instant feedback', 'creativity', 'critical thinking', 'balance'],
+          sample: [
+            { t: 'Technology has made language learning much more interactive by giving us instant feedback on pronunciation.', zh: '科技透過提供即時的發音回饋，讓語言學習變得更具互動性。' },
+            { t: 'It greatly improves our efficiency because we can practice speaking anytime at our own pace.', zh: '它大幅提升了我們的學習效率，因為我們隨時都能按照自己的步調練習口說。' },
+            { t: 'However, real human connection and empathy are still irreplaceable when we communicate across cultures.', zh: '然而，當我們進行跨文化交流時，真實的人際連結與同理心依然是無可取代的。' }
+          ]
+        }
+      ]
+    },
+
+    ja: {
+      title: '🗣️ 日語口說特訓工坊',
+      sub: '從「短詞塊擴句」、「情境實戰對答」到「60 秒主題自由說」，充裕錄音時間不搶拍，放心把整句日語講完！',
+      missions: [
+        {
+          id: 'ja-m1', level: 'A1', icon: '🙇', cat: '破冰自我介紹',
+          title: '初次見面與介紹自己的興趣',
+          scene: '在日本交流活動或職場認識新朋友時，有禮貌地打招呼、介紹來自哪裡與喜歡的活動。',
+          patterns: [
+            { t: 'はじめまして、台湾から来ましたリンと申します。', rd: 'はじめまして、たいわんからきましたりんともうします。', zh: '初次見面，我是從台灣來的林。' },
+            { t: '台北でエンジニアとして働いています。', rd: 'たいぺいでえんじにあとしてはたらいています。', zh: '我在台北擔任工程師。' },
+            { t: '休みの日はカフェ巡りや旅行をするのが好きです。', rd: 'やすみのひはかふぇめぐりやりょこうをするのがすきです。', zh: '放假的時候我喜歡探訪咖啡廳和旅行。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'はじめまして。リンです。どうぞよろしくお願いします。', rd: 'はじめまして。りんです。どうぞよろしくおねがいします。', zh: '初次見面，我是林，請多指教。' },
+            { label: '自然生活句', t: '日本の映画と音楽が大好きで、毎日少しずつ日本語を勉強しています。', rd: 'にほんのえいがとおんがくがだいすきで、まいにちすこしずつにほんごをべんきょうしています。', zh: '我很喜歡日本的電影和音樂，每天都學一點日文。' },
+            { label: '流暢完整版', t: '週末はよく友達と美味しいラーメンを食べに行ったり、写真を撮ったりしています。', rd: 'しゅうまつはよくともだちとおいしいらーめんをたべにいったり、しゃしんをとったりしています。', zh: '週末我常和朋友去吃好吃的拉麵，或是去拍照。' }
+          ]
+        },
+        {
+          id: 'ja-m2', level: 'A1', icon: '🍵', cat: '餐廳與咖啡廳點餐',
+          title: '進店確認座位、點餐與結帳',
+          scene: '在日本餐廳告知人數、點餐並請店員分開或刷卡結帳。',
+          patterns: [
+            { t: 'すみません、二人ですが、空いている席はありますか。', rd: 'すみません、ふたりですが、あいているせきはありますか。', zh: '不好意思，我們有兩位，請問有空位嗎？' },
+            { t: 'アイスラテを一つと、抹茶ケーキを一つお願いします。', rd: 'あいすらてをひとつと、まっちゃけーきをひとつおねがいします。', zh: '請給我一杯冰拿鐵和一份抹茶蛋糕。' },
+            { t: 'お会計をお願いします。クレジットカードは使えますか。', rd: 'おかいけいをおねがいします。くれじっとかーどはつかえますか。', zh: '麻煩結帳，請問可以使用信用卡嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、注文をお願いします。ホットコーヒーを二つください。', rd: 'すみません、ちゅうもんをおねがいします。ほっとこーひーをふたつください。', zh: '不好意思，我要點餐。請給我兩杯熱咖啡。' },
+            { label: '自然生活句', t: 'この定食を一つお願いします。ご飯は少なめにしていただけますか。', rd: 'このていしょくをひとつおねがいします。ごはんはすくなめにしていただけますか。', zh: '請給我一份這個定食，白飯可以幫我盛少一點嗎？' },
+            { label: '流暢完整版', t: 'とても美味しかったです。お会計は別々でお願いできますか。', rd: 'とてもおいしかったです。おかいけいはべつべつでおねがいできますか。', zh: '非常好吃！請問結帳可以分開算嗎？' }
+          ]
+        },
+        {
+          id: 'ja-m3', level: 'A2', icon: '🚆', cat: '車站問路與乘車',
+          title: '確認新幹線月台與轉乘方向',
+          scene: '在東京或京都車站找月台、確認這班電車是否停靠目的地。',
+          patterns: [
+            { t: 'すみません、京都行きの新幹線は何番線ですか。', rd: 'すみません、きょうとゆきのしんかんせんはなんばんせんですか。', zh: '不好意思，請問開往京都的新幹線在幾號月台？' },
+            { t: 'この電車は渋谷に止まりますか。', rd: 'このでんしゃはしぶやにとまりますか。', zh: '請問這班電車有停澀谷嗎？' },
+            { t: '美術館へ行きたいのですが、どの出口から出ればいいですか。', rd: 'びじゅつかんへいきたいのですが、どのでぐちからでればいいですか。', zh: '我想去美術館，請問應該從哪個出口出去呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、一番近い地下鉄の駅はどこですか。', rd: 'すみません、いちばんちかいちかてつのえきはどこですか。', zh: '不好意思，請問最近的地鐵站在哪裡？' },
+            { label: '自然生活句', t: '空港へ行きたいのですが、次の駅で乗り換える必要がありますか。', rd: 'くうこうへいきたいのですが、つぎのえきでのりかえるひつようがありますか。', zh: '我想去機場，請問需要在下一站轉車嗎？' },
+            { label: '流暢完整版', t: 'ICカードの残高が足りないので、チャージできる機械はどこにありますか。', rd: 'あいしーかーどのざんだかがたりないので、ちゃーじできるきかいはどこにありますか。', zh: '因為交通卡餘額不足，請問可以儲值的機器在哪裡？' }
+          ]
+        },
+        {
+          id: 'ja-m4', level: 'A2', icon: '♨️', cat: '飯店與溫泉旅館',
+          title: '辦理入住、寄放行李與預約浴場',
+          scene: '抵達日本飯店或溫泉旅館時，辦理入住、寄放行李並確認早餐時間。',
+          patterns: [
+            { t: 'チェックインをお願いします。予約したチェンです。', rd: 'ちぇっくいんをおねがいします。よやくしたちぇんです。', zh: '麻煩辦理入住，我是有預約的陳。' },
+            { t: 'チェックインの前に、荷物を預かっていただけますか。', rd: 'ちぇっくいんのまえに、にもつをあずかっていただけますか。', zh: '在辦理入住前，請問可以幫我們寄放行李嗎？' },
+            { t: '朝食は何時からどこで食べられますか。', rd: 'ちょうしょくはなんじからどこでたべられますか。', zh: '請問早餐幾點開始、在哪裡用餐呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、今日から二泊予約しているリンです。', rd: 'すみません、きょうからにはくよやくしているりんです。', zh: '不好意思，我是從今天起預約住兩晚的林。' },
+            { label: '自然生活句', t: '夕方五時ごろ戻りますので、それまでスーツケースを預かってもらえますか。', rd: 'ゆうがたごじごろもどりますので、それまですーつけーすをあずかってもらえますか。', zh: '我傍晚五點左右會回來，在那之前可以幫我寄放行李箱嗎？' },
+            { label: '流暢完整版', t: '部屋のWi-Fiがうまく繋がらないのですが、パスワードをもう一度教えていただけますか。', rd: 'へやのわいふぁいがうまくつながらないのですが、ぱすわーどをもういちどおしえていただけますか。', zh: '房間的 Wi-Fi 連不太上，請問可以再告訴我一次密碼嗎？' }
+          ]
+        },
+        {
+          id: 'ja-m5', level: 'B1', icon: '🛍️', cat: '百貨購物與退稅',
+          title: '試穿衣服、詢問新庫存與免稅手續',
+          scene: '在百貨公司試穿尺寸、詢問有沒有新的未拆封商品，以及辦理退稅。',
+          patterns: [
+            { t: 'これを試着してもいいですか。Mサイズはありますか。', rd: 'これをしちゃくしてもいいですか。えむさいずはありますか。', zh: '請問這件可以試穿嗎？有 M 號嗎？' },
+            { t: 'プレゼント用なので、綺麗に包んでいただけますか。', rd: 'ぷれぜんとようなので、きれいにつつんでいただけますか。', zh: '因為是要送人的禮物，請問可以幫我包裝漂亮一點嗎？' },
+            { t: '免税の手続きはどこでできますか。パスポートはここにあります。', rd: 'めんぜいのてつづきはどこでできますか。ぱすぽーとはここにあります。', zh: '請問免稅手續在哪裡辦理？護照在這裡。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、このシャツのもう少し大きいサイズはありますか。', rd: 'すみません、このしゃつのもうすこしおおきいさいずはありますか。', zh: '不好意思，請問這件襯衫有再大一點的尺寸嗎？' },
+            { label: '自然生活句', t: 'デザインはとても気に入ったのですが、別の色も見せてもらえますか。', rd: 'でざいんはとてもきにいったのですが、べつのいろもみせてもらえますか。', zh: '我很喜歡這個設計，不過可以也給我看一下別的顏色嗎？' },
+            { label: '流暢完整版', t: 'これを買います。新しい在庫があれば、そちらを出していただけると嬉しいです。', rd: 'これをかいます。あたらしいざいこがあれば、そちらをだしていただけるとうれしいです。', zh: '我要買這個。如果有新的庫存，能幫我拿新的我會很開心。' }
+          ]
+        },
+        {
+          id: 'ja-m6', level: 'B1', icon: '💊', cat: '藥妝店與身體不適',
+          title: '在藥局說明喉嚨痛或腸胃不適並挑藥',
+          scene: '在日本旅遊突然感冒或胃痛時，向藥師清楚說明症狀並詢問服用方式。',
+          patterns: [
+            { t: '昨日から喉が痛くて、少し熱もあります。', rd: 'きのうからのどがいたくて、すこしねつもあります。', zh: '我從昨天開始喉嚨痛，而且有一點發燒。' },
+            { t: '飲んでも眠くならない風邪薬はありますか。', rd: 'のんでもねむくならないかぜぐすりはありますか。', zh: '請問有吃了不會想睡覺的感冒藥嗎？' },
+            { t: 'この薬は一日何回、いつ飲めばいいですか。', rd: 'このくすりはいちにちなんかい、いつのめばいいですか。', zh: '請問這個藥一天吃幾次、什麼時候吃呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、食べすぎてお腹が痛いのですが、おすすめの胃薬はありますか。', rd: 'すみません、たべすぎておなかがいたいのですが、おすすめのいぐすりはありますか。', zh: '不好意思，我吃太多肚子痛，請問有推薦的胃藥嗎？' },
+            { label: '自然生活句', t: 'これから運転する予定があるので、眠くならないタイプをお願いします。', rd: 'これからうんてんするよていがあるので、ねむくならないたいぷをおねがいします。', zh: '因為待會預計要開車，請給我不會嗜睡的類型。' },
+            { label: '流暢完整版', t: '薬のアレルギーはありませんが、食後に水で一錠ずつ飲めばよろしいでしょうか。', rd: 'くすりのあれるぎーはありませんが、しょくごにみずでいちじょうずつのめばよろしいでしょうか。', zh: '我沒有藥物過敏，請問是飯後配水每次吃一顆嗎？' }
+          ]
+        },
+        {
+          id: 'ja-m7', level: 'B2', icon: '💼', cat: '商務會議進度報告',
+          title: '在專案會議回報進度與確認下週排程',
+          scene: '使用自然得體的商務敬語（です・ます），清楚回報目前進度與接下來的工作。',
+          patterns: [
+            { t: '現在の進捗状況についてご報告いたします。', rd: 'げんざいのしんちょくじょうきょうについてごほうこくいたします。', zh: '容我向各位報告目前的進度狀況。' },
+            { t: '音声再生の不具合はすでに修正が完了しております。', rd: 'おんせいさいせいのふぐあいはすでにしゅうせいがかんりょうしております。', zh: '語音播放的異常問題已經修正完畢。' },
+            { t: '来週の月曜日までにテスト結果を共有いたします。', rd: 'らいしゅうのげつようびまでにてすとけっかをきょうゆういたします。', zh: '我會在下週一之前將測試結果分享給大家。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '予定通り進んでおりまして、今週中に新しい画面を公開できる見込みです。', rd: 'よていどおりすすんでおりまして、こんしゅうちゅうにあたらしいがめんをこうかいできるみこみです。', zh: '目前正按計畫推進，預計本週內可以公開新畫面。' },
+            { label: '自然生活句', t: '一点確認したいことがございますが、会議のあと少しお時間をいただけますか。', rd: 'いってんかくにんしたいことがございますが、かいぎのあとすこしおじかんをいただけますか。', zh: '有一點想跟您確認，請問會議結束後可以借用您一點時間嗎？' },
+            { label: '流暢完整版', t: 'いただいたご意見を反映し、より使いやすいデザインに改善いたしました。', rd: 'いただいたごいけんをはんえいし、よりつかいやすいでざいんにかいぜんいたしました。', zh: '我們已反映您寶貴的意見，改善為更好上手的設計了。' }
+          ]
+        },
+        {
+          id: 'ja-m8', level: 'B2', icon: '🤝', cat: '委婉建議與協調',
+          title: '在團隊討論中溫和提出替代方案',
+          scene: '先肯定對方的意見，再以日式溝通禮儀委婉提出更穩健的做法。',
+          patterns: [
+            { t: 'おっしゃる通り、スピード感は非常に大切だと思います。', rd: 'おっしゃるとおり、すぴーどかんはひじょうにたいせつだとおもいます。', zh: '正如您所說，我也認為掌握速度感非常重要。' },
+            { t: 'ただ、品質を保つために、もう二日ほどテスト期間を設けませんか。', rd: 'ただ、ひんしつをたもつために、もうふつかほどてすときかんをもうけませんか。', zh: '不過為了維持品質，我們要不要再多安排兩天左右的測試期呢？' },
+            { t: 'まずは主要な機能から先にリリースするのはいかがでしょうか。', rd: 'まずはしゅようなきのうからさきにりりーすするのはいかがでしょうか。', zh: '我們先從主要功能開始上線，您覺得如何呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '素晴らしいご提案ですね。さらに良くするために一つだけ補足してもよろしいですか。', rd: 'すばらしいごていあんですね。さらによくするためにひとつだけほそくしてもよろしいですか。', zh: '真是很棒的提案呢。為了讓它更完善，我可以補充一點嗎？' },
+            { label: '自然生活句', t: '一度にすべてを変更するより、まずは一部のユーザーで試してみるのが安全かと思います。', rd: 'いちどにすべてをへんこうするより、まずはいちぶのゆーざーでためしてみるのがあんぜんかとおもいます。', zh: '比起一次改動全部，我想先在部分使用者身上試行會比較安全。' },
+            { label: '流暢完整版', t: 'スケジュールが厳しいことは承知しておりますが、優先順位の高い項目から進めましょう。', rd: 'すけじゅーるがきびしいことはしょうちしておりますが、ゆうせんじゅんいのたかいこうもくからすすめましょう。', zh: '我完全理解時程相當緊湊，我們就從優先順序較高的項目開始推進吧。' }
+          ]
+        }
+      ],
+      drills: [
+        {
+          id: 'ja-d1', level: 'A1', icon: '☕', title: '咖啡廳點餐擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'アイスラテを一つ', rd: 'あいすらてをひとつ', zh: '一杯冰拿鐵' },
+            { stage: 'Step 2・加上禮貌句尾', t: '氷少なめのアイスラテを一つお願いします。', rd: 'こおりすくなめのあいすらてをひとつおねがいします。', zh: '請給我一杯少冰的冰拿鐵。' },
+            { stage: 'Step 3・完整流暢長句', t: 'すみません、店内で氷少なめのアイスラテを一つと、チーズケーキをお願いします。', rd: 'すみません、てんないでこおりすくなめのあいすらてをひとつと、ちーずけーきをおねがいします。', zh: '不好意思，我要內用，請給我一杯少冰的冰拿鐵和一份起司蛋糕。' }
+          ]
+        },
+        {
+          id: 'ja-d2', level: 'A2', icon: '🚉', title: '車站問路擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '京都行きの電車', rd: 'きょうとゆきのでんしゃ', zh: '開往京都的電車' },
+            { stage: 'Step 2・加上月台詢問', t: '京都行きの電車は何番線から出ますか。', rd: 'きょうとゆきのでんしゃはなんばんせんからでますか。', zh: '請問開往京都的電車從幾號月台發車？' },
+            { stage: 'Step 3・完整流暢長句', t: 'すみません、一番早く京都に着く電車は何番線から出ますか。', rd: 'すみません、いちばんはやくきょうとにつくでんしゃはなんばんせんからでますか。', zh: '不好意思，請問最快抵達京都的電車是從幾號月台發車呢？' }
+          ]
+        },
+        {
+          id: 'ja-d3', level: 'A2', icon: '🏮', title: '推薦台灣夜市擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '夜市の小籠包', rd: 'よいちのしょうろんぽう', zh: '夜市的小籠包' },
+            { stage: 'Step 2・加上推薦句型', t: '熱々でジューシーな夜市の小籠包がおすすめです。', rd: 'あつあつでじゅーしーなよいちのしょうろんぽうがおすすめです。', zh: '推薦熱騰騰又多汁的夜市小籠包。' },
+            { stage: 'Step 3・完整流暢長句', t: '台湾に来たら、ぜひ熱々でジューシーな夜市の小籠包を食べてみてください。', rd: 'たいわんにきたら、ぜひあつあつでじゅーしーなよいちのしょうろんぽうをたべてみてください。', zh: '如果來到台灣，請務必嚐嚐看熱騰騰又多汁的夜市小籠包。' }
+          ]
+        },
+        {
+          id: 'ja-d4', level: 'B1', icon: '🍁', title: '分享京都旅遊回憶擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '秋の京都で紅葉を見た', rd: 'あきのきょうとでもみじをみた', zh: '在秋天的京都看了楓葉' },
+            { stage: 'Step 2・加上形容與感受', t: '去年、家族と一緒に秋の京都で美しい紅葉を見ました。', rd: 'きょねん、かぞくといっしょにあきのきょうとでうつくしいもみじをみました。', zh: '去年我和家人一起在秋天的京都欣賞了美麗的楓葉。' },
+            { stage: 'Step 3・完整流暢長句', t: '去年、家族と一緒に秋の京都へ旅行に行って、お寺の庭で美しい紅葉を見ました。', rd: 'きょねん、かぞくといっしょにあきのきょうとへりょこうにいって、おてらのにわでうつくしいもみじをみました。', zh: '去年我和家人一起去秋天的京都旅行，在寺院庭園裡欣賞了美麗的楓葉。' }
+          ]
+        },
+        {
+          id: 'ja-d5', level: 'B1', icon: '💻', title: '職場進度回報擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '音声のテストが完了した', rd: 'おんせいのてすとがかんりょうした', zh: '完成了語音測試' },
+            { stage: 'Step 2・加上目的說明', t: '物語がスムーズに流れるように、音声のテストが完了しました。', rd: 'ものがたりがすむーずにながれるように、おんせいのてすとがかんりょうしました。', zh: '為了讓故事能順暢播放，我們已經完成了語音測試。' },
+            { stage: 'Step 3・完整流暢長句', t: 'すべての画面で物語がスムーズに流れるように、先ほど音声のテストが完了しました。', rd: 'すべてのがめんでものがたりがすむーずにながれるように、さきほどおんせいのてすとがかんりょうしました。', zh: '為了讓所有畫面上的故事都能順暢播放，我們剛才已經完成了語音測試。' }
+          ]
+        },
+        {
+          id: 'ja-d6', level: 'B2', icon: '🤝', title: '商務委婉提案擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '少しずつ進める方が安心です', rd: 'すこしずつすすめるほうがあんしんです', zh: '一步步推進比較令人放心' },
+            { stage: 'Step 2・加上原因背景', t: 'ミスを防ぐためにも、少しずつ進める方が安心だと思います。', rd: 'みすをふせぐためにも、すこしずつすすめるほうがあんしんだとおもいます。', zh: '為了防止出錯，我認為一步步推進會比較令人放心。' },
+            { stage: 'Step 3・完整流暢長句', t: 'おっしゃることも分かりますが、大きなミスを防ぐためにも、少しずつ進める方が安心だと思います。', rd: 'おっしゃることもわかりますが、おおきなみすをふせぐためにも、すこしずつすすめるほうがあんしんだとおもいます。', zh: '我明白您的考量，但為了防止重大失誤，我認為一步步推進會比較令人放心。' }
+          ]
+        }
+      ],
+      topics: [
+        {
+          id: 'ja-t1', level: 'A1', icon: '☀️', title: '我最喜歡的週末度過方式（私の休日の過ごし方）',
+          questions: [
+            '你週末通常幾點起床？早上喜歡做什麼？',
+            '你喜歡在家休息還是出門散步、逛咖啡廳？',
+            '週末做什麼事情最能讓你恢復精神？'
+          ],
+          keywords: ['ゆっくり起きる', 'コーヒーを飲む', '散歩する', '友達と会う', 'リフレッシュ', '美味しいもの'],
+          sample: [
+            { t: '週末はいつもより少しゆっくり起きて、家で温かいコーヒーを飲みます。', rd: 'しゅうまつはいつもよりすこしゆっくりおきて、いえであたたかいこーひーをのみます。', zh: '週末我會比平常稍微晚一點起床，在家喝杯熱咖啡。' },
+            { t: '午後は近くの公園を散歩したり、友達とカフェで美味しいケーキを食べたりします。', rd: 'ごごはちかくのこうえんをさんぽしたり、ともだちとかふぇでおいしいけーきをたべたりします。', zh: '下午我會去附近的公園散步，或是和朋友在咖啡廳吃好吃的蛋糕。' },
+            { t: 'のんびり過ごすことで気持ちがリフレッシュして、また来週も頑張れます。', rd: 'のんびりすごすことできもちがりふれっしゅして、またらいしゅうもがんばれます。', zh: '悠閒地度過能讓心情煥然一新，下週又能繼續加油。' }
+          ]
+        },
+        {
+          id: 'ja-t2', level: 'A2', icon: '🍜', title: '我想介紹給日本朋友的台灣美食（おすすめの台湾グルメ）',
+          questions: [
+            '你想推薦哪一道台灣料理或甜點？',
+            '它的味道與口感如何（例如熱騰騰、多汁、香甜）？',
+            '推薦去哪裡吃最道地？'
+          ],
+          keywords: ['夜市', '小籠包', 'ルーロー飯', 'タピオカミルクティー', '熱々', 'ぜひ食べてほしい'],
+          sample: [
+            { t: '日本の友達が台湾に来たら、一番おすすめしたい料理は小籠包とルーロー飯です。', rd: 'にほんのともだちがたいわんにきたら、いちばんおすすめしたいりょうりはしょうろんぽうとるーろーはんです。', zh: '如果日本朋友來台灣，我最想推薦的料理是小籠包和滷肉飯。' },
+            { t: '小籠包は皮が薄くて、中に熱々のスープがたっぷり入っています。', rd: 'しょうろんぽうはかわがうすくて、なかにあつあつのすーぷがたっぷりはいっています。', zh: '小籠包皮薄，裡面裝滿了熱騰騰的鮮美湯汁。' },
+            { t: '夜市の賑やかな雰囲気を楽しみながら、ぜひ食べてほしいです。', rd: 'よいちのにぎやかなふんいきをたのしみながら、ぜひたべてほしいです。', zh: '希望大家能一邊享受夜市熱鬧的氣氛，一邊品嚐看看。' }
+          ]
+        },
+        {
+          id: 'ja-t3', level: 'A2', icon: '🗾', title: '一次難忘的日本旅行回憶（思い出の旅行）',
+          questions: [
+            '你去過或最想去日本的哪個城市？',
+            '那裡的風景、美食或遇到的人給你什麼印象？',
+            '下次再去的話，你想體驗什麼？'
+          ],
+          keywords: ['景色が綺麗', '温泉', '親切', '写真を撮る', 'また行きたい', '忘れられない'],
+          sample: [
+            { t: '私の一番忘れられない旅行は、冬に北海道へ行ったことです。', rd: 'わたしのいちばんわすれられないりょこうは、ふゆにほっかいどうへいったことです。', zh: '我最難忘的一次旅行，是在冬天去了北海道。' },
+            { t: '真っ白な雪の景色がとても綺麗で、夜に入った露天風呂も最高でした。', rd: 'まっしろなゆきのけしきがとてもきれいで、よるにはいったろてんぶろもさいこうでした。', zh: '純白的雪景非常美麗，晚上泡的露天溫泉也棒極了。' },
+            { t: '地元の人たちもとても親切だったので、季節を変えてまた行きたいです。', rd: 'じもとのひとたちもとてもしんせつだったので、きせつをかえてまたいきたいです。', zh: '當地人也非常親切，下次我想換個季節再去一次。' }
+          ]
+        },
+        {
+          id: 'ja-t4', level: 'B1', icon: '📚', title: '我如何持續學習日語（私の日本語学習法）',
+          questions: [
+            '你當初為什麼開始想學日語？',
+            '平常會透過什麼方式練習聽力與口說？',
+            '學會用日語表達後，最有成就感的是什麼時候？'
+          ],
+          keywords: ['きっかけ', '毎日少しずつ', '物語を読む', '声に出す', '自信がつく', '楽しい'],
+          sample: [
+            { t: '日本のドラマや旅行がきっかけで、日本語をもっと話せるようになりたいと思いました。', rd: 'にほんのどらまやりょこうがきっかけで、にほんごをもっとはなせるようになりたいとおもいました。', zh: '因為日劇和日本旅行的契機，讓我想要變得更會說日文。' },
+            { t: '忙しい日でも、毎日十五分だけ物語を聞いて声に出す習慣を続けています。', rd: 'いそがしいひでも、まいにちじゅうごふんだけものがたりをきいてこえにだすしゅうかんをつづけています。', zh: '就算是忙碌的日子，我也持續維持每天聽十五分鐘故事並唸出聲的習慣。' },
+            { t: '旅行先で自分の言葉が通じたとき、とても嬉しくて自信がつきました。', rd: 'りょこうさきでじぶんのことばがつうじたとき、とてもうれしくてじしんがつきました。', zh: '當在旅行地自己說的話能溝通時，真的非常開心也更有自信了。' }
+          ]
+        },
+        {
+          id: 'ja-t5', level: 'B1', icon: '🎬', title: '一部讓我深受感動的作品（心に残った映画や本）',
+          questions: [
+            '這部電影、動畫或書在講什麼故事？',
+            '主角的哪一個選擇或哪一句話最打動你？',
+            '看完之後你的心情有什麼轉變？'
+          ],
+          keywords: ['感動する', '主人公', '諦めない', '温かい気持ち', '大切なこと', 'おすすめ'],
+          sample: [
+            { t: '最近読んで一番心に残ったのは、小さな町の古い本屋さんを描いた物語です。', rd: 'さいきんよんでいちばんこころにのこったのは、ちいさなまちのふるいほんやさんをえがいたものがたりです。', zh: '最近讀過最令我印象深刻的，是描寫小鎮裡一間老書店的故事。' },
+            { t: '失敗しても諦めない主人公の姿を見て、とても温かい気持ちになりました。', rd: 'しっぱいしてもあきらめないしゅじんこうのすがたをみて、とてもあたたかいきもちになりました。', zh: '看著即使失敗也不放棄的主角身影，心裡變得非常溫暖。' },
+            { t: '忙しい毎日の中で大切なことを思い出させてくれる一冊です。', rd: 'いそがしいまいにちのなかでたいせつなことをおもいださせてくれるいっさつです。', zh: '這是一本能讓人重新想起忙碌日常中重要事物的書。' }
+          ]
+        },
+        {
+          id: 'ja-t6', level: 'B2', icon: '🌿', title: '在忙碌生活中保持身心平衡的方法（ワークライフバランス）',
+          questions: [
+            '工作或學習忙碌時，你如何察覺自己的壓力？',
+            '你會用什麼具體方法幫助自己轉換心情？',
+            '你理想中的工作與生活平衡是什麼樣子？'
+          ],
+          keywords: ['気分転換', '睡眠をとる', '運動する', '無理をしない', '効率が上がる', '心の余裕'],
+          sample: [
+            { t: '仕事が忙しいときこそ、無理をしすぎず心の余裕を持つことが大切だと感じています。', rd: 'しごとがいそがしいときこそ、むりをしすぎずこころのよゆうをもつことがたいせつだとかんじています。', zh: '我覺得越是工作忙碌的時候，不要過度勉強自己、保有心靈的餘裕越是重要。' },
+            { t: '私は夜遅くまで画面を見ないようにして、しっかり睡眠をとるように心がけています。', rd: 'わたしはよるおそくまでがめんをみないようにして、しっかりすいみんをとるようにこころがけています。', zh: '我會留意不要看螢幕到太晚，並確保充足的睡眠。' },
+            { t: '適度に気分転換をすることで、結果的に翌日の仕事の効率も上がります。', rd: 'てきどにきぶんてんかんをすることで、けっかてきによくじつのしごとのこうりつもあがります。', zh: '透過適度轉換心情，結果反而能提升隔天的工作效率。' }
+          ]
+        }
+      ]
+    },
+
+    ko: {
+      title: '🗣️ 韓語口說特訓工坊',
+      sub: '從「短詞塊擴句」、「情境實戰對答」到「60 秒主題自由說」，充裕錄音時間不搶拍，放心把整句韓語講完！',
+      missions: [
+        {
+          id: 'ko-m1', level: 'A1', icon: '👋', cat: '破冰自我介紹',
+          title: '初次見面與介紹自己的興趣',
+          scene: '認識韓國朋友或參加語言交流時，自然地用禮貌體（해요體）打招呼並介紹自己。',
+          patterns: [
+            { t: '안녕하세요! 저는 대만에서 온 민지라고 해요.', rd: 'an-nyeong-ha-se-yo! jeo-neun dae-ma-ne-seo on min-ji-ra-go hae-yo.', zh: '你好！我是從台灣來的敏芝。' },
+            { t: '타이베이에서 회사원으로 일하고 있어요.', rd: 'ta-i-be-i-e-seo hoe-sa-wo-neu-ro il-ha-go i-sseo-yo.', zh: '我在台北當上班族。' },
+            { t: '주말에는 한국 드라마를 보거나 카페에 가는 걸 좋아해요.', rd: 'ju-ma-re-neun han-guk deu-ra-ma-reul bo-geo-na ka-pe-e ga-neun geol jo-a-hae-yo.', zh: '週末我喜歡看韓劇或是去咖啡廳。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '안녕하세요, 만나서 정말 반가워요! 앞으로 잘 부탁드려요.', rd: 'an-nyeong-ha-se-yo, man-na-seo jeong-mal ban-ga-wo-yo! a-peu-ro jal bu-tak-deu-ryeo-yo.', zh: '你好，真的很開心認識你！今後請多指教。' },
+            { label: '自然生活句', t: '한국 여행과 음악을 좋아해서 매일 조금씩 한국어를 공부하고 있어요.', rd: 'han-guk yeo-haeng-gwa eu-ma-geul jo-a-hae-seo mae-il jo-geum-ssik han-gu-geo-reul gong-bu-ha-go i-sseo-yo.', zh: '因為喜歡韓國旅行和音樂，我每天都在學一點韓文。' },
+            { label: '流暢完整版', t: '쉬는 날에는 친구들이랑 맛있는 음식을 먹으러 가거나 사진을 찍는 걸 좋아해요.', rd: 'swi-neun na-re-neun chin-gu-deu-ri-rang ma-sin-neun eum-si-geul meo-geu-reo ga-geo-na sa-ji-neul jjing-neun geol jo-a-hae-yo.', zh: '放假的日子我喜歡和朋友去吃美食，或是去拍照。' }
+          ]
+        },
+        {
+          id: 'ko-m2', level: 'A1', icon: '☕', cat: '咖啡廳與餐廳點餐',
+          title: '在首爾咖啡廳點飲品與要求小菜續加',
+          scene: '在韓國咖啡廳點冰美式或拿鐵、調整冰塊，或在餐廳請店員續加小菜。',
+          patterns: [
+            { t: '아이스 아메리카노 한 잔이랑 바닐라 라떼 한 잔 주세요.', rd: 'a-i-seu a-me-ri-ka-no han ja-ni-rang ba-nil-la la-tte han jan ju-se-yo.', zh: '請給我一杯冰美式和一杯香草拿鐵。' },
+            { t: '얼음은 조금만 넣어 주시고, 매장에서 마실게요.', rd: 'eo-reu-meun jo-geum-man neo-eo ju-si-go, mae-jang-e-seo ma-sil-ge-yo.', zh: '冰塊請幫我放少一點，我要內用。' },
+            { t: '사장님, 여기 김치랑 반찬 좀 더 주시겠어요?', rd: 'sa-jang-nim, yeo-gi gim-chi-rang ban-chan jom deo ju-si-ge-sseo-yo?', zh: '老闆，請問這裡可以再給我們一點泡菜和小菜嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '저기요, 주문할게요! 따뜻한 카페라떼 두 잔 주세요.', rd: 'jeo-gi-yo, ju-mun-hal-ge-yo! tta-tteu-tan ka-pe-la-tte du jan ju-se-yo.', zh: '不好意思，我要點餐！請給我兩杯熱拿鐵。' },
+            { label: '自然生活句', t: '아이스 라떼를 귀리 우유로 바꿔 주실 수 있나요? 포장해 갈게요.', rd: 'a-i-seu la-tte-reul gwi-ri u-yu-ro ba-kkwo ju-sil su in-na-yo? po-jang-hae gal-ge-yo.', zh: '請問冰拿鐵可以幫我換成燕麥奶嗎？我要外帶。' },
+            { label: '流暢完整版', t: '음식이 정말 맛있었어요! 계산은 카드로 할게요, 영수증은 버려 주세요.', rd: 'eum-si-gi jeong-mal ma-si-sseo-sseo-yo! gye-sa-neun ka-deu-ro hal-ge-yo, yeong-su-jeung-eun beo-ryeo ju-se-yo.', zh: '餐點真的太好吃了！我要刷卡結帳，收據請幫我丟掉即可。' }
+          ]
+        },
+        {
+          id: 'ko-m3', level: 'A2', icon: '🚇', cat: '地鐵問路與計程車',
+          title: '在地鐵站確認出口方向與搭計程車',
+          scene: '在首爾或釜山地鐵站確認幾號出口，或上計程車告訴司機目的地。',
+          patterns: [
+            { t: '실례합니다, 홍대입구역으로 가려면 몇 번 출구로 나가야 해요?', rd: 'sil-lye-ham-ni-da, hong-dae-ip-gu-yeo-geu-ro ga-ryeo-myeon myeot beon chul-gu-ro na-ga-ya hae-yo?', zh: '不好意思，請問要去弘大入口站應該從幾號出口出去？' },
+            { t: '이 지하철을 타면 서울역까지 한 번에 가나요?', rd: 'i ji-ha-cheo-reul ta-myeon seo-ul-lyeok-kka-ji han beo-ne ga-na-yo?', zh: '請問搭這班地鐵可以直達首爾站嗎？' },
+            { t: '기사님, 이 주소로 가 주세요. 트렁크 좀 열어 주시겠어요?', rd: 'gi-sa-nim, i ju-so-ro ga ju-se-yo. teu-reong-keu jom yeo-reo ju-si-ge-sseo-yo?', zh: '司機先生，請載我去這個地址，可以幫我開一下後車廂嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '죄송한데, 가장 가까운 편의점이 어디에 있는지 아세요?', rd: 'joe-song-han-de, ga-jang ga-kka-un pyeo-nui-jeo-mi eo-di-e in-neun-ji a-se-yo?', zh: '不好意思，請問您知道最近的便利商店在哪裡嗎？' },
+            { label: '自然生活句', t: '공항철도로 갈아타고 싶은데, 어느 쪽으로 걸어가야 하나요?', rd: 'gong-hang-cheol-do-ro ga-ra-ta-go si-peun-de, eo-neu jjo-geu-ro geo-reo-ga-ya ha-na-yo?', zh: '我想轉乘機場鐵路，請問應該往哪個方向走呢？' },
+            { label: '流暢完整版', t: '반대편 열차를 잘못 탔는데, 다음 역에서 내려서 건너갈 수 있나요?', rd: 'ban-dae-pyeon yeol-cha-reul jal-mot tan-neun-de, da-eum yeo-ge-seo nae-ryeo-seo geon-neo-gal su in-na-yo?', zh: '我不小心搭錯反方向的列車了，請問可以在下一站下車走過去對面月台嗎？' }
+          ]
+        },
+        {
+          id: 'ko-m4', level: 'A2', icon: '🏨', cat: '飯店入住與寄放行李',
+          title: '辦理飯店入住、寄放行李與叫車協助',
+          scene: '在韓國飯店櫃檯辦理入住、先寄放行李，或請櫃檯幫忙確認房間設備。',
+          patterns: [
+            { t: '체크인 부탁드립니다. 예약자 이름은 린이에요.', rd: 'che-keu-in bu-tak-deu-rim-ni-da. ye-yak-ja i-reu-meun ri-ni-e-yo.', zh: '麻煩辦理入住，預約人的名字是林。' },
+            { t: '체크인 시간 전에 짐을 먼저 맡길 수 있을까요?', rd: 'che-keu-in si-gan jeo-ne ji-meul meon-jeo mat-gil su i-sseul-kka-yo?', zh: '請問在入住時間之前，可以先寄放行李嗎？' },
+            { t: '방에 수건 두 장이랑 생수 좀 더 주실 수 있나요?', rd: 'bang-e su-geon du jang-i-rang saeng-su jom deo ju-sil su in-na-yo?', zh: '請問可以再給房間兩條毛巾和一些瓶裝水嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '안녕하세요, 오늘부터 이틀 동안 예약한 린이라고 합니다.', rd: 'an-nyeong-ha-se-yo, o-neul-bu-teo i-teul dong-an ye-ya-kan ri-ni-ra-go ham-ni-da.', zh: '你好，我是從今天起預約住兩天的林。' },
+            { label: '自然生活句', t: '조식은 몇 시부터 몇 층에서 먹을 수 있는지 알려 주세요.', rd: 'jo-si-geun myeot si-bu-teo myeot cheung-e-seo meo-geul su in-neun-ji al-lyeo ju-se-yo.', zh: '請告訴我早餐從幾點開始、在幾樓用餐。' },
+            { label: '流暢完整版', t: '내일 아침 일찍 공항에 가야 하는데, 택시를 미리 불러 주실 수 있나요?', rd: 'nae-il a-chim il-jjik gong-hang-e ga-ya ha-neun-de, taek-si-reul mi-ri bul-leo ju-sil su in-na-yo?', zh: '我明天一早必須去機場，請問可以幫我預先叫計程車嗎？' }
+          ]
+        },
+        {
+          id: 'ko-m5', level: 'B1', icon: '🛍️', cat: '美妝服飾購物與退稅',
+          title: '在聖水洞或明洞試穿衣服與辦理退稅',
+          scene: '在服飾店詢問新庫存與尺寸，或在美妝店詢問推薦保養品與現場退稅。',
+          patterns: [
+            { t: '이 옷 입어 봐도 돼요? 한 치수 더 큰 것도 있나요?', rd: 'i ot i-beo bwa-do dwae-yo? han chi-su deo keun geot-do in-na-yo?', zh: '請問這件衣服可以試穿嗎？有大一號的尺寸嗎？' },
+            { t: '피부가 건조한 편인데, 수분 크림 좀 추천해 주세요.', rd: 'pi-bu-ga geon-jo-han pyeo-nin-de, su-bun keu-rim jom chu-cheon-hae ju-se-yo.', zh: '我的皮膚偏乾，請推薦我保濕乳霜。' },
+            { t: '여권 가지고 있는데 바로 택스 리펀드 받을 수 있나요?', rd: 'yeo-gwon ga-ji-go in-neun-de ba-ro taek-seu ri-peon-deu ba-deul su in-na-yo?', zh: '我有帶護照，請問可以直接辦理現場退稅嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '이 색깔이 정말 예쁜데, 새 상품으로 꺼내 주실 수 있나요?', rd: 'i saek-kka-ri jeong-mal ye-ppeun-de, sae sang-pu-meu-ro kkeo-nae ju-sil su in-na-yo?', zh: '這個顏色真的很漂亮，請問可以幫我拿一件新的商品嗎？' },
+            { label: '自然生活句', t: '선물할 거라서 그러는데, 예쁘게 포장해 주시면 감사하겠습니다.', rd: 'seon-mul-hal geo-ra-seo geu-reo-neun-de, ye-ppeu-ge po-jang-hae ju-si-myeon gam-sa-ha-get-seum-ni-da.', zh: '因為是要送人的禮物，如果能幫我包裝漂亮一點就太感謝了。' },
+            { label: '流暢完整版', t: '어제 산 가방 지퍼가 잘 안 열려서 그러는데, 다른 걸로 교환할 수 있을까요?', rd: 'eo-je san ga-bang ji-peo-ga jal an yeol-lyeo-seo geu-reo-neun-de, da-reun geol-lo gyo-hwan-hal su i-sseul-kka-yo?', zh: '昨天買的包包拉鍊不太好拉，請問可以換成另一個嗎？' }
+          ]
+        },
+        {
+          id: 'ko-m6', level: 'B1', icon: '💊', cat: '藥局買藥與症狀說明',
+          title: '在韓國藥局說明感冒或消化不良症狀',
+          scene: '在旅途中喉嚨痛或吃太辣胃痛時，向藥師描述症狀並確認吃藥時間。',
+          patterns: [
+            { t: '어제부터 목이 많이 아프고 기침이 나요.', rd: 'eo-je-bu-teo mo-gi ma-ni a-peu-go gi-chi-mi na-yo.', zh: '我從昨天開始喉嚨很痛而且一直咳嗽。' },
+            { t: '소화가 잘 안 되고 속이 쓰린데 무슨 약을 먹어야 할까요?', rd: 'so-hwa-ga jal an doe-go so-gi sseu-rin-de mu-seun ya-geul meo-geo-ya hal-kka-yo?', zh: '我消化不良而且胃有點灼熱感，請問應該吃什麼藥呢？' },
+            { t: '이 약은 식후 삼십 분에 따뜻한 물이랑 먹으면 되나요?', rd: 'i ya-geun si-ku sam-sip bu-ne tta-tteu-tan mu-ri-rang meo-geu-myeon doe-na-yo?', zh: '請問這個藥是在飯後三十分鐘配溫水吃嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '약사님, 머리가 조금 아프고 콧물이 나는데 감기약 주세요.', rd: 'yak-sa-nim, meo-ri-ga jo-geum a-peu-go kon-mu-ri na-neun-de gam-gi-yak ju-se-yo.', zh: '藥師您好，我頭有點痛而且流鼻水，請給我感冒藥。' },
+            { label: '自然生活句', t: '낮에 돌아다녀야 해서 졸리지 않는 약으로 주시면 좋겠어요.', rd: 'na-je do-ra-da-nyeo-ya hae-seo jol-li-ji an-neun ya-geu-ro ju-si-myeon jo-ke-sseo-yo.', zh: '因為白天還要出門走動，希望能給我吃了不會想睡覺的藥。' },
+            { label: '流暢完整版', t: '약 알레르기는 없는데, 위가 약한 편이라 순한 약으로 부탁드립니다.', rd: 'yak al-le-reu-gi-neun eom-neun-de, wi-ga ya-kan pyeo-ni-ra sun-han ya-geu-ro bu-tak-deu-rim-ni-da.', zh: '我沒有藥物過敏，但因為腸胃比較弱，麻煩給我溫和一點的藥。' }
+          ]
+        },
+        {
+          id: 'ko-m7', level: 'B2', icon: '💼', cat: '職場會議進度回報',
+          title: '在團隊會議清楚報告專案進度與時程',
+          scene: '在跨國或韓商會議中，有條理地說明已完成事項與接下來的計畫。',
+          patterns: [
+            { t: '이번 주 프로젝트 진행 상황에 대해 말씀드리겠습니다.', rd: 'i-beon ju peu-ro-jek-teu jin-haeng sang-hwang-e dae-hae mal-sseum-deu-ri-get-seum-ni-da.', zh: '我來向各位報告本週專案的進行狀況。' },
+            { t: '오디오 재생 문제는 오늘 오전에 수정이 완료되었습니다.', rd: 'o-di-o jae-saeng mun-je-neun o-neul o-jeo-ne su-jeong-i wan-lyo-doe-eot-seum-ni-da.', zh: '音訊播放的問題已經在今天上午修正完畢。' },
+            { t: '다음 주 월요일까지 최종 테스트 결과를 공유해 드리겠습니다.', rd: 'da-eum ju wo-ryo-il-kka-ji choe-jong te-seu-teu gyeol-gwa-reul gong-yu-hae deu-ri-get-seum-ni-da.', zh: '我會在下週一前與大家分享最終測試結果。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '현재 일정대로 순조롭게 진행되고 있으며, 금요일에 배포할 예정입니다.', rd: 'hyeon-jae il-jeong-dae-ro sun-jo-rop-ge jin-haeng-doe-go i-sseu-myeo, geu-myo-i-re bae-po-hal ye-jeong-im-ni-da.', zh: '目前正按時程順利推進中，預計在週五進行發布。' },
+            { label: '自然生活句', t: '보내 주신 피드백을 반영해서 화면 구성을 훨씬 보기 편하게 개선했습니다.', rd: 'bo-nae ju-sin pi-deu-bae-geul ban-yeong-hae-seo hwa-myeon gu-seong-eul hwol-ssin bo-gi pyeon-ha-ge gae-seon-haet-seum-ni-da.', zh: '我們已反映您提供的回饋，將畫面配置改善得更加清晰好讀。' },
+            { label: '流暢完整版', t: '회의가 끝난 후에 세부 디자인에 대해 십 분 정도만 따로 이야기 나눌 수 있을까요?', rd: 'hoe-ui-ga kkeun-nan hu-e se-bu di-ja-i-ne dae-hae sip bun jeong-do-man tta-ro i-ya-gi na-nul su i-sseul-kka-yo?', zh: '請問會議結束後，我們可以另外花個十分鐘討論一下細節設計嗎？' }
+          ]
+        },
+        {
+          id: 'ko-m8', level: 'B2', icon: '🤝', cat: '委婉建議與折衷協調',
+          title: '在討論中禮貌表達不同意見與替代方案',
+          scene: '先認同對方的觀點，再以溫和專業的韓語提出分階段上線或測試方案。',
+          patterns: [
+            { t: '말씀하신 취지에는 저도 충분히 공감합니다.', rd: 'mal-sseum-ha-sin chwi-ji-e-neun jeo-do chung-bun-hi gong-gam-ham-ni-da.', zh: '我非常認同您剛才提到的初衷與方向。' },
+            { t: '다만 완성도를 높이기 위해 이틀 정도 더 테스트해 보면 어떨까요?', rd: 'da-man wan-seong-do-reul no-pi-gi wi-hae i-teul jeong-do deo te-seu-teu-hae bo-myeon eo-tteol-kka-yo?', zh: '不過為了提高完成度，我們再多測試兩天左右如何呢？' },
+            { t: '핵심 기능을 먼저 공개하고 나머지 부분은 다음 주에 추가하는 방법을 제안드리고 싶습니다.', rd: 'haek-sim gi-neung-eul meon-jeo gong-gae-ha-go na-meo-ji bu-bu-neun da-eum ju-e chu-ga-ha-neun bang-beo-beul je-an-deu-ri-go sip-seum-ni-da.', zh: '我想建議先公開核心功能，其餘部分則在下週追加。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '좋은 의견이네요! 여기에 작은 아이디어 하나만 더 보태도 될까요?', rd: 'jo-eun ui-gyeo-ni-ne-yo! yeo-gi-e ja-geun a-i-di-eo ha-na-man deo bo-tae-do doel-kka-yo?', zh: '真是好主意！請問我可以在這裡補充一個小點子嗎？' },
+            { label: '自然生活句', t: '한꺼번에 다 바꾸기보다는 소규모 그룹에서 먼저 시범 운영해 보는 게 안전할 것 같습니다.', rd: 'han-kkeo-beo-ne da ba-kku-gi-bo-da-neun so-gyu-mo geu-ru-be-seo meon-jeo si-beom un-yeong-hae bo-neun ge an-jeon-hal geot gat-seum-ni-da.', zh: '比起一次全部改動，先在小規模群組中試行應該會比較穩妥。' },
+            { label: '流暢完整版', t: '일정이 촉박한 점은 잘 알고 있지만, 사용자들이 가장 원하던 기능부터 우선순위를 두면 좋겠습니다.', rd: 'il-jeong-i chok-ba-kan jeo-meun jal al-go it-ji-man, sa-yong-ja-deu-ri ga-jang won-ha-deon gi-neung-bu-teo u-seon-sun-wi-reul du-myeon jo-ket-seum-ni-da.', zh: '我明白時程相當緊迫，但若能從使用者最期待的功能開始排定優先順序會更好。' }
+          ]
+        }
+      ],
+      drills: [
+        {
+          id: 'ko-d1', level: 'A1', icon: '☕', title: '咖啡廳點餐擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '아이스 라떼 한 잔', rd: 'a-i-seu la-tte han jan', zh: '一杯冰拿鐵' },
+            { stage: 'Step 2・加上客製化需求', t: '얼음 적게 넣은 아이스 라떼 한 잔 주세요.', rd: 'eo-reum jeok-ge neo-eun a-i-seu la-tte han jan ju-se-yo.', zh: '請給我一杯少冰的冰拿鐵。' },
+            { stage: 'Step 3・完整流暢長句', t: '저기요, 매장에서 마실 건데 얼음 적게 넣은 아이스 라떼 한 잔이랑 치즈케이크 주세요.', rd: 'jeo-gi-yo, mae-jang-e-seo ma-sil geon-de eo-reum jeok-ge neo-eun a-i-seu la-tte han ja-ni-rang chi-jeu-ke-i-keu ju-se-yo.', zh: '不好意思，我要內用，請給我一杯少冰的冰拿鐵和一份起司蛋糕。' }
+          ]
+        },
+        {
+          id: 'ko-d2', level: 'A2', icon: '🚇', title: '地鐵問路擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '가장 가까운 지하철역', rd: 'ga-jang ga-kka-un ji-ha-cheol-lyeok', zh: '最近的地鐵站' },
+            { stage: 'Step 2・加上問路句型', t: '가장 가까운 지하철역까지 어떻게 가는지 알려 주세요.', rd: 'ga-jang ga-kka-un ji-ha-cheol-lyeok-kka-ji eo-tteo-ke ga-neun-ji al-lyeo ju-se-yo.', zh: '請告訴我怎麼去最近的地鐵站。' },
+            { stage: 'Step 3・完整流暢長句', t: '실례합니다, 여기서 가장 가까운 지하철역까지 걸어서 몇 분 정도 걸리는지 아세요?', rd: 'sil-lye-ham-ni-da, yeo-gi-seo ga-jang ga-kka-un ji-ha-cheol-lyeok-kka-ji geo-reo-seo myeot bun jeong-do geol-li-neun-ji a-se-yo?', zh: '不好意思，請問您知道從這裡走路到最近的地鐵站大約要幾分鐘嗎？' }
+          ]
+        },
+        {
+          id: 'ko-d3', level: 'A2', icon: '🧋', title: '推薦台灣美食擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '야시장의 버블티와 지파이', rd: 'ya-si-jang-ui beo-beul-ti-wa ji-pa-i', zh: '夜市的珍珠奶茶與雞排' },
+            { stage: 'Step 2・加上推薦語氣', t: '대만에 오시면 야시장의 버블티와 바삭한 지파이를 꼭 드셔 보세요.', rd: 'dae-ma-ne o-si-myeon ya-si-jang-ui beo-beul-ti-wa ba-sa-kan ji-pa-i-reul kkok deu-syeo bo-se-yo.', zh: '如果來台灣，請一定要嚐嚐夜市的珍珠奶茶和酥脆雞排。' },
+            { stage: 'Step 3・完整流暢長句', t: '대만에 처음 여행 오시면 밤에 야시장에 가서 달콤한 버블티와 바삭한 지파이를 꼭 드셔 보세요.', rd: 'dae-ma-ne cheo-eum yeo-haeng o-si-myeon ba-me ya-si-jang-e ga-seo dal-kom-han beo-beul-ti-wa ba-sa-kan ji-pa-i-reul kkok deu-syeo bo-se-yo.', zh: '如果第一次來台灣旅行，晚上請一定要去夜市嚐嚐甜甜的珍珠奶茶與酥脆雞排。' }
+          ]
+        },
+        {
+          id: 'ko-d4', level: 'B1', icon: '🌊', title: '分享釜山旅行回憶擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '부산 바다를 보며 어묵을 먹었다', rd: 'bu-san ba-da-reul bo-myeo eo-mu-geul meo-geot-da', zh: '看著釜山大海吃了魚板' },
+            { stage: 'Step 2・加上時間與同伴', t: '지난달에 친구들과 함께 부산 바다를 보며 따뜻한 어묵을 먹었어요.', rd: 'ji-nan-da-re chin-gu-deul-gwa ham-kke bu-san ba-da-reul bo-myeo tta-tteu-tan eo-mu-geul meo-geo-sseo-yo.', zh: '上個月我和朋友們一起看著釜山的大海，吃了熱騰騰的魚板。' },
+            { stage: 'Step 3・完整流暢長句', t: '지난달에 친구들과 기차를 타고 부산에 가서 푸른 바다를 보며 따뜻한 어묵을 맛있게 먹었어요.', rd: 'ji-nan-da-re chin-gu-deul-gwa gi-cha-reul ta-go bu-sa-ne ga-seo pu-reun ba-da-reul bo-myeo tta-tteu-tan eo-mu-geul ma-sit-ge meo-geo-sseo-yo.', zh: '上個月我和朋友搭火車去釜山，看著蔚藍大海津津有味地吃了熱騰騰的魚板。' }
+          ]
+        },
+        {
+          id: 'ko-d5', level: 'B1', icon: '💻', title: '職場進度更新擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '음성 재생 기능을 개선했다', rd: 'eum-seong jae-saeng gi-neung-eul gae-seon-haet-da', zh: '改善了語音播放功能' },
+            { stage: 'Step 2・加上改善成果', t: '이야기가 끊기지 않고 자연스럽게 이어지도록 음성 재생 기능을 개선했습니다.', rd: 'i-ya-gi-ga kkeun-gi-ji an-ko ja-yeon-seu-reop-ge i-eo-ji-do-rok eum-seong jae-saeng gi-neung-eul gae-seon-haet-seum-ni-da.', zh: '為了讓故事不中斷並自然銜接，我們改善了語音播放功能。' },
+            { stage: 'Step 3・完整流暢長句', t: '사용자들이 더 편하게 들을 수 있도록 이야기가 자연스럽게 이어지게 음성 재생 기능을 개선했습니다.', rd: 'sa-yong-ja-deu-ri deo pyeon-ha-ge deu-reul su it-do-rok i-ya-gi-ga ja-yeon-seu-reop-ge i-eo-ji-ge eum-seong jae-saeng gi-neung-eul gae-seon-haet-seum-ni-da.', zh: '為了讓使用者能更輕鬆聆聽，我們改善了語音播放功能，讓故事能自然流暢地銜接。' }
+          ]
+        },
+        {
+          id: 'ko-d6', level: 'B2', icon: '🤝', title: '會議委婉提議擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '단계별로 진행하는 것이 안전하다', rd: 'dan-gye-byeol-lo jin-haeng-ha-neun geo-si an-jeon-ha-da', zh: '分階段推進比較安全' },
+            { stage: 'Step 2・加上原因說明', t: '오류를 줄이기 위해서는 처음부터 단계별로 진행하는 것이 안전할 것 같습니다.', rd: 'o-ryu-reul ju-ri-gi wi-hae-seo-neun cheo-eum-bu-teo dan-gye-byeol-lo jin-haeng-ha-neun geo-si an-jeon-hal geot gat-seum-ni-da.', zh: '為了減少錯誤，從一開始就分階段推進應該會比較安全。' },
+            { stage: 'Step 3・完整流暢長句', t: '말씀하신 의견에도 공감하지만, 예상치 못한 오류를 줄이기 위해서는 단계별로 진행하는 것이 안전할 것 같습니다.', rd: 'mal-sseum-ha-sin ui-gyeo-ne-do gong-gam-ha-ji-man, ye-sang-chi mo-tan o-ryu-reul ju-ri-gi wi-hae-seo-neun dan-gye-byeol-lo jin-haeng-ha-neun geo-si an-jeon-hal geot gat-seum-ni-da.', zh: '雖然我也認同您的意見，但為了減少預期外的錯誤，分階段推進應該會比較安全。' }
+          ]
+        }
+      ],
+      topics: [
+        {
+          id: 'ko-t1', level: 'A1', icon: '🌤️', title: '我最喜歡的週末日常（나의 주말 일상）',
+          questions: [
+            '你週末通常幾點起床？早上喜歡喝什麼？',
+            '你喜歡待在家裡休息，還是跟朋友出門？',
+            '週末做什麼事最能讓你感到開心？'
+          ],
+          keywords: ['늦잠을 자다', '커피를 마시다', '산책하다', '친구를 만나다', '휴식을 취하다', '행복하다'],
+          sample: [
+            { t: '주말에는 평일보다 조금 늦잠을 자고 일어나서 따뜻한 커피를 마셔요.', rd: 'ju-ma-re-neun pyeong-il-bo-da jo-geum neut-ja-meul ja-go i-reo-na-seo tta-tteu-tan keo-pi-reul ma-syeo-yo.', zh: '週末我會比平日稍微睡晚一點，起床後喝杯熱咖啡。' },
+            { t: '오후에는 가까운 공원을 산책하거나 친구를 만나서 맛있는 디저트를 먹어요.', rd: 'o-hu-e-neun ga-kka-un gong-wo-neul san-chae-ka-geo-na chin-gu-reul man-na-seo ma-sin-neun di-jeo-teu-reul meo-geo-yo.', zh: '下午我會去附近的公園散步，或是和朋友見面吃美味的甜點。' },
+            { t: '이렇게 여유롭게 휴식을 취하면 기분이 좋아지고 정말 행복해요.', rd: 'i-reo-ke yeo-yu-rop-ge hyu-si-geul chwi-ha-myeon gi-bu-ni jo-a-ji-go jeong-mal haeng-bo-kae-yo.', zh: '像這樣從容地休息，心情就會變好，覺得非常幸福。' }
+          ]
+        },
+        {
+          id: 'ko-t2', level: 'A2', icon: '🍲', title: '我想推薦給韓國朋友的美食（추천하고 싶은 음식）',
+          questions: [
+            '你想介紹哪一道台灣或韓國美食？',
+            '它的味道如何（例如香濃、酥脆、微辣或清甜）？',
+            '什麼時候吃這道料理最棒？'
+          ],
+          keywords: ['야시장', '우육면', '국물이 진하다', '고기가 부드럽다', '꼭 먹어 보다', '최고'],
+          sample: [
+            { t: '한국 친구가 대만에 놀러 오면 저는 가장 먼저 우육면을 추천하고 싶어요.', rd: 'han-guk chin-gu-ga dae-ma-ne nol-leo o-myeon jeo-neun ga-jang meon-jeo u-yung-myeo-neul chu-cheon-ha-go si-peo-yo.', zh: '如果韓國朋友來台灣玩，我最想先推薦牛肉麵。' },
+            { t: '오래 끓여서 국물이 아주 진하고 소고기도 입에서 녹을 만큼 부드러워요.', rd: 'o-rae kkeu-ryeo-seo gung-mu-ri a-ju jin-ha-go so-go-gi-do i-be-seo no-geul man-keum bu-deu-reo-wo-yo.', zh: '因為熬煮了很久，湯頭非常濃郁，牛肉也軟嫩到入口即化。' },
+            { t: '비 오는 날이나 저녁에 따뜻한 우육면 한 그릇을 먹으면 정말 최고예요.', rd: 'bi o-neun na-ri-na jeo-nyeo-ge tta-tteu-tan u-yung-myeon han geu-reu-seul meo-geu-myeon jeong-mal choe-go-ye-yo.', zh: '在下雨天或晚上吃一碗熱騰騰的牛肉麵，真的最棒了。' }
+          ]
+        },
+        {
+          id: 'ko-t3', level: 'A2', icon: '✈️', title: '一次難忘的旅行回憶（기억에 남는 여행）',
+          questions: [
+            '你最難忘的旅行是去哪裡？跟誰一起去的？',
+            '旅途中看到的風景或吃到的美食是什麼？',
+            '下次休假你想去哪裡旅行？'
+          ],
+          keywords: ['풍경이 아름답다', '바닷가', '사진을 찍다', '추억을 만들다', '다시 가고 싶다', '힐링'],
+          sample: [
+            { t: '제가 가장 기억에 남는 여행은 작년에 친구들과 함께 간 제주도 여행이에요.', rd: 'je-ga ga-jang gi-eo-ge nam-neun yeo-haeng-eun jang-nyeo-ne chin-gu-deul-gwa ham-kke gan je-ju-do yeo-haeng-i-e-yo.', zh: '我最難忘的旅行，是去年和朋友們一起去的濟州島之旅。' },
+            { t: '푸른 바닷가 옆에 있는 카페에서 커피를 마시며 사진을 많이 찍었어요.', rd: 'pu-reun ba-dat-ga yeo-pe in-neun ka-pe-e-seo keo-pi-reul ma-si-myeo sa-ji-neul ma-ni jji-geo-sseo-yo.', zh: '我們在蔚藍海邊的咖啡廳一邊喝咖啡，一邊拍了許多照片。' },
+            { t: '아름다운 자연 덕분에 마음이 편안해져서 다음에 꼭 다시 가고 싶어요.', rd: 'a-reum-da-un ja-yeon deok-bu-ne ma-eu-mi pyeo-nan-hae-jyeo-seo da-eu-me kkok da-si ga-go si-peo-yo.', zh: '多虧了美麗的大自然讓心情變得無比平靜，下次一定還想再去。' }
+          ]
+        },
+        {
+          id: 'ko-t4', level: 'B1', icon: '🌱', title: '我學習韓語的契機與方法（한국어를 공부하는 이유）',
+          questions: [
+            '你是因為什麼契機開始學韓語的？',
+            '平常怎麼練習聽力與發音？',
+            '學會韓語後最想達成的小目標是什麼？'
+          ],
+          keywords: ['계기', '꾸준히 연습하다', '소리 내어 읽다', '자막 없이 보다', '자신감이 생기다', '즐겁다'],
+          sample: [
+            { t: '저는 한국 드라마와 노래를 좋아해서 자연스럽게 한국어 공부를 시작하게 되었어요.', rd: 'jeo-neun han-guk deu-ra-ma-wa no-rae-reul jo-a-hae-seo ja-yeon-seu-reop-ge han-gu-geo gong-bu-reul si-ja-ka-ge doe-eo-sseo-yo.', zh: '我因為喜歡韓劇和韓國歌曲，自然而然開始學習韓文。' },
+            { t: '매일 십오 분씩 재미있는 이야기를 듣고 큰 소리로 따라 읽으며 꾸준히 연습하고 있어요.', rd: 'mae-il si-bo bun-ssik jae-mi-in-neun i-ya-gi-reul deut-go keun so-ri-ro tta-ra il-geu-myeo kku-jun-hi yeon-seu-pa-go i-sseo-yo.', zh: '我每天花十五分鐘聽有趣的故事並大聲跟讀，持續不懈地練習。' },
+            { t: '언젠가 한국에 가서 현지 사람들과 자연스럽게 대화하는 것이 제 목표예요.', rd: 'eon-jen-ga han-gu-ge ga-seo hyeon-ji sa-ram-deul-gwa ja-yeon-seu-reop-ge dae-hwa-ha-neun geo-si je mok-pyo-ye-yo.', zh: '我的目標是總有一天去韓國，和當地人自然流暢地聊天。' }
+          ]
+        },
+        {
+          id: 'ko-t5', level: 'B1', icon: '🎬', title: '一部讓我獲得力量的作品（나에게 힘을 준 영화나 책）',
+          questions: [
+            '這部作品在講什麼樣的故事？',
+            '裡面的哪一個角色或台詞讓你印象深刻？',
+            '當你感到疲倦時，這部作品給了你什麼安慰？'
+          ],
+          keywords: ['감동을 받다', '주인공', '위로가 되다', '포기하지 않다', '따뜻한 이야기', '추천하다'],
+          sample: [
+            { t: '마음이 지칠 때마다 제가 다시 찾아보는 작품은 따뜻한 가족과 이웃의 이야기를 담은 드라마예요.', rd: 'ma-eu-mi ji-chil ttae-ma-da je-ga da-si cha-ja-bo-neun jak-pu-meun tta-tteu-tan ga-jok-gwa i-u-sui i-ya-gi-reul da-meun deu-ra-ma-ye-yo.', zh: '每當心累時我會重溫的作品，是一部描繪溫暖家人與鄰里故事的戲劇。' },
+            { t: '어려운 순간에도 서로를 응원하며 포기하지 않는 주인공들의 모습에서 큰 감동을 받았어요.', rd: 'eo-ryeo-un sun-ga-ne-do seo-ro-reul eung-won-ha-myeo po-gi-ha-ji an-neun ju-in-gong-deu-rui mo-seu-be-seo keun gam-dong-eul ba-da-sseo-yo.', zh: '在艱難時刻依然互相應援、不輕言放棄的主角們，給了我很大的感動。' },
+            { t: '일상의 작은 행복이 얼마나 소중한지 일깨워 주어서 주변 친구들에게도 자주 추천해요.', rd: 'il-sang-ui ja-geun haeng-bo-gi eol-ma-na so-jung-han-ji il-kkae-wo ju-eo-seo ju-byeon chin-gu-deu-re-ge-do ja-ju chu-cheon-hae-yo.', zh: '它喚醒了我們日常小確幸有多麼珍貴，所以我常推薦給身邊的朋友。' }
+          ]
+        },
+        {
+          id: 'ko-t6', level: 'B2', icon: '🌿', title: '在忙碌生活中維持身心平衡（일과 삶의 균형）',
+          questions: [
+            '工作繁忙時，你如何排解壓力與疲勞？',
+            '你下班後或週末有哪些專屬的放鬆儀式？',
+            '為什麼懂得「適時換氣休息」能走得更遠？'
+          ],
+          keywords: ['스트레스를 풀다', '충분한 수면', '여유를 갖다', '집중력', '건강을 챙기다', '오래 달리다'],
+          sample: [
+            { t: '바쁜 현대 사회에서 오랫동안 건강하게 일하려면 일과 삶의 균형을 지키는 것이 무엇보다 중요합니다.', rd: 'ba-ppeun hyeon-dae sa-hoe-e-seo o-raet-dong-an geon-gang-ha-ge il-ha-ryeo-myeon il-gwa sal-mui gyun-hyeong-eul ji-ki-neun geo-si mu-eot-bo-da jung-yo-ham-ni-da.', zh: '在忙碌的現代社會中，若想長久健康地工作，維持工作與生活的平衡比什麼都重要。' },
+            { t: '저는 퇴근 후에는 가벼운 스트레칭을 하거나 좋아하는 음악을 들으며 하루의 스트레스를 풉니다.', rd: 'jeo-neun toe-geun hu-e-neun ga-byeo-un seu-teu-re-ching-eul ha-geo-na jo-a-ha-neun eu-ma-geul deu-reu-myeo ha-ru-ui seu-teu-re-seu-reul pum-ni-da.', zh: '我下班後會做點輕度伸展，或聽喜歡的音樂來紓解一天的壓力。' },
+            { t: '잠시 숨을 고르는 여유를 가져야 다음 날 더 높은 집중력으로 일할 수 있다고 생각합니다.', rd: 'jam-si su-meul go-reu-neun yeo-yu-reul ga-jyeo-ya da-eum nal deo no-peun jip-jung-nyeo-geu-ro il-hal su it-da-go saeng-ga-kam-ni-da.', zh: '我認為唯有保有暫時喘口氣的從容，隔天才能以更高的專注力投入工作。' }
+          ]
+        }
+      ]
+    }
+  };
+
+  // ==================== 樣式注入 ====================
+  function ensureStyles() {
+    if (document.getElementById('speakingStudioStyles')) return;
+    const st = document.createElement('style');
+    st.id = 'speakingStudioStyles';
+    st.textContent = `
+      .spk-wrap { max-width: 1120px; margin: 0 auto; padding: 8px 4px 48px; }
+      .spk-hero {
+        background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 55%, #fdf2f8 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 18px;
+        padding: 18px 22px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+      .spk-hero h1 { margin: 0 0 6px; font-size: 1.42rem; color: #0f172a; }
+      .spk-hero p { margin: 0; font-size: .94rem; color: #475569; line-height: 1.55; }
+      .spk-mode-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .spk-tab {
+        padding: 10px 16px;
+        border-radius: 999px;
+        border: 1.5px solid #cbd5e1;
+        background: #fff;
+        color: #1e293b;
+        font-weight: 700;
+        font-size: .95rem;
+        cursor: pointer;
+        transition: all .15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .spk-tab:hover { border-color: #6366f1; color: #4338ca; background: #f8fafc; }
+      .spk-tab.active {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, .24);
+      }
+      .spk-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      @media (max-width: 860px) {
+        .spk-grid { grid-template-columns: 1fr; }
+      }
+      .spk-side {
+        background: #fff;
+        border: 1px solid var(--border, #e2e8f0);
+        border-radius: 16px;
+        padding: 12px;
+      }
+      .spk-lv-row {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .spk-lv-btn {
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        font-size: .78rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .spk-lv-btn.active { background: #4f46e5; border-color: #4f46e5; color: #fff; }
+      .spk-item-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        max-height: 62vh;
+        overflow-y: auto;
+      }
+      .spk-item-btn {
+        text-align: left;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        cursor: pointer;
+        transition: all .14s;
+      }
+      .spk-item-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+      .spk-item-btn.active {
+        background: #eef2ff;
+        border-color: #6366f1;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, .12);
+      }
+      .spk-item-top {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: .76rem;
+        color: #64748b;
+        margin-bottom: 3px;
+      }
+      .spk-item-lv {
+        padding: 1px 7px;
+        border-radius: 999px;
+        background: #e0e7ff;
+        color: #3730a3;
+        font-weight: 700;
+      }
+      .spk-item-title { font-weight: 700; font-size: .93rem; color: #0f172a; }
+      .spk-stage {
+        background: #fff;
+        border: 1px solid var(--border, #e2e8f0);
+        border-radius: 18px;
+        padding: 20px 22px;
+      }
+      .spk-scene-box {
+        background: #f8fafc;
+        border-left: 4px solid #6366f1;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin: 12px 0 16px;
+        color: #334155;
+        font-size: .94rem;
+        line-height: 1.55;
+      }
+      .spk-pat-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .spk-pat-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: #fafafa;
+        cursor: pointer;
+        transition: all .14s;
+      }
+      .spk-pat-card:hover { border-color: #6366f1; background: #eef2ff; }
+      .spk-pat-card .pt-main { font-weight: 700; color: #0f172a; font-size: .96rem; margin-bottom: 3px; }
+      .spk-pat-card .pt-rd { font-size: .8rem; color: #6366f1; margin-bottom: 2px; }
+      .spk-pat-card .pt-zh { font-size: .84rem; color: #64748b; }
+      .spk-target-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .spk-ttab {
+        padding: 6px 13px;
+        border-radius: 999px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        font-size: .85rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .spk-ttab.active { background: #0f172a; border-color: #0f172a; color: #fff; }
+      .spk-practice-box {
+        border: 1.5px solid #c7d2fe;
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 18px;
+      }
+      .spk-main-sent {
+        font-size: 1.24rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.55;
+        margin-bottom: 6px;
+      }
+      .spk-main-rd {
+        font-size: .92rem;
+        color: #4f46e5;
+        margin-bottom: 6px;
+      }
+      .spk-main-zh {
+        font-size: .98rem;
+        color: #475569;
+        margin-bottom: 14px;
+      }
+      .spk-act-row {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .spk-mic-btn {
+        padding: 10px 18px;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: #fff;
+        font-weight: 800;
+        font-size: .96rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, .26);
+        transition: transform .12s, box-shadow .12s;
+      }
+      .spk-mic-btn:hover { transform: translateY(-1px); }
+      .spk-mic-btn.recording {
+        background: linear-gradient(135deg, #dc2626, #ea580c);
+        animation: spkPulse 1.25s infinite;
+      }
+      @keyframes spkPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, .4); }
+        50% { box-shadow: 0 0 0 9px rgba(220, 38, 38, 0); }
+      }
+      .spk-step-card {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        background: #fff;
+        transition: border-color .15s, box-shadow .15s;
+      }
+      .spk-step-card.done { border-color: #86efac; background: #f0fdf4; }
+      .spk-step-hd {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: .83rem;
+        font-weight: 800;
+        color: #4f46e5;
+      }
+      .spk-kw-wrap {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 10px 0 16px;
+      }
+      .spk-kw-chip {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        font-size: .88rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .15s;
+      }
+      .spk-kw-chip:hover { border-color: #6366f1; background: #eef2ff; }
+      .spk-kw-chip.hit {
+        background: #dcfce7;
+        border-color: #22c55e;
+        color: #15803d;
+      }
+      .spk-timer-badge {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #dc2626;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+      }
+      .spk-score-box {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  // ==================== 狀態管理 ====================
+  const state = {
+    tab: 'mission', // 'mission' | 'drill' | 'topic'
+    lv: 'ALL',
+    missionId: DATA[LANG].missions[0].id,
+    targetIdx: 0,
+    blindPrompt: false,
+    drillId: DATA[LANG].drills[0].id,
+    topicId: DATA[LANG].topics[0].id,
+    scores: {}, // key -> { pct, heard, html }
+    recUrls: {}, // key -> objectUrl
+    topicTranscript: {}, // topicId -> string
+  };
+
+  let activeAsr = null;
+  let activeRec = null;
+  let activeRecKey = null;
+  let topicTimer = null;
+  let topicSecLeft = 60;
+
+  function stopAllMedia() {
+    if (A.tts && A.tts.stop) A.tts.stop();
+    if (activeAsr) {
+      const h = activeAsr;
+      activeAsr = null;
+      try { h.stop(); } catch (e) { /* ignore */ }
+    } else if (A.asr && A.asr.stop) {
+      try { A.asr.stop(); } catch (e) { /* ignore */ }
+    }
+    if (activeRec) {
+      const r = activeRec;
+      activeRec = null;
+      try { r.stop(); } catch (e) { /* ignore */ }
+    }
+    if (topicTimer) {
+      clearInterval(topicTimer);
+      topicTimer = null;
+    }
+    activeRecKey = null;
+  }
+
+  function scoreSentence(targetText, heardText) {
+    if (!A.score) return { pct: heardText ? 80 : 0, heard: heardText, html: esc(targetText) };
+    const res = A.score(targetText, heardText || '');
+    let html = esc(targetText);
+    if (res.tokens && res.tokens.length) {
+      html = res.tokens.map((t) => `<span class="tok ${t.status}">${esc(t.word)}</span>`).join(' ');
+    } else if (res.items && A.scoredHtml) {
+      html = A.scoredHtml(res.items);
+    }
+    return { pct: res.pct || 0, heard: heardText || '', html };
+  }
+
+  function startVoicePractice(recKey, targetText, onDone) {
+    if (activeRecKey === recKey && activeAsr) {
+      activeAsr.stop();
+      return;
+    }
+    stopAllMedia();
+    if (!A.asr || !A.asr.supported) {
+      if (A.toast) A.toast('此瀏覽器不支援語音辨識，建議使用 Chrome 或 Edge');
+      return;
+    }
+    activeRecKey = recKey;
+    onDone({ recording: true, interim: '🎙️ 請開始開口說（停頓思考不會被切斷，說完可再點一下結束）…' });
+
+    (async () => {
+      if (A.rec && A.rec.supported) {
+        try { activeRec = await A.rec.start(); } catch (e) { activeRec = null; }
+      }
+      activeAsr = A.asr.listen({
+        lang: ASR_LANG,
+        continuous: true,
+        maxMs: 45000,
+        silenceMs: 4200,
+        onInterim: (txt) => {
+          if (activeRecKey !== recKey) return;
+          onDone({ recording: true, interim: `🎙️ 即時辨識：${txt}` });
+        },
+        onFinal: async (txt) => {
+          activeAsr = null;
+          activeRecKey = null;
+          if (activeRec) {
+            try {
+              if (state.recUrls[recKey]) URL.revokeObjectURL(state.recUrls[recKey]);
+              state.recUrls[recKey] = await activeRec.stop();
+            } catch (e) { /* ignore */ }
+            activeRec = null;
+          }
+          const sc = scoreSentence(targetText, txt);
+          state.scores[recKey] = sc;
+          if (A.bumpDay) A.bumpDay('lines', 1);
+          if (A.addXP) A.addXP(5, 'speak');
+          onDone({ recording: false, result: sc });
+        },
+        onError: async (err, msg) => {
+          activeAsr = null;
+          activeRecKey = null;
+          if (activeRec) {
+            try { await activeRec.stop(); } catch (e) { /* ignore */ }
+            activeRec = null;
+          }
+          onDone({ recording: false, error: msg || `語音辨識未完成（${err}），請再試一次` });
+        }
+      });
+    })();
+  }
+
+  // ==================== 主畫面渲染 ====================
+  function renderSpeaking(mount, subTab) {
+    ensureStyles();
+    stopAllMedia();
+    if (subTab && ['mission', 'drill', 'topic'].includes(subTab)) {
+      state.tab = subTab;
+    }
+    const d = DATA[LANG];
+
+    function draw() {
+      const listPool = state.tab === 'mission' ? d.missions : state.tab === 'drill' ? d.drills : d.topics;
+      const filtered = state.lv === 'ALL' ? listPool : listPool.filter((x) => x.level === state.lv);
+      const curIdKey = state.tab === 'mission' ? 'missionId' : state.tab === 'drill' ? 'drillId' : 'topicId';
+      if (!filtered.some((x) => x.id === state[curIdKey]) && filtered.length) {
+        state[curIdKey] = filtered[0].id;
+      }
+      const curItem = listPool.find((x) => x.id === state[curIdKey]) || listPool[0];
+
+      mount.innerHTML = `
+        <div class="spk-wrap">
+          <div class="spk-hero">
+            <div>
+              <h1>${esc(d.title)}</h1>
+              <p>${esc(d.sub)}</p>
+            </div>
+          </div>
+
+          <div class="spk-mode-tabs" role="tablist">
+            <button type="button" class="spk-tab ${state.tab === 'mission' ? 'active' : ''}" data-tab="mission">
+              💬 1. 情境開口說（${d.missions.length} 單元）
+            </button>
+            <button type="button" class="spk-tab ${state.tab === 'drill' ? 'active' : ''}" data-tab="drill">
+              🪜 2. 漸進式擴句特訓（${d.drills.length} 組）
+            </button>
+            <button type="button" class="spk-tab ${state.tab === 'topic' ? 'active' : ''}" data-tab="topic">
+              ⏱️ 3. 60 秒主題自由說（${d.topics.length} 主題）
+            </button>
+          </div>
+
+          <div class="spk-grid">
+            <aside class="spk-side">
+              <div class="spk-lv-row">
+                ${['ALL', 'A1', 'A2', 'B1', 'B2'].map((lv) => `
+                  <button type="button" class="spk-lv-btn ${state.lv === lv ? 'active' : ''}" data-lv="${lv}">
+                    ${lv === 'ALL' ? '全部' : lv}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="spk-item-list">
+                ${filtered.map((item) => `
+                  <button type="button" class="spk-item-btn ${item.id === curItem.id ? 'active' : ''}" data-pick="${esc(item.id)}">
+                    <div class="spk-item-top">
+                      <span>${item.icon || '🗣️'}</span>
+                      <span class="spk-item-lv">${esc(item.level)}</span>
+                      ${item.cat ? `<span>${esc(item.cat)}</span>` : ''}
+                    </div>
+                    <div class="spk-item-title">${esc(item.title)}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </aside>
+
+            <section class="spk-stage" id="spkStage">
+              ${state.tab === 'mission' ? renderMissionHtml(curItem) : state.tab === 'drill' ? renderDrillHtml(curItem) : renderTopicHtml(curItem)}
+            </section>
+          </div>
+        </div>
+      `;
+
+      bindEvents(curItem);
+    }
+
+    function renderMissionHtml(m) {
+      const idx = Math.min(state.targetIdx, m.targets.length - 1);
+      const tg = m.targets[idx];
+      const recKey = `${m.id}-t${idx}`;
+      const sc = state.scores[recKey];
+      const recUrl = state.recUrls[recKey];
+      return `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+            <span class="spk-item-lv" style="font-size:.84rem;padding:3px 10px">${esc(m.level)} ・ ${esc(m.cat || '情境口說')}</span>
+            <label style="font-size:.88rem;color:#475569;cursor:pointer;display:flex;align-items:center;gap:6px">
+              <input type="checkbox" id="spkBlindChk" ${state.blindPrompt ? 'checked' : ''}>
+              <span>🙈 遮住外文台詞（只看中文挑戰直接開口說）</span>
+            </label>
+          </div>
+          <h2 style="margin:8px 0 4px;font-size:1.3rem">${m.icon} ${esc(m.title)}</h2>
+          <div class="spk-scene-box">
+            <b>🎯 情境任務：</b>${esc(m.scene)}
+          </div>
+
+          <div style="margin-bottom:8px;font-weight:700;font-size:.92rem;color:#334155">
+            🧩 暖身關鍵句型（點擊卡片即可直接聽標準發音）：
+          </div>
+          <div class="spk-pat-list">
+            ${m.patterns.map((p, pi) => `
+              <div class="spk-pat-card" data-say="${esc(p.t)}" title="點擊聽發音">
+                <div class="pt-main">🔊 ${esc(p.t)}</div>
+                ${p.rd ? `<div class="pt-rd">${esc(p.rd)}</div>` : ''}
+                <div class="pt-zh">${esc(p.zh)}</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="margin-bottom:8px;font-weight:700;font-size:.92rem;color:#334155">
+            🎙️ 選擇難度並開口練習（支援最長 45 秒連續錄音，中間思考停頓不會被切斷）：
+          </div>
+          <div class="spk-target-tabs">
+            ${m.targets.map((t, i) => {
+              const s = state.scores[`${m.id}-t${i}`];
+              return `<button type="button" class="spk-ttab ${i === idx ? 'active' : ''}" data-tidx="${i}">
+                ${esc(t.label)}${s ? ` (${s.pct}%)` : ''}
+              </button>`;
+            }).join('')}
+          </div>
+
+          <div class="spk-practice-box">
+            <div class="spk-main-sent" id="spkMainSent">
+              ${state.blindPrompt && !sc ? '<span style="color:#64748b">🙈 已遮住外文，請看下方中文意思直接開口說！</span>' : (sc ? sc.html : esc(tg.t))}
+            </div>
+            ${!state.blindPrompt && tg.rd ? `<div class="spk-main-rd">${esc(tg.rd)}</div>` : ''}
+            <div class="spk-main-zh">💡 中文意思：<b>${esc(tg.zh)}</b></div>
+
+            <div class="spk-act-row">
+              <button type="button" class="btn" id="spkListenNorm">🔊 聽標準示範</button>
+              <button type="button" class="btn" id="spkListenSlow">🐢 慢速 0.7×</button>
+              <button type="button" class="spk-mic-btn" id="spkMicBtn">
+                🎙️ 按一下開始開口說
+              </button>
+              ${recUrl ? `<button type="button" class="btn" id="spkPlayMine">▶️ 聽自己的錄音</button>` : ''}
+            </div>
+
+            <div id="spkLiveMsg" style="margin-top:10px;font-size:.9rem;color:#4f46e5;font-weight:600"></div>
+            ${sc ? `
+              <div class="spk-score-box">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <span style="font-size:1.35rem;font-weight:900;color:${sc.pct >= 80 ? '#16a34a' : sc.pct >= 55 ? '#d97706' : '#dc2626'}">${sc.pct}%</span>
+                  <div>
+                    <b>${sc.pct >= 85 ? '🌟 發音非常自然流暢！' : sc.pct >= 60 ? '👍 很棒！再多唸一次會更順口' : '💪 繼續加油，可以先聽慢速示範再跟讀'}</b>
+                    <div style="font-size:.84rem;color:#64748b">系統聽到的內容：${esc(sc.heard || '（未偵測到語音）')}</div>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDrillHtml(dr) {
+      return `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+            <div>
+              <span class="spk-item-lv" style="font-size:.84rem;padding:3px 10px">${esc(dr.level)} ・ 漸進式擴句</span>
+              <h2 style="margin:6px 0 2px;font-size:1.28rem">${dr.icon} ${esc(dr.title)}</h2>
+              <p style="margin:0;font-size:.88rem;color:#64748b">從短詞塊開始開口，熟悉節奏後再挑戰完整長句，告別長句舌頭打結！</p>
+            </div>
+            <button type="button" class="btn primary" id="spkDrillPlayAll">▶ 三階梯連播示範</button>
+          </div>
+
+          ${dr.steps.map((st, si) => {
+            const recKey = `${dr.id}-s${si}`;
+            const sc = state.scores[recKey];
+            const recUrl = state.recUrls[recKey];
+            return `
+              <div class="spk-step-card ${sc && sc.pct >= 75 ? 'done' : ''}" data-step="${si}">
+                <div class="spk-step-hd">
+                  <span>${esc(st.stage)}</span>
+                  ${sc ? `<span style="color:${sc.pct >= 80 ? '#16a34a' : '#d97706'}">契合度 ${sc.pct}%</span>` : ''}
+                </div>
+                <div class="spk-main-sent" style="font-size:1.14rem">${sc ? sc.html : esc(st.t)}</div>
+                ${st.rd ? `<div class="spk-main-rd">${esc(st.rd)}</div>` : ''}
+                <div class="spk-main-zh" style="margin-bottom:10px">${esc(st.zh)}</div>
+                <div class="spk-act-row">
+                  <button type="button" class="btn sm" data-dsay="${si}">🔊 聽示範</button>
+                  <button type="button" class="btn sm" data-dslow="${si}">🐢 慢速</button>
+                  <button type="button" class="spk-mic-btn" style="padding:7px 14px;font-size:.88rem" data-dmic="${si}">
+                    🎙️ 開口跟讀此階
+                  </button>
+                  ${recUrl ? `<button type="button" class="btn sm" data-dmine="${si}">▶️ 聽錄音</button>` : ''}
+                </div>
+                <div class="spk-step-live" data-dlive="${si}" style="margin-top:6px;font-size:.85rem;color:#4f46e5;font-weight:600"></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderTopicHtml(tp) {
+      const recKey = `topic-${tp.id}`;
+      const transcript = state.topicTranscript[tp.id] || '';
+      const normTrans = transcript.toLowerCase();
+      const recUrl = state.recUrls[recKey];
+      const hitCount = tp.keywords.filter((kw) => normTrans.includes(kw.toLowerCase())).length;
+
+      return `
+        <div>
+          <span class="spk-item-lv" style="font-size:.84rem;padding:3px 10px">${esc(tp.level)} ・ 60 秒主題自由說</span>
+          <h2 style="margin:8px 0 6px;font-size:1.3rem">${tp.icon} ${esc(tp.title)}</h2>
+
+          <div class="spk-scene-box">
+            <b>💡 引導問題（可挑 1～3 點自由發揮）：</b>
+            <ul style="margin:6px 0 0;padding-left:20px">
+              ${tp.questions.map((q) => `<li>${esc(q)}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div style="font-weight:700;font-size:.92rem;color:#334155">
+            🔑 推薦搭配關鍵詞（點擊可先聽發音；口說時若成功用到會自動亮綠燈 ✓ — 已達成 ${hitCount}/${tp.keywords.length}）：
+          </div>
+          <div class="spk-kw-wrap" id="spkKwWrap">
+            ${tp.keywords.map((kw) => {
+              const hit = normTrans.includes(kw.toLowerCase());
+              return `<button type="button" class="spk-kw-chip ${hit ? 'hit' : ''}" data-kw="${esc(kw)}">
+                ${hit ? '✓ ' : '🔊 '}${esc(kw)}
+              </button>`;
+            }).join('')}
+          </div>
+
+          <div class="spk-practice-box" style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+              <div class="spk-act-row">
+                <button type="button" class="spk-mic-btn" id="spkTopicMicBtn">
+                  🎙️ 開始 60 秒自由口說錄音
+                </button>
+                ${recUrl ? `<button type="button" class="btn" id="spkTopicPlayMine">▶️ 聽自己的整段錄音</button>` : ''}
+              </div>
+              <span class="spk-timer-badge" id="spkTopicTimer">⏱️ 60s</span>
+            </div>
+            <div id="spkTopicLive" style="min-height:64px;padding:12px;border-radius:12px;background:#fff;border:1px solid #cbd5e1;font-size:1.02rem;line-height:1.6;color:#0f172a">
+              ${transcript ? esc(transcript) : '<span style="color:#94a3b8">按下上方「🎙️ 開始 60 秒自由口說錄音」後，請試著用自己的話回答引導問題（停頓思考不會中斷錄音）…</span>'}
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <b style="font-size:.95rem;color:#334155">📖 母語範例回答（點任一句可直接聽發音，或點右側連播）：</b>
+            <button type="button" class="btn sm" id="spkTopicSampleAll">▶ 連播範例段落</button>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px">
+            ${tp.sample.map((s, si) => `
+              <div class="spk-pat-card" style="margin-bottom:${si === tp.sample.length - 1 ? 0 : 8}px" data-say="${esc(s.t)}">
+                <div class="pt-main">🔊 ${esc(s.t)}</div>
+                ${s.rd ? `<div class="pt-rd">${esc(s.rd)}</div>` : ''}
+                <div class="pt-zh">${esc(s.zh)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function bindEvents(curItem) {
+      mount.querySelectorAll('[data-tab]').forEach((b) => {
+        b.onclick = () => {
+          stopAllMedia();
+          state.tab = b.dataset.tab;
+          draw();
+        };
+      });
+      mount.querySelectorAll('[data-lv]').forEach((b) => {
+        b.onclick = () => {
+          stopAllMedia();
+          state.lv = b.dataset.lv;
+          draw();
+        };
+      });
+      mount.querySelectorAll('[data-pick]').forEach((b) => {
+        b.onclick = () => {
+          stopAllMedia();
+          if (state.tab === 'mission') { state.missionId = b.dataset.pick; state.targetIdx = 0; }
+          else if (state.tab === 'drill') state.drillId = b.dataset.pick;
+          else state.topicId = b.dataset.pick;
+          draw();
+        };
+      });
+      mount.querySelectorAll('[data-say]').forEach((card) => {
+        card.onclick = () => {
+          if (A.tts && A.tts.speak) A.tts.speak(card.dataset.say, { rate: 1.0 });
+        };
+      });
+
+      if (state.tab === 'mission') {
+        const blindChk = mount.querySelector('#spkBlindChk');
+        if (blindChk) {
+          blindChk.onchange = () => {
+            state.blindPrompt = blindChk.checked;
+            draw();
+          };
+        }
+        mount.querySelectorAll('[data-tidx]').forEach((b) => {
+          b.onclick = () => {
+            stopAllMedia();
+            state.targetIdx = +b.dataset.tidx;
+            draw();
+          };
+        });
+        const idx = Math.min(state.targetIdx, curItem.targets.length - 1);
+        const tg = curItem.targets[idx];
+        const recKey = `${curItem.id}-t${idx}`;
+        const normBtn = mount.querySelector('#spkListenNorm');
+        const slowBtn = mount.querySelector('#spkListenSlow');
+        const micBtn = mount.querySelector('#spkMicBtn');
+        const mineBtn = mount.querySelector('#spkPlayMine');
+        const liveEl = mount.querySelector('#spkLiveMsg');
+
+        if (normBtn) normBtn.onclick = (e) => A.tts.speak(tg.t, { rate: 1.0, btn: e.currentTarget });
+        if (slowBtn) slowBtn.onclick = (e) => A.tts.speak(tg.t, { rate: 0.7, btn: e.currentTarget });
+        if (mineBtn) mineBtn.onclick = (e) => A.playUrl && A.playUrl(state.recUrls[recKey], e.currentTarget);
+        if (micBtn) {
+          micBtn.onclick = () => {
+            startVoicePractice(recKey, tg.t, (st) => {
+              if (st.recording) {
+                micBtn.classList.add('recording');
+                micBtn.textContent = '⏹ 正在聆聽… 說完點此完成';
+                if (liveEl) liveEl.textContent = st.interim || '';
+              } else {
+                draw();
+                if (st.error) {
+                  const afterLive = mount.querySelector('#spkLiveMsg');
+                  if (afterLive) afterLive.textContent = `⚠️ ${st.error}`;
+                }
+              }
+            });
+          };
+        }
+      } else if (state.tab === 'drill') {
+        const playAllBtn = mount.querySelector('#spkDrillPlayAll');
+        if (playAllBtn) {
+          playAllBtn.onclick = async () => {
+            stopAllMedia();
+            playAllBtn.disabled = true;
+            for (let i = 0; i < curItem.steps.length; i++) {
+              if (i + 1 < curItem.steps.length && A.tts.preload) A.tts.preload(curItem.steps[i + 1].t, { rate: 0.95 });
+              await A.tts.speak(curItem.steps[i].t, { rate: 0.95 });
+              await new Promise((r) => setTimeout(r, 40));
+            }
+            playAllBtn.disabled = false;
+          };
+        }
+        mount.querySelectorAll('[data-dsay]').forEach((b) => {
+          b.onclick = (e) => A.tts.speak(curItem.steps[+b.dataset.dsay].t, { rate: 1.0, btn: e.currentTarget });
+        });
+        mount.querySelectorAll('[data-dslow]').forEach((b) => {
+          b.onclick = (e) => A.tts.speak(curItem.steps[+b.dataset.dslow].t, { rate: 0.7, btn: e.currentTarget });
+        });
+        mount.querySelectorAll('[data-dmine]').forEach((b) => {
+          b.onclick = (e) => {
+            const k = `${curItem.id}-s${b.dataset.dmine}`;
+            if (A.playUrl && state.recUrls[k]) A.playUrl(state.recUrls[k], e.currentTarget);
+          };
+        });
+        mount.querySelectorAll('[data-dmic]').forEach((b) => {
+          b.onclick = () => {
+            const si = +b.dataset.dmic;
+            const stObj = curItem.steps[si];
+            const recKey = `${curItem.id}-s${si}`;
+            const liveEl = mount.querySelector(`[data-dlive="${si}"]`);
+            startVoicePractice(recKey, stObj.t, (st) => {
+              if (st.recording) {
+                b.classList.add('recording');
+                b.textContent = '⏹ 說完點此完成';
+                if (liveEl) liveEl.textContent = st.interim || '';
+              } else {
+                draw();
+                if (st.error) {
+                  const afterLive = mount.querySelector(`[data-dlive="${si}"]`);
+                  if (afterLive) afterLive.textContent = `⚠️ ${st.error}`;
+                }
+              }
+            });
+          };
+        });
+      } else if (state.tab === 'topic') {
+        mount.querySelectorAll('[data-kw]').forEach((b) => {
+          b.onclick = (e) => A.tts.speak(b.dataset.kw, { rate: 0.92, btn: e.currentTarget });
+        });
+        const sampleAllBtn = mount.querySelector('#spkTopicSampleAll');
+        if (sampleAllBtn) {
+          sampleAllBtn.onclick = async () => {
+            stopAllMedia();
+            sampleAllBtn.disabled = true;
+            for (let i = 0; i < curItem.sample.length; i++) {
+              if (i + 1 < curItem.sample.length && A.tts.preload) A.tts.preload(curItem.sample[i + 1].t, { rate: 0.95 });
+              await A.tts.speak(curItem.sample[i].t, { rate: 0.95 });
+              await new Promise((r) => setTimeout(r, 35));
+            }
+            sampleAllBtn.disabled = false;
+          };
+        }
+        const recKey = `topic-${curItem.id}`;
+        const mineBtn = mount.querySelector('#spkTopicPlayMine');
+        if (mineBtn) mineBtn.onclick = (e) => A.playUrl && A.playUrl(state.recUrls[recKey], e.currentTarget);
+
+        const micBtn = mount.querySelector('#spkTopicMicBtn');
+        const timerEl = mount.querySelector('#spkTopicTimer');
+        const liveEl = mount.querySelector('#spkTopicLive');
+        if (micBtn) {
+          micBtn.onclick = async () => {
+            if (activeRecKey === recKey && activeAsr) {
+              activeAsr.stop();
+              return;
+            }
+            stopAllMedia();
+            if (!A.asr || !A.asr.supported) {
+              if (A.toast) A.toast('此瀏覽器不支援語音辨識，建議使用 Chrome 或 Edge');
+              return;
+            }
+            activeRecKey = recKey;
+            topicSecLeft = 60;
+            micBtn.classList.add('recording');
+            micBtn.textContent = '⏹ 結束 60 秒自由口說';
+            if (liveEl) liveEl.textContent = '🎙️ 正在聆聽中… 請自由開口回答上方引導問題！';
+            if (A.rec && A.rec.supported) {
+              try { activeRec = await A.rec.start(); } catch (e) { activeRec = null; }
+            }
+            topicTimer = setInterval(() => {
+              topicSecLeft = Math.max(0, topicSecLeft - 1);
+              if (timerEl) timerEl.textContent = `⏱️ ${topicSecLeft}s`;
+              if (topicSecLeft <= 0 && activeAsr) {
+                clearInterval(topicTimer);
+                topicTimer = null;
+                activeAsr.stop();
+              }
+            }, 1000);
+
+            activeAsr = A.asr.listen({
+              lang: ASR_LANG,
+              continuous: true,
+              maxMs: 65000,
+              silenceMs: 8500,
+              onInterim: (txt) => {
+                if (activeRecKey !== recKey) return;
+                state.topicTranscript[curItem.id] = txt;
+                if (liveEl) liveEl.textContent = txt;
+                const norm = txt.toLowerCase();
+                mount.querySelectorAll('[data-kw]').forEach((chip) => {
+                  const hit = norm.includes(chip.dataset.kw.toLowerCase());
+                  chip.classList.toggle('hit', hit);
+                  chip.textContent = `${hit ? '✓ ' : '🔊 '}${chip.dataset.kw}`;
+                });
+              },
+              onFinal: async (txt) => {
+                if (topicTimer) { clearInterval(topicTimer); topicTimer = null; }
+                activeAsr = null;
+                activeRecKey = null;
+                if (activeRec) {
+                  try {
+                    if (state.recUrls[recKey]) URL.revokeObjectURL(state.recUrls[recKey]);
+                    state.recUrls[recKey] = await activeRec.stop();
+                  } catch (e) { /* ignore */ }
+                  activeRec = null;
+                }
+                if (txt) state.topicTranscript[curItem.id] = txt;
+                if (A.bumpDay) A.bumpDay('lines', 3);
+                if (A.addXP) A.addXP(12, 'speak');
+                draw();
+              },
+              onError: async (err, msg) => {
+                if (topicTimer) { clearInterval(topicTimer); topicTimer = null; }
+                activeAsr = null;
+                activeRecKey = null;
+                if (activeRec) {
+                  try { await activeRec.stop(); } catch (e) { /* ignore */ }
+                  activeRec = null;
+                }
+                draw();
+              }
+            });
+          };
+        }
+      }
+    }
+
+    draw();
+  }
+
+  A.renderSpeaking = renderSpeaking;
+  if (typeof A.route === 'function') {
+    A.route('speaking', (main, p1) => renderSpeaking(main, p1));
+  }
+})();
+
+</script>
   <script>/* /js/app.js */
 /* 英語學院 English Academy — app.js
  * 導覽列（桌機頂部 + 手機底部）、頂部狀態（連續天數 / 今日目標 / 單字到期）、啟動流程與伺服器同步。
@@ -18073,7 +20519,7 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
   const esc = ES.esc;
   // [路由, 圖示, 桌機標籤, 手機標籤]
   const NAV = [
-    ['home', '🏠', '今日', '今日'], ['library', '📚', '文章', '文章'], ['stories', '📖', '故事', '故事'], ['words', '🔤', '單字學習', '學單字'], ['vocab', '📒', '單字本', '單字本'],
+    ['home', '🏠', '今日', '今日'], ['library', '📚', '文章', '文章'], ['stories', '📖', '故事', '故事'], ['speaking', '🗣️', '口說特訓', '口說'], ['words', '🔤', '單字學習', '學單字'], ['vocab', '📒', '單字本', '單字本'],
     ['review', '🧠', '複習', '複習'], ['progress', '📈', '進度', '進度'], ['feedback', '💬', '意見回饋', '回饋'],
   ];
   const ROUTE_NAV = { lesson: 'library' };

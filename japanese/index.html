@@ -1074,7 +1074,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
           <span class="brand-logo">あ</span>
           <span class="brand-txt"><b>日語學院</b><small>五十音 → A1–C2・聽說讀寫</small></span>
         </a>
-        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes">v1.0.0</button>
+        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes">v2.0.0</button>
       </div>
       <nav class="main-nav" id="mainNav" aria-label="主要導覽"></nav>
       <div class="header-right" id="headerStats"></div>
@@ -1126,11 +1126,11 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
     trivia: { port: '8919', mount: true, path: 'trivia/', name: '冷知識學院', icon: '💡' },
     'home-repair': { port: '8919', mount: true, path: 'home-repair/', name: '居家水電修繕學院', icon: '🔧' },
     fitness: { port: '8919', mount: true, path: 'fitness/', name: '健身學院', icon: '💪' },
-    stock: { port: '8919', mount: true, path: 'tw-stock-insight/', name: '台股智慧選股', icon: '📈' },
+    stock: { port: '8919', mount: true, path: 'tw-stock-insight/', name: '台股戰情室', icon: '📈' },
     poker: { port: '8919', mount: true, path: 'poker-gto/', name: 'GTO 賽局策略學院', icon: '♠️' },
-    nba: { port: '8919', mount: true, path: 'nba-betting-iq/', name: 'NBA 數據智庫', icon: '🏀' },
-    epl: { port: '8919', mount: true, path: 'epl-odds-iq/', name: '英超數據智庫', icon: '⚽' },
-    f1: { port: '8919', mount: true, path: 'f1-odds-iq/', name: 'F1 數據智庫', icon: '🏎️' },
+    nba: { port: '8919', mount: true, path: 'nba-betting-iq/', name: 'NBA 戰情室', icon: '🏀' },
+    epl: { port: '8919', mount: true, path: 'epl-odds-iq/', name: '英超戰情室', icon: '⚽' },
+    f1: { port: '8919', mount: true, path: 'f1-odds-iq/', name: 'F1 戰情室', icon: '🏎️' },
     baseball: { port: '8919', mount: true, path: 'baseball/', name: 'MLB 戰情室', icon: '⚾' },
     twbasket: { port: '8919', mount: true, path: 'tw-basketball/', name: '台籃戰情室', icon: '⛹️' }
   };
@@ -4094,21 +4094,136 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
     }
   }
 
-  /** 日文長句依「。！？、」切段（雲端 TTS 單次約 95 字以內），保留在原句的字元偏移。 */
-  function splitChunks(text, maxLen) {
-    maxLen = maxLen || 95;
-    const out = [];
-    let pos = 0;
-    while (pos < text.length) {
-      if (text.length - pos <= maxLen) { out.push({ text: text.slice(pos), offset: pos }); break; }
-      const slice = text.slice(pos, pos + maxLen);
-      let cut = Math.max(slice.lastIndexOf('。'), slice.lastIndexOf('！'), slice.lastIndexOf('？'));
-      if (cut < 10) cut = slice.lastIndexOf('、');
-      cut = cut < 10 ? maxLen : cut + 1;
-      out.push({ text: text.slice(pos, pos + cut), offset: pos });
-      pos += cut;
+  // 自然人說話基準語速（1.0x 時約 0.90 倍，避免機器朗讀過快，保留自然換氣與抑揚頓挫）
+  const NATURAL_BASE_RATE = 0.90;
+
+  /** 分析日語單一語氣段的語調、速度倍率與段間停頓（ms）。 */
+  function analyzeJaChunkProsody(rawSeg, idx, total) {
+    const s = String(rawSeg || '').trim();
+    let rateMul = 1.0;
+    let pitchDelta = 0;
+    let pauseMs = 220;
+
+    // 故事開場或轉折語：放慢鋪陳氣氛
+    if (/^(むかしむかし|昔々|ある日|ある朝|ある晩|ある夜|やがて|ついに|こうして|そのころ|それから)/.test(s)) {
+      rateMul *= 0.93;
+      pauseMs = 260;
+    } else if (/^(すると|しかし|でも|ところが|けれど|その時|そのとき|突然)/.test(s)) {
+      rateMul *= 0.95;
+      pitchDelta += 0.02;
     }
-    return out.length ? out : [{ text, offset: 0 }];
+
+    // 情緒與語氣詞微調
+    if (/(びっくり|たいへん|大変|すごい|やった|わあ|えっ|急いで|速い|早く|喜び|大喜び|叫び|笑っ)/.test(s)) {
+      rateMul *= 1.05;
+      pitchDelta += 0.05;
+    } else if (/(ゆっくり|静かに|そっと|悲し|寂し|疲れ|眠|すみません|ごめんなさい|申し訳|残念|溜め息|ため息)/.test(s)) {
+      rateMul *= 0.92;
+      pitchDelta -= 0.04;
+      pauseMs += 40;
+    }
+
+    // 標點決定的語調與停頓
+    if (/(…|\.\.\.|—|ー+)\s*[」』）)]*$/.test(s)) {
+      rateMul *= 0.91;
+      pitchDelta -= 0.04;
+      pauseMs = 340;
+    } else if (/[？?]\s*[」』）)]*$/.test(s)) {
+      rateMul *= 0.96;
+      pitchDelta += 0.06;
+      pauseMs = 280;
+    } else if (/[！!]\s*[」』）)]*$/.test(s)) {
+      rateMul *= 1.04;
+      pitchDelta += 0.06;
+      pauseMs = 230;
+    }
+
+    // 句內讀點「、」較多或句子較長時微幅放緩，短句收尾更從容
+    const commas = (s.match(/[、，]/g) || []).length;
+    if (commas >= 2 || s.length >= 38) rateMul *= 0.95;
+    else if (s.length <= 8 && !/[！!]/.test(s)) rateMul *= 0.96;
+
+    if (total > 1) {
+      rateMul += ((idx % 3) - 1) * 0.02;
+    }
+
+    return {
+      rateMul: JA.clamp(rateMul, 0.84, 1.08),
+      pitchDelta: JA.clamp(pitchDelta, -0.10, 0.12),
+      pauseMs: idx < total - 1 ? pauseMs : 0,
+    };
+  }
+
+  /**
+   * 日文句子依「。！？…」或「對話括號與旁白交界（如『…』と言いました）」切分為自然語氣片段，
+   * 保留在原句的字元偏移 offset（供逐字高亮使用）與每段抑揚頓挫參數。
+   */
+  function splitChunks(text, maxLen) {
+    maxLen = maxLen || 90;
+    const raw = String(text || '');
+    if (!raw.trim()) return [{ text: '', offset: 0, rateMul: 1, pitchDelta: 0, pauseMs: 0, commaRatios: [] }];
+
+    // 第一步：依句末標點（。！？…）或「」對話與旁白交界切出自然語氣段
+    const segs = [];
+    const boundaryRe = /([。！？!?…]+[」』）)]*\s*|(?<=[^。！？!?])[」』](?=と|は|が|も|に|を|\s))/g;
+    let start = 0;
+    let m;
+    while ((m = boundaryRe.exec(raw)) !== null) {
+      const endPos = m.index + m[0].length;
+      const slice = raw.slice(start, endPos);
+      if (slice.trim().length >= 2) {
+        const leadWs = slice.search(/\S/);
+        segs.push({ text: slice.trim(), offset: start + (leadWs >= 0 ? leadWs : 0) });
+        start = endPos;
+      }
+    }
+    if (start < raw.length) {
+      const rem = raw.slice(start);
+      if (rem.trim()) {
+        const leadWs = rem.search(/\S/);
+        segs.push({ text: rem.trim(), offset: start + (leadWs >= 0 ? leadWs : 0) });
+      }
+    }
+    if (!segs.length) segs.push({ text: raw.trim(), offset: 0 });
+
+    // 第二步：若單一語氣段仍超過 maxLen，再依「、」細切
+    const out = [];
+    for (const seg of segs) {
+      if (seg.text.length <= maxLen) {
+        out.push(seg);
+        continue;
+      }
+      let pos = 0;
+      while (pos < seg.text.length) {
+        if (seg.text.length - pos <= maxLen) {
+          out.push({ text: seg.text.slice(pos), offset: seg.offset + pos });
+          break;
+        }
+        const slice = seg.text.slice(pos, pos + maxLen);
+        let cut = slice.lastIndexOf('、');
+        cut = cut < 8 ? maxLen : cut + 1;
+        out.push({ text: seg.text.slice(pos, pos + cut), offset: seg.offset + pos });
+        pos += cut;
+      }
+    }
+
+    return out.map((ch, idx) => {
+      const pros = analyzeJaChunkProsody(ch.text, idx, out.length);
+      const commaRatios = [];
+      const cRe = /[、，]+/g;
+      let cm;
+      while ((cm = cRe.exec(ch.text)) !== null) {
+        commaRatios.push(cm.index / Math.max(1, ch.text.length));
+      }
+      return {
+        text: ch.text,
+        offset: ch.offset,
+        commaRatios,
+        rateMul: pros.rateMul,
+        pitchDelta: pros.pitchDelta,
+        pauseMs: pros.pauseMs,
+      };
+    });
   }
 
   function cloudUrls(chunkText) {
@@ -4148,6 +4263,8 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
       ensureNoReferrerMeta();
       const { urls, blobKey, localUrl } = cloudUrls(chunk.text);
       const total = Math.max(1, chunk.text.length);
+      const commaRatios = chunk.commaRatios || [];
+      const isExclaim = /[！!]\s*[」』）)]*$/.test(chunk.text);
       let urlIdx = 0;
       let curAttempt = 0;
       let finished = false;
@@ -4165,7 +4282,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         clearTimeout(wd);
         resolve(ok);
       };
-      const wd = setTimeout(() => done(false), 20000);
+      const wd = setTimeout(() => done(false), 45000);
       const tryUrl = () => {
         clearAttemptTimers();
         if (!alive() || urlIdx >= urls.length) { done(false); return; }
@@ -4191,18 +4308,27 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         a.playbackRate = effRate;
         // 單一鏡像連線逾時保護（4.5s 未開始播放即自動切換下一個鏡像）
         loadTimer = setTimeout(() => { if (!playStartedAt) failOnce(); }, 4500);
+        let lastCurTime = -1;
         const armEndTimer = () => {
           if (!playStartedAt || finished || myAttempt !== curAttempt) return;
           if (endTimer) clearTimeout(endTimer);
           const hasDur = a.duration && isFinite(a.duration) && a.duration > 0;
-          const durSec = hasDur ? a.duration : Math.max(1.0, total / 4.5);
+          const durSec = hasDur ? a.duration : Math.max(2.2, total / 3.6);
           const curSec = a.currentTime > 0 ? a.currentTime : ((Date.now() - playStartedAt) / 1000) * effRate;
-          const remMs = Math.max(160, Math.ceil((Math.max(0, durSec - curSec) / effRate) * 1000) + 420);
+          const remMs = Math.max(300, Math.ceil((Math.max(0, durSec - curSec) / effRate) * 1000) + 650);
           endTimer = setTimeout(() => {
-            if (myAttempt === curAttempt && !finished) {
-              stopCloudAudio();
-              done(true);
+            if (myAttempt !== curAttempt || finished) return;
+            if (!a.paused && !a.ended) {
+              const curT = a.currentTime || 0;
+              const durT = (a.duration && isFinite(a.duration) && a.duration > 0) ? a.duration : 0;
+              if ((durT > 0 && curT < durT - 0.08) || curT > lastCurTime + 0.01) {
+                lastCurTime = curT;
+                armEndTimer();
+                return;
+              }
             }
+            stopCloudAudio();
+            done(true);
           }, remMs);
         };
         a.onplaying = () => {
@@ -4213,17 +4339,30 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
           if (localUrl && url === localUrl) warmLocalBlob(blobKey, localUrl);
           if (onFirstStart) { const fn = onFirstStart; onFirstStart = null; fn(); }
           armEndTimer();
-          if (onBoundary) {
-            let last = -1;
-            if (cloudTimer) clearInterval(cloudTimer);
-            cloudTimer = setInterval(() => {
-              if (!alive() || a.paused) return;
-              const dur = a.duration && isFinite(a.duration) && a.duration > 0 ? a.duration : Math.max(0.8, total / (7 * (a.playbackRate || 1)));
-              const cur = a.currentTime > 0 ? a.currentTime : ((Date.now() - playStartedAt) / 1000) * effRate;
-              const ci = Math.floor(JA.clamp(cur / Math.max(0.15, dur * 0.94), 0, 0.999) * total);
+          let last = -1;
+          if (cloudTimer) clearInterval(cloudTimer);
+          cloudTimer = setInterval(() => {
+            if (!alive() || a.paused) return;
+            const dur = a.duration && isFinite(a.duration) && a.duration > 0 ? a.duration : Math.max(0.8, total / (7 * (a.playbackRate || 1)));
+            const cur = a.currentTime > 0 ? a.currentTime : ((Date.now() - playStartedAt) / 1000) * effRate;
+            const ratio = JA.clamp(cur / Math.max(0.15, dur * 0.94), 0, 0.999);
+            // 句內自然呼吸律動（Rubato）：讀點「、」處微幅放緩 7%，句尾收音自然放緩 9%
+            let rubato = 1.0;
+            for (let ci = 0; ci < commaRatios.length; ci++) {
+              if (Math.abs(ratio - commaRatios[ci]) < 0.08) { rubato = 0.93; break; }
+            }
+            if (!isExclaim && ratio > 0.74) {
+              rubato *= 1 - ((ratio - 0.74) / 0.26) * 0.09;
+            }
+            const targetRate = JA.clamp(effRate * rubato, 0.48, 1.8);
+            if (Math.abs((a.playbackRate || effRate) - targetRate) > 0.012) {
+              try { a.playbackRate = targetRate; } catch (e) { /* ignore */ }
+            }
+            if (onBoundary) {
+              const ci = Math.floor(ratio * total);
               if (ci !== last) { last = ci; onBoundary({ name: 'word', charIndex: chunk.offset + ci }); }
-            }, 50);
-          }
+            }
+          }, 50);
         };
         a.ondurationchange = () => { if (playStartedAt) armEndTimer(); };
         a.onended = () => { if (myAttempt === curAttempt) { activeCloudAudio = null; done(true); } };
@@ -4239,15 +4378,54 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
     });
   }
 
+  const preloadAudioPool = new Map();
+  function preloadText(text) {
+    let raw = jp.surface(String(text || '')).trim();
+    if (raw.normalize) raw = raw.normalize('NFC');
+    const say = raw.replace(/(^|[^0-9０-９一二三四五六七八九十百千万月日時間分])[〜~]+/g, '$1').trim();
+    if (!say) return;
+    for (const ch of splitChunks(say)) {
+      const { urls, blobKey, localUrl } = cloudUrls(ch.text);
+      if (blobCache.has(blobKey)) continue;
+      if (localUrl) {
+        warmLocalBlob(blobKey, localUrl);
+      } else if (urls.length && typeof Audio !== 'undefined' && !preloadAudioPool.has(blobKey)) {
+        try {
+          if (preloadAudioPool.size >= 32) {
+            const oldest = preloadAudioPool.keys().next().value;
+            preloadAudioPool.delete(oldest);
+          }
+          const pa = new Audio();
+          pa.preload = 'auto';
+          pa.src = urls[0];
+          preloadAudioPool.set(blobKey, pa);
+        } catch (e) { /* ignore */ }
+      }
+    }
+  }
+
   async function speakCloud(text, opts, myGen) {
-    const rate = JA.clamp(opts.rate || JA.settings().rate || 1, 0.5, 1.8);
+    const rawRate = opts.rate || JA.settings().rate || 1;
+    const baseRate = JA.clamp(rawRate * (opts.natural === false ? 1 : NATURAL_BASE_RATE), 0.48, 1.8);
     cloudPlaying = true;
     let started = false;
     const onFirst = () => { if (!started) { started = true; if (opts.onStart) opts.onStart(); } };
     let ok = true;
-    for (const ch of splitChunks(text)) {
+    const chunks = splitChunks(text);
+    if (chunks.length > 1) {
+      for (let i = 1; i < chunks.length; i++) {
+        const { blobKey, localUrl } = cloudUrls(chunks[i].text);
+        if (localUrl) warmLocalBlob(blobKey, localUrl);
+      }
+    }
+    for (let i = 0; i < chunks.length; i++) {
       if (myGen !== gen) { ok = false; break; }
-      if (!(await playCloudChunk(ch, rate, opts.onBoundary, onFirst, () => myGen === gen))) { ok = false; break; }
+      const ch = chunks[i];
+      const chunkRate = JA.clamp(baseRate * (ch.rateMul || 1), 0.48, 1.8);
+      if (!(await playCloudChunk(ch, chunkRate, opts.onBoundary, onFirst, () => myGen === gen))) { ok = false; break; }
+      if (i < chunks.length - 1 && ch.pauseMs > 0 && myGen === gen) {
+        await JA.sleep(Math.round(ch.pauseMs / Math.max(0.75, rawRate)));
+      }
     }
     cloudPlaying = false;
     if (ok && opts.onEnd) opts.onEnd();
@@ -4270,11 +4448,14 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
     return new Promise((resolve) => {
       if (!synth || !v) { resolve({ ok: false, canceled: myGen !== gen, fallback: allowCloudFallback }); return; }
       try { if (synth.speaking || synth.pending) synth.cancel(); } catch (e) { /* ignore */ }
+      const pros = analyzeJaChunkProsody(say, 0, 1);
+      const rawRate = opts.rate || JA.settings().rate || 1;
+      const baseRate = rawRate * (opts.natural === false ? 1 : NATURAL_BASE_RATE);
       const u = new SpeechSynthesisUtterance(say);
       u.voice = v;
       u.lang = v.lang || 'ja-JP';
-      u.rate = JA.clamp(opts.rate || JA.settings().rate || 1, 0.4, 1.8);
-      u.pitch = opts.pitch || 1;
+      u.rate = JA.clamp(baseRate * pros.rateMul, 0.4, 1.8);
+      u.pitch = JA.clamp((opts.pitch || 1) + pros.pitchDelta, 0.5, 1.6);
       let done = false;
       let started = false;
       let startAt = 0;
@@ -4284,10 +4465,16 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         done = true;
         clearTimeout(wd);
         clearTimeout(startWd);
+        clearInterval(keepAlive);
         if (ok && opts.onEnd) opts.onEnd();
         resolve({ ok: !!ok, canceled: !!canceled, fallback: !!fallback, retryBrowser: !!retryBrowser });
       };
-      const wd = setTimeout(() => finish(myGen === gen, myGen !== gen, false, false), Math.max(4500, est * 2 + 4000));
+      const wd = setTimeout(() => finish(myGen === gen, myGen !== gen, false, false), Math.max(8000, est * 2.5 + 6000));
+      const keepAlive = setInterval(() => {
+        if (!done && myGen === gen && synth && synth.speaking) {
+          try { synth.resume(); } catch (e) { /* ignore */ }
+        }
+      }, 5000);
       // 650ms 內沒有 onstart（Linux Chrome、遠端語音卡死）→ 標記損壞並無縫切換雲端語音
       const startWd = setTimeout(() => {
         if (!started && !done && myGen === gen) {
@@ -4438,6 +4625,8 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         if (my === gen && btn) clearSpeakingBtn(btn);
       }
     },
+    /** 預先快取下一句語音，讓故事與課文連續播放無停頓。 */
+    preload(text) { preloadText(text); },
     /** 播放代號：每次 stop() 都讓舊的逐句播放迴圈失效。 */
     token() { return session; },
     alive(tok) { return tok === session; },
@@ -4494,18 +4683,45 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         rec.lang = 'ja-JP';
         rec.interimResults = true;
         rec.maxAlternatives = 5;
-        rec.continuous = !!opts.continuous;
+        // 預設啟用 continuous = true，避免日語長句中間換氣停頓就被瀏覽器切斷
+        rec.continuous = opts.continuous !== undefined ? !!opts.continuous : true;
         const finals = [];
         let interim = '';
         let err = null;
         let done = false;
+        let silenceTimer = null;
+        const silenceWait = opts.silenceMs || 3800;
+        const resetSilenceTimer = () => {
+          if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
+          if (opts.noAutoSilenceStop) return;
+          if (finals.length > 0 || interim.trim().length > 0) {
+            silenceTimer = setTimeout(() => {
+              try { rec.stop(); } catch (e) { /* ignore */ }
+            }, silenceWait);
+          }
+        };
         const finish = () => {
           if (done) return;
           done = true;
           clearTimeout(timer);
+          if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
           if (curRec === rec) curRec = null;
-          const text = (finals.map((f) => f[0].t).join('') || interim).trim();
-          const alts = finals.length === 1 ? finals[0].map((a) => a.t) : (text ? [text] : []);
+          const joinedFinal = finals.map((f) => f[0].t).join('').trim();
+          const text = (`${joinedFinal}${interim}`).trim() || joinedFinal;
+          let alts = [];
+          if (finals.length === 1) {
+            alts = finals[0].map((a) => (interim ? `${a.t}${interim}`.trim() : a.t));
+          } else if (finals.length > 1) {
+            const altSet = new Set();
+            for (let k = 0; k < 5; k++) {
+              const s = finals.map((f) => (f[k] || f[0]).t).join('').trim();
+              if (s) altSet.add(interim ? `${s}${interim}`.trim() : s);
+            }
+            if (text) altSet.add(text);
+            alts = [...altSet];
+          } else if (text) {
+            alts = [text];
+          }
           const confs = finals.map((f) => f[0].c).filter((c) => c > 0);
           resolve({ text, alts, confidence: confs.length ? confs.reduce((a, b) => a + b, 0) / confs.length : 0,
             error: text ? null : err, msg: text ? '' : this.message(err) });
@@ -4518,12 +4734,14 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
             else interim += r[0].transcript;
           }
           JA.markActive();
+          resetSilenceTimer();
           if (opts.onInterim) opts.onInterim(`${finals.map((f) => f[0].t).join('')}${interim}`.trim());
         };
         rec.onerror = (e) => { if (e.error !== 'aborted') err = e.error; };
         rec.onend = finish;
         rec.onstart = () => { if (opts.onStart) opts.onStart(); };
-        const timer = setTimeout(() => { try { rec.stop(); } catch (e) { /* ignore */ } }, opts.maxMs || 15000);
+        const maxDuration = Math.max(30000, opts.maxMs || 45000);
+        const timer = setTimeout(() => { try { rec.stop(); } catch (e) { /* ignore */ } }, maxDuration);
         curRec = rec;
         try { rec.start(); } catch (e) { err = 'start-failed'; finish(); }
       });
@@ -4604,12 +4822,25 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         if (btn) clearSpeakingBtn(btn);
         resolve({ ok });
       };
+      let lastCurTime = -1;
       const armEnd = () => {
         if (finished) return;
         if (endTimer) clearTimeout(endTimer);
         const hasDur = a.duration && isFinite(a.duration) && a.duration > 0;
-        const ms = hasDur ? Math.max(180, Math.ceil((a.duration - (a.currentTime || 0)) * 1000) + 400) : 12000;
-        endTimer = setTimeout(() => done(true), ms);
+        const ms = hasDur ? Math.max(250, Math.ceil((a.duration - (a.currentTime || 0)) * 1000) + 500) : 2500;
+        endTimer = setTimeout(() => {
+          if (finished) return;
+          if (!a.paused && !a.ended) {
+            const curT = a.currentTime || 0;
+            const durT = (a.duration && isFinite(a.duration) && a.duration > 0) ? a.duration : 0;
+            if ((durT > 0 && curT < durT - 0.08) || curT > lastCurTime + 0.01) {
+              lastCurTime = curT;
+              armEnd();
+              return;
+            }
+          }
+          done(true);
+        }, ms);
       };
       a.onplaying = armEnd;
       a.ondurationchange = () => { if (!a.paused) armEnd(); };
@@ -9015,12 +9246,41 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
       JA.$('#plPos', pane).textContent = i >= 0 ? `第 ${i + 1} / ${L.lines.length} 句` : `共 ${L.lines.length} 句`;
       JA.$('#plBar', pane).style.width = `${i >= 0 ? ((i + 1) / L.lines.length) * 100 : 0}%`;
     }
+    function calcLineProsody(i, baseRate) {
+      const ln = L.lines[i] || {};
+      const next = L.lines[i + 1] || null;
+      const raw = jp.surface(String(ln.ja || '')).trim();
+      const speakerChanged = next && next.s !== ln.s;
+      let rateMul = 1.0;
+      if (i === 0) rateMul *= 0.94;
+      else if (i === L.lines.length - 1) rateMul *= 0.92;
+      if (/(…|\.\.\.|—)/.test(raw)) rateMul *= 0.92;
+      else if (/[！!]/.test(raw)) rateMul *= 1.04;
+      else if (/[？?]/.test(raw)) rateMul *= 0.96;
+      const wave = Math.sin(i * 1.3) * 0.028;
+      rateMul = JA.clamp(rateMul + wave, 0.84, 1.08);
+
+      let pauseMs = 240;
+      if (/(…|\.\.\.|—)\s*[」』）)]*$/.test(raw)) pauseMs = 460;
+      else if (/[？?]\s*[」』）)]*$/.test(raw)) pauseMs = 400;
+      else if (/[！!]\s*[」』）)]*$/.test(raw)) pauseMs = 310;
+      else if (speakerChanged) pauseMs = 350;
+      else if (raw.length > 36) pauseMs = 290;
+      else pauseMs = 235 + Math.round(Math.cos(i * 1.6) * 25);
+
+      return {
+        rate: JA.clamp(baseRate * rateMul, 0.5, 1.7),
+        pauseAfterMs: Math.round(pauseMs / Math.max(0.75, baseRate)),
+      };
+    }
     function playLine(i, slow, btn) {
       const ln = L.lines[i];
       setCur(i, true);
-      const rate = +JA.settings().rate || 1;
+      const baseRate = +JA.settings().rate || 1;
+      const prosody = calcLineProsody(i, baseRate);
+      const effRate = slow ? Math.min(baseRate, 0.6) : prosody.rate;
       const jaEl = JA.$(`#ln${i} .ja`, chat);
-      return JA.tts.speak(ln.ja, { ...JA.voiceOf(L, ln.s), rate: slow ? Math.min(rate, 0.6) : rate, btn,
+      return JA.tts.speak(ln.ja, { ...JA.voiceOf(L, ln.s), rate: effRate, natural: !slow, btn,
         onBoundary: (e) => { if (jaEl && (!e.name || e.name === 'word')) LUI.highlightAt(jaEl, e.charIndex); } })
         .then((r) => {
           if (!r.canceled && !playing && jaEl) JA.$$('.u.hl', jaEl).forEach((x) => x.classList.remove('hl'));
@@ -9041,10 +9301,20 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
       playing = true;
       updateBtn();
       let k = Math.max(0, i);
+      if (k < L.lines.length && JA.tts.preload) {
+        JA.tts.preload(L.lines[k].ja);
+        if (k + 1 < L.lines.length) JA.tts.preload(L.lines[k + 1].ja);
+      }
       while (k < L.lines.length && JA.tts.alive(tok)) {
+        if (JA.tts.preload) {
+          if (k + 1 < L.lines.length) JA.tts.preload(L.lines[k + 1].ja);
+          if (k + 2 < L.lines.length) JA.tts.preload(L.lines[k + 2].ja);
+        }
+        const baseRate = +JA.settings().rate || 1;
+        const prosody = calcLineProsody(k, baseRate);
         const r = await playLine(k);
         if (!JA.tts.alive(tok) || r.canceled) break;
-        await JA.sleep(view.loop ? 700 : 300);
+        await JA.sleep(view.loop ? 650 : prosody.pauseAfterMs);
         if (!JA.tts.alive(tok)) break;
         if (!view.loop) k++;
       }
@@ -9340,7 +9610,12 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
       live.textContent = '🎙️ 請開始說…';
       const recOn = await JA.rec.start();
       const chars = jp.surface(u.ja).length;
-      const r = await JA.asr.listen({ maxMs: 4500 + chars * 280, onInterim: (t) => { live.textContent = `🎙️ ${t}`; } });
+      const r = await JA.asr.listen({
+        continuous: true,
+        maxMs: Math.max(30000, 12000 + chars * 450),
+        silenceMs: 3800,
+        onInterim: (t) => { live.textContent = `🎙️ ${t}`; },
+      });
       lastRec = recOn ? await JA.rec.stop() : null;
       if (units[idx] !== u) return null;
       if (!r.text) {
@@ -9647,7 +9922,9 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
       const ln = L.lines[i];
       const recStarted = await JA.rec.start();
       const r = await JA.asr.listen({
-        maxMs: 6500 + jp.surface(ln.ja).length * 320,
+        continuous: true,
+        maxMs: Math.max(30000, 12000 + jp.surface(ln.ja).length * 450),
+        silenceMs: 3800,
         onInterim: (t) => {
           const live = JA.$(`[data-rlive="${i}"]`, pane);
           if (live) live.textContent = `🎙️ ${t}`;
@@ -9901,10 +10178,14 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
       JA.tts.stop();
       const tok = JA.tts.token();
       JA.$('#qStop', pane).hidden = false;
-      for (const ln of L.lines) {
+      for (let idx = 0; idx < L.lines.length; idx++) {
         if (!JA.tts.alive(tok)) break;
+        const ln = L.lines[idx];
+        if (JA.tts.preload && idx + 1 < L.lines.length) {
+          JA.tts.preload(L.lines[idx + 1].ja);
+        }
         await JA.tts.speak(ln.ja, JA.voiceOf(L, ln.s));
-        await JA.sleep(250);
+        await JA.sleep(45);
       }
       if (JA.tts.alive(tok)) JA.$('#qStop', pane).hidden = true;
     };
@@ -11511,8 +11792,23 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
   'use strict';
   const JA = (window.JA = window.JA || {});
   JA.RELEASES_DATA = {
-  "current_version": "1.1.0",
+  "current_version": "2.0.0",
   "releases": [
+    {
+      "version": "2.0.0",
+      "date": "2026-11-06",
+      "bump": "major",
+      "title": "更新AI 引擎、介面互動、口說特訓（共 15 個檔案）",
+      "highlights": [
+        "[頁面骨架] 更新 static/index.html：主網頁結構、校園導覽按鈕、版號徽章與腳本載入清單（+5 / -1 行）",
+        "[AI 引擎] 更新 ai.py：Connect-RPC 日語語境解釋、口說回饋與新對話產生器（+18 / -3 行）",
+        "[介面互動] 更新 static/js/app.js：頂部與手機導覽列、連續天數徽章與啟動同步流程（+1 / -1 行）",
+        "[校園導覽] 更新 static/js/campus_nav.js：🏫 校園按鈕：回到開心學園校園地圖（共用片段）（+852 / -117 行）",
+        "[課程閱讀] 更新 static/js/lesson.js：對話閱讀（漢字振假名／羅馬拼音／中文開關）、逐句播放控制與單字文法頁（+42 / -3 行）",
+        "[口說聽力] 更新 static/js/practice.js：跟讀發音評分、角色扮演、聽寫（漢字／假名／羅馬拼音皆可）與 4 題理解測驗（+15 / -4 行）"
+      ],
+      "files_count": 15
+    },
     {
       "version": "1.1.0",
       "date": "2026-11-02",
@@ -11998,6 +12294,96 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: '烏龜腳痛的時候怎麼做？', opts: ['回家了', '沒有休息繼續走', '請狐狸幫忙'], a: 1 },
       { q: '這個故事告訴我們什麼？', opts: ['跑得快最重要', '要常常睡覺', '不能和朋友比賽', '慢慢來也要堅持到最後'], a: 3 }
     ]
+  },
+
+  {
+    id: 'ja-s17',
+    level: 'A1',
+    topic: '寓言',
+    icon: '🦁',
+    title: 'ライオンとネズミ',
+    titleRd: 'らいおんとねずみ',
+    titleZh: '獅子與老鼠',
+    summary: '森林之王獅子放過了一隻不小心踩到牠的小老鼠；幾天後獅子落入獵人的繩網，小老鼠用牙齒咬斷繩子救了牠。',
+    lines: [
+      { ja: 'ある暑い午後、大きなライオンが木の下で寝ていました。', rd: 'あるあついごご、おおきならいおんがきのしたでねていました。', zh: '某個炎熱的午後，一隻大獅子在樹下睡覺。' },
+      { ja: 'そこへ、小さなネズミが走ってきました。', rd: 'そこへ、ちいさなねずみがはしってきました。', zh: '這時，一隻小老鼠跑了過來。' },
+      { ja: 'ネズミはうっかりライオンの鼻の上を踏んでしまいました。', rd: 'ねずみはうっかりらいおんのはなのうえをふんでしまいました。', zh: '老鼠不小心踩到了獅子的鼻子上。' },
+      { ja: 'ライオンは目を覚まして、大きな手でネズミをつかまえました。', rd: 'らいおんはめをさまして、おおきなてでねずみをつかまえました。', zh: '獅子醒了過來，用大手抓住了老鼠。' },
+      { ja: '「だれだ、ぼくの昼寝をじゃましたのは！」とライオンは怒りました。', rd: '「だれだ、ぼくのひるねをじゃましたのは！」とらいおんはおこりました。', zh: '「是誰打擾我睡午覺！」獅子生氣地說。', gender: 'male' },
+      { ja: 'ネズミはぶるぶる震えながら言いました。', rd: 'ねずみはぶるぶるふるえながらいいました。', zh: '老鼠發著抖說。' },
+      { ja: '「ごめんなさい！どうか命だけは助けてください。」', rd: '「ごめんなさい！どうかいのちだけはたすけてください。」', zh: '「對不起！請饒我一命吧。」', gender: 'female' },
+      { ja: '「いつかきっと、あなたのお役に立ちますから。」', rd: '「いつかきっと、あなたのおやくにたちますから。」', zh: '「總有一天，我一定會幫上您的忙的。」', gender: 'female' },
+      { ja: 'ライオンはおかしくなって笑いました。', rd: 'らいおんはおかしくなってわらいました。', zh: '獅子覺得很好笑，笑了出來。' },
+      { ja: '「きみみたいな小さなネズミが、ぼくを助けられるはずがないだろう。」', rd: '「きみみたいなちいさなねずみが、ぼくをたすけられるはずがないだろう。」', zh: '「像你這麼小的老鼠，怎麼可能幫得了我呢。」', gender: 'male' },
+      { ja: '「でも今日はいい天気だから、逃がしてやろう。」', rd: '「でもきょうはいいてんきだから、にがしてやろう。」', zh: '「不過今天天氣很好，就放你走吧。」', gender: 'male' },
+      { ja: 'ネズミはペコリとおじぎをして、草の中へ走っていきました。', rd: 'ねずみはぺこりとおじぎをして、くさのなかへはしっていきました。', zh: '老鼠點頭敬了個禮，跑進草叢裡去了。' },
+      { ja: 'それから数日後のことです。', rd: 'それからすうじつごのことです。', zh: '那是幾天之後的事。' },
+      { ja: 'ライオンは森の中で、狩人の網にかかってしまいました。', rd: 'らいおんはもりのなかで、かりゅうどのあみにかかってしまいました。', zh: '獅子在森林裡落入了獵人的網子。' },
+      { ja: 'いくら引っ張っても、太いロープは切れません。', rd: 'いくらひっぱっても、ふといろーぷはきれません。', zh: '不管怎麼拉扯，粗繩子都斷不了。' },
+      { ja: 'ライオンは森じゅうに響く声でほえました。', rd: 'らいおんはもりじゅうにひびくこえでほえました。', zh: '獅子發出響徹整座森林的吼叫聲。' },
+      { ja: '「助けてくれ！だれかいないか！」', rd: '「たすけてくれ！だれかいないか！」', zh: '「救命啊！有沒有人在！」', gender: 'male' },
+      { ja: 'その声を聞いて、あの小さなネズミが駆けつけました。', rd: 'そのこえをきいて、あのちいさなねずみがかけつけました。', zh: '聽到那個聲音，那隻小老鼠趕了過來。' },
+      { ja: '「ライオンさん、今すぐ助けますよ！」', rd: '「らいおんさん、いますぐたすけますよ！」', zh: '「獅子先生，我馬上救您！」', gender: 'female' },
+      { ja: 'ネズミは鋭い歯で、網のロープをカリカリとかじりはじめました。', rd: 'ねずみはするどいはで、あみのろーぷをかりかりとかじりはじめました。', zh: '老鼠用銳利的牙齒，喀嚓喀嚓地開始咬網子的繩索。' },
+      { ja: '一本、また一本とロープが切れていきます。', rd: 'いっぽん、またいっぽんとろーぷがきれていきます。', zh: '繩子一根接著一根斷開。' },
+      { ja: 'ついに大きな穴があき、ライオンは外へ出ることができました。', rd: 'ついにおおきなあながあき、らいおんはそとへでることができました。', zh: '終於破了一個大洞，獅子成功逃了出來。' },
+      { ja: 'ライオンはやさしくネズミに言いました。', rd: 'らいおんはやさしくねずみにいいました。', zh: '獅子溫柔地對老鼠說。' },
+      { ja: '「あのときは笑ってごめんよ。きみは最高の友だちだ。」', rd: '「あのときはわらってごめんよ。きみはさいこうのともだちだ。」', zh: '「那時候嘲笑你真是對不起。你是最棒的朋友。」', gender: 'male' }
+    ],
+    vocab: [
+      { word: '昼寝', rd: 'ひるね', pos: '名', zh: '午睡' },
+      { word: '震える', rd: 'ふるえる', pos: '動', zh: '發抖' },
+      { word: '網', rd: 'あみ', pos: '名', zh: '網子' },
+      { word: 'かじる', rd: 'かじる', pos: '動', zh: '啃、咬' }
+    ],
+    quiz: [
+      { q: '為什麼獅子一開始放走了老鼠？', opts: ['因為獅子肚子不餓', '因為那天心情好、天氣好', '因為老鼠給了牠食物'], a: 1 },
+      { q: '老鼠是怎麼救出獅子的？', opts: ['找大象幫忙', '用牙齒咬斷網子的繩索', '偷走獵人的鑰匙'], a: 1 },
+      { q: '這個故事告訴我們什麼？', opts: ['弱小的朋友也可能幫上大忙', '不要在樹下睡午覺', '獅子不喜歡交朋友'], a: 0 }
+    ]
+  },
+
+  {
+    id: 'ja-s18',
+    level: 'A1',
+    topic: '生活',
+    icon: '🍙',
+    title: '日曜日の朝ごはん',
+    titleRd: 'にちようびのあさごはん',
+    titleZh: '星期天早上的早餐',
+    summary: '小春在星期天早上早起，和爸爸一起捏鮭魚飯糰、煮味噌湯，給媽媽一個溫暖的驚喜。',
+    lines: [
+      { ja: '今日は日曜日です。空はとてもよく晴れています。', rd: 'きょうはにちようびです。そらはとてもよくはれています。', zh: '今天是星期天，天空非常晴朗。' },
+      { ja: '小春は朝七時に一人で起きました。', rd: 'こはるはあさしちじにひとりで起きました。', zh: '小春早上七點自己起床了。' },
+      { ja: '台所へ行くと、お父さんがお米を洗っていました。', rd: 'だいどころへいくと、おとうさんがおこめをあらっていました。', zh: '走到廚房一看，爸爸正在洗米。' },
+      { ja: '「おはよう、小春。今日は二人で朝ごはんを作ろうか。」', rd: '「おはよう、こはる。きょうはふたりであさごはんをつくろうか。」', zh: '「早安，小春。今天我們兩個人一起做早餐吧。」', gender: 'male' },
+      { ja: '「うん！お母さんをびっくりさせよう！」と小春は言いました。', rd: '「うん！おかあさんをびっくりさせよう！」とこはるはいいました。', zh: '「好呀！我們讓媽媽大吃一驚吧！」小春說。', gender: 'female' },
+      { ja: 'ごはんが炊けると、いいにおいが部屋に広がりました。', rd: 'ごはんがたけると、いいにおいがへやにひろがりました。', zh: '白飯煮好後，香噴噴的味道瀰漫在房間裡。' },
+      { ja: 'お父さんは焼き鮭をほぐして、お皿に入れました。', rd: 'おとうさんはやきざけをほぐして、おさらにいれました。', zh: '爸爸把烤鮭魚弄碎，放進盤子裡。' },
+      { ja: '小春は手を洗って、手のひらに少し塩をつけました。', rd: 'こはるはてをあらって、てのひらにすこししおをつけました。', zh: '小春洗好手，在手掌心抹了一點鹽巴。' },
+      { ja: '温かいごはんの真ん中に鮭を入れて、三角に握ります。', rd: 'あたたかいごはんのまんなかにさけをいれて、さんかくににぎります。', zh: '在溫熱的白飯中間放進鮭魚，捏成三角形。' },
+      { ja: '「お父さん、見て！きれいなおにぎりができたよ。」', rd: '「おとうさん、みて！きれいなおにぎりができたよ。」', zh: '「爸爸你看！做出漂亮的飯糰了。」', gender: 'female' },
+      { ja: '「すごいね、黒い海苔も巻こう。」とお父さんが言いました。', rd: '「すごいね、くろいのりもまこう。」とおとうさんがいいました。', zh: '「真厲害，我們也包上黑色的海苔吧。」爸爸說。', gender: 'male' },
+      { ja: 'お父さんは豆腐とわかめのお味噌汁を作りました。', rd: 'おとうさんはとうふとわかめのおみそしるをつくりました。', zh: '爸爸煮了豆腐海帶芽味噌湯。' },
+      { ja: 'そこへ、お母さんが眠そうな顔で起きてきました。', rd: 'そこへ、おかあさんがねむそうなかおでおきてきました。', zh: '這時，媽媽睡眼惺忪地起床走了過來。' },
+      { ja: 'テーブルの上のおにぎりを見て、お母さんは目を丸くしました。', rd: 'てーぶるのうえのおにぎりをみて、おかあさんはめをまるくしました。', zh: '看到桌上的飯糰，媽媽驚訝地睜大了眼睛。' },
+      { ja: '「わあ、おいしそう！だれが作ったの？」', rd: '「わあ、おいしそう！だれがつくったの？」', zh: '「哇，看起來好好吃！是誰做的呀？」', gender: 'female' },
+      { ja: '「わたしとお父さんだよ。どうぞ食べて！」', rd: '「わたしとおとうさんだよ。どうぞたべて！」', zh: '「是我和爸爸做的喔。請吃吧！」', gender: 'female' },
+      { ja: '三人は「いただきます」と言って、朝ごはんを食べました。', rd: 'さんにんは「いただきます」といって、あさごはんをたべました。', zh: '三個人說了聲「我開動了」，一起吃早餐。' },
+      { ja: 'お母さんは「世界で一番おいしいおにぎりね」と笑いました。', rd: 'おかあさんは「せかいでいちばんおいしいおにぎりね」とわらいました。', zh: '媽媽笑著說：「這是世界上最好吃的飯糰呢。」' }
+    ],
+    vocab: [
+      { word: '台所', rd: 'だいどころ', pos: '名', zh: '廚房' },
+      { word: 'おにぎり', rd: 'おにぎり', pos: '名', zh: '飯糰' },
+      { word: '海苔', rd: 'のり', pos: '名', zh: '海苔' },
+      { word: '味噌汁', rd: 'みそしる', pos: '名', zh: '味噌湯' }
+    ],
+    quiz: [
+      { q: '小春在飯糰裡面放了什麼餡料？', opts: ['梅子', '烤鮭魚', '鮪魚美乃滋'], a: 1 },
+      { q: '爸爸煮了什麼湯？', opts: ['玉米濃湯', '豆腐海帶芽味噌湯', '雞蛋湯'], a: 1 },
+      { q: '媽媽吃到飯糰時說了什麼？', opts: ['太鹹了', '世界上最好吃的飯糰', '下次換我做'], a: 1 }
+    ]
   }
 ]);
 
@@ -12331,6 +12717,89 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: '這個故事想告訴我們什麼？', opts: ['力氣越大越好', '溫和比強硬更能打動人', '冬天要多穿衣服'], a: 1 },
     ],
   },
+
+  {
+    id: 'ja-s19',
+    level: 'A2',
+    topic: '文化',
+    icon: '🎋',
+    title: '七夕の願い事',
+    titleRd: 'たなばたのねがいごと',
+    titleZh: '七夕的心願',
+    summary: '七月七日七夕這天，翔太和妹妹美咲在五顏六色的短冊寫下心願掛上竹枝，抬頭尋找夏夜星空中的織女星與牛郎星。',
+    lines: [
+      { ja: '七月七日は七夕の日です。', rd: 'しちがつなのかはたなばたのひです。', zh: '七月七日是七夕的日子。' },
+      { ja: '翔太の家では、毎年庭に大きな竹を飾ります。', rd: 'しょうたのいえでは、まいとしにわにおおきなたけをかざります。', zh: '翔太家每年都會在院子裡裝飾高大的竹枝。' },
+      { ja: '妹の美咲がカラフルな短冊を持って走ってきました。', rd: 'いもうとのみさきがからふるなたんざくをもってはしってきました。', zh: '妹妹美咲拿著五顏六色的紙籤跑了過來。' },
+      { ja: '「お兄ちゃん、早く願い事を書こうよ！」', rd: '「おにいちゃん、はやくねがいごとをかこうよ！」', zh: '「哥哥，我們快點寫下心願吧！」', gender: 'female' },
+      { ja: '美咲はピンクの紙に「ピアノが上手になりますように」と書きました。', rd: 'みさきはぴんくのかみに「ぴあのがじょうずになりますように」とかきました。', zh: '美咲在粉紅色的紙上寫下「希望鋼琴能彈得更好」。' },
+      { ja: '翔太は少し考えてから、青い短冊を選びました。', rd: 'しょうたはすこしかんがえてから、あおいたんざくをえらびました。', zh: '翔太想了一下，選了一張藍色的紙籤。' },
+      { ja: '「次のサッカーの試合で、ゴールを決められますように。」', rd: '「つぎのさっかーのしあいで、ごーるをきめられますように。」', zh: '「希望在下一場足球比賽中能夠踢進球。」', gender: 'male' },
+      { ja: 'そこへおばあちゃんがやって来て、黄色い短冊を一枚取りました。', rd: 'そこへおばあちゃんがやってきて、きいろいたんざくをいちまいとりました。', zh: '這時奶奶走了過來，拿了一張黃色的紙籤。' },
+      { ja: 'おばあちゃんは「家族みんなが健康で暮らせますように」と書きました。', rd: 'おばあちゃんは「かぞくみんながけんこうでくらせますように」とかきました。', zh: '奶奶寫下「希望全家人都能健康地生活」。' },
+      { ja: '三人は短冊を竹の枝に丁寧に結びました。', rd: 'さんにんはたんざくをたけのえだにていねいにむすびました。', zh: '三個人把紙籤仔細地綁在竹枝上。' },
+      { ja: '夜になると、涼しい風が吹いて竹の葉がさらさらと鳴りました。', rd: 'よるになると、すずしいかぜがふいてたけのはがさらさらとなりました。', zh: '到了晚上，涼風吹拂，竹葉發出沙沙的聲音。' },
+      { ja: 'みんなで庭に出て、夜空を見上げました。', rd: 'みんなで庭にでて、よぞらをみあげました。', zh: '大家走到院子裡，抬頭仰望夜空。' },
+      { ja: '「見て！真ん中に白い川みたいな星が見えるよ。」と翔太が指さしました。', rd: '「みて！まんなかにしろいかわみたいなほしがみえるよ。」としょうたがゆびさしました。', zh: '「你看！中間看得到像白色河流一樣的星星喔。」翔太指著天空說。', gender: 'male' },
+      { ja: '「あれが天の川よ。年に一度、織姫と彦星が会えるの。」とおばあちゃんが教えてくれました。', rd: '「あれがあまのがわよ。ねんにいちど、おりひめとひこぼしがあえるの。」とおばあちゃんがおしえてくれました。', zh: '「那就是銀河喔。織女和牛郎一年一度可以在那裡相會。」奶奶告訴他們。', gender: 'female' },
+      { ja: '美咲は手を合わせて、空の星にそっとお願いしました。', rd: 'みさきはてをあわせて、そらのほしにそっとおねがいしました。', zh: '美咲雙手合十，靜靜地向天上的星星許願。' },
+      { ja: '「晴れてよかったね。きっと願い事が届くよ。」と翔太は笑いました。', rd: '「はれてよかったね。きっとねがいごとがとどくよ。」としょうたはわらいました。', zh: '「天氣放晴真是太好了。我們的心願一定會傳達到的。」翔太笑著說。', gender: 'male' }
+    ],
+    vocab: [
+      { word: '短冊', rd: 'たんざく', pos: '名', zh: '詩箋、許願紙籤' },
+      { word: '願い事', rd: 'ねがいごと', pos: '名', zh: '心願、願望' },
+      { word: '天の川', rd: 'あまのがわ', pos: '名', zh: '銀河' },
+      { word: '結ぶ', rd: 'むすぶ', pos: '動', zh: '綁、繫' }
+    ],
+    quiz: [
+      { q: '美咲在粉紅色紙籤上寫了什麼願望？', opts: ['足球比賽進球', '希望鋼琴彈得更好', '想要新腳踏車'], a: 1 },
+      { q: '奶奶在紙籤上許了什麼願？', opts: ['全家人健康生活', '去旅行', '中樂透'], a: 0 },
+      { q: '七夕夜空中像白色河流一樣的星群叫什麼？', opts: ['北斗七星', '天の川（銀河）', '流星雨'], a: 1 }
+    ]
+  },
+
+  {
+    id: 'ja-s20',
+    level: 'A2',
+    topic: '寓言',
+    icon: '🪨',
+    title: '石のスープ',
+    titleRd: 'いしのすーぷ',
+    titleZh: '石頭湯',
+    summary: '飢餓的旅人來到戒心很重的村莊，用鍋子煮了「三顆石頭」，卻引來村民紛紛拿出蔬菜與肉一起分享。',
+    lines: [
+      { ja: '昔々、一人の旅人が小さな村に着きました。', rd: 'むかしむかし、ひとりのたびびとがちいさなむらにつきました。', zh: '從前從前，一位旅人來到了一個小村莊。' },
+      { ja: '旅人はおなかがぺこぺこで、家のドアをたたきました。', rd: 'たびびとはおなかがぺこぺこで、いえのどあをたたきました。', zh: '旅人肚子餓扁了，敲了敲村民家的門。' },
+      { ja: '「すみません、少し食べ物を分けてくれませんか。」', rd: '「すみません、すこしたべものをわけてくれませんか。」', zh: '「不好意思，請問可以分我一點食物嗎？」', gender: 'male' },
+      { ja: 'しかし村の人たちは、「うちには何もないよ」と言ってドアを閉めました。', rd: 'しかしむらのひとたちは、「うちにはなにもないよ」といってどあをしめました。', zh: '但是村民們都說「我們家什麼都沒有」，把門關上了。' },
+      { ja: 'そこで旅人は広場に行き、大きな鍋に水を入れて火をつけました。', rd: 'そこでたびびとはひろばにいき、おおきななべにみずをいれてひをつけました。', zh: '於是旅人走到廣場，在大鍋子裡裝水生起了火。' },
+      { ja: 'そして、きれいな丸い石を三つ鍋の中に入れました。', rd: 'そして、きれいなまるいいしをみっつなべのなかにいれました。', zh: '接著，他把三顆乾淨的圓石頭放進鍋子裡。' },
+      { ja: '村の人たちは不思議そうに集まってきました。', rd: 'むらのひとたちはふしぎそうにあつまってきました。', zh: '村民們好奇地聚集了過來。' },
+      { ja: '「旅人さん、いったい何を作っているんだい？」', rd: '「たびびとさん、いったいなにをつくっているんだい？」', zh: '「旅人先生，你到底在做什麼料理呀？」' },
+      { ja: '「これは世にもおいしい『石のスープ』ですよ。」と旅人は言いました。', rd: '「これはよにもおいしい『いしのすーぷ』ですよ。」とたびびとはいいました。', zh: '「這是世界上最美味的『石頭湯』喔。」旅人說。', gender: 'male' },
+      { ja: '旅人はスープを味見して、首をかしげました。', rd: 'たびびとはすーぷをあじみして、くびをかしげました。', zh: '旅人嚐了一口湯，歪了歪頭。' },
+      { ja: '「このままでもおいしいけれど、塩と玉ねぎがあれば最高なんだがなあ。」', rd: '「このままでもおいしいけれど、しおとたまねぎがあればさいこうなんだがなあ。」', zh: '「雖然這樣就很好喝了，但如果有鹽巴和洋蔥就太完美了。」', gender: 'male' },
+      { ja: 'すると一人のおばさんが、「玉ねぎならうちにあるわ！」と持ってきました。', rd: 'するとひとりのおばさんが、「たまねぎならうちにあるわ！」ともってきました。', zh: '這時一位阿姨說：「洋蔥的話我家有！」便拿了過來。', gender: 'female' },
+      { ja: 'しばらくして旅人が言いました。「ニンジンとじゃがいもが入ると、もっと甘くなるんだけどね。」', rd: 'しばらくしてたびびとがいいました。「にんじんとじゃがいもがはいると、もっとあまくなるんだけどね。」', zh: '過了一會兒旅人又說：「如果加進紅蘿蔔和馬鈴薯，湯頭會更甜呢。」', gender: 'male' },
+      { ja: 'すると別のおじさんが、畑から野菜をたくさん持ってきました。', rd: 'するとべつのおじさんが、はたけからやさいをたくさんもってきました。', zh: '結果另一位大叔從田裡拿來了許多蔬菜。' },
+      { ja: 'その後も、肉やキノコが次々と鍋に入れられました。', rd: 'そのあとも、にくやきのこがつぎつぎとなべにいれられました。', zh: '之後，肉和蘑菇也陸續被放進鍋子裡。' },
+      { ja: 'やがて、広場じゅうに温かいスープのいいにおいが広がりました。', rd: 'やがて、ひろばじゅうにあたたかいすーぷのいいにおいがひろがりました。', zh: '不久後，整個廣場都飄散著熱湯的香氣。' },
+      { ja: '村の人たちは茶碗を持って並び、みんなでスープを飲みました。', rd: 'むらのひとたちはちゃわんをもってならび、みんなですーぷをのみました。', zh: '村民們拿著碗排隊，大家一起喝湯。' },
+      { ja: '「なんておいしい石のスープだろう！」とみんな笑顔になりました。', rd: '「なんておいしいいしのすーぷだろう！」とみんなえがおになりました。', zh: '「這是多麼好喝的石頭湯啊！」大家都露出了笑容。' },
+      { ja: '分け合うことで、みんなのおなかも心もいっぱいになったのです。', rd: 'わけあうことで、みんなのおなかもこころもいっぱいになったのです。', zh: '因為懂得分享，所有人的肚子與心靈都變得暖呼呼的。' }
+    ],
+    vocab: [
+      { word: '鍋', rd: 'なべ', pos: '名', zh: '鍋子' },
+      { word: '味見', rd: 'あじみ', pos: '名', zh: '試味道、嚐味道' },
+      { word: '玉ねぎ', rd: 'たまねぎ', pos: '名', zh: '洋蔥' },
+      { word: '分け合う', rd: 'わけあう', pos: '動', zh: '互相分享' }
+    ],
+    quiz: [
+      { q: '旅人一開始在鍋子裡放了什麼？', opts: ['馬鈴薯', '水和三顆石頭', '雞肉'], a: 1 },
+      { q: '為什麼最後石頭湯變得這麼好喝？', opts: ['石頭有魔法', '村民們紛紛拿出食材一起煮', '旅人去商店買了湯塊'], a: 1 },
+      { q: '這個故事想傳達什麼道理？', opts: ['分享能帶來意想不到的豐盛與快樂', '石頭可以拿來煮湯', '不要隨便開門'], a: 0 }
+    ]
+  }
 ]);
 
 </script>
@@ -12690,6 +13159,87 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: '爸爸說下次想什麼時候再來？', opts: ['楓葉季節', '夏天', '明年寒假', '櫻花季節'], a: 0 },
     ],
   },
+
+  {
+    id: 'ja-s21',
+    level: 'B1',
+    topic: '職場',
+    icon: '☔',
+    title: '終電のあとの傘',
+    titleRd: 'しゅうでんのあとのかさ',
+    titleZh: '末班車之後的雨傘',
+    summary: '剛進公司的新人健太因為企劃書重做而錯過末班電車，卻在便利商店前遇見平常最嚴格的前輩佐藤，看見了前輩溫柔的一面。',
+    lines: [
+      { ja: '金曜日、入社一年目の健太は遅くまでオフィスに残っていた。', rd: 'きんようび、にゅうしゃいちねんめのけんたはおそくまでおふぃすにのこっていた。', zh: '星期五，進公司第一年的健太留到很晚還在辦公室。' },
+      { ja: '来週のプレゼン資料にミスが見つかり、最初から作り直していたのだ。', rd: 'らいしゅうのぷれぜんしりょうにみすがみつかり、さいしょからつくりなおしていたのだ。', zh: '因為下週的簡報資料發現了錯誤，他正在從頭重做。' },
+      { ja: 'ようやく印刷を終えて時計を見ると、もう夜の十二時を過ぎていた。', rd: 'ようやくいんさつをおえてとけいをみると、もうよるのじゅうにじをすぎていた。', zh: '好不容易印完資料看了一下時鐘，已經超過晚上十二點了。' },
+      { ja: '健太は慌てて駅へ走ったが、目の前で終電のシャッターが閉まってしまった。', rd: 'けんたはあわててえきへはしったが、めのまえでしゅうでんのしゃったーがしまってしまった。', zh: '健太慌忙跑向車站，但末班車的鐵捲門卻在眼前關上了。' },
+      { ja: 'しかも、空から冷たい雨がぽつぽつと降り始めた。', rd: 'しかも、そらからつめたいあめがぽつぽつとふりはじめた。', zh: '而且，天空還開始滴滴答答地下起冰冷的雨。' },
+      { ja: '「傘も持っていないし、今日は本当についてないな……。」', rd: '「かさももっていないし、きょうはほんとうについてないな……。」', zh: '「連雨傘也沒帶，今天真是太倒楣了……」', gender: 'male' },
+      { ja: '健太が駅前のコンビニの軒下でため息をついていると、後ろから声をかけられた。', rd: 'けんたがえきまえのこんびにののきしたでためいきをついていると、うしろからこえをかけられた。', zh: '當健太在站前便利商店的屋簷下嘆氣時，身後有人叫住了他。' },
+      { ja: '「あれ、健太じゃないか。こんな時間までどうしたの？」', rd: '「あれ、けんたじゃないか。こんなじかんまでどうしたの？」', zh: '「咦，這不是健太嗎？怎麼這麼晚還在這？」', gender: 'female' },
+      { ja: '振り返ると、部署で一番厳しいことで有名な佐藤先輩が立っていた。', rd: 'ふりかえると、ぶしょでいちばんきびしいことでゆうめいなさとうせんぱいがたっていた。', zh: '回頭一看，站著的是部門裡以最嚴格聞名的佐藤前輩。' },
+      { ja: '健太は緊張しながら、資料を直していて終電を逃したことを話した。', rd: 'けんたはきんちょうしながら、しりょうをなおしていてしゅうでんをのがしたことをはなした。', zh: '健太緊張地說出自己因為修改資料而錯過末班車的事。' },
+      { ja: '佐藤先輩は怒るどころか、コンビニの袋から温かい肉まんを取り出して渡してくれた。', rd: 'さとうせんぱいはおこるどころか、こんびにのふくろからあたたかいにくまんをとりだしてわたしてくれた。', zh: '佐藤前輩非但沒有生氣，還從便利商店袋子裡拿出熱騰騰的肉包遞給他。' },
+      { ja: '「お疲れさま。わたしも新人のころ、よく同じ失敗をしたわよ。」', rd: '「おつかれさま。わたしもじんじんのころ、よくおなじしっぱいをしたわよ。」', zh: '「辛苦了。我還是新人的時候，也常犯一樣的錯喔。」', gender: 'female' },
+      { ja: '「えっ、佐藤先輩でもですか？」と健太は驚いて聞き返した。', rd: '「えっ、さとうせんぱいでもですか？」とけんたはおどろいてききかえした。', zh: '「咦，連佐藤前輩也會嗎？」健太驚訝地反問。', gender: 'male' },
+      { ja: '「もちろんよ。最初から完璧な人なんていないから、落ち込まなくて大丈夫。」', rd: '「もちろんよ。さいしょからかんぺきなひとなんていないから、おちこまなくてだいじょうぶ。」', zh: '「當然囉。沒有人從一開始就是完美的，不用沮喪沒關係。」', gender: 'female' },
+      { ja: '先輩は自分のバッグから折りたたみ傘を出して、健太の手に握らせた。', rd: 'せんぱいはじぶんのばっぐからおりたたみがさをだして、けんたのてににぎらせた。', zh: '前輩從自己的包包裡拿出摺疊傘，塞進健太手裡。' },
+      { ja: '「タクシー代も出すから、今日はゆっくり休んで月曜日にまた頑張りなさい。」', rd: '「たくしーだいもだすから、きょうはゆっくりやすんでげつようびにまたがんばりなさい。」', zh: '「計程車錢我也幫你出，今天好好休息，星期一再繼續加油吧。」', gender: 'female' },
+      { ja: '肉まんの温かさと先輩の言葉に、健太の胸はじんと熱くなった。', rd: 'にくまんのあたたかさとせんぱいのことばに、けんたのむねはじんとあつくなった。', zh: '肉包的溫度與前輩的話語，讓健太的心頭一陣溫熱。' }
+    ],
+    vocab: [
+      { word: '終電', rd: 'しゅうでん', pos: '名', zh: '末班電車' },
+      { word: '作り直す', rd: 'つくりなおす', pos: '動', zh: '重新製作' },
+      { word: '軒下', rd: 'のきした', pos: '名', zh: '屋簷下' },
+      { word: '落ち込む', rd: 'おちこむ', pos: '動', zh: '沮喪、消沉' }
+    ],
+    quiz: [
+      { q: '為什麼健太錯過了末班電車？', opts: ['去參加聚餐', '留下來重新製作簡報資料', '在電車上睡著了'], a: 1 },
+      { q: '佐藤前輩在便利商店前給了健太什麼？', opts: ['熱咖啡與三明治', '熱肉包、摺疊傘與計程車費', '新的企劃書範本'], a: 1 },
+      { q: '佐藤前輩對健太說了什麼鼓勵的話？', opts: ['下次再錯就扣薪水', '沒有人一開始就是完美的，不用沮喪', '週末也要來加班'], a: 1 }
+    ]
+  },
+
+  {
+    id: 'ja-s22',
+    level: 'B1',
+    topic: '寓言',
+    icon: '🏺',
+    title: 'ひび割れた水瓶',
+    titleRd: 'ひびわれたみずがめ',
+    titleZh: '有裂痕的水甕',
+    summary: '農夫每天挑著兩只水甕去河邊打水，其中一只有裂痕的水甕因為漏水而自責，農夫卻帶它看小路旁因為漏水而盛開的花朵。',
+    lines: [
+      { ja: 'ある村に、毎日川から水を運ぶ農夫が住んでいました。', rd: 'あるむらに、まいにちかわからみずをはこぶのうふがすんでいました。', zh: '在某個村子裡，住著一位每天從河邊挑水的農夫。' },
+      { ja: '農夫は長い棒の両端に、二つの水瓶をぶら下げて歩いていました。', rd: 'のうふはながいぼうのりょうはしに、ふたつのみずがめをぶらさげてあるいていました。', zh: '農夫在長扁擔的兩端掛著兩只水甕走路。' },
+      { ja: '右の水瓶は傷ひとつなく、いつも満杯の水を家まで運ぶことができました。', rd: 'みぎのみずがめはきずひとつなく、いつもまんぱいのみずをいえまではこぶことができました。', zh: '右邊的水甕完好無缺，總是能把滿滿的水運回家。' },
+      { ja: 'しかし左の水瓶には小さなひびが入っていて、家に着くころには水が半分に減っていました。', rd: 'しかしひだりのみずがめにはちいさなひびがはいっていて、いえにつくころにはみずがはんぶんにへっていました。', zh: '然而左邊的水甕有一道小裂痕，到家時水總是只剩下一半。' },
+      { ja: 'そんな毎日が二年間も続きました。', rd: 'そんなまいにちがにねんかんもつづきました。', zh: '這樣的日子持續了整整兩年。' },
+      { ja: 'ある日、ひび割れた水瓶は悲しくなって農夫に話しかけました。', rd: 'あるひ、ひびわれたみずがめはかなしくなってのうふにはなしかけました。', zh: '有一天，有裂痕的水甕悲傷地對農夫說。' },
+      { ja: '「ご主人さま、わたしは本当に申し訳ない気持ちでいっぱいです。」', rd: '「ごしゅじんさま、わたしはほんとうにもうしわけないきもちでいっぱいです。」', zh: '「主人，我心裡真的充滿了愧疚。」', gender: 'female' },
+      { ja: '「わたしの脇のひびから水が漏れるせいで、あなたの苦労が半分無駄になっています。」', rd: '「わたしのわきのひびからみずがもれるせいで、あなたのくろうがはんぶんむだになっています。」', zh: '「因為我側邊的裂痕會漏水，害您的辛勞有一半都白費了。」', gender: 'female' },
+      { ja: '農夫は水瓶の言葉を聞いて、優しく微笑みました。', rd: 'のうふはみずがめのことばをきいて、やさしくほほえみました。', zh: '農夫聽了水甕的話，溫柔地微笑了。' },
+      { ja: '「帰り道、きみが通る側の道端をよく見てごらん。」', rd: '「かえりみち、きみがとおるがわのみちばたをよくみてごらん。」', zh: '「回程的時候，你仔細看看你經過那一側的路邊吧。」', gender: 'male' },
+      { ja: '水瓶が言われた通りに道端を見ると、色とりどりの美しい花が咲いていました。', rd: 'みずがめがいわれたとおりにみちばたをみると、いろとりどりのうつくしいはながさいていました。', zh: '水甕照著他的話看向路邊，發現那裡盛開著五顏六色的美麗花朵。' },
+      { ja: '農夫は歩きながら静かに説明しました。', rd: 'のうふはあるきながらしずかにせつめいしました。', zh: '農夫一邊走一邊平靜地解釋。' },
+      { ja: '「きみから水が漏れているのに気づいて、そちら側に花の種をまいたんだよ。」', rd: '「きみからみずがもれているのにきづいて、そちらがわにはなのたねをまいたんだよ。」', zh: '「我發現你會漏水之後，就在你那一側播下了花朵的種子。」', gender: 'male' },
+      { ja: '「毎日きみが少しずつ水をあげてくれたおかげで、こんなにきれいな花が咲いたんだ。」', rd: '「まいにちきみがすこしずつみずをあげてくれたおかげで、こんなにきれいなはながさいたんだ。」', zh: '「多虧你每天一點一點地幫它們澆水，才開出了這麼漂亮的花。」', gender: 'male' },
+      { ja: '「きみの欠点があったからこそ、わたしの食卓は毎日美しい花で飾られているんだよ。」', rd: '「きみのけってんがあったからこそ、わたしのしょくたくはまいにちうつくしいはなでかざられているんだよ。」', zh: '「正因為有你的缺點，我的餐桌每天才能有美麗的鮮花點綴啊。」', gender: 'male' },
+      { ja: 'それを聞いて、ひび割れた水瓶はようやく自分の価値を知り、誇らしい気持ちになりました。', rd: 'それをきいて、ひびわれたみずがめはようやくじぶんのかちをしり、ほこらしいきもちになりました。', zh: '聽了這番話，有裂痕的水甕終於明白了自身的價值，心裡感到無比驕傲。' }
+    ],
+    vocab: [
+      { word: '水瓶', rd: 'みずがめ', pos: '名', zh: '水甕、水缸' },
+      { word: 'ひび', rd: 'ひび', pos: '名', zh: '裂痕、裂縫' },
+      { word: '漏れる', rd: 'もれる', pos: '動', zh: '漏出、滲漏' },
+      { word: '誇らしい', rd: 'ほこらしい', pos: '形', zh: '自豪的、驕傲的' }
+    ],
+    quiz: [
+      { q: '為什麼左邊的水甕感到很愧疚？', opts: ['因為它太重了', '因為它有裂痕，到家時水只剩一半', '因為它長得不好看'], a: 1 },
+      { q: '農夫發現水甕漏水後做了什麼？', opts: ['把水甕丟掉', '在漏水那一側的路邊播下花種', '用膠水把裂痕補起來'], a: 1 },
+      { q: '這個故事想告訴我們什麼？', opts: ['不完美的缺點也能創造出獨特的美好價值', '買東西要仔細檢查有沒有裂痕', '種花比挑水重要'], a: 0 }
+    ]
+  }
 ]);
 
 </script>
@@ -13066,15 +13616,93 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       { q: '醒來後主角做了什麼？', opts: ['馬上打電話給媽媽', '再去找那個車站', '辭掉了工作'], a: 0 },
     ],
   },
+
+  {
+    id: 'ja-s23',
+    level: 'B2',
+    topic: '文化',
+    icon: '🍵',
+    title: '金継ぎの茶碗',
+    titleRd: 'きんつぎのちゃわん',
+    titleZh: '金繼修復的茶碗',
+    summary: '留學生林在京都陶藝工房不小心打破了祖母傳下來的茶碗，工藝師傅透過日本傳統「金繼」技法，教會她接納傷痕並化為獨一無二的美。',
+    lines: [
+      { ja: '京都に留学しているリンは、祖母から譲り受けた古い抹茶茶碗を大切にしていた。', rd: 'きょうとにりゅうがくしているりんは、そぼからゆずりうけたふるいまっちゃぢゃわんをたいせつにしていた。', zh: '在京都留學的林，非常珍惜從祖母那裡繼承來的古老抹茶碗。' },
+      { ja: 'しかしある冬の朝、手を滑らせてその茶碗を床に落とし、二つに割ってしまった。', rd: 'しかしあるふゆのあさ、てをすべらせてそのちゃわんをゆかにおとし、ふたつにわってしまった。', zh: '然而在某個冬日早晨，她不小心手滑把茶碗掉在地上，摔成了兩半。' },
+      { ja: 'リンは破片を拾い集め、泣きそうな顔で路地裏の漆芸工房を訪ねた。', rd: 'りんははへんをひろいあつめ、なきそうなかおでろじうらのしつげいこうぼうをたずねた。', zh: '林撿起碎片，帶著快哭出來的表情造訪了巷弄裡的漆藝工房。' },
+      { ja: '工房の主人である白髪の職人は、割れた茶碗を静かに手にとって眺めた。', rd: 'こうぼうのしゅじんであるしらがのしょくにんは、われたちゃわんをしずかにてにとってながめた。', zh: '身為工房主人的白髮匠人，靜靜地拿起破裂的茶碗端詳。' },
+      { ja: '「傷跡を完全に消して、元通りに見せることはできませんよ。」と職人は言った。', rd: '「きずあとをかんぜんにけして、もとどおりにみせることはできませんよ。」としょくにんはいった。', zh: '「沒辦法把傷痕完全消除，讓它看起來跟原本一模一樣喔。」匠人說。', gender: 'male' },
+      { ja: '「その代わり、『金継ぎ』という方法で、この傷を新しい景色に変えることはできます。」', rd: '「そのかわり、『きんつぎ』というほうほうで、このきずをあたらしいけしきにかえることはできます。」', zh: '「取而代之的是，我們可以用『金繼』的方法，將這道傷痕轉化為新的風景。」', gender: 'male' },
+      { ja: '金継ぎとは、割れた器を天然の漆で接着し、継ぎ目を金粉で飾る日本の伝統技法だ。', rd: 'きんつぎとは、われたうつわをてんねんのうるしでせっちゃくし、つぎめをきんぷんでかざるにほんのでんとうぎほうだ。', zh: '所謂金繼，是用天然生漆黏合破裂器皿，再以金粉裝飾接縫的日本傳統技法。' },
+      { ja: '漆が乾くには長い時間と適切な湿度が必要で、完成まで二ヶ月ほどかかるという。', rd: 'うるしがかわくにはながいじかんとてきせつなしつどがひつようで、かんせいまでにヶ月ほどかかるという。', zh: '據說生漆乾燥需要漫長的時間與適當的濕度，直到完成大約需要兩個月。' },
+      { ja: 'リンは毎週工房に通い、職人が少しずつ茶碗を継いでいく様子を見守った。', rd: 'りんはまいしゅうこうぼうにかよい、しょくにんがすこしずつちゃわんをついでいくようすをみまもった。', zh: '林每週都去工房，守望著匠人一點一滴修復茶碗的過程。' },
+      { ja: 'ちょうどその頃、リンは大学院の研究が思うように進まず、深く悩んでいた。', rd: 'ちょうどそのころ、りんはだいがくいんのけんきゅうがおもうようにすすまず、ふかくなやんでいた。', zh: '正好在那段期間，林因為研究所的研究進展不如預期，陷入深深的苦惱。' },
+      { ja: 'ある日、筆で金粉を蒔いていた職人が、ふと手を止めてリンに語りかけた。', rd: 'あるひ、ふでできんぷんをまいていたしょくにんが、ふとてをとめてりんにかたりかけた。', zh: '有一天，正用毛筆灑上金粉的匠人突然停下手，對林說道。' },
+      { ja: '「器も人間も同じです。一度割れた事実は消えませんが、そこから強くなれるのです。」', rd: '「うつわもにんげんもおなじです。いちどわれたじじつはきえませんが、そこからつよくなれるのです。」', zh: '「器皿和人是一樣的。曾經破碎的事實不會消失，但卻能從那裡變得更加堅強。」', gender: 'male' },
+      { ja: '「失敗や傷跡を隠すのではなく、自分の歴史として受け入れたとき、唯一無二の美しさが生まれます。」', rd: '「しっぱいやきずあとをかくすのではなく、じぶんのれきしとしてうけいれたとき、ゆいいつむにのうつくしさがうまれます。」', zh: '「不去掩飾失敗或傷痕，而是將其視為自身歷史並接納時，獨一無二的美就會誕生。」', gender: 'male' },
+      { ja: '春先、完成した茶碗には、稲妻のような黄金の線が誇らしげに輝いていた。', rd: 'はるさき、かんせいしたちゃわんには、いなずまのようなおうごんのせんがほこらしげにかがやいていた。', zh: '初春時分，完成的茶碗上，如閃電般的黃金線條正自豪地閃耀著光芒。' },
+      { ja: 'リンはその茶碗を両手で包み込み、もう一度自分の研究に向き合う勇気をもらったのだった。', rd: 'りんはそのちゃわんをりょうてでつつみこみ、もういちどじぶんのけんきゅうにむきあうゆうきをもらったのだった。', zh: '林用雙手捧著那只茶碗，獲得了重新面對自己研究的勇氣。' }
+    ],
+    vocab: [
+      { word: '譲り受ける', rd: 'ゆずりうける', pos: '動', zh: '繼承、受讓' },
+      { word: '破片', rd: 'はへん', pos: '名', zh: '碎片' },
+      { word: '漆', rd: 'うるし', pos: '名', zh: '生漆' },
+      { word: '唯一無二', rd: 'ゆいいつむに', pos: '名', zh: '獨一無二' }
+    ],
+    quiz: [
+      { q: '什麼是日本傳統的「金繼（金継ぎ）」技法？', opts: ['用高溫重新燒製陶器', '用天然生漆黏合裂縫並以金粉裝飾', '用黃金打造全新的茶碗'], a: 1 },
+      { q: '為什麼金繼修復需要將近兩個月的時間？', opts: ['因為金粉很難買到', '因為天然生漆需要漫長的時間與適當濕度才能乾燥', '因為匠人太忙了'], a: 1 },
+      { q: '匠人的話讓林領悟到了什麼？', opts: ['接納失敗與傷痕，能化為自己獨一無二的歷史與力量', '貴重物品應該鎖在櫃子裡', '改學陶藝比做研究更有趣'], a: 0 }
+    ]
+  },
+
+  {
+    id: 'ja-s24',
+    level: 'B2',
+    topic: '生活',
+    icon: '🏝️',
+    title: '瀬戸内海の小さな郵便局',
+    titleRd: 'せとないかいのちいさなゆうびんきょく',
+    titleZh: '瀨戶內海的小郵局',
+    summary: '在瀨戶內海一座人口不到三百人的小島上，老郵差每天騎著紅色機車送信，也把遠方子女的思念與平安傳遞給島上的高齡居民。',
+    lines: [
+      { ja: '瀬戸内海に浮かぶその小さな島には、信号機もコンビニも一つもない。', rd: 'せとないかいにうかぶそのちいさなしまには、しんごうきもこんびにもひとつもない。', zh: '在那座漂浮於瀨戶內海的小島上，連一個紅綠燈或便利商店都沒有。' },
+      { ja: '島の人口は三百人足らずで、住民のほとんどが七十歳以上の高齢者だ。', rd: 'しまのじんこうはさんびゃくにんたらずで、じゅうみんのほとんどがななじゅっさいいじょうのこうれいしゃだ。', zh: '島上人口不到三百人，居民絕大多數是七十歲以上的高齡長者。' },
+      { ja: 'この島で四十年近く郵便配達を続けているのが、六十五歳の村上さんである。', rd: 'このしまでよんじゅうねんちかくゆうびんはいたつをつづけているのが、ろくじゅうごさいのむらかみさんである。', zh: '在這座島上持續送信將近四十年的，是六十五歲的村上先生。' },
+      { ja: '毎朝九時、定期船が港に着くと、村上さんは郵便物の入った袋を受け取る。', rd: 'まいあさくじ、ていきせんがみなとにつくと、むらかみさんはゆうびんぶつのはいったふくろをうけとる。', zh: '每天早上九點定期渡輪抵達港口時，村上先生會領取裝有郵件的袋子。' },
+      { ja: 'そして赤いバイクにまたがり、迷路のように入り組んだ坂道を登っていく。', rd: 'そしてあかいばいくにまたがり、めいろのようにいりくんださかみちをのぼっていく。', zh: '接著他跨上紅色機車，騎上如迷宮般錯綜複雜的坡道。' },
+      { ja: '村上さんの仕事は、ただポストに手紙を入れるだけではない。', rd: 'むらかみさんのしごとは、ただぽすとに手がみをいれるだけではない。', zh: '村上先生的工作，並不僅僅是把信放進信箱而已。' },
+      { ja: '一人暮らしのお年寄りの家では、必ず玄関を開けて声をかけることにしている。', rd: 'ひとりぐらしのおとしよりのいえでは、かならずげんかんをあけてこえをかけることにしている。', zh: '在獨居長者的家門前，他一定會打開玄關出聲問候。' },
+      { ja: '「田中のおばあちゃん、東京の息子さんから小包が届いているよ！」', rd: '「たなかのおばあちゃん、とうきょうのむすこさんからこづつみがとどいているよ！」', zh: '「田中奶奶，東京的兒子寄包裹來囉！」', gender: 'male' },
+      { ja: '足腰の弱いおばあちゃんに代わって、重い荷物を居間まで運び、電球の交換まで手伝う。', rd: 'あしこしのよわいおばあちゃんにかわって、おもいにもつをいままではこび、でんきゅうのこうかんまでてつだう。', zh: '他代替腿腳不便的老奶奶把重物搬進客廳，甚至還幫忙換燈泡。' },
+      { ja: '現代では、スマートフォンを使えば一瞬でメッセージを送ることができる。', rd: 'げんだいでは、すまーとふぉんをつかえばいっしゅんでめっせーじをおくることができる。', zh: '在現代，只要使用智慧型手機就能在一瞬間傳送訊息。' },
+      { ja: 'それでも、手書きのハガキや季節の果物が届くたび、島の人々の顔はパッと明るくなる。', rd: 'それでも、てがきのはがきやきせつのくだものがとどくたび、しまのひとびとのかおはぱっとあかるくなる。', zh: '儘管如此，每當收到手寫明信片或當季水果時，島民們的臉龐總會瞬間亮起來。' },
+      { ja: '先月、村上さんが定年退職を迎えると聞いた島民たちは、港でサプライズの送別会を開いた。', rd: 'せんげつ、むらかみさんがていねんたいしょくをむかえるときいたとうみんたちは、みなとでさぷらいずのそうべつかいをひらいた。', zh: '上個月，聽說村上先生即將屆齡退休的島民們，在港口舉辦了驚喜歡送會。' },
+      { ja: '島じゅうの人から手渡された感謝の手紙の束を見て、村上さんは涙をこらえきれなかった。', rd: 'しまじゅうのひとからてわたされたかんしゃのてがみのたばをみて、むらかみさんはなみだをこらえきれなかった。', zh: '看著全島居民親手遞上的一整疊感謝信，村上先生忍不住熱淚盈眶。' },
+      { ja: '「わたしが運んでいたのは郵便物ではなく、人と人との心のつながりだったんですね。」', rd: '「わたしがはこんでいたのはゆうびんぶつではなく、ひととひととのこころのつながりだったんですね。」', zh: '「原來我一直以來運送的不是郵件，而是人與人之間心靈的連結啊。」', gender: 'male' },
+      { ja: '来月からは若い配達員がその赤いバイクを引き継ぎ、島の温かい日常を守り続ける。', rd: 'らいげつからはわかいはいたついんがそのあかいばいくをひきつぎ、しまのあたたかいにちじょうをまもりつづける。', zh: '從下個月起，年輕的郵差將接手那輛紅色機車，繼續守護島上溫暖的日常。' }
+    ],
+    vocab: [
+      { word: '足らず', rd: 'たらず', pos: '接尾', zh: '不到……、未滿……' },
+      { word: '入り組む', rd: 'いりくむ', pos: '動', zh: '錯綜複雜' },
+      { word: '小包', rd: 'こづつみ', pos: '名', zh: '郵包、包裹' },
+      { word: '引き継ぐ', rd: 'ひきつぐ', pos: '動', zh: '接手、傳承' }
+    ],
+    quiz: [
+      { q: '村上先生送信到獨居長者家時，都會特別做什麼？', opts: ['把信塞進門縫就離開', '打開玄關出聲問候，並幫忙搬重物或換燈泡', '打電話給長者的子女'], a: 1 },
+      { q: '島民們得知村上先生要退休時做了什麼？', opts: ['在港口舉辦驚喜歡送會並送上感謝信', '送他一艘新船', '請他搬到東京住'], a: 0 },
+      { q: '村上先生最後體會到自己四十年來運送的是什麼？', opts: ['昂貴的商品', '人與人之間心靈的連結', '政府的公文'], a: 1 }
+    ]
+  }
 ]);
 
 </script>
   <script>/* /js/stories.js */
 /* 開心學園語言學院 — stories.js（📖 故事聽力分頁，英語／日語／韓語學院共用同一份引擎）
  *   - 內容來源：static/js/content/stories.js（window.STORIES_DATA）
- *   - 逐句朗讀＋目前句子高亮／自動捲動、單句重播、慢速、盲聽（隱藏原文）、顯示中文／讀音、循環播放
- *   - 重點單字點一下發音、理解小測驗；聽完全文或測驗全對會標記「已聽完」（存在 localStorage）
- *   - 語音一律走各學院自己的 tts.speak()（遵守 CAMPUS_CONTRACT §7：每次播放新 Audio、多鏡像備援、可無限重播）
+ *   - 整篇文章自然段落排版（無逐句播放按鈕），點選文章中任一句即可直接播放該句，全文播放預載下一句零停頓無縫銜接
+ *   - 支援慢速、盲聽（隱藏原文）、顯示中文／讀音、循環播放、重點單字點一下發音、理解小測驗
+ *   - 語音一律走各學院自己的 tts.speak() + tts.preload()（遵守 CAMPUS_CONTRACT §7：每次播放新 Audio、多鏡像備援、可無限重播）
  */
 (function () {
   'use strict';
@@ -13085,9 +13713,9 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
   const A = window[NS];
   const LANG = { ES: 'en', JA: 'ja', KO: 'ko' }[NS];
   const LANG_META = {
-    en: { name: '英語', reading: '', blind: '盲聽（隱藏英文）', hint: '先盲聽抓大意，再打開英文與中文逐句精聽，最後跟著唸！' },
-    ja: { name: '日語', reading: '假名', blind: '盲聽（隱藏日文）', hint: '先盲聽抓大意，再打開假名與中文逐句精聽，最後跟著唸！' },
-    ko: { name: '韓語', reading: '羅馬拼音', blind: '盲聽（隱藏韓文）', hint: '先盲聽抓大意，再打開羅馬拼音與中文逐句精聽，最後跟著唸！' },
+    en: { name: '英語', reading: '', blind: '盲聽（隱藏英文）', hint: '先盲聽抓大意，再打開英文與中文整篇閱讀，想重聽哪一句直接點選句子即可播放！' },
+    ja: { name: '日語', reading: '假名', blind: '盲聽（隱藏日文）', hint: '先盲聽抓大意，再打開假名與中文整篇閱讀，想重聽哪一句直接點選句子即可播放！' },
+    ko: { name: '韓語', reading: '羅馬拼音', blind: '盲聽（隱藏韓文）', hint: '先盲聽抓大意，再打開羅馬拼音與中文整篇閱讀，想重聽哪一句直接點選句子即可播放！' },
   }[LANG];
   const STORE_KEY = `${NS.toLowerCase()}.stories.v1`;
   const esc = A.esc || ((s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
@@ -13099,11 +13727,78 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     if (NS === 'KO') A.toast(msg, 2600);
     else A.toast(msg, 'ok');
   }
+  function cleanStoryText(text) {
+    return String(text || '').trim();
+  }
+  /**
+   * 計算故事每一句的真人朗讀韻律（抑揚頓挫速度微調 + 依語境動態調整句間換氣停頓）。
+   * 由於下一句已在背景預載完成，此處的停頓完全是模擬自然人說故事的呼吸與情緒留白。
+   */
+  function lineProsody(lines, i, userRate) {
+    const base = userRate || 1;
+    const ln = lines[i] || {};
+    const next = lines[i + 1] || null;
+    const raw = String(ln.t || '').trim();
+    const isParaStart = i === 0 || !!ln.p;
+    const isParaEnd = !next || !!next.p || i === lines.length - 1;
+    const hasQuote = /["“”「」『』]/.test(raw);
+    const nextHasQuote = next ? /["“”「」『』]/.test(String(next.t || '')) : false;
+    const speakerChanged = next && ((next.g || 'F') !== (ln.g || 'F') || hasQuote !== nextHasQuote);
+
+    let rateMul = 1.0;
+    // 故事開頭與段落起首：語速放緩、鋪陳情境
+    if (i === 0) rateMul *= 0.92;
+    else if (isParaStart) rateMul *= 0.95;
+    // 段落收尾與故事結尾寓意：放慢收束、留有餘韻
+    if (i === lines.length - 1) rateMul *= 0.90;
+    else if (isParaEnd) rateMul *= 0.95;
+
+    // 對話與情緒起伏
+    if (/(\.\.\.|…|—|--)/.test(raw)) rateMul *= 0.92;
+    else if (/[!！]/.test(raw) && hasQuote) rateMul *= 1.05;
+    else if (/[?？]/.test(raw)) rateMul *= 0.96;
+
+    // 相鄰敘述句加入微幅自然正弦律動，避免每句等速的機械感
+    const wave = Math.sin(i * 1.35) * 0.032;
+    rateMul = Math.max(0.82, Math.min(1.08, rateMul + wave));
+
+    // 計算句與句之間的自然呼吸與留白（ms）
+    let pauseMs = 240;
+    if (isParaEnd) {
+      pauseMs = 580; // 段落結束：深呼吸換段留白
+    } else if (/(\.\.\.|…|—|--)\s*['"”’」』）)]*$/.test(raw)) {
+      pauseMs = 480; // 刪節號／破折號：情緒懸疑或沉思停頓
+    } else if (/[?？]\s*['"”’」』）)]*$/.test(raw)) {
+      pauseMs = 410; // 問句結束：留給聽者思考的停頓
+    } else if (/[!！]\s*['"”’」』）)]*$/.test(raw)) {
+      pauseMs = 320; // 驚嘆句結束：語氣落點停頓
+    } else if (speakerChanged) {
+      pauseMs = 360; // 角色／旁白輪替：對話換人開口的自然間隔
+    } else if (raw.length > (LANG === 'en' ? 65 : 34)) {
+      pauseMs = 300; // 長句結束後的換氣
+    } else {
+      // 一般同段落敘述句：在 220~270ms 間微幅自然擺動
+      pauseMs = 235 + Math.round(Math.cos(i * 1.7) * 25);
+    }
+
+    return {
+      rate: Math.max(0.5, Math.min(1.8, +(base * rateMul).toFixed(3))),
+      pauseAfterMs: Math.round(pauseMs / Math.max(0.75, base)),
+    };
+  }
+  function preload(text, opt) {
+    const t = cleanStoryText(text);
+    if (!t || !A.tts || typeof A.tts.preload !== 'function') return;
+    try {
+      A.tts.preload(t, { gender: (opt && opt.g) || 'F' });
+    } catch (e) { /* ignore */ }
+  }
   function speak(text, opt) {
-    text = String(text || '').replace(/["“”]/g, '').trim();
+    text = cleanStoryText(text);
     if (!A.tts || !text) return Promise.resolve({ ok: false });
-    const o = { rate: opt.rate };
+    const o = { rate: opt.rate, natural: opt.natural !== false };
     if (NS !== 'KO') o.gender = opt.g || 'F';
+    else o.gender = opt.g || 'F';
     if (opt.btn) o.btn = opt.btn;
     try {
       return Promise.resolve(A.tts.speak(text, o)).then((r) => r || { ok: true }, () => ({ ok: false }));
@@ -13156,6 +13851,21 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
   function isRailCollapsed() { try { return localStorage.getItem(RAIL_KEY) === '1'; } catch (e) { return false; } }
   function setRailCollapsed(v) { try { localStorage.setItem(RAIL_KEY, v ? '1' : '0'); } catch (e) { /* quota */ } }
   function nfc(s) { return String(s == null ? '' : s).normalize('NFC'); }
+
+  // 將句子切分為自然文章段落（依 ln.p 分段，若超過 6 句未分段則自動分段）
+  function groupParagraphs(lines) {
+    const paras = [];
+    let cur = [];
+    lines.forEach((ln, i) => {
+      if (i > 0 && (ln.p || cur.length >= 6)) {
+        paras.push(cur);
+        cur = [];
+      }
+      cur.push({ ln, i });
+    });
+    if (cur.length) paras.push(cur);
+    return paras;
+  }
 
   // ---------------------------------------------------------------- 樣式（自帶，避免改動各學院 app.css）
   function injectCss() {
@@ -13249,22 +13959,28 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
 .sl-tg input { width: 16px; height: 16px; margin: 0; accent-color: var(--sl-p); }
 .sl-prog { flex: 1 1 100%; height: 5px; background: #eef2f7; border-radius: 999px; overflow: hidden; }
 .sl-prog i { display: block; height: 100%; width: 0; background: var(--sl-p); transition: width .3s; }
-.sl-lines { list-style: none; margin: 0; padding: 6px; }
-.sl-line { display: flex; gap: 10px; align-items: flex-start; padding: 10px 10px; border-radius: 12px; cursor: pointer; transition: background .18s; border: 1px solid transparent; }
-.sl-line:hover { background: #f8fafc; }
-.sl-line.sl-pstart { margin-top: 18px; }
-.sl-line.cur { background: var(--sl-ps); border-color: var(--sl-p); }
-.sl-play { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--sl-b); background: #fff; cursor: pointer; font-size: 13px; display: grid; place-items: center; color: var(--sl-p); }
-.sl-line.cur .sl-play { background: var(--sl-p); color: #fff; border-color: var(--sl-p); }
-.sl-txt { min-width: 0; flex: 1; }
-.sl-t { font-size: 17px; line-height: 1.6; font-weight: 600; word-break: break-word; }
-.sl-who { font-size: 11px; font-weight: 800; border-radius: 6px; padding: 0 5px; margin-right: 6px; vertical-align: 2px; background: #fef3c7; color: #92400e; }
-.sl-who.m { background: #dbeafe; color: #1e40af; }
-.sl-r { font-size: 13px; color: #0f766e; margin-top: 1px; line-height: 1.5; }
-.sl-z { font-size: 13.5px; color: var(--sl-m); margin-top: 2px; line-height: 1.55; }
-.sl.no-zh .sl-z, .sl.no-rd .sl-r { display: none; }
-.sl.blind .sl-t, .sl.blind .sl-r { filter: blur(6px); user-select: none; }
-.sl.blind .sl-line.peek .sl-t, .sl.blind .sl-line.peek .sl-r { filter: none; }
+/* 整篇文章自然段落排版（無逐句按鈕，點選任一句直接播放） */
+.sl-article-card { padding: 22px 26px !important; }
+.sl-article-tip { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 12.5px; color: var(--sl-m); background: #f8fafc; border: 1px dashed var(--sl-b); border-radius: 10px; padding: 7px 12px; margin-bottom: 16px; }
+.sl-article { display: flex; flex-direction: column; gap: 18px; }
+.sl-para { padding: 12px 14px; border-radius: 12px; border: 1px solid transparent; transition: background .15s, border-color .15s; }
+.sl-para:hover { background: #fcfdff; border-color: #eef2f7; }
+.sl-para.cur-para { background: #f8fbff; border-color: #dbeafe; }
+.sl-para-orig { margin: 0; font-size: 18px; line-height: 1.85; font-weight: 560; word-break: break-word; letter-spacing: 0.01em; }
+.sl-sent { display: inline; padding: 3px 5px; margin: 0 1px; border-radius: 7px; cursor: pointer; transition: background .14s, color .14s, box-shadow .14s; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.sl-sent:hover { background: #eef2ff; color: var(--sl-p); }
+.sl-sent.cur { background: var(--sl-ps); color: var(--sl-p); font-weight: 700; box-shadow: 0 0 0 1.5px var(--sl-p); }
+.sl-para-rd { margin: 7px 0 0; font-size: 13.5px; color: #0f766e; line-height: 1.65; }
+.sl-sent-rd { display: inline; padding: 1px 4px; border-radius: 5px; cursor: pointer; transition: background .14s; }
+.sl-sent-rd:hover { background: #ccfbf1; }
+.sl-sent-rd.cur { background: #ccfbf1; color: #115e59; font-weight: 700; }
+.sl-para-zh { margin: 8px 0 0; padding-top: 7px; border-top: 1px dashed #e2e8f0; font-size: 14.5px; color: var(--sl-m); line-height: 1.7; }
+.sl-sent-zh { display: inline; padding: 2px 4px; border-radius: 5px; cursor: pointer; transition: background .14s, color .14s; }
+.sl-sent-zh:hover { background: #f1f5f9; color: #334155; }
+.sl-sent-zh.cur { background: #e0f2fe; color: #0369a1; font-weight: 700; }
+.sl.no-zh .sl-para-zh, .sl.no-rd .sl-para-rd { display: none; }
+.sl.blind .sl-sent, .sl.blind .sl-sent-rd { filter: blur(6px); user-select: none; }
+.sl.blind .sl-sent.peek, .sl.blind .sl-sent.cur, .sl.blind .sl-sent-rd.peek, .sl.blind .sl-sent-rd.cur { filter: none; }
 .sl h2.sl-h2 { font-size: 16px; margin: 0 0 10px; }
 .sl-vocab { display: flex; gap: 8px; flex-wrap: wrap; }
 .sl-vw { border: 1px solid var(--sl-b); background: #fff; border-radius: 12px; padding: 7px 11px; cursor: pointer; font: inherit; text-align: left; color: inherit; }
@@ -13284,15 +14000,16 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
 .sl-empty { text-align: center; padding: 30px 10px; color: var(--sl-m); }
 @media (max-width: 640px) {
   .sl-card { padding: 13px 13px; }
+  .sl-article-card { padding: 15px 14px !important; }
   .sl-hero .sl-hstat { margin-left: 0; text-align: left; }
   .sl-bar { gap: 6px; padding: 8px 9px; }
   .sl-btn { padding: 7px 10px; font-size: 13.5px; }
   .sl-tg { font-size: 12.5px; padding: 3px 4px; }
-  .sl-t { font-size: 16px; }
-  .sl-line { padding: 9px 6px; gap: 8px; }
+  .sl-para-orig { font-size: 16.5px; line-height: 1.75; }
+  .sl-para { padding: 10px 8px; }
   .sl-head h1 { font-size: 18px; }
 }
-@media (prefers-reduced-motion: reduce) { .sl-sc, .sl-line, .sl-prog i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .sl-sc, .sl-sent, .sl-prog i { transition: none; } }
 `;
     document.head.appendChild(st);
   }
@@ -13308,7 +14025,7 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     main.innerHTML = `<div class="sl">
       <section class="sl-card sl-hero">
         <div class="sl-hico">📖</div>
-        <div><h1>${LANG_META.name}故事聽力</h1><p>精選分級小故事：童話、寓言、民間故事與生活小品，一句一句播給你聽。<br>${esc(LANG_META.hint)}</p></div>
+        <div><h1>${LANG_META.name}故事聽力</h1><p>精選分級故事：童話、寓言、民間傳說與在地文化小品，整篇自然流暢朗讀。<br>${esc(LANG_META.hint)}</p></div>
         <div class="sl-hstat"><b>${doneN} / ${all.length}</b>已聽完</div>
       </section>
       <div class="sl-chips" id="slLv">
@@ -13369,8 +14086,14 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     const L = lv(s.level);
     const hasR = s.lines.some((l) => l.r);
     const P = S.prefs;
-    const rates = [[0.75, '🐢 慢速'], [0.9, '稍慢'], [1, '正常']];
+    const rates = [[0.75, '🐢 慢速'], [0.9, '稍慢'], [1, '🎙️ 自然'], [1.2, '1.2×'], [1.5, '1.5×']];
     if (!rates.some((r) => r[0] === P.rate)) P.rate = 1;
+    const paragraphs = groupParagraphs(s.lines);
+    const sep = LANG === 'ja' ? ' ' : ' ';
+
+    // 預先預載前兩句，讓使用者一按播放就能瞬間出聲
+    if (s.lines[0]) preload(s.lines[0].t, { g: s.lines[0].g });
+    if (s.lines[1]) preload(s.lines[1].t, { g: s.lines[1].g });
 
     main.innerHTML = `<div class="sl-shell ${isRailCollapsed() ? 'rail-collapsed' : ''}" id="slShell">
       <div class="slr-backdrop" id="slrBackdrop"></div>
@@ -13409,11 +14132,23 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
           <label class="sl-tg"><input type="checkbox" data-pref="loop" ${P.loop ? 'checked' : ''}>🔁 循環</label>
           <div class="sl-prog"><i id="slProg"></i></div>
         </section>
-        <section class="sl-card" style="padding:6px">
-          <ol class="sl-lines" id="slLines">${s.lines.map((ln, i) => `<li class="sl-line${ln.p && i ? ' sl-pstart' : ''}" data-i="${i}">
-            <button class="sl-play" data-i="${i}" aria-label="播放第 ${i + 1} 句">▶</button>
-            <div class="sl-txt"><div class="sl-t" lang="${LANG}">${ln.g ? `<span class="sl-who ${ln.g === 'M' ? 'm' : ''}">${ln.g === 'M' ? '♂' : '♀'}</span>` : ''}${esc(nfc(ln.t))}</div>
-              ${ln.r && ln.r !== ln.t ? `<div class="sl-r">${esc(ln.r)}</div>` : ''}<div class="sl-z">${esc(ln.zh || '')}</div></div></li>`).join('')}</ol>
+        <section class="sl-card sl-article-card">
+          <div class="sl-article-tip">
+            <span>💡 <b>整篇沉浸閱讀</b>：直接點選文中<b>任一句話</b>（或對應的中文翻譯）即可單獨播放該句；按「▶ 播放全文」則無縫連播整篇故事。</span>
+          </div>
+          <article class="sl-article" id="slLines">${paragraphs.map((para, pi) => {
+            const origHtml = para.map(({ ln, i }) => `<span class="sl-sent" data-i="${i}" title="點擊播放這一句">${esc(nfc(ln.t))}</span>`).join(sep);
+            const hasParaRd = hasR && para.some(({ ln }) => ln.r && ln.r !== ln.t);
+            const rdHtml = hasParaRd
+              ? `<p class="sl-para-rd">${para.map(({ ln, i }) => `<span class="sl-sent-rd" data-i="${i}">${esc(ln.r || '')}</span>`).join(' ')}</p>`
+              : '';
+            const zhHtml = `<p class="sl-para-zh">${para.map(({ ln, i }) => `<span class="sl-sent-zh" data-i="${i}" title="點擊播放對應原句">${esc(ln.zh || '')}</span>`).join(' ')}</p>`;
+            return `<section class="sl-para" data-para="${pi}">
+              <p class="sl-para-orig" lang="${LANG}">${origHtml}</p>
+              ${rdHtml}
+              ${zhHtml}
+            </section>`;
+          }).join('')}</article>
         </section>
         ${(s.vocab || []).length ? `<section class="sl-card"><h2 class="sl-h2">🔤 重點單字（點一下聽發音）</h2><div class="sl-vocab">
           ${s.vocab.map((v, i) => `<button class="sl-vw" data-v="${i}"><b lang="${LANG}">${esc(nfc(v.w))}</b>${v.r ? ` <span class="sl-r" style="display:inline">${esc(v.r)}</span>` : ''}<small>${esc(v.zh || '')}</small></button>`).join('')}</div></section>` : ''}
@@ -13431,7 +14166,10 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     const root = main.querySelector('#slRoot');
     const playBtn = root.querySelector('#slPlay');
     const prog = root.querySelector('#slProg');
-    const rows = Array.from(root.querySelectorAll('.sl-line'));
+    const sents = Array.from(root.querySelectorAll('.sl-sent'));
+    const allIndexedSpans = Array.from(root.querySelectorAll('[data-i]'));
+    const paraEls = Array.from(root.querySelectorAll('.sl-para'));
+    let curIdx = -1;
 
     // 讓播放列與側邊列表吸頂時避開學院自己的固定頁首
     const hd = document.querySelector('.site-header, .app-header, header');
@@ -13508,13 +14246,16 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
     shell.querySelector('#slrOpenMob').onclick = () => { shell.classList.add('rail-mob-open'); renderRailItems(true); };
 
     function setCur(i) {
-      rows.forEach((r, k) => r.classList.toggle('cur', k === i));
+      curIdx = i;
+      allIndexedSpans.forEach((el) => el.classList.toggle('cur', +el.dataset.i === i));
+      paraEls.forEach((pEl) => pEl.classList.toggle('cur-para', !!pEl.querySelector('.sl-sent.cur')));
       if (i < 0) return;
-      prog.style.width = `${Math.round(((i + 1) / rows.length) * 100)}%`;
-      const r = rows[i];
+      prog.style.width = `${Math.round(((i + 1) / s.lines.length) * 100)}%`;
+      const target = sents[i];
+      if (!target) return;
       const bar = root.querySelector('#slBar');
-      const top = bar.getBoundingClientRect().bottom + 8;
-      const rr = r.getBoundingClientRect();
+      const top = bar.getBoundingClientRect().bottom + 12;
+      const rr = target.getBoundingClientRect();
       if (rr.top < top || rr.bottom > window.innerHeight - 80) {
         window.scrollBy({ top: rr.top - (top + window.innerHeight) / 2 + rr.height / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
       }
@@ -13534,19 +14275,28 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       setPlaying(true);
       S.plays[s.id] = (S.plays[s.id] || 0) + 1;
       save();
+      if (s.lines[start]) preload(s.lines[start].t, { g: s.lines[start].g });
+      if (s.lines[start + 1]) preload(s.lines[start + 1].t, { g: s.lines[start + 1].g });
+      if (s.lines[start + 2]) preload(s.lines[start + 2].t, { g: s.lines[start + 2].g });
       do {
         for (let i = start; i < s.lines.length; i++) {
           if (my !== session) return;
           setCur(i);
+          if (i + 1 < s.lines.length) preload(s.lines[i + 1].t, { g: s.lines[i + 1].g });
+          if (i + 2 < s.lines.length) preload(s.lines[i + 2].t, { g: s.lines[i + 2].g });
           const ln = s.lines[i];
-          const res = await speak(ln.t, { g: ln.g, rate: P.rate });
+          const prosody = lineProsody(s.lines, i, P.rate);
+          const res = await speak(ln.t, { g: ln.g, rate: prosody.rate, natural: true });
           if (my !== session || (res && res.canceled)) return;
-          await sleep(P.rate < 1 ? 520 : 380);
+          // 下一句已預載完成（0 網路延遲），依語境、標點與段落注入自然人說故事的換氣停頓
+          if (i < s.lines.length - 1) {
+            await sleep(prosody.pauseAfterMs);
+          }
         }
         if (my !== session) return;
         if (markDone(s.id)) { refreshStoryRailDone(s.id); toast(`🎉 聽完「${s.zh || s.title}」了！`); }
         start = 0;
-        if (P.loop) await sleep(900);
+        if (P.loop) await sleep(650);
       } while (P.loop && my === session);
       if (my === session) { setPlaying(false); setCur(-1); }
     }
@@ -13554,27 +14304,38 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
       const my = ++session;
       setPlaying(false);
       setCur(i);
-      rows[i].classList.add('peek');
+      if (i + 1 < s.lines.length) preload(s.lines[i + 1].t, { g: s.lines[i + 1].g });
+      const matching = allIndexedSpans.filter((el) => +el.dataset.i === i);
+      matching.forEach((el) => el.classList.add('peek'));
       const ln = s.lines[i];
-      await speak(ln.t, { g: ln.g, rate: P.rate });
-      rows[i].classList.remove('peek');
-      if (my === session) rows[i].classList.remove('cur');
+      const prosody = lineProsody(s.lines, i, P.rate);
+      await speak(ln.t, { g: ln.g, rate: prosody.rate, natural: true });
+      matching.forEach((el) => el.classList.remove('peek'));
+      if (my === session) setCur(-1);
     }
 
-    playBtn.onclick = () => { if (playingAll) stopAll(); else { const c = rows.findIndex((r) => r.classList.contains('cur')); playFrom(c > 0 ? c : 0); } };
+    playBtn.onclick = () => {
+      if (playingAll) stopAll();
+      else playFrom(curIdx > 0 && curIdx < s.lines.length ? curIdx : 0);
+    };
     root.querySelector('#slLines').addEventListener('click', (e) => {
-      const row = e.target.closest('.sl-line');
-      if (!row) return;
-      const i = +row.dataset.i;
-      if (playingAll && !e.target.closest('.sl-play')) { playFrom(i); return; }
+      const span = e.target.closest('[data-i]');
+      if (!span) return;
+      const i = +span.dataset.i;
+      if (playingAll) { playFrom(i); return; }
       playOne(i);
     });
     root.querySelector('#slRate').onclick = (e) => {
       const b = e.target.closest('[data-rate]');
       if (!b) return;
-      P.rate = +b.dataset.rate;
+      const nextRate = +b.dataset.rate;
+      const changed = P.rate !== nextRate;
+      P.rate = nextRate;
       save();
       root.querySelectorAll('#slRate button').forEach((x) => x.classList.toggle('on', x === b));
+      if (changed && playingAll && curIdx >= 0 && curIdx < s.lines.length) {
+        playFrom(curIdx);
+      }
     };
     root.querySelectorAll('[data-pref]').forEach((cb) => {
       cb.onchange = () => {
@@ -13640,6 +14401,961 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
 })();
 
 </script>
+  <script>/* /js/speaking.js */
+/**
+ * 🗣️ 口說特訓工坊 (speaking.js)
+ * 專為「開口說」設計的三大實戰訓練章節（支援英語 ES / 日語 JA / 韓語 KO）：
+ * 1. 💬 情境開口說 (Situational Missions)：8 大生活與職場情境，含 3 個句型提示＋3 段由淺入深目標句，支援遮字盲說、45 秒充裕錄音與逐字評分。
+ * 2. 🪜 漸進式擴句特訓 (Chunk-by-Chunk Builder)：將長句拆解為「短詞塊 → 半句 → 完整長句」三階梯，解決長句舌頭打結與來不及講完的問題。
+ * 3. ⏱️ 60 秒主題自由說 (Topic Talk Studio)：引導問題＋推薦關鍵詞即點即聽＋60 秒不中斷自由口說錄音＋關鍵詞命中檢測＋母語範例對照。
+ */
+(function () {
+  'use strict';
+  const A = window.ES || window.JA || window.KO;
+  if (!A) return;
+  const LANG = window.ES ? 'en' : window.JA ? 'ja' : 'ko';
+  const ASR_LANG = LANG === 'en' ? 'en-US' : LANG === 'ja' ? 'ja-JP' : 'ko-KR';
+  const esc = A.esc || ((s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
+
+  // ==================== 教材資料庫 ====================
+  const DATA = {
+    en: { title: '🗣️ 英語口說特訓工坊', sub: '', missions: [], drills: [], topics: [] },
+    ja: {
+      title: '🗣️ 日語口說特訓工坊',
+      sub: '從「短詞塊擴句」、「情境實戰對答」到「60 秒主題自由說」，充裕錄音時間不搶拍，放心把整句日語講完！',
+      missions: [
+        {
+          id: 'ja-m1', level: 'A1', icon: '🙇', cat: '破冰自我介紹',
+          title: '初次見面與介紹自己的興趣',
+          scene: '在日本交流活動或職場認識新朋友時，有禮貌地打招呼、介紹來自哪裡與喜歡的活動。',
+          patterns: [
+            { t: 'はじめまして、台湾から来ましたリンと申します。', rd: 'はじめまして、たいわんからきましたりんともうします。', zh: '初次見面，我是從台灣來的林。' },
+            { t: '台北でエンジニアとして働いています。', rd: 'たいぺいでえんじにあとしてはたらいています。', zh: '我在台北擔任工程師。' },
+            { t: '休みの日はカフェ巡りや旅行をするのが好きです。', rd: 'やすみのひはかふぇめぐりやりょこうをするのがすきです。', zh: '放假的時候我喜歡探訪咖啡廳和旅行。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'はじめまして。リンです。どうぞよろしくお願いします。', rd: 'はじめまして。りんです。どうぞよろしくおねがいします。', zh: '初次見面，我是林，請多指教。' },
+            { label: '自然生活句', t: '日本の映画と音楽が大好きで、毎日少しずつ日本語を勉強しています。', rd: 'にほんのえいがとおんがくがだいすきで、まいにちすこしずつにほんごをべんきょうしています。', zh: '我很喜歡日本的電影和音樂，每天都學一點日文。' },
+            { label: '流暢完整版', t: '週末はよく友達と美味しいラーメンを食べに行ったり、写真を撮ったりしています。', rd: 'しゅうまつはよくともだちとおいしいらーめんをたべにいったり、しゃしんをとったりしています。', zh: '週末我常和朋友去吃好吃的拉麵，或是去拍照。' }
+          ]
+        },
+        {
+          id: 'ja-m2', level: 'A1', icon: '🍵', cat: '餐廳與咖啡廳點餐',
+          title: '進店確認座位、點餐與結帳',
+          scene: '在日本餐廳告知人數、點餐並請店員分開或刷卡結帳。',
+          patterns: [
+            { t: 'すみません、二人ですが、空いている席はありますか。', rd: 'すみません、ふたりですが、あいているせきはありますか。', zh: '不好意思，我們有兩位，請問有空位嗎？' },
+            { t: 'アイスラテを一つと、抹茶ケーキを一つお願いします。', rd: 'あいすらてをひとつと、まっちゃけーきをひとつおねがいします。', zh: '請給我一杯冰拿鐵和一份抹茶蛋糕。' },
+            { t: 'お会計をお願いします。クレジットカードは使えますか。', rd: 'おかいけいをおねがいします。くれじっとかーどはつかえますか。', zh: '麻煩結帳，請問可以使用信用卡嗎？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、注文をお願いします。ホットコーヒーを二つください。', rd: 'すみません、ちゅうもんをおねがいします。ほっとこーひーをふたつください。', zh: '不好意思，我要點餐。請給我兩杯熱咖啡。' },
+            { label: '自然生活句', t: 'この定食を一つお願いします。ご飯は少なめにしていただけますか。', rd: 'このていしょくをひとつおねがいします。ごはんはすくなめにしていただけますか。', zh: '請給我一份這個定食，白飯可以幫我盛少一點嗎？' },
+            { label: '流暢完整版', t: 'とても美味しかったです。お会計は別々でお願いできますか。', rd: 'とてもおいしかったです。おかいけいはべつべつでおねがいできますか。', zh: '非常好吃！請問結帳可以分開算嗎？' }
+          ]
+        },
+        {
+          id: 'ja-m3', level: 'A2', icon: '🚆', cat: '車站問路與乘車',
+          title: '確認新幹線月台與轉乘方向',
+          scene: '在東京或京都車站找月台、確認這班電車是否停靠目的地。',
+          patterns: [
+            { t: 'すみません、京都行きの新幹線は何番線ですか。', rd: 'すみません、きょうとゆきのしんかんせんはなんばんせんですか。', zh: '不好意思，請問開往京都的新幹線在幾號月台？' },
+            { t: 'この電車は渋谷に止まりますか。', rd: 'このでんしゃはしぶやにとまりますか。', zh: '請問這班電車有停澀谷嗎？' },
+            { t: '美術館へ行きたいのですが、どの出口から出ればいいですか。', rd: 'びじゅつかんへいきたいのですが、どのでぐちからでればいいですか。', zh: '我想去美術館，請問應該從哪個出口出去呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、一番近い地下鉄の駅はどこですか。', rd: 'すみません、いちばんちかいちかてつのえきはどこですか。', zh: '不好意思，請問最近的地鐵站在哪裡？' },
+            { label: '自然生活句', t: '空港へ行きたいのですが、次の駅で乗り換える必要がありますか。', rd: 'くうこうへいきたいのですが、つぎのえきでのりかえるひつようがありますか。', zh: '我想去機場，請問需要在下一站轉車嗎？' },
+            { label: '流暢完整版', t: 'ICカードの残高が足りないので、チャージできる機械はどこにありますか。', rd: 'あいしーかーどのざんだかがたりないので、ちゃーじできるきかいはどこにありますか。', zh: '因為交通卡餘額不足，請問可以儲值的機器在哪裡？' }
+          ]
+        },
+        {
+          id: 'ja-m4', level: 'A2', icon: '♨️', cat: '飯店與溫泉旅館',
+          title: '辦理入住、寄放行李與預約浴場',
+          scene: '抵達日本飯店或溫泉旅館時，辦理入住、寄放行李並確認早餐時間。',
+          patterns: [
+            { t: 'チェックインをお願いします。予約したチェンです。', rd: 'ちぇっくいんをおねがいします。よやくしたちぇんです。', zh: '麻煩辦理入住，我是有預約的陳。' },
+            { t: 'チェックインの前に、荷物を預かっていただけますか。', rd: 'ちぇっくいんのまえに、にもつをあずかっていただけますか。', zh: '在辦理入住前，請問可以幫我們寄放行李嗎？' },
+            { t: '朝食は何時からどこで食べられますか。', rd: 'ちょうしょくはなんじからどこでたべられますか。', zh: '請問早餐幾點開始、在哪裡用餐呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、今日から二泊予約しているリンです。', rd: 'すみません、きょうからにはくよやくしているりんです。', zh: '不好意思，我是從今天起預約住兩晚的林。' },
+            { label: '自然生活句', t: '夕方五時ごろ戻りますので、それまでスーツケースを預かってもらえますか。', rd: 'ゆうがたごじごろもどりますので、それまですーつけーすをあずかってもらえますか。', zh: '我傍晚五點左右會回來，在那之前可以幫我寄放行李箱嗎？' },
+            { label: '流暢完整版', t: '部屋のWi-Fiがうまく繋がらないのですが、パスワードをもう一度教えていただけますか。', rd: 'へやのわいふぁいがうまくつながらないのですが、ぱすわーどをもういちどおしえていただけますか。', zh: '房間的 Wi-Fi 連不太上，請問可以再告訴我一次密碼嗎？' }
+          ]
+        },
+        {
+          id: 'ja-m5', level: 'B1', icon: '🛍️', cat: '百貨購物與退稅',
+          title: '試穿衣服、詢問新庫存與免稅手續',
+          scene: '在百貨公司試穿尺寸、詢問有沒有新的未拆封商品，以及辦理退稅。',
+          patterns: [
+            { t: 'これを試着してもいいですか。Mサイズはありますか。', rd: 'これをしちゃくしてもいいですか。えむさいずはありますか。', zh: '請問這件可以試穿嗎？有 M 號嗎？' },
+            { t: 'プレゼント用なので、綺麗に包んでいただけますか。', rd: 'ぷれぜんとようなので、きれいにつつんでいただけますか。', zh: '因為是要送人的禮物，請問可以幫我包裝漂亮一點嗎？' },
+            { t: '免税の手続きはどこでできますか。パスポートはここにあります。', rd: 'めんぜいのてつづきはどこでできますか。ぱすぽーとはここにあります。', zh: '請問免稅手續在哪裡辦理？護照在這裡。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、このシャツのもう少し大きいサイズはありますか。', rd: 'すみません、このしゃつのもうすこしおおきいさいずはありますか。', zh: '不好意思，請問這件襯衫有再大一點的尺寸嗎？' },
+            { label: '自然生活句', t: 'デザインはとても気に入ったのですが、別の色も見せてもらえますか。', rd: 'でざいんはとてもきにいったのですが、べつのいろもみせてもらえますか。', zh: '我很喜歡這個設計，不過可以也給我看一下別的顏色嗎？' },
+            { label: '流暢完整版', t: 'これを買います。新しい在庫があれば、そちらを出していただけると嬉しいです。', rd: 'これをかいます。あたらしいざいこがあれば、そちらをだしていただけるとうれしいです。', zh: '我要買這個。如果有新的庫存，能幫我拿新的我會很開心。' }
+          ]
+        },
+        {
+          id: 'ja-m6', level: 'B1', icon: '💊', cat: '藥妝店與身體不適',
+          title: '在藥局說明喉嚨痛或腸胃不適並挑藥',
+          scene: '在日本旅遊突然感冒或胃痛時，向藥師清楚說明症狀並詢問服用方式。',
+          patterns: [
+            { t: '昨日から喉が痛くて、少し熱もあります。', rd: 'きのうからのどがいたくて、すこしねつもあります。', zh: '我從昨天開始喉嚨痛，而且有一點發燒。' },
+            { t: '飲んでも眠くならない風邪薬はありますか。', rd: 'のんでもねむくならないかぜぐすりはありますか。', zh: '請問有吃了不會想睡覺的感冒藥嗎？' },
+            { t: 'この薬は一日何回、いつ飲めばいいですか。', rd: 'このくすりはいちにちなんかい、いつのめばいいですか。', zh: '請問這個藥一天吃幾次、什麼時候吃呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: 'すみません、食べすぎてお腹が痛いのですが、おすすめの胃薬はありますか。', rd: 'すみません、たべすぎておなかがいたいのですが、おすすめのいぐすりはありますか。', zh: '不好意思，我吃太多肚子痛，請問有推薦的胃藥嗎？' },
+            { label: '自然生活句', t: 'これから運転する予定があるので、眠くならないタイプをお願いします。', rd: 'これからうんてんするよていがあるので、ねむくならないたいぷをおねがいします。', zh: '因為待會預計要開車，請給我不會嗜睡的類型。' },
+            { label: '流暢完整版', t: '薬のアレルギーはありませんが、食後に水で一錠ずつ飲めばよろしいでしょうか。', rd: 'くすりのあれるぎーはありませんが、しょくごにみずでいちじょうずつのめばよろしいでしょうか。', zh: '我沒有藥物過敏，請問是飯後配水每次吃一顆嗎？' }
+          ]
+        },
+        {
+          id: 'ja-m7', level: 'B2', icon: '💼', cat: '商務會議進度報告',
+          title: '在專案會議回報進度與確認下週排程',
+          scene: '使用自然得體的商務敬語（です・ます），清楚回報目前進度與接下來的工作。',
+          patterns: [
+            { t: '現在の進捗状況についてご報告いたします。', rd: 'げんざいのしんちょくじょうきょうについてごほうこくいたします。', zh: '容我向各位報告目前的進度狀況。' },
+            { t: '音声再生の不具合はすでに修正が完了しております。', rd: 'おんせいさいせいのふぐあいはすでにしゅうせいがかんりょうしております。', zh: '語音播放的異常問題已經修正完畢。' },
+            { t: '来週の月曜日までにテスト結果を共有いたします。', rd: 'らいしゅうのげつようびまでにてすとけっかをきょうゆういたします。', zh: '我會在下週一之前將測試結果分享給大家。' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '予定通り進んでおりまして、今週中に新しい画面を公開できる見込みです。', rd: 'よていどおりすすんでおりまして、こんしゅうちゅうにあたらしいがめんをこうかいできるみこみです。', zh: '目前正按計畫推進，預計本週內可以公開新畫面。' },
+            { label: '自然生活句', t: '一点確認したいことがございますが、会議のあと少しお時間をいただけますか。', rd: 'いってんかくにんしたいことがございますが、かいぎのあとすこしおじかんをいただけますか。', zh: '有一點想跟您確認，請問會議結束後可以借用您一點時間嗎？' },
+            { label: '流暢完整版', t: 'いただいたご意見を反映し、より使いやすいデザインに改善いたしました。', rd: 'いただいたごいけんをはんえいし、よりつかいやすいでざいんにかいぜんいたしました。', zh: '我們已反映您寶貴的意見，改善為更好上手的設計了。' }
+          ]
+        },
+        {
+          id: 'ja-m8', level: 'B2', icon: '🤝', cat: '委婉建議與協調',
+          title: '在團隊討論中溫和提出替代方案',
+          scene: '先肯定對方的意見，再以日式溝通禮儀委婉提出更穩健的做法。',
+          patterns: [
+            { t: 'おっしゃる通り、スピード感は非常に大切だと思います。', rd: 'おっしゃるとおり、すぴーどかんはひじょうにたいせつだとおもいます。', zh: '正如您所說，我也認為掌握速度感非常重要。' },
+            { t: 'ただ、品質を保つために、もう二日ほどテスト期間を設けませんか。', rd: 'ただ、ひんしつをたもつために、もうふつかほどてすときかんをもうけませんか。', zh: '不過為了維持品質，我們要不要再多安排兩天左右的測試期呢？' },
+            { t: 'まずは主要な機能から先にリリースするのはいかがでしょうか。', rd: 'まずはしゅようなきのうからさきにりりーすするのはいかがでしょうか。', zh: '我們先從主要功能開始上線，您覺得如何呢？' }
+          ],
+          targets: [
+            { label: '基礎必備句', t: '素晴らしいご提案ですね。さらに良くするために一つだけ補足してもよろしいですか。', rd: 'すばらしいごていあんですね。さらによくするためにひとつだけほそくしてもよろしいですか。', zh: '真是很棒的提案呢。為了讓它更完善，我可以補充一點嗎？' },
+            { label: '自然生活句', t: '一度にすべてを変更するより、まずは一部のユーザーで試してみるのが安全かと思います。', rd: 'いちどにすべてをへんこうするより、まずはいちぶのゆーざーでためしてみるのがあんぜんかとおもいます。', zh: '比起一次改動全部，我想先在部分使用者身上試行會比較安全。' },
+            { label: '流暢完整版', t: 'スケジュールが厳しいことは承知しておりますが、優先順位の高い項目から進めましょう。', rd: 'すけじゅーるがきびしいことはしょうちしておりますが、ゆうせんじゅんいのたかいこうもくからすすめましょう。', zh: '我完全理解時程相當緊湊，我們就從優先順序較高的項目開始推進吧。' }
+          ]
+        }
+      ],
+      drills: [
+        {
+          id: 'ja-d1', level: 'A1', icon: '☕', title: '咖啡廳點餐擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: 'アイスラテを一つ', rd: 'あいすらてをひとつ', zh: '一杯冰拿鐵' },
+            { stage: 'Step 2・加上禮貌句尾', t: '氷少なめのアイスラテを一つお願いします。', rd: 'こおりすくなめのあいすらてをひとつおねがいします。', zh: '請給我一杯少冰的冰拿鐵。' },
+            { stage: 'Step 3・完整流暢長句', t: 'すみません、店内で氷少なめのアイスラテを一つと、チーズケーキをお願いします。', rd: 'すみません、てんないでこおりすくなめのあいすらてをひとつと、ちーずけーきをおねがいします。', zh: '不好意思，我要內用，請給我一杯少冰的冰拿鐵和一份起司蛋糕。' }
+          ]
+        },
+        {
+          id: 'ja-d2', level: 'A2', icon: '🚉', title: '車站問路擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '京都行きの電車', rd: 'きょうとゆきのでんしゃ', zh: '開往京都的電車' },
+            { stage: 'Step 2・加上月台詢問', t: '京都行きの電車は何番線から出ますか。', rd: 'きょうとゆきのでんしゃはなんばんせんからでますか。', zh: '請問開往京都的電車從幾號月台發車？' },
+            { stage: 'Step 3・完整流暢長句', t: 'すみません、一番早く京都に着く電車は何番線から出ますか。', rd: 'すみません、いちばんはやくきょうとにつくでんしゃはなんばんせんからでますか。', zh: '不好意思，請問最快抵達京都的電車是從幾號月台發車呢？' }
+          ]
+        },
+        {
+          id: 'ja-d3', level: 'A2', icon: '🏮', title: '推薦台灣夜市擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '夜市の小籠包', rd: 'よいちのしょうろんぽう', zh: '夜市的小籠包' },
+            { stage: 'Step 2・加上推薦句型', t: '熱々でジューシーな夜市の小籠包がおすすめです。', rd: 'あつあつでじゅーしーなよいちのしょうろんぽうがおすすめです。', zh: '推薦熱騰騰又多汁的夜市的小籠包。' },
+            { stage: 'Step 3・完整流暢長句', t: '台湾に来たら、ぜひ熱々でジューシーな夜市の小籠包を食べてみてください。', rd: 'たいわんにきたら、ぜひあつあつでじゅーしーなよいちのしょうろんぽうをたべてみてください。', zh: '如果來到台灣，請務必嚐嚐看熱騰騰又多汁的夜市小籠包。' }
+          ]
+        },
+        {
+          id: 'ja-d4', level: 'B1', icon: '🍁', title: '分享京都旅遊回憶擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '秋の京都で紅葉を見た', rd: 'あきのきょうとでもみじをみた', zh: '在秋天的京都看了楓葉' },
+            { stage: 'Step 2・加上形容與感受', t: '去年、家族と一緒に秋の京都で美しい紅葉を見ました。', rd: 'きょねん、かぞくといっしょにあきのきょうとでうつくしいもみじをみました。', zh: '去年我和家人一起在秋天的京都欣賞了美麗的楓葉。' },
+            { stage: 'Step 3・完整流暢長句', t: '去年、家族と一緒に秋の京都へ旅行に行って、お寺の庭で美しい紅葉を見ました。', rd: 'きょねん、かぞくといっしょにあきのきょうとへりょこうにいって、おてらのにわでうつくしいもみじをみました。', zh: '去年我和家人一起去秋天的京都旅行，在寺院庭園裡欣賞了美麗的楓葉。' }
+          ]
+        },
+        {
+          id: 'ja-d5', level: 'B1', icon: '💻', title: '職場進度回報擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '音声のテストが完了した', rd: 'おんせいのてすとがかんりょうした', zh: '完成了語音測試' },
+            { stage: 'Step 2・加上目的說明', t: '物語がスムーズに流れるように、音声のテストが完了しました。', rd: 'ものがたりがすむーずにながれるように、おんせいのてすとがかんりょうしました。', zh: '為了讓故事能順暢播放，我們已經完成了語音測試。' },
+            { stage: 'Step 3・完整流暢長句', t: 'すべての画面で物語がスムーズに流れるように、先ほど音声のテストが完了しました。', rd: 'すべてのがめんでものがたりがすむーずにながれるように、さきほどおんせいのてすとがかんりょうしました。', zh: '為了讓所有畫面上的故事都能順暢播放，我們剛才已經完成了語音測試。' }
+          ]
+        },
+        {
+          id: 'ja-d6', level: 'B2', icon: '🤝', title: '商務委婉提案擴句特訓',
+          steps: [
+            { stage: 'Step 1・核心短詞塊', t: '少しずつ進める方が安心です', rd: 'すこしずつすすめるほうがあんしんです', zh: '一步步推進比較令人放心' },
+            { stage: 'Step 2・加上原因背景', t: 'ミスを防ぐためにも、少しずつ進める方が安心だと思います。', rd: 'みすをふせぐためにも、すこしずつすすめるほうがあんしんだとおもいます。', zh: '為了防止出錯，我認為一步步推進會比較令人放心。' },
+            { stage: 'Step 3・完整流暢長句', t: 'おっしゃることも分かりますが、大きなミスを防ぐためにも、少しずつ進める方が安心だと思います。', rd: 'おっしゃることもわかりますが、おおきなみすをふせぐためにも、すこしずつすすめるほうがあんしんだとおもいます。', zh: '我明白您的考量，但為了防止重大失誤，我認為一步步推進會比較令人放心。' }
+          ]
+        }
+      ],
+      topics: [
+        {
+          id: 'ja-t1', level: 'A1', icon: '☀️', title: '我最喜歡的週末度過方式（私の休日の過ごし方）',
+          questions: [
+            '你週末通常幾點起床？早上喜歡做什麼？',
+            '你喜歡在家休息還是出門散步、逛咖啡廳？',
+            '週末做什麼事情最能讓你恢復精神？'
+          ],
+          keywords: ['ゆっくり起きる', 'コーヒーを飲む', '散歩する', '友達と会う', 'リフレッシュ', '美味しいもの'],
+          sample: [
+            { t: '週末はいつもより少しゆっくり起きて、家で温かいコーヒーを飲みます。', rd: 'しゅうまつはいつもよりすこしゆっくりおきて、いえであたたかいこーひーをのみます。', zh: '週末我會比平常稍微晚一點起床，在家喝杯熱咖啡。' },
+            { t: '午後は近くの公園を散歩したり、友達とカフェで美味しいケーキを食べたりします。', rd: 'ごごはちかくのこうえんをさんぽしたり、ともだちとかふぇでおいしいけーきをたべたりします。', zh: '下午我會去附近的公園散步，或是和朋友在咖啡廳吃好吃的蛋糕。' },
+            { t: 'のんびり過ごすことで気持ちがリフレッシュして、また来週も頑張れます。', rd: 'のんびりすごすことできもちがりふれっしゅして、またらいしゅうもがんばれます。', zh: '悠閒地度過能讓心情煥然一新，下週又能繼續加油。' }
+          ]
+        },
+        {
+          id: 'ja-t2', level: 'A2', icon: '🍜', title: '我想介紹給日本朋友的台灣美食（おすすめの台湾グルメ）',
+          questions: [
+            '你想推薦哪一道台灣料理或甜點？',
+            '它的味道與口感如何（例如熱騰騰、多汁、香甜）？',
+            '推薦去哪裡吃最道地？'
+          ],
+          keywords: ['夜市', '小籠包', 'ルーロー飯', 'タピオカミルクティー', '熱々', 'ぜひ食べてほしい'],
+          sample: [
+            { t: '日本の友達が台湾に来たら、一番おすすめしたい料理は小籠包とルーロー飯です。', rd: 'にほんのともだちがたいわんにきたら、いちばんおすすめしたいりょうりはしょうろんぽうとるーろーはんです。', zh: '如果日本朋友來台灣，我最想推薦的料理是小籠包和滷肉飯。' },
+            { t: '小籠包は皮が薄くて、中に熱々のスープがたっぷり入っています。', rd: 'しょうろんぽうはかわがうすくて、なかにあつあつのすーぷがたっぷりはいっています。', zh: '小籠包皮薄，裡面裝滿了熱騰騰的鮮美湯汁。' },
+            { t: '夜市の賑やかな雰囲気を楽しみながら、ぜひ食べてほしいです。', rd: 'よいちのにぎやかなふんいきをたのしみながら、ぜひたべてほしいです。', zh: '希望大家能一邊享受夜市熱鬧的氣氛，一邊品嚐看看。' }
+          ]
+        },
+        {
+          id: 'ja-t3', level: 'A2', icon: '🗾', title: '一次難忘的日本旅行回憶（思い出の旅行）',
+          questions: [
+            '你去過或最想去日本的哪個城市？',
+            '那裡的風景、美食或遇到的人給你什麼印象？',
+            '下次再去的話，你想體驗什麼？'
+          ],
+          keywords: ['景色が綺麗', '温泉', '親切', '写真を撮る', 'また行きたい', '忘れられない'],
+          sample: [
+            { t: '私の一番忘れられない旅行は、冬に北海道へ行ったことです。', rd: 'わたしのいちばんわすれられないりょこうは、ふゆにほっかいどうへいったことです。', zh: '我最難忘的一次旅行，是在冬天去了北海道。' },
+            { t: '真っ白な雪の景色がとても綺麗で、夜に入った露天風呂も最高でした。', rd: 'まっしろなゆきのけしきがとてもきれいで、よるにはいったろてんぶろもさいこうでした。', zh: '純白的雪景非常美麗，晚上泡的露天溫泉也棒極了。' },
+            { t: '地元の人たちもとても親切だったので、季節を変えてまた行きたいです。', rd: 'じもとのひとたちもとてもしんせつだったので、きせつをかえてまたいきたいです。', zh: '當地人也非常親切，下次我想換個季節再去一次。' }
+          ]
+        },
+        {
+          id: 'ja-t4', level: 'B1', icon: '📚', title: '我如何持續學習日語（私の日本語学習法）',
+          questions: [
+            '你當初為什麼開始想學日語？',
+            '平常會透過什麼方式練習聽力與口說？',
+            '學會用日語表達後，最有成就感的是什麼時候？'
+          ],
+          keywords: ['きっかけ', '毎日少しずつ', '物語を読む', '声に出す', '自信がつく', '楽しい'],
+          sample: [
+            { t: '日本のドラマや旅行がきっかけで、日本語をもっと話せるようになりたいと思いました。', rd: 'にほんのどらまやりょこうがきっかけで、にほんごをもっとはなせるようになりたいとおもいました。', zh: '因為日劇和日本旅行的契機，讓我想要變得更會說日文。' },
+            { t: '忙しい日でも、毎日十五分だけ物語を聞いて声に出す習慣を続けています。', rd: 'いそがしいひでも、まいにちじゅうごふんだけものがたりをきいてこえにだすしゅうかんをつづけています。', zh: '就算是忙碌的日子，我也持續維持每天聽十五分鐘故事並唸出聲的習慣。' },
+            { t: '旅行先で自分の言葉が通じたとき、とても嬉しくて自信がつきました。', rd: 'りょこうさきでじぶんのことばがつうじたとき、とてもうれしくてじしんがつきました。', zh: '當在旅行地自己說的話能溝通時，真的非常開心也更有自信了。' }
+          ]
+        },
+        {
+          id: 'ja-t5', level: 'B1', icon: '🎬', title: '一部讓我深受感動的作品（心に残った映画や本）',
+          questions: [
+            '這部電影、動畫或書在講什麼故事？',
+            '主角的哪一個選擇或哪一句話最打動你？',
+            '看完之後你的心情有什麼轉變？'
+          ],
+          keywords: ['感動する', '主人公', '諦めない', '温かい気持ち', '大切なこと', 'おすすめ'],
+          sample: [
+            { t: '最近読んで一番心に残ったのは、小さな町の古い本屋さんを描いた物語です。', rd: 'さいきんよんでいちばんこころにのこったのは、ちいさなまちのふるいほんやさんをえがいたものがたりです。', zh: '最近讀過最令我印象深刻的，是描寫小鎮裡一間老書店的故事。' },
+            { t: '失敗しても諦めない主人公の姿を見て、とても温かい気持ちになりました。', rd: 'しっぱいしてもあきらめないしゅじんこうのすがたをみて、とてもあたたかいきもちになりました。', zh: '看著即使失敗也不放棄的主角身影，心裡變得非常溫暖。' },
+            { t: '忙しい毎日の中で大切なことを思い出させてくれる一冊です。', rd: 'いそがしいまいにちのなかでたいせつなことをおもいださせてくれるいっさつです。', zh: '這是一本能讓人重新想起忙碌日常中重要事物的書。' }
+          ]
+        },
+        {
+          id: 'ja-t6', level: 'B2', icon: '🌿', title: '在忙碌生活中保持身心平衡的方法（ワークライフバランス）',
+          questions: [
+            '工作或學習忙碌時，你如何察覺自己的壓力？',
+            '你會用什麼具體方法幫助自己轉換心情？',
+            '你理想中的工作與生活平衡是什麼樣子？'
+          ],
+          keywords: ['気分転換', '睡眠をとる', '運動する', '無理をしない', '効率が上がる', '心の余裕'],
+          sample: [
+            { t: '仕事が忙しいときこそ、無理をしすぎず心の余裕を持つことが大切だと感じています。', rd: 'しごとがいそがしいときこそ、むりをしすぎずこころのよゆうをもつことがたいせつだとかんじています。', zh: '我覺得越是工作忙碌的時候，不要過度勉強自己、保有心靈的餘裕越是重要。' },
+            { t: '私は夜遅くまで画面を見ないようにして、しっかり睡眠をとるように心がけています。', rd: 'わたしはよるおそくまでがめんをみないようにして、しっかりすいみんをとるようにこころがけています。', zh: '我會留意不要看螢幕到太晚，並確保充足的睡眠。' },
+            { t: '適度に気分転換をすることで、結果的に翌日の仕事の効率も上がります。', rd: 'てきどにきぶんてんかんをすることで、けっかてきによくじつのしごとのこうりつもあがります。', zh: '透過適度轉換心情，結果反而能提升隔天的工作效率。' }
+          ]
+        }
+      ]
+    },
+    ko: { title: '🗣️ 韓語口說特訓工坊', sub: '', missions: [], drills: [], topics: [] }
+  };
+
+  function ensureStyles() {
+    if (document.getElementById('speakingStudioStyles')) return;
+    const st = document.createElement('style');
+    st.id = 'speakingStudioStyles';
+    st.textContent = `
+      .spk-wrap { max-width: 1120px; margin: 0 auto; padding: 8px 4px 48px; }
+      .spk-hero {
+        background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 55%, #fdf2f8 100%);
+        border: 1px solid #dbeafe;
+        border-radius: 18px;
+        padding: 18px 22px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+      .spk-hero h1 { margin: 0 0 6px; font-size: 1.42rem; color: #0f172a; }
+      .spk-hero p { margin: 0; font-size: .94rem; color: #475569; line-height: 1.55; }
+      .spk-mode-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+      .spk-tab {
+        padding: 10px 16px; border-radius: 999px; border: 1.5px solid #cbd5e1;
+        background: #fff; color: #1e293b; font-weight: 700; font-size: .95rem;
+        cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px;
+      }
+      .spk-tab:hover { border-color: #6366f1; color: #4338ca; background: #f8fafc; }
+      .spk-tab.active { background: #4f46e5; border-color: #4f46e5; color: #fff; box-shadow: 0 4px 12px rgba(79, 70, 229, .24); }
+      .spk-grid { display: grid; grid-template-columns: 300px 1fr; gap: 16px; align-items: start; }
+      @media (max-width: 860px) { .spk-grid { grid-template-columns: 1fr; } }
+      .spk-side { background: #fff; border: 1px solid var(--border, #e2e8f0); border-radius: 16px; padding: 12px; }
+      .spk-lv-row { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
+      .spk-lv-btn { padding: 4px 10px; border-radius: 999px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: .78rem; font-weight: 700; cursor: pointer; }
+      .spk-lv-btn.active { background: #4f46e5; border-color: #4f46e5; color: #fff; }
+      .spk-item-list { display: flex; flex-direction: column; gap: 7px; max-height: 62vh; overflow-y: auto; }
+      .spk-item-btn { text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; cursor: pointer; transition: all .14s; }
+      .spk-item-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+      .spk-item-btn.active { background: #eef2ff; border-color: #6366f1; box-shadow: 0 2px 8px rgba(99, 102, 241, .12); }
+      .spk-item-top { display: flex; align-items: center; gap: 6px; font-size: .76rem; color: #64748b; margin-bottom: 3px; }
+      .spk-item-lv { padding: 1px 7px; border-radius: 999px; background: #e0e7ff; color: #3730a3; font-weight: 700; }
+      .spk-item-title { font-weight: 700; font-size: .93rem; color: #0f172a; }
+      .spk-stage { background: #fff; border: 1px solid var(--border, #e2e8f0); border-radius: 18px; padding: 20px 22px; }
+      .spk-scene-box { background: #f8fafc; border-left: 4px solid #6366f1; border-radius: 10px; padding: 12px 14px; margin: 12px 0 16px; color: #334155; font-size: .94rem; line-height: 1.55; }
+      .spk-pat-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 18px; }
+      .spk-pat-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; background: #fafafa; cursor: pointer; transition: all .14s; }
+      .spk-pat-card:hover { border-color: #6366f1; background: #eef2ff; }
+      .spk-pat-card .pt-main { font-weight: 700; color: #0f172a; font-size: .96rem; margin-bottom: 3px; }
+      .spk-pat-card .pt-rd { font-size: .8rem; color: #6366f1; margin-bottom: 2px; }
+      .spk-pat-card .pt-zh { font-size: .84rem; color: #64748b; }
+      .spk-target-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+      .spk-ttab { padding: 6px 13px; border-radius: 999px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: .85rem; font-weight: 700; cursor: pointer; }
+      .spk-ttab.active { background: #0f172a; border-color: #0f172a; color: #fff; }
+      .spk-practice-box { border: 1.5px solid #c7d2fe; background: #f8fafc; border-radius: 16px; padding: 18px; }
+      .spk-main-sent { font-size: 1.24rem; font-weight: 800; color: #0f172a; line-height: 1.55; margin-bottom: 6px; }
+      .spk-main-rd { font-size: .92rem; color: #4f46e5; margin-bottom: 6px; }
+      .spk-main-zh { font-size: .98rem; color: #475569; margin-bottom: 14px; }
+      .spk-act-row { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
+      .spk-mic-btn {
+        padding: 10px 18px; border-radius: 999px; border: none;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff;
+        font-weight: 800; font-size: .96rem; cursor: pointer;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, .26); transition: transform .12s, box-shadow .12s;
+      }
+      .spk-mic-btn:hover { transform: translateY(-1px); }
+      .spk-mic-btn.recording { background: linear-gradient(135deg, #dc2626, #ea580c); animation: spkPulse 1.25s infinite; }
+      @keyframes spkPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, .4); } 50% { box-shadow: 0 0 0 9px rgba(220, 38, 38, 0); } }
+      .spk-step-card { border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; background: #fff; transition: border-color .15s, box-shadow .15s; }
+      .spk-step-card.done { border-color: #86efac; background: #f0fdf4; }
+      .spk-step-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: .83rem; font-weight: 800; color: #4f46e5; }
+      .spk-kw-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 16px; }
+      .spk-kw-chip { padding: 6px 12px; border-radius: 999px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: .88rem; font-weight: 600; cursor: pointer; transition: all .15s; }
+      .spk-kw-chip:hover { border-color: #6366f1; background: #eef2ff; }
+      .spk-kw-chip.hit { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+      .spk-timer-badge { font-size: 1.15rem; font-weight: 800; color: #dc2626; padding: 4px 12px; border-radius: 999px; background: #fef2f2; border: 1px solid #fecaca; }
+      .spk-score-box { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: #fff; border: 1px solid #e2e8f0; }
+    `;
+    document.head.appendChild(st);
+  }
+
+  const state = {
+    tab: 'mission',
+    lv: 'ALL',
+    missionId: DATA[LANG].missions[0].id,
+    targetIdx: 0,
+    blindPrompt: false,
+    drillId: DATA[LANG].drills[0].id,
+    topicId: DATA[LANG].topics[0].id,
+    scores: {},
+    recUrls: {},
+    topicTranscript: {},
+  };
+
+  let activeAsr = null;
+  let activeRec = null;
+  let activeRecKey = null;
+  let topicTimer = null;
+  let topicSecLeft = 60;
+
+  function stopAllMedia() {
+    if (A.tts && A.tts.stop) A.tts.stop();
+    if (activeAsr) {
+      const h = activeAsr;
+      activeAsr = null;
+      try { h.stop(); } catch (e) { /* ignore */ }
+    } else if (A.asr && A.asr.stop) {
+      try { A.asr.stop(); } catch (e) { /* ignore */ }
+    }
+    if (activeRec) {
+      const r = activeRec;
+      activeRec = null;
+      try { r.stop(); } catch (e) { /* ignore */ }
+    }
+    if (topicTimer) {
+      clearInterval(topicTimer);
+      topicTimer = null;
+    }
+    activeRecKey = null;
+  }
+
+  function scoreSentence(targetText, heardText) {
+    if (!A.score) return { pct: heardText ? 80 : 0, heard: heardText, html: esc(targetText) };
+    const res = A.score(targetText, heardText || '');
+    let html = esc(targetText);
+    if (res.tokens && res.tokens.length) {
+      html = res.tokens.map((t) => `<span class="tok ${t.status}">${esc(t.word)}</span>`).join(' ');
+    } else if (res.items && A.scoredHtml) {
+      html = A.scoredHtml(res.items);
+    }
+    return { pct: res.pct || 0, heard: heardText || '', html };
+  }
+
+  function startVoicePractice(recKey, targetText, onDone) {
+    if (activeRecKey === recKey && activeAsr) {
+      activeAsr.stop();
+      return;
+    }
+    stopAllMedia();
+    if (!A.asr || !A.asr.supported) {
+      if (A.toast) A.toast('此瀏覽器不支援語音辨識，建議使用 Chrome 或 Edge');
+      return;
+    }
+    activeRecKey = recKey;
+    onDone({ recording: true, interim: '🎙️ 請開始開口說（停頓思考不會被切斷，說完可再點一下結束）…' });
+
+    (async () => {
+      if (A.rec && A.rec.supported) {
+        try { activeRec = await A.rec.start(); } catch (e) { activeRec = null; }
+      }
+      activeAsr = A.asr.listen({
+        lang: ASR_LANG,
+        continuous: true,
+        maxMs: 45000,
+        silenceMs: 4200,
+        onInterim: (txt) => {
+          if (activeRecKey !== recKey) return;
+          onDone({ recording: true, interim: `🎙️ 即時辨識：${txt}` });
+        },
+        onFinal: async (txt) => {
+          activeAsr = null;
+          activeRecKey = null;
+          if (activeRec) {
+            try {
+              if (state.recUrls[recKey]) URL.revokeObjectURL(state.recUrls[recKey]);
+              state.recUrls[recKey] = await activeRec.stop();
+            } catch (e) { /* ignore */ }
+            activeRec = null;
+          }
+          const sc = scoreSentence(targetText, txt);
+          state.scores[recKey] = sc;
+          if (A.bumpDay) A.bumpDay('lines', 1);
+          if (A.addXP) A.addXP(5, 'speak');
+          onDone({ recording: false, result: sc });
+        },
+        onError: async (err, msg) => {
+          activeAsr = null;
+          activeRecKey = null;
+          if (activeRec) {
+            try { await activeRec.stop(); } catch (e) { /* ignore */ }
+            activeRec = null;
+          }
+          onDone({ recording: false, error: msg || `語音辨識未完成（${err}），請再試一次` });
+        }
+      });
+    })();
+  }
+
+  function renderSpeaking(mount, subTab) {
+    ensureStyles();
+    stopAllMedia();
+    if (subTab && ['mission', 'drill', 'topic'].includes(subTab)) {
+      state.tab = subTab;
+    }
+    const d = DATA[LANG];
+
+    function draw() {
+      const listPool = state.tab === 'mission' ? d.missions : state.tab === 'drill' ? d.drills : d.topics;
+      const filtered = state.lv === 'ALL' ? listPool : listPool.filter((x) => x.level === state.lv);
+      const curIdKey = state.tab === 'mission' ? 'missionId' : state.tab === 'drill' ? 'drillId' : 'topicId';
+      if (!filtered.some((x) => x.id === state[curIdKey]) && filtered.length) {
+        state[curIdKey] = filtered[0].id;
+      }
+      const curItem = listPool.find((x) => x.id === state[curIdKey]) || listPool[0];
+
+      mount.innerHTML = `
+        <div class="spk-wrap">
+          <div class="spk-hero">
+            <div>
+              <h1>${esc(d.title)}</h1>
+              <p>${esc(d.sub)}</p>
+            </div>
+          </div>
+
+          <div class="spk-mode-tabs" role="tablist">
+            <button type="button" class="spk-tab ${state.tab === 'mission' ? 'active' : ''}" data-tab="mission">
+              💬 1. 情境開口說（${d.missions.length} 單元）
+            </button>
+            <button type="button" class="spk-tab ${state.tab === 'drill' ? 'active' : ''}" data-tab="drill">
+              🪜 2. 漸進式擴句特訓（${d.drills.length} 組）
+            </button>
+            <button type="button" class="spk-tab ${state.tab === 'topic' ? 'active' : ''}" data-tab="topic">
+              ⏱️ 3. 60 秒主題自由說（${d.topics.length} 主題）
+            </button>
+          </div>
+
+          <div class="spk-grid">
+            <aside class="spk-side">
+              <div class="spk-lv-row">
+                ${['ALL', 'A1', 'A2', 'B1', 'B2'].map((lv) => `
+                  <button type="button" class="spk-lv-btn ${state.lv === lv ? 'active' : ''}" data-lv="${lv}">
+                    ${lv === 'ALL' ? '全部' : lv}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="spk-item-list">
+                ${filtered.map((item) => `
+                  <button type="button" class="spk-item-btn ${item.id === curItem.id ? 'active' : ''}" data-pick="${esc(item.id)}">
+                    <div class="spk-item-top">
+                      <span>${item.icon || '🗣️'}</span>
+                      <span class="spk-item-lv">${esc(item.level)}</span>
+                      ${item.cat ? `<span>${esc(item.cat)}</span>` : ''}
+                    </div>
+                    <div class="spk-item-title">${esc(item.title)}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </aside>
+
+            <section class="spk-stage" id="spkStage">
+              ${state.tab === 'mission' ? renderMissionHtml(curItem) : state.tab === 'drill' ? renderDrillHtml(curItem) : renderTopicHtml(curItem)}
+            </section>
+          </div>
+        </div>
+      `;
+
+      bindEvents(curItem);
+    }
+
+    function renderMissionHtml(m) {
+      const idx = Math.min(state.targetIdx, m.targets.length - 1);
+      const tg = m.targets[idx];
+      const recKey = `${m.id}-t${idx}`;
+      const sc = state.scores[recKey];
+      const recUrl = state.recUrls[recKey];
+      return `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+            <span class="spk-item-lv" style="font-size:.84rem;padding:3px 10px">${esc(m.level)} ・ ${esc(m.cat || '情境口說')}</span>
+            <label style="font-size:.88rem;color:#475569;cursor:pointer;display:flex;align-items:center;gap:6px">
+              <input type="checkbox" id="spkBlindChk" ${state.blindPrompt ? 'checked' : ''}>
+              <span>🙈 遮住日文台詞（只看中文挑戰直接開口說）</span>
+            </label>
+          </div>
+          <h2 style="margin:8px 0 4px;font-size:1.3rem">${m.icon} ${esc(m.title)}</h2>
+          <div class="spk-scene-box">
+            <b>🎯 情境任務：</b>${esc(m.scene)}
+          </div>
+
+          <div style="margin-bottom:8px;font-weight:700;font-size:.92rem;color:#334155">
+            🧩 暖身關鍵句型（點擊卡片即可直接聽標準發音）：
+          </div>
+          <div class="spk-pat-list">
+            ${m.patterns.map((p) => `
+              <div class="spk-pat-card" data-say="${esc(p.t)}" title="點擊聽發音">
+                <div class="pt-main">🔊 ${esc(p.t)}</div>
+                ${p.rd ? `<div class="pt-rd">${esc(p.rd)}</div>` : ''}
+                <div class="pt-zh">${esc(p.zh)}</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="margin-bottom:8px;font-weight:700;font-size:.92rem;color:#334155">
+            🎙️ 選擇難度並開口練習（支援最長 45 秒連續錄音，中間思考停頓不會被切斷）：
+          </div>
+          <div class="spk-target-tabs">
+            ${m.targets.map((t, i) => {
+              const s = state.scores[`${m.id}-t${i}`];
+              return `<button type="button" class="spk-ttab ${i === idx ? 'active' : ''}" data-tidx="${i}">
+                ${esc(t.label)}${s ? ` (${s.pct}%)` : ''}
+              </button>`;
+            }).join('')}
+          </div>
+
+          <div class="spk-practice-box">
+            <div class="spk-main-sent" id="spkMainSent">
+              ${state.blindPrompt && !sc ? '<span style="color:#64748b">🙈 已遮住日文，請看下方中文意思直接開口說！</span>' : (sc ? sc.html : esc(tg.t))}
+            </div>
+            ${!state.blindPrompt && tg.rd ? `<div class="spk-main-rd">${esc(tg.rd)}</div>` : ''}
+            <div class="spk-main-zh">💡 中文意思：<b>${esc(tg.zh)}</b></div>
+
+            <div class="spk-act-row">
+              <button type="button" class="btn" id="spkListenNorm">🔊 聽標準示範</button>
+              <button type="button" class="btn" id="spkListenSlow">🐢 慢速 0.7×</button>
+              <button type="button" class="spk-mic-btn" id="spkMicBtn">
+                🎙️ 按一下開始開口說
+              </button>
+              ${recUrl ? `<button type="button" class="btn" id="spkPlayMine">▶️ 聽自己的錄音</button>` : ''}
+            </div>
+
+            <div id="spkLiveMsg" style="margin-top:10px;font-size:.9rem;color:#4f46e5;font-weight:600"></div>
+            ${sc ? `
+              <div class="spk-score-box">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                  <span style="font-size:1.35rem;font-weight:900;color:${sc.pct >= 80 ? '#16a34a' : sc.pct >= 55 ? '#d97706' : '#dc2626'}">${sc.pct}%</span>
+                  <div>
+                    <b>${sc.pct >= 85 ? '🌟 發音非常自然流暢！' : sc.pct >= 60 ? '👍 很棒！再多唸一次會更順口' : '💪 繼續加油，可以先聽慢速示範再跟讀'}</b>
+                    <div style="font-size:.84rem;color:#64748b">系統聽到的內容：${esc(sc.heard || '（未偵測到語音）')}</div>
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDrillHtml(dr) {
+      return `
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+            <div>
+              <span class="spk-item-lv" style="font-size:.84rem;padding:3px 10px">${esc(dr.level)} ・ 漸進式擴句</span>
+              <h2 style="margin:6px 0 2px;font-size:1.28rem">${dr.icon} ${esc(dr.title)}</h2>
+              <p style="margin:0;font-size:.88rem;color:#64748b">從短詞塊開始開口，熟悉節奏後再挑戰完整長句，告別長句舌頭打結！</p>
+            </div>
+            <button type="button" class="btn primary" id="spkDrillPlayAll">▶ 三階梯連播示範</button>
+          </div>
+
+          ${dr.steps.map((st, si) => {
+            const recKey = `${dr.id}-s${si}`;
+            const sc = state.scores[recKey];
+            const recUrl = state.recUrls[recKey];
+            return `
+              <div class="spk-step-card ${sc && sc.pct >= 75 ? 'done' : ''}" data-step="${si}">
+                <div class="spk-step-hd">
+                  <span>${esc(st.stage)}</span>
+                  ${sc ? `<span style="color:${sc.pct >= 80 ? '#16a34a' : '#d97706'}">契合度 ${sc.pct}%</span>` : ''}
+                </div>
+                <div class="spk-main-sent" style="font-size:1.14rem">${sc ? sc.html : esc(st.t)}</div>
+                ${st.rd ? `<div class="spk-main-rd">${esc(st.rd)}</div>` : ''}
+                <div class="spk-main-zh" style="margin-bottom:10px">${esc(st.zh)}</div>
+                <div class="spk-act-row">
+                  <button type="button" class="btn sm" data-dsay="${si}">🔊 聽示範</button>
+                  <button type="button" class="btn sm" data-dslow="${si}">🐢 慢速</button>
+                  <button type="button" class="spk-mic-btn" style="padding:7px 14px;font-size:.88rem" data-dmic="${si}">
+                    🎙️ 開口跟讀此階
+                  </button>
+                  ${recUrl ? `<button type="button" class="btn sm" data-dmine="${si}">▶️ 聽錄音</button>` : ''}
+                </div>
+                <div class="spk-step-live" data-dlive="${si}" style="margin-top:6px;font-size:.85rem;color:#4f46e5;font-weight:600"></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderTopicHtml(tp) {
+      const recKey = `topic-${tp.id}`;
+      const transcript = state.topicTranscript[tp.id] || '';
+      const normTrans = transcript.toLowerCase();
+      const recUrl = state.recUrls[recKey];
+      const hitCount = tp.keywords.filter((kw) => normTrans.includes(kw.toLowerCase())).length;
+
+      return `
+        <div>
+          <span class="spk-item-lv" style="font-size:.84rem;padding:3px 10px">${esc(tp.level)} ・ 60 秒主題自由說</span>
+          <h2 style="margin:8px 0 6px;font-size:1.3rem">${tp.icon} ${esc(tp.title)}</h2>
+
+          <div class="spk-scene-box">
+            <b>💡 引導問題（可挑 1～3 點自由發揮）：</b>
+            <ul style="margin:6px 0 0;padding-left:20px">
+              ${tp.questions.map((q) => `<li>${esc(q)}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div style="font-weight:700;font-size:.92rem;color:#334155">
+            🔑 推薦搭配關鍵詞（點擊可先聽發音；口說時若成功用到會自動亮綠燈 ✓ — 已達成 ${hitCount}/${tp.keywords.length}）：
+          </div>
+          <div class="spk-kw-wrap" id="spkKwWrap">
+            ${tp.keywords.map((kw) => {
+              const hit = normTrans.includes(kw.toLowerCase());
+              return `<button type="button" class="spk-kw-chip ${hit ? 'hit' : ''}" data-kw="${esc(kw)}">
+                ${hit ? '✓ ' : '🔊 '}${esc(kw)}
+              </button>`;
+            }).join('')}
+          </div>
+
+          <div class="spk-practice-box" style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+              <div class="spk-act-row">
+                <button type="button" class="spk-mic-btn" id="spkTopicMicBtn">
+                  🎙️ 開始 60 秒自由口說錄音
+                </button>
+                ${recUrl ? `<button type="button" class="btn" id="spkTopicPlayMine">▶️ 聽自己的整段錄音</button>` : ''}
+              </div>
+              <span class="spk-timer-badge" id="spkTopicTimer">⏱️ 60s</span>
+            </div>
+            <div id="spkTopicLive" style="min-height:64px;padding:12px;border-radius:12px;background:#fff;border:1px solid #cbd5e1;font-size:1.02rem;line-height:1.6;color:#0f172a">
+              ${transcript ? esc(transcript) : '<span style="color:#94a3b8">按下上方「🎙️ 開始 60 秒自由口說錄音」後，請試著用自己的話回答引導問題（停頓思考不會中斷錄音）…</span>'}
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <b style="font-size:.95rem;color:#334155">📖 母語範例回答（點任一句可直接聽發音，或點右側連播）：</b>
+            <button type="button" class="btn sm" id="spkTopicSampleAll">▶ 連播範例段落</button>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px">
+            ${tp.sample.map((s, si) => `
+              <div class="spk-pat-card" style="margin-bottom:${si === tp.sample.length - 1 ? 0 : 8}px" data-say="${esc(s.t)}">
+                <div class="pt-main">🔊 ${esc(s.t)}</div>
+                ${s.rd ? `<div class="pt-rd">${esc(s.rd)}</div>` : ''}
+                <div class="pt-zh">${esc(s.zh)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function bindEvents(curItem) {
+      mount.querySelectorAll('[data-tab]').forEach((b) => {
+        b.onclick = () => {
+          stopAllMedia();
+          state.tab = b.dataset.tab;
+          draw();
+        };
+      });
+      mount.querySelectorAll('[data-lv]').forEach((b) => {
+        b.onclick = () => {
+          stopAllMedia();
+          state.lv = b.dataset.lv;
+          draw();
+        };
+      });
+      mount.querySelectorAll('[data-pick]').forEach((b) => {
+        b.onclick = () => {
+          stopAllMedia();
+          if (state.tab === 'mission') { state.missionId = b.dataset.pick; state.targetIdx = 0; }
+          else if (state.tab === 'drill') state.drillId = b.dataset.pick;
+          else state.topicId = b.dataset.pick;
+          draw();
+        };
+      });
+      mount.querySelectorAll('[data-say]').forEach((card) => {
+        card.onclick = () => {
+          if (A.tts && A.tts.speak) A.tts.speak(card.dataset.say, { rate: 1.0 });
+        };
+      });
+
+      if (state.tab === 'mission') {
+        const blindChk = mount.querySelector('#spkBlindChk');
+        if (blindChk) {
+          blindChk.onchange = () => {
+            state.blindPrompt = blindChk.checked;
+            draw();
+          };
+        }
+        mount.querySelectorAll('[data-tidx]').forEach((b) => {
+          b.onclick = () => {
+            stopAllMedia();
+            state.targetIdx = +b.dataset.tidx;
+            draw();
+          };
+        });
+        const idx = Math.min(state.targetIdx, curItem.targets.length - 1);
+        const tg = curItem.targets[idx];
+        const recKey = `${curItem.id}-t${idx}`;
+        const normBtn = mount.querySelector('#spkListenNorm');
+        const slowBtn = mount.querySelector('#spkListenSlow');
+        const micBtn = mount.querySelector('#spkMicBtn');
+        const mineBtn = mount.querySelector('#spkPlayMine');
+        const liveEl = mount.querySelector('#spkLiveMsg');
+
+        if (normBtn) normBtn.onclick = (e) => A.tts.speak(tg.t, { rate: 1.0, btn: e.currentTarget });
+        if (slowBtn) slowBtn.onclick = (e) => A.tts.speak(tg.t, { rate: 0.7, btn: e.currentTarget });
+        if (mineBtn) mineBtn.onclick = (e) => A.playUrl && A.playUrl(state.recUrls[recKey], e.currentTarget);
+        if (micBtn) {
+          micBtn.onclick = () => {
+            startVoicePractice(recKey, tg.t, (st) => {
+              if (st.recording) {
+                micBtn.classList.add('recording');
+                micBtn.textContent = '⏹ 正在聆聽… 說完點此完成';
+                if (liveEl) liveEl.textContent = st.interim || '';
+              } else {
+                draw();
+                if (st.error) {
+                  const afterLive = mount.querySelector('#spkLiveMsg');
+                  if (afterLive) afterLive.textContent = `⚠️ ${st.error}`;
+                }
+              }
+            });
+          };
+        }
+      } else if (state.tab === 'drill') {
+        const playAllBtn = mount.querySelector('#spkDrillPlayAll');
+        if (playAllBtn) {
+          playAllBtn.onclick = async () => {
+            stopAllMedia();
+            playAllBtn.disabled = true;
+            for (let i = 0; i < curItem.steps.length; i++) {
+              if (i + 1 < curItem.steps.length && A.tts.preload) A.tts.preload(curItem.steps[i + 1].t, { rate: 0.95 });
+              await A.tts.speak(curItem.steps[i].t, { rate: 0.95 });
+              await new Promise((r) => setTimeout(r, 40));
+            }
+            playAllBtn.disabled = false;
+          };
+        }
+        mount.querySelectorAll('[data-dsay]').forEach((b) => {
+          b.onclick = (e) => A.tts.speak(curItem.steps[+b.dataset.dsay].t, { rate: 1.0, btn: e.currentTarget });
+        });
+        mount.querySelectorAll('[data-dslow]').forEach((b) => {
+          b.onclick = (e) => A.tts.speak(curItem.steps[+b.dataset.dslow].t, { rate: 0.7, btn: e.currentTarget });
+        });
+        mount.querySelectorAll('[data-dmine]').forEach((b) => {
+          b.onclick = (e) => {
+            const k = `${curItem.id}-s${b.dataset.dmine}`;
+            if (A.playUrl && state.recUrls[k]) A.playUrl(state.recUrls[k], e.currentTarget);
+          };
+        });
+        mount.querySelectorAll('[data-dmic]').forEach((b) => {
+          b.onclick = () => {
+            const si = +b.dataset.dmic;
+            const stObj = curItem.steps[si];
+            const recKey = `${curItem.id}-s${si}`;
+            const liveEl = mount.querySelector(`[data-dlive="${si}"]`);
+            startVoicePractice(recKey, stObj.t, (st) => {
+              if (st.recording) {
+                b.classList.add('recording');
+                b.textContent = '⏹ 說完點此完成';
+                if (liveEl) liveEl.textContent = st.interim || '';
+              } else {
+                draw();
+                if (st.error) {
+                  const afterLive = mount.querySelector(`[data-dlive="${si}"]`);
+                  if (afterLive) afterLive.textContent = `⚠️ ${st.error}`;
+                }
+              }
+            });
+          };
+        });
+      } else if (state.tab === 'topic') {
+        mount.querySelectorAll('[data-kw]').forEach((b) => {
+          b.onclick = (e) => A.tts.speak(b.dataset.kw, { rate: 0.92, btn: e.currentTarget });
+        });
+        const sampleAllBtn = mount.querySelector('#spkTopicSampleAll');
+        if (sampleAllBtn) {
+          sampleAllBtn.onclick = async () => {
+            stopAllMedia();
+            sampleAllBtn.disabled = true;
+            for (let i = 0; i < curItem.sample.length; i++) {
+              if (i + 1 < curItem.sample.length && A.tts.preload) A.tts.preload(curItem.sample[i + 1].t, { rate: 0.95 });
+              await A.tts.speak(curItem.sample[i].t, { rate: 0.95 });
+              await new Promise((r) => setTimeout(r, 35));
+            }
+            sampleAllBtn.disabled = false;
+          };
+        }
+        const recKey = `topic-${curItem.id}`;
+        const mineBtn = mount.querySelector('#spkTopicPlayMine');
+        if (mineBtn) mineBtn.onclick = (e) => A.playUrl && A.playUrl(state.recUrls[recKey], e.currentTarget);
+
+        const micBtn = mount.querySelector('#spkTopicMicBtn');
+        const timerEl = mount.querySelector('#spkTopicTimer');
+        const liveEl = mount.querySelector('#spkTopicLive');
+        if (micBtn) {
+          micBtn.onclick = async () => {
+            if (activeRecKey === recKey && activeAsr) {
+              activeAsr.stop();
+              return;
+            }
+            stopAllMedia();
+            if (!A.asr || !A.asr.supported) {
+              if (A.toast) A.toast('此瀏覽器不支援語音辨識，建議使用 Chrome 或 Edge');
+              return;
+            }
+            activeRecKey = recKey;
+            topicSecLeft = 60;
+            micBtn.classList.add('recording');
+            micBtn.textContent = '⏹ 結束 60 秒自由口說';
+            if (liveEl) liveEl.textContent = '🎙️ 正在聆聽中… 請自由開口回答上方引導問題！';
+            if (A.rec && A.rec.supported) {
+              try { activeRec = await A.rec.start(); } catch (e) { activeRec = null; }
+            }
+            topicTimer = setInterval(() => {
+              topicSecLeft = Math.max(0, topicSecLeft - 1);
+              if (timerEl) timerEl.textContent = `⏱️ ${topicSecLeft}s`;
+              if (topicSecLeft <= 0 && activeAsr) {
+                clearInterval(topicTimer);
+                topicTimer = null;
+                activeAsr.stop();
+              }
+            }, 1000);
+
+            activeAsr = A.asr.listen({
+              lang: ASR_LANG,
+              continuous: true,
+              maxMs: 65000,
+              silenceMs: 8500,
+              onInterim: (txt) => {
+                if (activeRecKey !== recKey) return;
+                state.topicTranscript[curItem.id] = txt;
+                if (liveEl) liveEl.textContent = txt;
+                const norm = txt.toLowerCase();
+                mount.querySelectorAll('[data-kw]').forEach((chip) => {
+                  const hit = norm.includes(chip.dataset.kw.toLowerCase());
+                  chip.classList.toggle('hit', hit);
+                  chip.textContent = `${hit ? '✓ ' : '🔊 '}${chip.dataset.kw}`;
+                });
+              },
+              onFinal: async (txt) => {
+                if (topicTimer) { clearInterval(topicTimer); topicTimer = null; }
+                activeAsr = null;
+                activeRecKey = null;
+                if (activeRec) {
+                  try {
+                    if (state.recUrls[recKey]) URL.revokeObjectURL(state.recUrls[recKey]);
+                    state.recUrls[recKey] = await activeRec.stop();
+                  } catch (e) { /* ignore */ }
+                  activeRec = null;
+                }
+                if (txt) state.topicTranscript[curItem.id] = txt;
+                if (A.bumpDay) A.bumpDay('lines', 3);
+                if (A.addXP) A.addXP(12, 'speak');
+                draw();
+              },
+              onError: async () => {
+                if (topicTimer) { clearInterval(topicTimer); topicTimer = null; }
+                activeAsr = null;
+                activeRecKey = null;
+                if (activeRec) {
+                  try { await activeRec.stop(); } catch (e) { /* ignore */ }
+                  activeRec = null;
+                }
+                draw();
+              }
+            });
+          };
+        }
+      }
+    }
+
+    draw();
+  }
+
+  A.renderSpeaking = renderSpeaking;
+  if (typeof A.route === 'function') {
+    A.route('speaking', (main, p1) => renderSpeaking(main, p1));
+  }
+})();
+
+</script>
   <script>/* /js/app.js */
 /* 日語學院 Japanese Academy — app.js
  * 導覽列（桌機頂部 + 手機底部）、頂部狀態（連續天數 / 今日目標 / 到期複習）、啟動流程與伺服器同步。
@@ -13648,7 +15364,7 @@ window.STORIES_DATA = (window.STORIES_DATA || []).concat([
   'use strict';
   const JA = window.JA;
   const NAV = [
-    ['home', '🏠', '今日'], ['kana', 'あ', '五十音'], ['library', '📚', '課程'], ['stories', '📖', '故事'], ['words', '🔤', '單字'],
+    ['home', '🏠', '今日'], ['kana', 'あ', '五十音'], ['library', '📚', '課程'], ['stories', '📖', '故事'], ['speaking', '🗣️', '口說'], ['words', '🔤', '單字'],
     ['review', '🧠', '複習'], ['progress', '📈', '進度'], ['feedback', '💬', '回饋'],
   ];
   const ROUTE_NAV = { lesson: 'library', vocab: 'words' };

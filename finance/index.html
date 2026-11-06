@@ -2381,11 +2381,11 @@ a.term:hover {
     trivia: { port: '8919', mount: true, path: 'trivia/', name: '冷知識學院', icon: '💡' },
     'home-repair': { port: '8919', mount: true, path: 'home-repair/', name: '居家水電修繕學院', icon: '🔧' },
     fitness: { port: '8919', mount: true, path: 'fitness/', name: '健身學院', icon: '💪' },
-    stock: { port: '8919', mount: true, path: 'tw-stock-insight/', name: '台股智慧選股', icon: '📈' },
+    stock: { port: '8919', mount: true, path: 'tw-stock-insight/', name: '台股戰情室', icon: '📈' },
     poker: { port: '8919', mount: true, path: 'poker-gto/', name: 'GTO 賽局策略學院', icon: '♠️' },
-    nba: { port: '8919', mount: true, path: 'nba-betting-iq/', name: 'NBA 數據智庫', icon: '🏀' },
-    epl: { port: '8919', mount: true, path: 'epl-odds-iq/', name: '英超數據智庫', icon: '⚽' },
-    f1: { port: '8919', mount: true, path: 'f1-odds-iq/', name: 'F1 數據智庫', icon: '🏎️' },
+    nba: { port: '8919', mount: true, path: 'nba-betting-iq/', name: 'NBA 戰情室', icon: '🏀' },
+    epl: { port: '8919', mount: true, path: 'epl-odds-iq/', name: '英超戰情室', icon: '⚽' },
+    f1: { port: '8919', mount: true, path: 'f1-odds-iq/', name: 'F1 戰情室', icon: '🏎️' },
     baseball: { port: '8919', mount: true, path: 'baseball/', name: 'MLB 戰情室', icon: '⚾' },
     twbasket: { port: '8919', mount: true, path: 'tw-basketball/', name: '台籃戰情室', icon: '⛹️' }
   };
@@ -13817,7 +13817,7 @@ FIN.GLOSSARY.push(
 (function () {
   'use strict';
   var FIN = (window.FIN = window.FIN || {});
-  FIN.RELEASES_DATA = {"current_version":"1.0.0","releases":[{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"財經學院 v1.0.0 初版發布（技術分析 · 基本面 · 籌碼面 · 消息面）","highlights":["四大分院共 46 堂台股核心課程（技術分析 12 課、基本面 12 課、籌碼面 11 課、消息面 11 課），依入門 → 進階 → 實戰三階段編排","內建 38 組純 SVG 互動模擬圖表（K 線、均線、KD、RSI、MACD、布林通道、財報三表、本益比河流圖、三大法人、融資維持率 130% 試算等）","150+ 則台股術語百科（課文首次出現自動標註懸浮卡片）與跨分院綜合測驗＋錯題本","每課無縫串接「台股智慧選股」實戰區深連結，並整合開心學園「🏫 校園」導覽與三層教育免責聲明"],"files_count":28}]};
+  FIN.RELEASES_DATA = {"current_version":"2.0.0","releases":[{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見信件、意見回饋、校園導覽（共 6 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：財經學院頁面結構、頂部導覽列、免責聲明與腳本載入清單（+4 / -1 行）","[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+4 / -2 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1733 / -12 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+3 / -5 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+24 / -3 行）","[意見信件] 更新 tools/feedback_mailer.py：意見回饋儲存與寄送 okayell@hotmail.com（+4 / -2 行）"],"files_count":6},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"財經學院 v1.0.0 初版發布（技術分析 · 基本面 · 籌碼面 · 消息面）","highlights":["四大分院共 46 堂台股核心課程（技術分析 12 課、基本面 12 課、籌碼面 11 課、消息面 11 課），依入門 → 進階 → 實戰三階段編排","內建 38 組純 SVG 互動模擬圖表（K 線、均線、KD、RSI、MACD、布林通道、財報三表、本益比河流圖、三大法人、融資維持率 130% 試算等）","150+ 則台股術語百科（課文首次出現自動標註懸浮卡片）與跨分院綜合測驗＋錯題本","每課無縫串接「台股智慧選股」實戰區深連結，並整合開心學園「🏫 校園」導覽與三層教育免責聲明"],"files_count":28}]};
 
   var BUMP = {
     major: { badge: 'Major 大改版', cls: 'bad', desc: '進第 1 位數（X.0.0）：整體架構大改版、跨模組大規模升級' },
