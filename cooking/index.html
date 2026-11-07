@@ -107,20 +107,17 @@ h1, h2, h3, h4 { line-height: 1.35; margin: 0; }
 .empty { padding: 26px; text-align: center; color: var(--muted); background: #fff; border: 1.5px dashed var(--line-2); border-radius: var(--radius); font-weight: 700; }
 
 /* ------------------------------------------------------------ 共用元件 */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; padding: 0 15px; border-radius: 11px; border: 1.5px solid var(--line-2); background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; text-decoration: none !important; transition: background .15s, border-color .15s, transform .12s, box-shadow .15s; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; padding: 0 15px; border-radius: 11px; border: 1.5px solid var(--line-2); background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; text-decoration: none !important; transition: background .15s, border-color .15s, transform .12s; }
 .btn:hover { border-color: #d6b48a; background: #fffaf2; }
 .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
 .btn.primary:hover { background: var(--primary-d); border-color: var(--primary-d); box-shadow: 0 6px 16px rgba(194, 65, 12, .25); transform: translateY(-1px); }
-.btn.green { background: var(--green); border-color: var(--green); color: #fff; }
 .btn.sm { height: 32px; padding: 0 11px; font-size: 13px; border-radius: 9px; }
 .btn.xs { height: 27px; padding: 0 9px; font-size: 12px; border-radius: 8px; }
-.btn.ghost { background: transparent; }
 .btn.on { background: var(--primary-soft); border-color: #fdba74; color: var(--primary-d); }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .link-btn { background: none; border: 0; padding: 0; color: var(--primary); font: inherit; font-weight: 700; cursor: pointer; }
 .chip { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--line-2); background: #fff; color: var(--ink-2); font-size: 12px; font-weight: 800; white-space: nowrap; line-height: 1; }
 .chip.ok { background: var(--green-soft); border-color: #a7d8b8; color: var(--green); }
-.chip.warn { background: var(--gold-soft); border-color: #fcd34d; color: #92400e; }
 .chip.bad { background: var(--red-soft); border-color: #fca5a5; color: var(--red); }
 .chip.info { background: var(--blue-soft); border-color: #93c5fd; color: var(--blue); }
 .chip.hot { background: var(--primary-soft); border-color: #fdba74; color: var(--primary-d); }
@@ -184,7 +181,7 @@ a.chip:hover { border-color: var(--primary); color: var(--primary); }
 .track li.done::marker { color: var(--green); }
 
 /* ------------------------------------------------------------ 食譜卡片與列表 */
-.rc-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; color: var(--ink); text-decoration: none !important; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s, border-color .15s; }
+.rc-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; color: var(--ink); text-decoration: none !important; box-shadow: var(--shadow); transition: transform .15s, border-color .15s; }
 .rc-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); border-color: #fdba74; }
 .rc-card .thumb { aspect-ratio: 4 / 3; }
 .rc-badges { position: absolute; left: 8px; top: 8px; display: flex; gap: 5px; z-index: 1; }
@@ -271,7 +268,7 @@ a.chip:hover { border-color: var(--primary); color: var(--primary); }
 
 /* ------------------------------------------------------------ 菜系 */
 .region-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-.cu-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; color: var(--ink); text-decoration: none !important; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+.cu-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; color: var(--ink); text-decoration: none !important; box-shadow: var(--shadow); transition: transform .15s; }
 .cu-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
 .cu-card .thumb { aspect-ratio: 16 / 9; }
 .cu-flag { position: absolute; left: 10px; bottom: 8px; z-index: 1; font-size: 13px; font-weight: 900; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .6); }
@@ -317,7 +314,7 @@ a.dish:hover { border-color: #fdba74; }
 .scatter .dot:hover circle { stroke-width: 3; }
 
 /* ------------------------------------------------------------ 基本功 */
-.mod-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; color: var(--ink); text-decoration: none !important; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+.mod-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; color: var(--ink); text-decoration: none !important; box-shadow: var(--shadow); transition: transform .15s; }
 .mod-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
 .mod-card .thumb { aspect-ratio: 16 / 9; }
 .mod-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
@@ -373,8 +370,11 @@ a.dish:hover { border-color: #fdba74; }
 .timer { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; }
 .timer .t-name { flex: 1; min-width: 120px; font-weight: 800; }
 .timer .t-time { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--primary-d); min-width: 96px; }
-.timer.ring { border-color: var(--red); background: var(--red-soft); animation: ring .9s ease-in-out infinite; }
-@keyframes ring { 50% { box-shadow: 0 0 0 5px rgba(185, 28, 28, .18); } }
+.timer.ring { position: relative; border-color: var(--red); background: var(--red-soft); }
+.timer.ring::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; box-shadow: 0 0 0 5px rgba(185, 28, 28, .18); opacity: 0; pointer-events: none; animation: ring .9s ease-in-out infinite; }
+@keyframes ring { 50% { opacity: 1; } }
+#timerDock { position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 120; display: grid; gap: 8px; width: min(380px, calc(100vw - 28px)); }
+#timerDock .timer { box-shadow: 0 10px 26px rgba(43, 33, 24, .22); }
 .preset-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 14px; }
 .shop-list { display: grid; gap: 6px; }
 .shop-item { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14.5px; }
@@ -416,7 +416,7 @@ a.dish:hover { border-color: #fdba74; }
 .fb-fallback .btns { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
 .me-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 10px; }
 .credit-list { display: grid; gap: 6px; font-size: 13px; }
-.credit-row { display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+.credit-row { content-visibility: auto; contain-intrinsic-size: auto 72px; display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
 .credit-row img { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; flex: none; }
 .credit-row div { min-width: 0; }
 .credit-row b { display: block; font-size: 13.5px; }
@@ -476,7 +476,7 @@ a.dish:hover { border-color: #fdba74; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rc-card, .cu-card, .mod-card, .btn { transition: none; }
-  .timer.ring { animation: none; }
+  .timer.ring::after { animation: none; }
 }
 
 </style>
@@ -2151,20 +2151,34 @@ window.CK_ASSETS = {"img/ui/hero.webp":"data:image/webp;base64,UklGRhhDAABXRUJQV
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -2331,7 +2345,18 @@ window.CK_ASSETS = {"img/ui/hero.webp":"data:image/webp;base64,UklGRhhDAABXRUJQV
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -2398,9 +2423,17 @@ window.CK_ASSETS = {"img/ui/hero.webp":"data:image/webp;base64,UklGRhhDAABXRUJQV
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.CK_RELEASES = {
-  "current_version": "1.0.1",
-  "last_fingerprint": "0205fbeb0547cb17",
+  "current_version": "1.1.0",
+  "last_fingerprint": "f65339e235539a4d",
   "releases": [
+    {
+      "version": "1.1.0",
+      "date": "2026-11-07 09:55",
+      "title": "烹飪學院 v1.1.0 內容與體驗更新",
+      "changes": [
+        "優化食譜、菜系圖鑑與料理工具體驗"
+      ]
+    },
     {
       "version": "1.0.1",
       "date": "2026-11-06 15:17",
@@ -3580,11 +3613,30 @@ window.CK_IMG_CREDITS = {
   function lessonsFor(recipeId) { return D.lessons.filter(function (l) { return (l.recipes || []).indexOf(recipeId) >= 0; }); }
 
   /* ------------------------------------------------------------ 圖片與授權 */
-  function assetUrl(rel) { return (window.CK_ASSETS && window.CK_ASSETS[rel]) || rel; }
+  // 單檔版：HTML 只帶 data-ck-src 鍵名，插入後由 MutationObserver 設 img.src，免得 innerHTML 解析整段 base64
+  var ASSETS = window.CK_ASSETS && window.MutationObserver ? window.CK_ASSETS : null;
   function hasImg(key) {
     return !!((window.CK_ASSETS && window.CK_ASSETS['img/' + key + '.webp']) || (window.CK_IMG_CREDITS && window.CK_IMG_CREDITS[key]));
   }
-  function imgUrl(key) { return assetUrl('img/' + key + '.webp'); }
+  function imgSrc(key) {
+    var rel = 'img/' + key + '.webp';
+    if (ASSETS && ASSETS[rel]) return ' data-ck-src="' + esc(rel) + '"';
+    return ' src="' + esc((window.CK_ASSETS && window.CK_ASSETS[rel]) || rel) + '"';
+  }
+  function hydrateImg(img) { img.src = ASSETS[img.getAttribute('data-ck-src')]; img.removeAttribute('data-ck-src'); }
+  if (ASSETS) {
+    new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var nodes = muts[i].addedNodes;
+        for (var j = 0; j < nodes.length; j++) {
+          var n = nodes[j];
+          if (n.nodeType !== 1) continue;
+          if (n.hasAttribute('data-ck-src')) hydrateImg(n);
+          else if (n.firstElementChild) n.querySelectorAll('img[data-ck-src]').forEach(hydrateImg);
+        }
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
   function recipeEmoji(r) {
     if (!r) return '🍽️';
     if (COURSE_EMOJI[r.course]) return COURSE_EMOJI[r.course];
@@ -3592,7 +3644,7 @@ window.CK_IMG_CREDITS = {
   }
   function thumbHtml(key, emoji, extraCls, eager) {
     var img = hasImg(key)
-      ? '<img src="' + esc(imgUrl(key)) + '" alt=""' + (eager ? '' : ' loading="lazy"') + ' decoding="async" onerror="this.parentNode.classList.add(\'noimg\');this.remove()">'
+      ? '<img' + imgSrc(key) + ' alt=""' + (eager ? '' : ' loading="lazy"') + ' decoding="async" onerror="this.parentNode.classList.add(\'noimg\');this.remove()">'
       : '';
     return '<div class="thumb' + (extraCls ? ' ' + extraCls : '') + (img ? '' : ' noimg') + '">' + img + '<span class="thumb-emoji" aria-hidden="true">' + esc(emoji || '🍽️') + '</span></div>';
   }
@@ -3680,6 +3732,12 @@ window.CK_IMG_CREDITS = {
     if (m >= 60) return Math.floor(m / 60) + ':' + ('0' + (m % 60)).slice(-2) + ':' + ('0' + r).slice(-2);
     return m + ':' + ('0' + r).slice(-2);
   }
+  // 分段按鈕列（食譜篩選 data-f、今天吃什麼 data-pk 共用）
+  function segHtml(attr, key, opts, cur) {
+    return opts.map(function (o) {
+      return '<button type="button" class="seg-btn' + ((cur || '') === o[0] ? ' on' : '') + '" ' + attr + '="' + key + '" data-v="' + esc(o[0]) + '">' + esc(o[1]) + '</button>';
+    }).join('');
+  }
   function stars(n) { return '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n); }
   function peppers(n) { return n ? '🌶️'.repeat(n) : ''; }
 
@@ -3730,7 +3788,7 @@ window.CK_IMG_CREDITS = {
     if (tickHandle || !timers.length) return;
     tickHandle = setInterval(function () {
       if (!timers.length) { clearInterval(tickHandle); tickHandle = 0; document.title = baseTitle; return; }
-      var ringing = false;
+      var ringing = false, byId = {};
       timers.forEach(function (t) {
         if (!t.done && !t.paused && timerLeft(t) <= 0) {
           t.done = true;
@@ -3738,15 +3796,19 @@ window.CK_IMG_CREDITS = {
           toast('🔔 時間到：' + t.name);
         }
         if (t.done) ringing = true;
+        byId[t.id] = t;
       });
-      document.querySelectorAll('[data-timer-left]').forEach(function (el) {
-        var t = timers.filter(function (x) { return x.id === el.getAttribute('data-timer-left'); })[0];
-        if (t) el.textContent = t.done ? '時間到！' : fmtSec(timerLeft(t));
-      });
-      document.querySelectorAll('[data-timer-row]').forEach(function (el) {
-        var t = timers.filter(function (x) { return x.id === el.getAttribute('data-timer-row'); })[0];
-        if (t) el.classList.toggle('ring', !!t.done);
-      });
+      // 分頁隱藏時只響鈴＋閃標題
+      if (!document.hidden) {
+        document.querySelectorAll('[data-timer-left]').forEach(function (el) {
+          var t = byId[el.getAttribute('data-timer-left')];
+          if (t) el.textContent = t.done ? '時間到！' : fmtSec(timerLeft(t));
+        });
+        document.querySelectorAll('[data-timer-row]').forEach(function (el) {
+          var t = byId[el.getAttribute('data-timer-row')];
+          if (t) el.classList.toggle('ring', !!t.done);
+        });
+      }
       document.title = ringing ? (Math.floor(Date.now() / 600) % 2 ? '🔔 時間到！' : baseTitle) : baseTitle;
     }, 250);
   }
@@ -3763,12 +3825,10 @@ window.CK_IMG_CREDITS = {
     if (!dock) {
       dock = document.createElement('div');
       dock.id = 'timerDock';
-      dock.style.cssText = 'position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:120;display:grid;gap:8px;width:min(380px,calc(100vw - 28px))';
       document.body.appendChild(dock);
     }
-    var onToolsTimers = /^#\/tools\/timers/.test(location.hash);
-    dock.innerHTML = onToolsTimers ? '' : timers.map(timerRowHtml).join('');
-    dock.querySelectorAll('.timer').forEach(function (el) { el.style.boxShadow = '0 10px 26px rgba(43,33,24,.22)'; });
+    var html = /^#\/tools\/timers/.test(location.hash) ? '' : timers.map(timerRowHtml).join('');
+    if (dock.innerHTML !== html) dock.innerHTML = html;
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest ? e.target.closest('[data-timer-act]') : null;
@@ -3833,14 +3893,14 @@ window.CK_IMG_CREDITS = {
   var CK = window.CK = {
     esc: esc, isEnterSend: isEnterSend, toast: toast, copyText: copyText, dayKey: dayKey, seeded: seeded,
     COURSE: COURSE, PROTEIN: PROTEIN, REGION: REGION, REGION_ICON: REGION_ICON, DIFF: DIFF, SPICY: SPICY,
-    FLAVOR: FLAVOR, FLAVOR_COLOR: FLAVOR_COLOR, MODULE_ORDER: MODULE_ORDER, CUISINE_ORDER: CUISINE_ORDER,
+    FLAVOR: FLAVOR, FLAVOR_COLOR: FLAVOR_COLOR,
     D: D, indexData: indexData, recipe: recipe, cuisine: cuisine, lesson: lesson, module: module,
     recipesOf: recipesOf, lessonsFor: lessonsFor,
-    assetUrl: assetUrl, hasImg: hasImg, imgUrl: imgUrl, thumbHtml: thumbHtml, creditHtml: creditHtml, recipeEmoji: recipeEmoji,
+    hasImg: hasImg, imgSrc: imgSrc, thumbHtml: thumbHtml, creditHtml: creditHtml, recipeEmoji: recipeEmoji,
     S: S, save: save, toggle: toggle, mark: mark, progress: progress, updateProgress: updateProgress,
-    fmtQty: fmtQty, fmtMin: fmtMin, fmtSec: fmtSec, stars: stars, peppers: peppers,
-    timers: function () { return timers; }, addTimer: addTimer, timerAction: timerAction, timerRowHtml: timerRowHtml, renderDock: renderDock, beep: beep,
-    addToShop: addToShop, sendFeedback: sendFeedback, isLocalServer: isLocalServer, FEEDBACK_EMAIL: FEEDBACK_EMAIL,
+    fmtQty: fmtQty, fmtMin: fmtMin, fmtSec: fmtSec, segHtml: segHtml, stars: stars, peppers: peppers,
+    timers: function () { return timers; }, addTimer: addTimer, timerRowHtml: timerRowHtml, renderDock: renderDock,
+    addToShop: addToShop, sendFeedback: sendFeedback, isLocalServer: isLocalServer,
     on: function (n, fn) { (listeners[n] = listeners[n] || []).push(fn); },
     emit: function (n, d) { (listeners[n] || []).forEach(function (fn) { try { fn(d); } catch (e) { /* 單一監聽失敗不影響其他 */ } }); },
   };
@@ -16389,9 +16449,7 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
     if (f.course === 'sweet' && ['dessert', 'drink'].indexOf(r.course) < 0) return false;
     return true;
   }
-  function seg(key, opts, cur) {
-    return opts.map(function (o) { return '<button type="button" class="seg-btn' + (cur === o[0] ? ' on' : '') + '" data-pk="' + key + '" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('');
-  }
+  function seg(key, opts, cur) { return CK.segHtml('data-pk', key, opts, cur); }
   CK.pickerHtml = function (f) {
     return '<div class="row"><span>想吃</span>' + seg('course', [['', '都可以'], ['main', '🍛 正餐'], ['light', '🥗 清爽小點'], ['sweet', '🍮 甜點飲品']], f.course) + '</div>' +
       '<div class="row"><span>時間</span>' + seg('time', [['', '不限'], ['20', '20 分內'], ['40', '40 分內']], f.time) + '</div>' +
@@ -16436,7 +16494,7 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
       var cand = pool[Math.floor(rnd() * pool.length)];
       if (today.indexOf(cand) < 0) today.push(cand);
     }
-    var heroImg = CK.hasImg('ui/hero') ? '<div class="hero-img"><img src="' + esc(CK.imgUrl('ui/hero')) + '" alt="" fetchpriority="high"></div>' : '';
+    var heroImg = CK.hasImg('ui/hero') ? '<div class="hero-img"><img' + CK.imgSrc('ui/hero') + ' alt="" fetchpriority="high"></div>' : '';
     var credit = CK.creditHtml('ui/hero');
     var firstLessons = STARTER_MODULES.map(function (mid) { var m = CK.module(mid); return m && m.lessons && m.lessons[0]; }).filter(Boolean);
     var featured = ['sichuan', 'japanese', 'thai', 'italian', 'vietnamese', 'indian', 'mexican', 'french'].map(CK.cuisine).filter(Boolean);
@@ -16496,7 +16554,12 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
   var DIFF_OPTS = [['', '全部'], ['1', '★ 新手'], ['2', '★★ 進階'], ['3', '★★★ 挑戰']];
   var SPICY_OPTS = [['', '都可以'], ['0', '不辣'], ['1', '會辣']];
   var SORTS = [['', '推薦'], ['time', '時間短'], ['diff', '難度低']];
-  function matches(r, f) {
+  var hayCache = {};
+  function recipeHay(r, c) {
+    return hayCache[r.id] || (hayCache[r.id] = [r.name, r.en, r.summary, (r.tags || []).join(' '), c.name, c.en,
+      (r.ingredients || []).map(function (g) { return g.items.map(function (i) { return i.name; }).join(' '); }).join(' ')].join(' ').toLowerCase());
+  }
+  function matches(r, f, terms) {
     var c = CK.cuisine(r.cuisine) || {};
     if (f.region && c.region !== f.region) return false;
     if (f.cuisine && r.cuisine !== f.cuisine) return false;
@@ -16509,18 +16572,13 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
     if (f.veg && !r.veg) return false;
     if (f.fav && !CK.S.favs[r.id]) return false;
     if (f.cooked && !CK.S.cooked[r.id]) return false;
-    if (f.q) {
-      var hay = [r.name, r.en, r.summary, (r.tags || []).join(' '), c.name, c.en,
-        (r.ingredients || []).map(function (g) { return g.items.map(function (i) { return i.name; }).join(' '); }).join(' ')].join(' ').toLowerCase();
-      if (!f.q.toLowerCase().split(/\s+/).filter(Boolean).every(function (t) { return hay.indexOf(t) >= 0; })) return false;
+    if (terms.length) {
+      var hay = recipeHay(r, c);
+      if (!terms.every(function (t) { return hay.indexOf(t) >= 0; })) return false;
     }
     return true;
   }
-  function segHtml(key, opts, cur) {
-    return opts.map(function (o) {
-      return '<button type="button" class="seg-btn' + ((cur || '') === o[0] ? ' on' : '') + '" data-f="' + key + '" data-v="' + esc(o[0]) + '">' + esc(o[1]) + '</button>';
-    }).join('');
-  }
+  function segHtml(key, opts, cur) { return CK.segHtml('data-f', key, opts, cur); }
   P.recipes = function (main, param, query) {
     var f = {
       q: query.q || '', region: query.region || '', cuisine: query.cuisine || '', course: query.course || '', protein: query.protein || '',
@@ -16561,7 +16619,8 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
       try { history.replaceState(null, '', '#/recipes' + (s ? '?' + s : '')); } catch (e) { /* ignore */ }
     }
     function apply() {
-      var list = D.recipes.filter(function (r) { return matches(r, f); });
+      var terms = f.q.toLowerCase().split(/\s+/).filter(Boolean);
+      var list = D.recipes.filter(function (r) { return matches(r, f, terms); });
       if (f.sort === 'time') list = list.slice().sort(function (a, b) { return a.time - b.time; });
       if (f.sort === 'diff') list = list.slice().sort(function (a, b) { return a.difficulty - b.difficulty || a.time - b.time; });
       main.querySelector('#rfCount').textContent = '找到 ' + list.length + ' 道食譜';
@@ -16848,7 +16907,10 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
         '<div class="sec-title"><h2>🧭 口味地圖</h2><span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:800">X 軸 <select class="f-select" id="cxSel">' + flavorOpts(xk) + '</select> Y 軸 <select class="f-select" id="cySel">' + flavorOpts(yk) + '</select></span></div>' +
         '<p class="muted" style="margin:-4px 0 10px;font-size:13.5px">每個菜系的口味分數 0–5（編輯部依代表菜整理的相對值），點圖上的菜系可以直接看介紹。</p>' +
         scatterSvg(list, xk, yk);
-      main.querySelectorAll('[data-region]').forEach(function (b) { b.addEventListener('click', function () { region = b.getAttribute('data-region'); sync(); paint(); }); });
+      main.querySelector('.region-tabs').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-region]');
+        if (b) { region = b.getAttribute('data-region'); sync(); paint(); }
+      });
       main.querySelector('#cxSel').addEventListener('change', function (e) { xk = e.target.value; sync(); paint(); });
       main.querySelector('#cySel').addEventListener('change', function (e) { yk = e.target.value; sync(); paint(); });
     }
@@ -16868,7 +16930,7 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
     if (!c) { main.innerHTML = '<div class="empty">找不到這個菜系。<a href="#/cuisines">回到世界菜系</a></div>'; return; }
     CK.mark('cuisines', c.id);
     var recipes = CK.recipesOf(c.id);
-    var heroImg = CK.hasImg('c/' + c.id) ? '<div class="hero-img"><img src="' + esc(CK.imgUrl('c/' + c.id)) + '" alt=""></div>' : '';
+    var heroImg = CK.hasImg('c/' + c.id) ? '<div class="hero-img"><img' + CK.imgSrc('c/' + c.id) + ' alt=""></div>' : '';
     var credit = CK.creditHtml('c/' + c.id);
     main.innerHTML = '<nav class="crumbs"><a href="#/cuisines">🌏 世界菜系</a><span>›</span><a href="#/cuisines?region=' + esc(c.region) + '">' + esc(CK.REGION[c.region] || '') + '</a><span>›</span><span>' + esc(c.name) + '</span></nav>' +
       '<section class="cu-hero">' + heroImg + credit + '<div class="cu-hero-body"><div class="hero-kicker">' + esc(c.flag + ' ' + c.group + ' · ' + c.en) + '</div>' +
@@ -17039,8 +17101,12 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
     }
     var t = 0;
     main.querySelector('#glQ').addEventListener('input', function (e) { clearTimeout(t); var v = e.target.value; t = setTimeout(function () { q = v.trim(); apply(); }, 150); });
-    main.querySelectorAll('[data-cat]').forEach(function (b) {
-      b.addEventListener('click', function () { cat = b.getAttribute('data-cat'); main.querySelectorAll('[data-cat]').forEach(function (x) { x.classList.toggle('on', x === b); }); apply(); });
+    main.querySelector('.filters').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-cat]');
+      if (!b) return;
+      cat = b.getAttribute('data-cat');
+      main.querySelectorAll('[data-cat]').forEach(function (x) { x.classList.toggle('on', x === b); });
+      apply();
     });
     apply();
   };
@@ -17058,7 +17124,10 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
           var best = S.quiz.best[c[0]];
           return '<button type="button" class="quiz-cat" data-qcat="' + c[0] + '"' + (n ? '' : ' disabled') + '><b>' + c[1] + '</b><small>' + c[2] + ' · ' + n + ' 題' + (best != null ? ' · 最佳 ' + best + '/10' : '') + '</small></button>';
         }).join('') + '</div>';
-      main.querySelectorAll('[data-qcat]').forEach(function (b) { b.addEventListener('click', function () { location.hash = '#/quiz/' + b.getAttribute('data-qcat'); }); });
+      main.querySelector('.quiz-cats').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-qcat]');
+        if (b && !b.disabled) location.hash = '#/quiz/' + b.getAttribute('data-qcat');
+      });
       return;
     }
     var pool = param === 'all' ? D.quiz : param === 'wrong' ? D.quiz.filter(function (q) { return S.quiz.wrong.indexOf(q.id) >= 0; }) : D.quiz.filter(function (q) { return q.cat === param; });
@@ -17073,7 +17142,10 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
           return '<button type="button" class="quiz-opt" data-k="' + k + '">' + 'ABCD'.charAt(k) + '. ' + esc(o) + '</button>';
         }).join('') + '</div><div id="qExplain"></div></div>';
       answered = false;
-      main.querySelectorAll('.quiz-opt').forEach(function (b) { b.addEventListener('click', function () { answer(+b.getAttribute('data-k')); }); });
+      main.querySelector('.quiz-opts').addEventListener('click', function (e) {
+        var b = e.target.closest('.quiz-opt');
+        if (b) answer(+b.getAttribute('data-k'));
+      });
     }
     function answer(k) {
       if (answered) return;
@@ -17181,7 +17253,7 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
     main.innerHTML = '<div class="page-head"><div><h1>📷 圖片來源與授權</h1><p>本學院的料理照片來自 Wikimedia Commons，依各自的創用 CC／公有領域授權使用，並經裁切與壓縮。感謝每一位作者！</p></div></div>' +
       '<div class="credit-list">' + (keys.length ? keys.map(function (k) {
         var c = cr[k];
-        return '<div class="credit-row"><img src="' + esc(CK.imgUrl(k)) + '" alt="" loading="lazy"><div><b>' + esc(label(k)) + '</b><span>' + esc(c.author || '佚名') + ' · ' +
+        return '<div class="credit-row"><img' + CK.imgSrc(k) + ' alt="" loading="lazy"><div><b>' + esc(label(k)) + '</b><span>' + esc(c.author || '佚名') + ' · ' +
           (c.licenseUrl ? '<a href="' + esc(c.licenseUrl) + '" target="_blank" rel="noopener">' + esc(c.license) + '</a>' : esc(c.license)) + ' · <a href="' + esc(c.page) + '" target="_blank" rel="noopener">' + esc(String(c.title || '').replace(/^File:/, '')) + '</a></span></div></div>';
       }).join('') : '<div class="empty">目前沒有使用外部圖片。</div>') + '</div>';
   };
@@ -17299,7 +17371,7 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
       var c = tu === 'c' ? t : (t - 32) * 5 / 9, f = tu === 'c' ? t * 9 / 5 + 32 : t;
       box.querySelector('#cvTO').innerHTML = '<div><b>' + num(c) + '</b><span>°C 攝氏</span></div><div><b>' + num(f) + '</b><span>°F 華氏</span></div>';
     }
-    box.querySelectorAll('input,select').forEach(function (el) { el.addEventListener('input', paint); el.addEventListener('change', paint); });
+    box.oninput = box.onchange = paint;
     paint();
   }
 
@@ -17404,7 +17476,7 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
       var salt = w * pct / 100;
       box.querySelector('#brOut').innerHTML = '<div><b>' + num(salt) + ' 克</b><span>鹽</span></div><div><b>' + num(salt / 18) + ' 大匙</b><span>精鹽約 18 克／大匙</span></div>';
     }
-    box.querySelectorAll('input,select').forEach(function (el) { el.addEventListener('input', paint); el.addEventListener('change', paint); });
+    box.oninput = box.onchange = paint;
     paint();
   }
 
@@ -17444,14 +17516,16 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
     return { route: parts[0] || 'home', param: parts[1] || '', query: query };
   }
   var NAV_OF = { recipe: 'recipes', cuisine: 'cuisines', compare: 'cuisines', lesson: 'basics' };
-  var lastRoute = '';
+  var lastRoute = '', lastNav = null;
   function render() {
     var main = document.getElementById('appMain');
     if (!main) return;
     var h = parseHash();
     var pages = window.CKPages || {};
     var nav = NAV_OF[h.route] || h.route;
-    document.querySelectorAll('#mainNavTabs .nav-tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-nav') === nav); });
+    var navChanged = nav !== lastNav;
+    if (navChanged) document.querySelectorAll('#mainNavTabs .nav-tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-nav') === nav); });
+    lastNav = nav;
     var fn = pages[h.route] || pages.home;
     try {
       fn(main, h.param, h.query);
@@ -17464,6 +17538,8 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
     lastRoute = key;
     CK.updateProgress();
     CK.renderDock();
+    // 只在切換主分頁時捲動導覽列（避免每次重繪都強制排版）
+    if (!navChanged) return;
     var active = document.querySelector('#mainNavTabs .nav-tab.active');
     if (active && active.scrollIntoView) { try { active.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (e) { /* ignore */ } }
   }
@@ -17513,7 +17589,7 @@ window.CK_QUIZ = (window.CK_QUIZ || []).concat([
       sel = 0;
       if (!hits.length) { dd.innerHTML = '<div class="search-empty">找不到「' + esc(inp.value.trim()) + '」，試試「麻婆豆腐」「泰國」「勾芡」「雞腿」</div>'; dd.hidden = false; return; }
       dd.innerHTML = hits.map(function (it, i) {
-        var th = it.key && CK.hasImg(it.key) ? '<img class="search-thumb" src="' + esc(CK.imgUrl(it.key)) + '" alt="" loading="lazy">' : '<span class="search-emoji" aria-hidden="true">' + esc(it.emoji) + '</span>';
+        var th = it.key && CK.hasImg(it.key) ? '<img class="search-thumb"' + CK.imgSrc(it.key) + ' alt="" loading="lazy">' : '<span class="search-emoji" aria-hidden="true">' + esc(it.emoji) + '</span>';
         return '<a class="search-item' + (i === sel ? ' on' : '') + '" role="option" href="' + esc(it.href) + '"><span class="search-item-left">' + th +
           '<span style="min-width:0"><span class="search-item-title" style="display:block">' + esc(it.title) + '</span><span class="search-item-sub" style="display:block">' + esc(it.sub.slice(0, 70)) + '</span></span></span>' +
           '<span class="search-item-tag">' + esc(it.tag) + '</span></a>';

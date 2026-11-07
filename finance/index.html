@@ -106,9 +106,11 @@ button, input, select, textarea {
 .read-prog > i {
   display: block;
   height: 100%;
-  width: 0;
+  width: 100%;
   background: var(--tc, var(--primary));
-  transition: width 0.08s linear;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
 }
 
 /* -------------------- Sticky Site Header -------------------- */
@@ -116,8 +118,7 @@ button, input, select, textarea {
   position: sticky;
   top: 0;
   z-index: 80;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  background: var(--surface);
   border-bottom: 1px solid var(--border);
 }
 
@@ -411,12 +412,12 @@ button, input, select, textarea {
   opacity: 0.55;
   cursor: not-allowed;
 }
-.btn.primary, .btn-primary {
+.btn.primary {
   background: var(--tc, var(--primary));
   border-color: var(--tc, var(--primary));
   color: #fff;
 }
-.btn.primary:hover:not(:disabled), .btn-primary:hover:not(:disabled) {
+.btn.primary:hover:not(:disabled) {
   filter: brightness(0.94);
   color: #fff;
 }
@@ -424,7 +425,7 @@ button, input, select, textarea {
   padding: 10px 18px;
   font-size: 14.5px;
 }
-.btn.sm, .btn-sm {
+.btn.sm {
   padding: 5px 10px;
   font-size: 12.5px;
   border-radius: 7px;
@@ -676,7 +677,7 @@ button, input, select, textarea {
   color: var(--text);
   text-decoration: none !important;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.14s, box-shadow 0.14s;
+  transition: transform 0.14s;
 }
 .track-card:hover {
   transform: translateY(-2px);
@@ -934,7 +935,7 @@ button, input, select, textarea {
   padding: 12px 14px;
   color: var(--text);
   text-decoration: none !important;
-  transition: border-color 0.14s, box-shadow 0.14s;
+  transition: border-color 0.14s;
 }
 .lesson-row:hover {
   border-color: var(--tc, var(--primary));
@@ -1783,6 +1784,9 @@ a.term:hover {
   border-left: 4px solid var(--c, var(--primary));
   border-radius: 10px;
   overflow: hidden;
+  /* 150+ 張卡片：畫面外的卡片略過排版與繪製 */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 50px;
 }
 .g-hd {
   width: 100%;
@@ -1799,6 +1803,9 @@ a.term:hover {
 @media (max-width: 680px) {
   .g-hd {
     grid-template-columns: 1fr;
+  }
+  .g-card {
+    contain-intrinsic-size: auto 110px;
   }
 }
 .g-t b {
@@ -2131,7 +2138,6 @@ a.term:hover {
   inset: 0;
   z-index: 110;
   background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(3px);
   display: none;
   align-items: center;
   justify-content: center;
@@ -3932,20 +3938,34 @@ a.term:hover {
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -4112,7 +4132,18 @@ a.term:hover {
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -4286,11 +4317,6 @@ a.term:hover {
   };
   FIN.dayKey = (d) => `${d.getFullYear()}-${FIN.pad(d.getMonth() + 1)}-${FIN.pad(d.getDate())}`;
   FIN.todayKey = () => FIN.dayKey(new Date());
-  FIN.fmtDate = (ts) => {
-    if (!ts) return '—';
-    const d = new Date(ts);
-    return `${d.getFullYear()}/${FIN.pad(d.getMonth() + 1)}/${FIN.pad(d.getDate())}`;
-  };
   FIN.fmtNum = (v, dp) => {
     if (v == null || !isFinite(v)) return '—';
     const d = dp == null ? (Math.abs(v) >= 100 ? 0 : 2) : dp;
@@ -4482,7 +4508,6 @@ a.term:hover {
     d.xp = (d.xp || 0) + (n || 0);
     if (act) d.act[act] = (d.act[act] || 0) + (count == null ? 1 : count);
     FIN.save();
-    FIN.emit('xp', n);
   };
   const dayActive = (k) => !!FIN.state.days[k] && (FIN.state.days[k].xp || 0) > 0;
   FIN.streak = () => {
@@ -4563,7 +4588,6 @@ a.term:hover {
   // ---------------------------------------------------------------------------
   FIN.isStatic = () => !!(window.FIN_STATIC_ONLY || (location.protocol !== 'http:' && location.protocol !== 'https:') ||
     /\.github\.io$|\.pages\.dev$|\.netlify\.app$|\.vercel\.app$/i.test(location.hostname || ''));
-  const LOCAL_PORTS = ['8924', '8925'];
   /** 在 Cloudtop 本機執行時一律連到同主機的台股智慧選股 (:8919/tw-stock-insight/)；GitHub / file 版連公開網址。 */
   FIN.practiceUrl = (route) => {
     const r = String(route || '#/');
@@ -5008,15 +5032,18 @@ a.term:hover {
   /** 依容器寬度畫圖，縮放視窗時重畫。render(width) 回傳 { html, after(svgEl) }。 */
   function responsive(host, render) {
     let lastW = 0;
-    const draw = () => {
-      const w = Math.round(host.getBoundingClientRect().width || host.parentElement.getBoundingClientRect().width || 680);
+    const measure = () => Math.round(host.getBoundingClientRect().width || host.parentElement.getBoundingClientRect().width || 680);
+    const draw = (w0) => {
+      const w = w0 || measure();
       const width = FIN.clamp(w, 280, 980);
       lastW = width;
       const out = render(width);
       host.innerHTML = out.html;
       if (out.after) out.after(host);
     };
-    draw();
+    // 同一次 hydrateWidgets 內的圖表容器同寬：只量第一個，避免每畫一張圖就強制重排一次。
+    if (W.passWidth === 0) W.passWidth = measure();
+    draw(W.passWidth);
     if (window.ResizeObserver) {
       const ro = new ResizeObserver(FIN.debounce(() => {
         const w = Math.round(host.getBoundingClientRect().width);
@@ -5025,7 +5052,7 @@ a.term:hover {
       ro.observe(host);
       FIN.onCleanup(() => ro.disconnect());
     }
-    return { redraw: draw };
+    return { redraw: () => draw() };
   }
 
   // ---------------------------------------------------------------------------
@@ -5193,17 +5220,27 @@ a.term:hover {
     if (!svg || !ro) return;
     const show = (i) => { ro.innerHTML = readout(i); };
     show(geo.n - 1);
-    const move = (e) => {
+    // 指標事件每個畫格合併處理一次；游標仍停在同一根時不重寫讀數。
+    let cur = -1; let lastX = 0; let raf = 0;
+    const apply = () => {
+      raf = 0;
       const r = svg.getBoundingClientRect();
-      const sx = (e.clientX - r.left) / r.width * geo.width;
+      if (!r.width) return; // 圖表已重畫或離開畫面
+      const sx = (lastX - r.left) / r.width * geo.width;
       const i = FIN.clamp(Math.floor((sx - geo.padL) / geo.slot), 0, geo.n - 1);
+      if (i === cur) return;
+      cur = i;
       cross.setAttribute('x1', geo.x(i)); cross.setAttribute('x2', geo.x(i));
       cross.setAttribute('visibility', 'visible');
       show(i);
     };
+    const move = (e) => { lastX = e.clientX; if (!raf) raf = requestAnimationFrame(apply); };
     svg.addEventListener('pointermove', move);
     svg.addEventListener('pointerdown', move);
-    svg.addEventListener('pointerleave', () => { cross.setAttribute('visibility', 'hidden'); show(geo.n - 1); });
+    svg.addEventListener('pointerleave', () => {
+      cancelAnimationFrame(raf); raf = 0; cur = -1;
+      cross.setAttribute('visibility', 'hidden'); show(geo.n - 1);
+    });
   }
   function ohlcText(b) {
     const ch = b.c - b.prev;
@@ -6593,6 +6630,7 @@ a.term:hover {
 
   /** 把頁面中所有尚未初始化的元件換成互動圖表。 */
   FIN.hydrateWidgets = (root) => {
+    W.passWidth = 0;
     FIN.$$('.widget[data-widget]', root || document).forEach((el) => {
       if (el.dataset.ready) return;
       el.dataset.ready = '1';
@@ -6603,6 +6641,7 @@ a.term:hover {
         el.innerHTML = '<div class="w-missing">互動圖表載入失敗，請重新整理頁面</div>';
       }
     });
+    W.passWidth = undefined;
   };
 })();
 
@@ -12919,7 +12958,6 @@ FIN.GLOSSARY.push(
     }
     return count;
   };
-  FIN.on('content', () => { MATCHER = null; });
 
   // ---------------------------------------------------------------------------
   // 2. 提示框
@@ -12960,9 +12998,10 @@ FIN.GLOSSARY.push(
     }
     if (pop && !e.target.closest('.term-pop')) closePop();
   });
+  const canHover = window.matchMedia('(hover: hover)');
   document.addEventListener('mouseover', (e) => {
     const a = e.target.closest && e.target.closest('a.term');
-    if (!a || !window.matchMedia('(hover: hover)').matches) return;
+    if (!a || !canHover.matches) return;
     clearTimeout(hoverTimer);
     hoverTimer = setTimeout(() => { openPop(a); if (pop) pop.dataset.for = a.dataset.term; }, 280);
   });
@@ -13021,6 +13060,12 @@ FIN.GLOSSARY.push(
     const list = FIN.$('#glist', main);
     const input = FIN.$('#gq', main);
     let composing = false;
+    // 術語卡片的內文連結延後到第一次展開才處理（收合時內文不顯示），切換分類／搜尋時不必掃描上百張卡。
+    const linkCard = (c) => {
+      if (!c || c.dataset.linked) return;
+      c.dataset.linked = '1';
+      FIN.$$('.g-def, .g-ex', c).forEach((el) => FIN.linkTerms(el, new Set([c.dataset.id]), 6));
+    };
     function render() {
       const q = st.q.trim().toLowerCase();
       let rows = all.filter((g) => (st.cat === 'all' || g.cat === st.cat) && (!st.imp || g.imp === 3));
@@ -13029,7 +13074,7 @@ FIN.GLOSSARY.push(
       FIN.$('#gcount', main).textContent = all.length ? `顯示 ${rows.length} / ${all.length} 個術語` : '';
       list.innerHTML = rows.length ? rows.map(([g]) => card(g, g.id === focus)).join('')
         : `<div class="card empty"><h3>${all.length ? '找不到符合的術語' : '術語百科準備中'}</h3><p class="muted">${all.length ? '換個關鍵字，或切換到「全部」分類試試。' : '內容即將上線。'}</p></div>`;
-      FIN.$$('.g-def, .g-ex', list).forEach((el) => FIN.linkTerms(el, new Set([el.closest('.g-card').dataset.id]), 6));
+      FIN.$$('.g-card.open', list).forEach(linkCard);
     }
     render();
     input.addEventListener('compositionstart', () => { composing = true; });
@@ -13039,7 +13084,7 @@ FIN.GLOSSARY.push(
       if (!FIN.isEnterSend(e)) return;
       e.preventDefault();
       const first = FIN.$('.g-card', list);
-      if (first) { first.classList.add('open'); first.scrollIntoView({ block: 'center' }); FIN.viewTerm(first.dataset.id); }
+      if (first) { first.classList.add('open'); linkCard(first); first.scrollIntoView({ block: 'center' }); FIN.viewTerm(first.dataset.id); }
     });
     FIN.$('.g-cats', main).addEventListener('click', (e) => {
       const b = e.target.closest('[data-cat]');
@@ -13055,13 +13100,13 @@ FIN.GLOSSARY.push(
       const c = hd.closest('.g-card');
       c.classList.toggle('open');
       hd.setAttribute('aria-expanded', c.classList.contains('open') ? 'true' : 'false');
-      if (c.classList.contains('open')) FIN.viewTerm(c.dataset.id);
+      if (c.classList.contains('open')) { linkCard(c); FIN.viewTerm(c.dataset.id); }
     });
     if (focus) {
       FIN.viewTerm(focus);
       requestAnimationFrame(() => {
         const el = FIN.$(`#term-${CSS.escape(focus)}`, main);
-        if (el) { el.scrollIntoView({ block: 'center' }); el.classList.add('flash'); }
+        if (el) el.scrollIntoView({ block: 'center' });
       });
     } else if (!('ontouchstart' in window)) {
       input.focus({ preventScroll: true });
@@ -13495,6 +13540,9 @@ FIN.GLOSSARY.push(
       const el = document.getElementById(a.dataset.to);
       if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 76, behavior: 'smooth' });
     });
+    // 讀到「常見誤區」或「隨堂測驗」即標記已讀；同一次瀏覽只寫一次 localStorage。
+    let readMarked = false;
+    const markRead = () => { if (!readMarked) { readMarked = true; FIN.markRead(L.id); } };
     if ('IntersectionObserver' in window) {
       const links = new Map(FIN.$$('#tocList a', main).map((a) => [a.dataset.to, a]));
       const io = new IntersectionObserver((ents) => {
@@ -13503,24 +13551,27 @@ FIN.GLOSSARY.push(
           links.forEach((a) => a.classList.remove('on'));
           const a = links.get(en.target.id);
           if (a) a.classList.add('on');
-          if (en.target.id === 'sec-pitfalls' || en.target.id === 'sec-quiz') FIN.markRead(L.id);
+          if (en.target.id === 'sec-pitfalls' || en.target.id === 'sec-quiz') markRead();
         });
       }, { rootMargin: '-80px 0px -60% 0px' });
       items.forEach(([id]) => { const el = document.getElementById(id); if (el) io.observe(el); });
       FIN.onCleanup(() => io.disconnect());
     }
-    const readTimer = setTimeout(() => FIN.markRead(L.id), 60000);
+    const readTimer = setTimeout(markRead, 60000);
     FIN.onCleanup(() => clearTimeout(readTimer));
-    // 閱讀進度條
+    // 閱讀進度條：每個畫格最多量一次版面，只改 transform（不觸發重排）。
     const bar = FIN.$('.read-prog i', main);
     const art = FIN.$('.lesson-main', main);
-    const onScroll = () => {
+    let raf = 0;
+    const paint = () => {
+      raf = 0;
       const r = art.getBoundingClientRect();
       const pct = FIN.clamp((window.innerHeight - r.top) / (r.height || 1), 0, 1);
-      bar.style.width = `${(pct * 100).toFixed(1)}%`;
+      bar.style.transform = `scaleX(${pct.toFixed(3)})`;
     };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(paint); };
     window.addEventListener('scroll', onScroll, { passive: true });
-    FIN.onCleanup(() => window.removeEventListener('scroll', onScroll));
+    FIN.onCleanup(() => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf); });
     onScroll();
     bindQuiz(main, L);
   });
@@ -13774,6 +13825,8 @@ FIN.GLOSSARY.push(
       const btn = FIN.$('#fbSubmit', main);
       btn.disabled = true; btn.textContent = '⏳ 寄送中…';
       const k = KINDS.find((x) => x.id === kind) || KINDS[0];
+      // 送出期間若已切到別頁，不要重畫別頁（例如進行中的測驗）。
+      const rerender = () => { if (FIN.curRoute && FIN.curRoute.name === 'feedback') FIN.renderRoute(); };
       const banner = (cls, html) => { const b = FIN.$('#fbBanner'); if (b) { b.hidden = false; b.className = `fb-banner ${cls}`; b.innerHTML = html; } };
       try {
         if (local) {
@@ -13782,7 +13835,7 @@ FIN.GLOSSARY.push(
           if (!res.ok) throw new Error(res.error || '送出失敗');
           items = res.items || [res.item].concat(items);
           saveLocal(items);
-          FIN.renderRoute();
+          rerender();
           if (!res.item || res.item.mail_sent !== false) {
             banner('ok', '✅ 已收到並寄出通知信，感謝你的建議！');
           } else {
@@ -13794,7 +13847,7 @@ FIN.GLOSSARY.push(
           const sent = await sendStatic(item);
           items = [item].concat(items);
           saveLocal(items);
-          FIN.renderRoute();
+          rerender();
           if (sent) banner('ok', '✅ 感謝回饋！已寄送給站長。');
           else banner('', fallbackCard(k.label, title, desc));
         }
@@ -13817,7 +13870,7 @@ FIN.GLOSSARY.push(
 (function () {
   'use strict';
   var FIN = (window.FIN = window.FIN || {});
-  FIN.RELEASES_DATA = {"current_version":"2.0.0","releases":[{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見信件、意見回饋、校園導覽（共 6 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：財經學院頁面結構、頂部導覽列、免責聲明與腳本載入清單（+4 / -1 行）","[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+4 / -2 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1733 / -12 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+3 / -5 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+24 / -3 行）","[意見信件] 更新 tools/feedback_mailer.py：意見回饋儲存與寄送 okayell@hotmail.com（+4 / -2 行）"],"files_count":6},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"財經學院 v1.0.0 初版發布（技術分析 · 基本面 · 籌碼面 · 消息面）","highlights":["四大分院共 46 堂台股核心課程（技術分析 12 課、基本面 12 課、籌碼面 11 課、消息面 11 課），依入門 → 進階 → 實戰三階段編排","內建 38 組純 SVG 互動模擬圖表（K 線、均線、KD、RSI、MACD、布林通道、財報三表、本益比河流圖、三大法人、融資維持率 130% 試算等）","150+ 則台股術語百科（課文首次出現自動標註懸浮卡片）與跨分院綜合測驗＋錯題本","每課無縫串接「台股智慧選股」實戰區深連結，並整合開心學園「🏫 校園」導覽與三層教育免責聲明"],"files_count":28}]};
+  FIN.RELEASES_DATA = {"current_version":"2.1.0","releases":[{"version":"2.1.0","date":"2026-11-07","bump":"minor","title":"更新專案檔案、意見回饋、應用啟動（共 12 個檔案）","highlights":["[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+16 / -10 行）","[應用啟動] 更新 static/js/app.js：全站搜尋、三層免責聲明視窗與路由分發（+16 / -17 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+32 / -7 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+0 / -7 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+4 / -2 行）","[課程閱讀器] 更新 static/js/lesson.js：課程章節導覽、互動圖表掛載、隨堂測驗與台股智慧選股實戰橋接（+12 / -6 行）"],"files_count":12},{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見信件、意見回饋、校園導覽（共 6 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：財經學院頁面結構、頂部導覽列、免責聲明與腳本載入清單（+4 / -1 行）","[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+4 / -2 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1733 / -12 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+3 / -5 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+24 / -3 行）","[意見信件] 更新 tools/feedback_mailer.py：意見回饋儲存與寄送 okayell@hotmail.com（+4 / -2 行）"],"files_count":6},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"財經學院 v1.0.0 初版發布（技術分析 · 基本面 · 籌碼面 · 消息面）","highlights":["四大分院共 46 堂台股核心課程（技術分析 12 課、基本面 12 課、籌碼面 11 課、消息面 11 課），依入門 → 進階 → 實戰三階段編排","內建 38 組純 SVG 互動模擬圖表（K 線、均線、KD、RSI、MACD、布林通道、財報三表、本益比河流圖、三大法人、融資維持率 130% 試算等）","150+ 則台股術語百科（課文首次出現自動標註懸浮卡片）與跨分院綜合測驗＋錯題本","每課無縫串接「台股智慧選股」實戰區深連結，並整合開心學園「🏫 校園」導覽與三層教育免責聲明"],"files_count":28}]};
 
   var BUMP = {
     major: { badge: 'Major 大改版', cls: 'bad', desc: '進第 1 位數（X.0.0）：整體架構大改版、跨模組大規模升級' },
@@ -14156,6 +14209,9 @@ FIN.GLOSSARY.push(
       if (e.target === searchModal) FIN.closeSearch();
     });
     FIN.$('#searchModalClose', searchModal).addEventListener('click', FIN.closeSearch);
+    FIN.$('#globalSearchResults', searchModal).addEventListener('click', (e) => {
+      if (e.target.closest('.s-res-item')) FIN.closeSearch();
+    });
 
     const inp = FIN.$('#globalSearchInput', searchModal);
     inp.addEventListener('input', (e) => {
@@ -14177,21 +14233,23 @@ FIN.GLOSSARY.push(
     return searchModal;
   }
 
+  // 搜尋用的小寫索引字串只建一次（內容載入後不會變）。
+  let searchIdx = null;
+  function buildSearchIdx() {
+    return {
+      lessons: FIN.lessons().map((l) => [l, [l.id, l.title, l.tldr, l.plain].join(' ').toLowerCase()]),
+      terms: FIN.terms().map((g) => [g, [g.id, g.term, g.en, (g.aka || []).join(' '), g.short, g.def].join(' ').toLowerCase()]),
+    };
+  }
+  const searchHits = (rows, q) => (q ? rows.filter((x) => x[1].includes(q)) : rows).slice(0, q ? 12 : 6).map((x) => x[0]);
+
   function renderSearchResults(rawQ) {
     const box = FIN.$('#globalSearchResults', searchModal);
     if (!box) return;
     const q = (rawQ || '').trim().toLowerCase();
-    const lessons = FIN.lessons().filter((l) => {
-      if (!q) return true;
-      const hay = [l.id, l.title, l.tldr, l.plain].join(' ').toLowerCase();
-      return hay.includes(q);
-    }).slice(0, q ? 12 : 6);
-
-    const terms = FIN.terms().filter((g) => {
-      if (!q) return true;
-      const hay = [g.id, g.term, g.en, (g.aka || []).join(' '), g.short, g.def].join(' ').toLowerCase();
-      return hay.includes(q);
-    }).slice(0, q ? 12 : 6);
+    if (!searchIdx) searchIdx = buildSearchIdx();
+    const lessons = searchHits(searchIdx.lessons, q);
+    const terms = searchHits(searchIdx.terms, q);
 
     let html = `<div class="s-res-sec"><div class="s-res-title">📚 課程單元 (${lessons.length})</div>`;
     if (!lessons.length) {
@@ -14221,12 +14279,6 @@ FIN.GLOSSARY.push(
     }
     html += '</div>';
     box.innerHTML = html;
-
-    FIN.$$('.s-res-item', box).forEach((a) => {
-      a.addEventListener('click', () => {
-        FIN.closeSearch();
-      });
-    });
   }
 
   FIN.openSearch = function () {

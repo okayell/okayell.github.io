@@ -34,7 +34,6 @@
   --good-soft: #dcfce7;
   --bad: #dc2626;
   --bad-soft: #fee2e2;
-  --radius-sm: 8px;
   --radius: 12px;
   --radius-lg: 16px;
   --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
@@ -101,7 +100,7 @@ h1, h2, h3 { line-height: 1.3; }
   font-size: 14px;
   text-decoration: none !important;
   white-space: nowrap;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  transition: background-color 0.15s, border-color 0.15s;
 }
 .btn:hover:not(:disabled) { background: var(--surface-alt); }
 .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
@@ -136,7 +135,7 @@ textarea.inp { resize: vertical; }
 .chip-btn {
   display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 3px 11px;
   border: 1px solid var(--border); border-radius: 999px; background: #fff; color: var(--text-sub);
-  font-size: 13px; font-weight: 700; white-space: nowrap; transition: all 0.15s;
+  font-size: 13px; font-weight: 700; white-space: nowrap; transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 .chip-btn:hover { border-color: var(--cc, var(--primary)); color: var(--cc, var(--primary)); }
 .chip-btn.on { background: var(--cs, var(--primary-soft)); border-color: var(--cc, var(--primary)); color: var(--cc, var(--primary)); }
@@ -164,8 +163,7 @@ textarea.inp { resize: vertical; }
 /* -------------------- Header -------------------- */
 .site-header {
   position: sticky; top: 0; z-index: 80;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  background: #fff;
   border-bottom: 1px solid var(--border);
 }
 .header-inner {
@@ -240,8 +238,15 @@ textarea.inp { resize: vertical; }
 .hero-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
 .hero-kicker { font-size: 12.5px; font-weight: 800; color: var(--primary); letter-spacing: 0.04em; }
 .hero h1 { margin: 6px 0 10px; font-size: 38px; letter-spacing: 0.02em; }
-.hero-bulb { display: inline-block; margin-right: 6px; animation: bulb 3.2s ease-in-out infinite; }
-@keyframes bulb { 0%, 100% { filter: drop-shadow(0 0 0 rgba(250, 204, 21, 0)); } 50% { filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.9)); } }
+/* 燈泡光暈只動 opacity（不每幀重繪 filter） */
+.hero-bulb { position: relative; display: inline-block; margin-right: 6px; isolation: isolate; }
+.hero-bulb::before {
+  content: ''; position: absolute; inset: -8px; z-index: -1; border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.8) 0%, rgba(250, 204, 21, 0) 68%);
+  animation: bulb 3.2s ease-in-out infinite;
+}
+@keyframes bulb { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .hero-bulb::before { animation: none; } }
 .hero-lead { margin: 0 0 16px; color: var(--text-sub); font-size: 15.5px; }
 .hero-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .hs {
@@ -261,7 +266,7 @@ textarea.inp { resize: vertical; }
 .quick {
   display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: #fff;
   border: 1px solid var(--border); box-shadow: var(--shadow-sm); color: var(--text); text-decoration: none !important;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; min-width: 0;
+  transition: transform 0.15s, border-color 0.15s; min-width: 0;
 }
 .quick:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--primary-border); }
 .qi { font-size: 28px; line-height: 1; flex: none; }
@@ -272,7 +277,7 @@ textarea.inp { resize: vertical; }
 .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 12px; }
 .cat-card {
   display: flex; gap: 12px; padding: 14px; border-radius: 14px; background: #fff; border: 1px solid var(--border);
-  color: var(--text); text-decoration: none !important; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; min-width: 0;
+  color: var(--text); text-decoration: none !important; transition: transform 0.15s, border-color 0.15s; min-width: 0;
 }
 .cat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--cc); }
 .cc-ic {
@@ -292,9 +297,10 @@ textarea.inp { resize: vertical; }
 .fact-card {
   position: relative; display: flex; flex-direction: column; gap: 8px; min-width: 0;
   padding: 14px 16px 12px; border-radius: 14px; background: #fff; border: 1px solid var(--border);
-  border-top: 4px solid var(--cc); box-shadow: var(--shadow-sm); transition: box-shadow 0.15s;
+  border-top: 4px solid var(--cc); box-shadow: var(--shadow-sm);
 }
 .fact-card:hover { box-shadow: var(--shadow); }
+.fact-grid > .fact-card { content-visibility: auto; contain-intrinsic-size: auto 300px; } /* 畫面外卡片略過排版 */
 .fact-card.big { padding: 18px 20px 14px; border-radius: 16px; }
 .fc-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-right: 34px; min-height: 26px; }
 .cat-badge {
@@ -341,7 +347,7 @@ a.cat-badge:hover { filter: brightness(0.96); }
 .react-btn, .ghost-btn {
   display: inline-flex; align-items: center; gap: 4px; min-height: 30px; padding: 2px 11px; border-radius: 999px;
   border: 1px solid var(--border); background: #fff; color: var(--text-sub); font-size: 12.5px; font-weight: 700;
-  transition: all 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 .react-btn:hover, .ghost-btn:hover { border-color: var(--border-strong); background: var(--surface-alt); }
 .react-btn.learned.on { background: var(--accent-soft); border-color: #fcd34d; color: #92400e; }
@@ -556,8 +562,9 @@ a.cat-badge:hover { filter: brightness(0.96); }
 /* -------------------- Search modal -------------------- */
 .modal-bd {
   position: fixed; inset: 0; z-index: 110; display: none; align-items: flex-start; justify-content: center;
-  padding: 8vh 14px 14px; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(3px);
+  padding: 8vh 14px 14px; background: rgba(15, 23, 42, 0.5);
 }
+#relModal { backdrop-filter: none; background: rgba(15, 23, 42, 0.52); } /* 覆寫 releases.js 產生的模糊背景 */
 .modal-bd.open { display: flex; }
 .modal-card { width: min(720px, 100%); max-height: 80vh; display: flex; flex-direction: column; background: #fff; border-radius: 16px; box-shadow: var(--shadow-lg); overflow: hidden; }
 .search-modal-top { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
@@ -587,7 +594,7 @@ a.cat-badge:hover { filter: brightness(0.96); }
 .modal-ft { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); background: #f8fafc; }
 .confirm-msg { margin: 0; }
 #toastBox { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 130; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
-.toast { padding: 9px 16px; border-radius: 999px; background: #1e1b4b; color: #fff; font-size: 14px; font-weight: 700; box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(10px); transition: all 0.25s; max-width: 90vw; text-align: center; }
+.toast { padding: 9px 16px; border-radius: 999px; background: #1e1b4b; color: #fff; font-size: 14px; font-weight: 700; box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(10px); transition: opacity 0.25s, transform 0.25s; max-width: 90vw; text-align: center; }
 .toast.show { opacity: 1; transform: none; }
 .toast.ok { background: #312e81; }
 .toast.bad { background: #b91c1c; }
@@ -598,72 +605,6 @@ a.cat-badge:hover { filter: brightness(0.96); }
 .footer-inner p { margin: 0; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 14px; font-weight: 700; }
 .mobile-nav { display: none; }
-
-/* -------------------- Responsive -------------------- */
-@media (max-width: 1360px) {
-  .brand-sub { display: none; }
-  .nav-link { padding: 6px 8px; }
-  .hdr-btn .btn-txt, .hdr-btn kbd { display: none; }
-}
-@media (max-width: 1080px) {
-  .hero { grid-template-columns: 1fr; }
-  .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .me-hero { grid-template-columns: 1fr; }
-}
-@media (max-width: 900px) {
-  .main-nav { display: none; }
-  .mobile-nav {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
-    background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(10px); border-top: 1px solid var(--border);
-    padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
-  }
-  .m-nav-item { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 4px 0; border-radius: 10px; color: var(--muted); font-size: 11px; font-weight: 700; text-decoration: none !important; min-width: 0; }
-  .m-nav-item .m-ic { font-size: 19px; line-height: 1.2; }
-  .m-nav-item.active { color: var(--primary); background: var(--primary-soft); }
-  body { padding-bottom: 64px; }
-  .browse { grid-template-columns: 1fr; gap: 12px; }
-  .cat-side {
-    position: static; flex-direction: row; overflow-x: auto; max-height: none; padding: 6px; gap: 4px; scrollbar-width: thin;
-  }
-  .cs-item { flex: none; padding: 6px 10px; }
-  .cs-item.on { box-shadow: inset 0 -3px 0 var(--cc, var(--primary)); }
-  .browse-hd { grid-template-columns: auto minmax(0, 1fr); }
-  .bh-prog { grid-column: 1 / -1; min-width: 0; }
-  .gacha-stage { grid-template-columns: 1fr; gap: 10px; }
-  .machine { transform: scale(0.62); transform-origin: top center; height: 172px; margin-bottom: -4px; }
-  .fb-grid { grid-template-columns: 1fr; }
-  .quiz-records { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 640px) {
-  .app-main { padding: 14px 12px 28px; }
-  .header-inner { padding: 7px 10px; gap: 6px; }
-  .brand-title { font-size: 15px; }
-  .hdr-chip.streak { display: none; }
-  .hero { padding: 16px; border-radius: 18px; gap: 14px; }
-  .hero h1 { font-size: 29px; }
-  .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .quick-grid { gap: 8px; }
-  .quick { padding: 12px; gap: 8px; }
-  .qi { font-size: 24px; }
-  .quick small { display: none; }
-  .fact-grid, .cat-grid { grid-template-columns: 1fr; }
-  .fact-card.big .fc-title { font-size: 19px; }
-  .page-hd h1 { font-size: 22px; }
-  .q-text { font-size: 20px; }
-  .qp-stmt { font-size: 19px; }
-  .tf-btn { min-height: 56px; font-size: 17px; }
-  .tf-btn kbd { display: none; }
-  .me-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .heat { grid-template-columns: repeat(14, minmax(0, 1fr)); }
-  .detail-nav { grid-template-columns: 1fr; }
-  .dn.next { text-align: left; }
-  .bh-ic { font-size: 32px; }
-  .bh-text h1 { font-size: 20px; }
-  .ghost-btn { margin-left: 0; }
-}
-@media print {
-  .site-header, .mobile-nav, .site-footer, .fc-actions, .fc-fav { display: none !important; }
-}
 
 /* -------------------- 📮 投稿 & 🛡️ 審核台 -------------------- */
 .fc-by { font-size: 11.5px; font-weight: 800; color: #7c3aed; background: #f5f3ff; border-radius: 6px; padding: 0 7px; white-space: nowrap; }
@@ -741,17 +682,78 @@ a.cat-badge:hover { filter: brightness(0.96); }
 .rv-check a { margin-right: 6px; }
 .rv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .rv-pv-h { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+/* -------------------- Responsive -------------------- */
+@media (max-width: 1360px) {
+  .brand-sub { display: none; }
+  .nav-link { padding: 6px 8px; }
+  .hdr-btn .btn-txt, .hdr-btn kbd { display: none; }
+}
 @media (max-width: 1080px) {
+  .hero { grid-template-columns: 1fr; }
+  .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .me-hero { grid-template-columns: 1fr; }
   .sub-grid, .rv-grid { grid-template-columns: 1fr; }
   .rv-editor { position: static; }
   .rv-list { max-height: 360px; }
 }
+@media (max-width: 900px) {
+  .main-nav { display: none; }
+  .mobile-nav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 90; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
+  }
+  .m-nav-item { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 4px 0; border-radius: 10px; color: var(--muted); font-size: 11px; font-weight: 700; text-decoration: none !important; min-width: 0; }
+  .m-nav-item .m-ic { font-size: 19px; line-height: 1.2; }
+  .m-nav-item.active { color: var(--primary); background: var(--primary-soft); }
+  body { padding-bottom: 64px; }
+  .browse { grid-template-columns: 1fr; gap: 12px; }
+  .cat-side {
+    position: static; flex-direction: row; overflow-x: auto; max-height: none; padding: 6px; gap: 4px; scrollbar-width: thin;
+  }
+  .cs-item { flex: none; padding: 6px 10px; }
+  .cs-item.on { box-shadow: inset 0 -3px 0 var(--cc, var(--primary)); }
+  .browse-hd { grid-template-columns: auto minmax(0, 1fr); }
+  .bh-prog { grid-column: 1 / -1; min-width: 0; }
+  .gacha-stage { grid-template-columns: 1fr; gap: 10px; }
+  .machine { transform: scale(0.62); transform-origin: top center; height: 172px; margin-bottom: -4px; }
+  .fb-grid { grid-template-columns: 1fr; }
+  .quiz-records { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 640px) {
+  .app-main { padding: 14px 12px 28px; }
+  .header-inner { padding: 7px 10px; gap: 6px; }
+  .brand-title { font-size: 15px; }
+  .hdr-chip.streak { display: none; }
+  .hero { padding: 16px; border-radius: 18px; gap: 14px; }
+  .hero h1 { font-size: 29px; }
+  .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quick-grid { gap: 8px; }
+  .quick { padding: 12px; gap: 8px; }
+  .qi { font-size: 24px; }
+  .quick small { display: none; }
+  .fact-grid, .cat-grid { grid-template-columns: 1fr; }
+  .fact-card.big .fc-title { font-size: 19px; }
+  .page-hd h1 { font-size: 22px; }
+  .q-text { font-size: 20px; }
+  .qp-stmt { font-size: 19px; }
+  .tf-btn { min-height: 56px; font-size: 17px; }
+  .tf-btn kbd { display: none; }
+  .me-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .heat { grid-template-columns: repeat(14, minmax(0, 1fr)); }
+  .detail-nav { grid-template-columns: 1fr; }
+  .dn.next { text-align: left; }
+  .bh-ic { font-size: 32px; }
+  .bh-text h1 { font-size: 20px; }
+  .ghost-btn { margin-left: 0; }
   .home-cta { flex-wrap: wrap; }
   .home-cta .btn { width: 100%; }
   .sub-nick { flex-wrap: wrap; }
   .rv-row2 { grid-template-columns: 1fr; }
   .rv-tf { flex-wrap: wrap; }
+}
+@media print {
+  .site-header, .mobile-nav, .site-footer, .fc-actions, .fc-fav { display: none !important; }
 }
 
 </style>
@@ -2405,20 +2407,34 @@ a.cat-badge:hover { filter: brightness(0.96); }
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -2585,7 +2601,18 @@ a.cat-badge:hover { filter: brightness(0.96); }
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -8786,8 +8813,17 @@ TRV.FACTS.push({
     let t = null;
     return function (...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); };
   };
+  /** 同一幀內多次呼叫只執行一次。 */
+  TRV.rafOnce = (fn) => {
+    let id = 0;
+    return () => { if (!id) id = requestAnimationFrame(() => { id = 0; fn(); }); };
+  };
   TRV.dayKey = (d) => `${d.getFullYear()}-${TRV.pad(d.getMonth() + 1)}-${TRV.pad(d.getDate())}`;
   TRV.todayKey = () => TRV.dayKey(new Date());
+  TRV.nowStr = () => {
+    const d = new Date();
+    return `${TRV.dayKey(d)} ${TRV.pad(d.getHours())}:${TRV.pad(d.getMinutes())}:${TRV.pad(d.getSeconds())}`;
+  };
   TRV.fmtNum = (n) => Number(n || 0).toLocaleString('zh-TW');
 
   /** 中文 IME 選字時的 Enter 不算送出（注音／倉頡／速成安全防護）。 */
@@ -9101,11 +9137,12 @@ TRV.FACTS.push({
     TRV.save();
     return TRV.reaction(id);
   };
-  TRV.seenCount = (catId) => TRV.facts(catId).filter((f) => TRV.state.seen[f.id]).length;
   TRV.catProgress = (catId) => {
-    const total = TRV.facts(catId).length;
-    const seen = TRV.seenCount(catId);
-    return { total, seen, pct: total ? seen / total : 0 };
+    ensure();
+    const list = catId ? BY_CAT.get(catId) || [] : ALL; // 讀內部索引，不複製陣列
+    let seen = 0;
+    for (const f of list) if (TRV.state.seen[f.id]) seen += 1;
+    return { total: list.length, seen, pct: list.length ? seen / list.length : 0 };
   };
 
   TRV.RANKS = [
@@ -9602,6 +9639,7 @@ TRV.FACTS.push({
 
     function render() {
       const list = filtered();
+      st.list = list;
       const shown = list.slice(0, st.shown);
       const parts = [];
       if (st.tag) parts.push(`標籤 #${esc(st.tag)}`);
@@ -9621,10 +9659,26 @@ TRV.FACTS.push({
         ? shown.map((f) => TRV.factCard(f, { showCat: !catId })).join('')
         : `<div class="card empty"><div class="empty-ic">🔍</div><p>沒有符合條件的冷知識。</p><p class="muted small">換個關鍵字，或清除篩選看看。</p></div>`;
       const left = list.length - shown.length;
-      moreEl.hidden = left <= 0;
-      moreEl.textContent = `顯示更多（還有 ${left} 則）`;
+      updateMore(left);
       stopSeen();
       stopSeen = TRV.observeSeen(listEl);
+    }
+
+    function updateMore(left) {
+      moreEl.hidden = left <= 0;
+      moreEl.textContent = `顯示更多（還有 ${left} 則）`;
+    }
+
+    /** 顯示更多：只追加新卡片，已顯示的卡片不重繪。 */
+    function showMore() {
+      const list = st.list || filtered();
+      const from = st.shown;
+      st.shown += PAGE * 2;
+      const extra = list.slice(from, st.shown);
+      if (!extra.length) return;
+      listEl.insertAdjacentHTML('beforeend', extra.map((f) => TRV.factCard(f, { showCat: !catId })).join(''));
+      updateMore(list.length - Math.min(st.shown, list.length));
+      stopSeen.watch(listEl);
     }
 
     function syncControls() {
@@ -9672,7 +9726,7 @@ TRV.FACTS.push({
     TRV.$('#bFav', main).addEventListener('click', () => { st.fav = !st.fav; st.shown = PAGE; syncControls(); update(); });
     const commBtn = TRV.$('#bCommunity', main);
     if (commBtn) commBtn.addEventListener('click', () => { st.community = !st.community; st.shown = PAGE; syncControls(); update(); });
-    moreEl.addEventListener('click', () => { st.shown += PAGE * 2; render(); });
+    moreEl.addEventListener('click', showMore);
     render();
     const on = TRV.$('.cs-item.on', main);
     if (on && on.scrollIntoView && window.matchMedia('(max-width: 900px)').matches) {
@@ -10058,6 +10112,8 @@ TRV.FACTS.push({
     };
   }
 
+  const quizPool = (c) => TRV.facts().filter((f) => f.tf && (!c.cats.length || c.cats.includes(f.cat)) && (!c.cold || String(f.cold) === c.cold));
+
   function verdict(pct) {
     if (pct >= 90) return { icon: '🏆', name: '冷知識大師', msg: '幾乎全對，你根本是行走的百科全書！' };
     if (pct >= 70) return { icon: '🎓', name: '很有料', msg: '表現亮眼，再挑戰更冷的題目吧！' };
@@ -10119,7 +10175,7 @@ TRV.FACTS.push({
         </div>`;
 
       const save = () => { TRV.state.meta.quizCfg = c; TRV.save(); updatePool(); };
-      const pool = () => TRV.facts().filter((f) => f.tf && (!c.cats.length || c.cats.includes(f.cat)) && (!c.cold || String(f.cold) === c.cold));
+      const pool = () => quizPool(c);
       function updatePool() {
         const n = pool().length;
         TRV.$('#qPool', main).textContent = `題庫 ${n} 題${n < c.n ? `（不足 ${c.n} 題，會全部出完）` : ''}`;
@@ -10168,6 +10224,11 @@ TRV.FACTS.push({
       const s = { list, i: 0, score: 0, streak: 0, best: 0, answers: [], answered: false, xp0: TRV.totalXP() };
       main.innerHTML = `<div class="quiz-play card" id="qp"></div>`;
       const box = TRV.$('#qp', main);
+      box.addEventListener('click', (e) => { // 事件委派：每題重繪不必重新綁定
+        const tf = e.target.closest('.tf-btn');
+        if (tf) answer(tf.dataset.a === '1');
+        else if (e.target.closest('#qpNext')) nextQ();
+      });
 
       function renderQ() {
         const f = s.list[s.i];
@@ -10192,7 +10253,6 @@ TRV.FACTS.push({
             <button type="button" class="tf-btn no" data-a="0"><span>❌</span>假的<kbd>→</kbd></button>
           </div>
           <div class="qp-fb" id="qpFb" hidden></div>`;
-        TRV.$$('.tf-btn', box).forEach((b) => b.addEventListener('click', () => answer(b.dataset.a === '1')));
       }
 
       function answer(saysTrue) {
@@ -10217,7 +10277,6 @@ TRV.FACTS.push({
           <div class="row end"><button type="button" class="btn primary big" id="qpNext">${last ? '🏁 看成績' : '下一題 →'} <kbd>Enter</kbd></button></div>`;
         fb.hidden = false;
         TRV.$('.qp-top .qp-streak', box).textContent = `🔥 ${s.streak}`;
-        TRV.$('#qpNext', box).addEventListener('click', nextQ);
         fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
 
@@ -10264,8 +10323,7 @@ TRV.FACTS.push({
             play(TRV.shuffle(ids.map((id) => TRV.fact(id))).slice(0, 30), mode);
           } else {
             const c = cfg();
-            const pool = TRV.facts().filter((f) => f.tf && (!c.cats.length || c.cats.includes(f.cat)) && (!c.cold || String(f.cold) === c.cold));
-            play(TRV.shuffle(pool).slice(0, c.n), mode);
+            play(TRV.shuffle(quizPool(c)).slice(0, c.n), mode);
           }
         });
         TRV.$('#qrSetup', main).addEventListener('click', setup);
@@ -10457,15 +10515,13 @@ TRV.FACTS.push({
           TRV.renderRoute();
           banner('ok', '✅ 已收到回饋並寄出通知信，感謝你！');
         } else {
-          const now = new Date();
-          const created = `${now.getFullYear()}-${TRV.pad(now.getMonth() + 1)}-${TRV.pad(now.getDate())} ${TRV.pad(now.getHours())}:${TRV.pad(now.getMinutes())}:${TRV.pad(now.getSeconds())}`;
           const item = {
             id: `FB-${Date.now().toString(36).toUpperCase()}`,
             kind,
             kind_label: k.label,
             title,
             description: desc,
-            created_at: created,
+            created_at: TRV.nowStr(),
           };
           const sent = await sendStatic(item);
           items = [item].concat(items);
@@ -10529,10 +10585,6 @@ TRV.FACTS.push({
   const saveMySubs = (arr) => { try { localStorage.setItem(LS_KEY, JSON.stringify(arr.slice(0, 50))); } catch (e) { /* ignore */ } };
   TRV.communityFacts = () => TRV.facts().filter((f) => f.sid || f.by);
   const factBySid = (sid) => TRV.facts().find((f) => f.sid === sid) || null;
-  const nowStr = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${TRV.pad(d.getMonth() + 1)}-${TRV.pad(d.getDate())} ${TRV.pad(d.getHours())}:${TRV.pad(d.getMinutes())}:${TRV.pad(d.getSeconds())}`;
-  };
   const newSid = () => `sub-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
   /** 和現有冷知識比對（雙字 Jaccard），回傳最像的幾則。 */
@@ -10694,11 +10746,12 @@ TRV.FACTS.push({
       box.innerHTML = hits.length ? `🔍 這幾則看起來有點像，確認一下是不是已經收錄了：${hits.map((h) =>
         `<a href="#/fact/${encodeURIComponent(h.f.id)}" target="_blank" rel="noopener">${(TRV.cat(h.f.cat) || {}).icon || ''} ${esc(h.f.title)}</a>`).join('')}` : '';
     }, 260);
+    const refreshLive = TRV.rafOnce(() => { if (textEl.isConnected) refresh(); });
     [textEl, detailEl, sourceEl, nickEl].forEach((el) => el.addEventListener('input', (e) => {
-      if (!e.isComposing) refresh();
+      if (!e.isComposing) refreshLive();
       if (el === textEl && !e.isComposing) similar();
     }));
-    [textEl, detailEl, nickEl].forEach((el) => el.addEventListener('compositionend', () => { refresh(); if (el === textEl) similar(); }));
+    [textEl, detailEl, nickEl].forEach((el) => el.addEventListener('compositionend', () => { refreshLive(); if (el === textEl) similar(); }));
     creditEl.addEventListener('change', refresh);
     [textEl, sourceEl, nickEl].forEach((el) => el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !TRV.isEnterSend(e)) e.preventDefault();
@@ -10724,7 +10777,7 @@ TRV.FACTS.push({
       const payload = {
         app: 'trivia-submit', v: 1, sid: newSid(), cat: st.cat, text,
         detail: detailEl.value.trim(), source: sourceEl.value.trim(), nick: nickEl.value.trim(),
-        credit: creditEl.checked, created_at: nowStr(),
+        credit: creditEl.checked, created_at: TRV.nowStr(),
       };
       sending = true;
       const btn = $('#subBtn');
@@ -10943,9 +10996,10 @@ TRV.FACTS.push({
 
     function bindEditor(it) {
       const form = $('#rvForm');
-      form.addEventListener('input', (e) => { if (!e.isComposing) updatePreview(); });
-      form.addEventListener('compositionend', updatePreview);
-      form.addEventListener('change', updatePreview);
+      const updateLive = TRV.rafOnce(() => { if (form.isConnected) updatePreview(); });
+      form.addEventListener('input', (e) => { if (!e.isComposing) updateLive(); });
+      form.addEventListener('compositionend', updateLive);
+      form.addEventListener('change', updateLive);
       form.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') e.preventDefault(); });
       ['#rv_cold', '#rv_tfa'].forEach((sel) => $(sel).addEventListener('click', (e) => {
         const b = e.target.closest('[data-v]');
@@ -11009,7 +11063,6 @@ TRV.FACTS.push({
       if (st.aiBusy) return;
       st.aiBusy = true;
       const btn = $('#rvAi');
-      const msg = $('#rvAiMsg');
       btn.disabled = true;
       btn.textContent = '🤖 AI 查證整理中…';
       try {
@@ -11102,7 +11155,7 @@ TRV.FACTS.push({
 (function () {
   'use strict';
   var TRV = (window.TRV = window.TRV || {});
-  TRV.RELEASES_DATA = {"current_version":"2.0.0","releases":[{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見回饋、校園導覽、讀者投稿（共 4 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：冷知識學院頁面結構、頂部與行動導覽列與腳本載入清單（+3 / -1 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1555 / -110 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋與歷史紀錄（+22 / -3 行）","[讀者投稿] 更新 tools/ai_draft.py：🤖 AI 查證並把投稿整理成冷知識卡（Jetski 直連）（+16 / -2 行）"],"files_count":4},{"version":"1.1.1","date":"2026-10-30","bump":"patch","title":"修正轉送站重複匯入：記住已處理的訊息，刪除的投稿不會再回來","highlights":["ntfy 轉送站的 since 參數以秒為單位，同一秒的訊息會被重送；改為記住已處理的訊息編號，不再重複匯入","刪除的投稿會留下墓碑紀錄，轉送站重送或重複貼上 Email 匯入代碼都不會讓它復活"],"files_count":1},{"version":"1.1.0","date":"2026-10-30","bump":"minor","title":"📮 讀者投稿上線：投稿表單＋自動收件＋🛡️ 審核台（AI 查證整理、一鍵收錄掛名）","highlights":["新增「📮 投稿冷知識」頁：分類、一句話冷知識、詳細說明、出處與暱稱署名；邊打字邊提示相似的既有冷知識並即時預覽卡片，「我的投稿」在收錄上架後自動變成 🎉 已收錄","投稿雙通道不漏接：公開版同時送到轉送站（Cloudtop 每 5 分鐘自動收進審核佇列）與站長信箱（信內附匯入代碼，可一鍵匯入），本機版直接進佇列；網路都失敗時才改用一鍵寄信","Cloudtop 專用「🛡️ 投稿審核台」：🤖 AI 上網查證並整理成完整冷知識卡（附查證摘要）、人工編修、即時格式檢查與相似題比對、✅ 一鍵收錄寫入分類檔（自動編號、✍️ 掛名、驗證失敗自動還原）、不收錄與刪除垃圾訊息","冷知識卡片顯示 ✍️ 投稿者署名，圖書館新增「✍️ 讀者投稿」篩選；大廳新增投稿邀請，本機版頂部顯示「🛡️ 待審 N」提醒"],"files_count":12},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"冷知識學院 v1.0.0 新開幕（十八大分類 · 580 則五花八門冷知識）","highlights":["十八大分類共 580 則冷知識：動物、植物與自然、人體、宇宙、物理化學、歷史、世界各國、台灣在地、美食、生活、語言、科技、運動、影視藝術、數學、心理、品牌經濟與迷思破解；每類再以標籤細分子分類","每則冷知識都有「猜猜看」提問、答案、背後原因、標籤、冷度 🧊 分級與真假挑戰題；全部內容經撰寫員查證與獨立事實查核兩道把關","🏠 每日一則冷知識、📚 冷知識圖書館（分類／子分類標籤／冷度／搜尋／排序）、🎰 轉蛋抽卡與 🤔 真的假的？是非挑戰（含錯題本）","⭐ 收藏、🤯 長知識／😎 早就知道、已讀進度、18 枚分類徽章、稱號與學習日曆（localStorage，免登入）；💬 意見回饋可直接投稿冷知識"],"files_count":34}]};
+  TRV.RELEASES_DATA = {"current_version":"2.1.0","releases":[{"version":"2.1.0","date":"2026-11-07","bump":"minor","title":"更新學院頁面、意見回饋、應用啟動（共 8 個檔案）","highlights":["[視覺樣式] 更新 static/css/app.css：冷知識學院靛藍＋燈泡黃淺色樣式、十八大分類主題色與零水平捲軸響應式版面（+82 / -80 行）","[應用啟動] 更新 static/js/app.js：全站搜尋、頂部學習統計與路由分發（+7 / -4 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+32 / -7 行）","[核心引擎] 更新 static/js/core.js：路由、冷知識索引、每日一則、已讀／收藏／反應與 XP 儲存（trv.* 前綴）、IME 安全輸入（+14 / -4 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋與歷史紀錄（+1 / -3 行）","[學院頁面] 更新 static/js/pages.js：學院大廳、冷知識圖書館（分類／標籤／冷度／搜尋）、單則冷知識與我的冷知識（+20 / -3 行）"],"files_count":8},{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見回饋、校園導覽、讀者投稿（共 4 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：冷知識學院頁面結構、頂部與行動導覽列與腳本載入清單（+3 / -1 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1555 / -110 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋與歷史紀錄（+22 / -3 行）","[讀者投稿] 更新 tools/ai_draft.py：🤖 AI 查證並把投稿整理成冷知識卡（Jetski 直連）（+16 / -2 行）"],"files_count":4},{"version":"1.1.1","date":"2026-10-30","bump":"patch","title":"修正轉送站重複匯入：記住已處理的訊息，刪除的投稿不會再回來","highlights":["ntfy 轉送站的 since 參數以秒為單位，同一秒的訊息會被重送；改為記住已處理的訊息編號，不再重複匯入","刪除的投稿會留下墓碑紀錄，轉送站重送或重複貼上 Email 匯入代碼都不會讓它復活"],"files_count":1},{"version":"1.1.0","date":"2026-10-30","bump":"minor","title":"📮 讀者投稿上線：投稿表單＋自動收件＋🛡️ 審核台（AI 查證整理、一鍵收錄掛名）","highlights":["新增「📮 投稿冷知識」頁：分類、一句話冷知識、詳細說明、出處與暱稱署名；邊打字邊提示相似的既有冷知識並即時預覽卡片，「我的投稿」在收錄上架後自動變成 🎉 已收錄","投稿雙通道不漏接：公開版同時送到轉送站（Cloudtop 每 5 分鐘自動收進審核佇列）與站長信箱（信內附匯入代碼，可一鍵匯入），本機版直接進佇列；網路都失敗時才改用一鍵寄信","Cloudtop 專用「🛡️ 投稿審核台」：🤖 AI 上網查證並整理成完整冷知識卡（附查證摘要）、人工編修、即時格式檢查與相似題比對、✅ 一鍵收錄寫入分類檔（自動編號、✍️ 掛名、驗證失敗自動還原）、不收錄與刪除垃圾訊息","冷知識卡片顯示 ✍️ 投稿者署名，圖書館新增「✍️ 讀者投稿」篩選；大廳新增投稿邀請，本機版頂部顯示「🛡️ 待審 N」提醒"],"files_count":12},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"冷知識學院 v1.0.0 新開幕（十八大分類 · 580 則五花八門冷知識）","highlights":["十八大分類共 580 則冷知識：動物、植物與自然、人體、宇宙、物理化學、歷史、世界各國、台灣在地、美食、生活、語言、科技、運動、影視藝術、數學、心理、品牌經濟與迷思破解；每類再以標籤細分子分類","每則冷知識都有「猜猜看」提問、答案、背後原因、標籤、冷度 🧊 分級與真假挑戰題；全部內容經撰寫員查證與獨立事實查核兩道把關","🏠 每日一則冷知識、📚 冷知識圖書館（分類／子分類標籤／冷度／搜尋／排序）、🎰 轉蛋抽卡與 🤔 真的假的？是非挑戰（含錯題本）","⭐ 收藏、🤯 長知識／😎 早就知道、已讀進度、18 枚分類徽章、稱號與學習日曆（localStorage，免登入）；💬 意見回饋可直接投稿冷知識"],"files_count":34}]};
 
   var BUMP = {
     major: { badge: 'Major 大改版', cls: 'bad', desc: '進第 1 位數（X.0.0）：整體架構大改版、跨模組大規模升級' },
@@ -11431,17 +11484,21 @@ TRV.FACTS.push({
         '<div class="search-modal-body" id="globalSearchResults"></div>' +
       '</div>';
     document.body.appendChild(searchModal);
-    searchModal.addEventListener('click', (e) => { if (e.target === searchModal) TRV.closeSearch(); });
+    searchModal.addEventListener('click', (e) => {
+      if (e.target === searchModal || e.target.closest('a')) TRV.closeSearch();
+    });
     TRV.$('#searchModalClose', searchModal).addEventListener('click', TRV.closeSearch);
     const inp = TRV.$('#globalSearchInput', searchModal);
-    inp.addEventListener('compositionend', () => renderSearchResults(inp.value));
-    inp.addEventListener('input', (e) => { if (!e.isComposing) renderSearchResults(inp.value); });
+    const renderLive = TRV.rafOnce(() => renderSearchResults(inp.value));
+    inp.addEventListener('compositionend', renderLive);
+    inp.addEventListener('input', (e) => { if (!e.isComposing) renderLive(); });
     inp.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !e.isComposing) {
         e.preventDefault();
         TRV.closeSearch();
       } else if (TRV.isEnterSend(e)) {
         e.preventDefault();
+        renderSearchResults(inp.value); // 跟上最後一次輸入
         const first = TRV.$('.s-res-item', searchModal);
         if (first) first.click();
       }
@@ -11476,7 +11533,6 @@ TRV.FACTS.push({
       html += '</div>';
     }
     box.innerHTML = html;
-    TRV.$$('a', box).forEach((a) => a.addEventListener('click', () => TRV.closeSearch()));
   }
 
   function resItem(f) {

@@ -90,10 +90,8 @@ svg, img {
 .muted { color: var(--muted); }
 .small { font-size: 12.5px; }
 .center { text-align: center; }
-.nowrap { white-space: nowrap; }
 .num { font-variant-numeric: tabular-nums; }
 .bad { color: var(--bad); font-weight: 700; }
-.good { color: var(--good); font-weight: 700; }
 .warn { color: var(--warn); font-weight: 700; }
 .row { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .row.wrap { flex-wrap: wrap; }
@@ -112,9 +110,10 @@ svg, img {
 .read-prog > i {
   display: block;
   height: 100%;
-  width: 0;
   background: var(--tc, var(--primary));
-  transition: width 0.08s linear;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.08s linear;
 }
 
 /* -------------------- Sticky Site Header -------------------- */
@@ -122,8 +121,7 @@ svg, img {
   position: sticky;
   top: 0;
   z-index: 80;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.98);
   border-bottom: 1px solid var(--border);
 }
 
@@ -435,12 +433,12 @@ svg, img {
   opacity: 0.55;
   cursor: not-allowed;
 }
-.btn.primary, .btn-primary {
+.btn.primary {
   background: var(--tc, var(--primary));
   border-color: var(--tc, var(--primary));
   color: #fff;
 }
-.btn.primary:hover:not(:disabled), .btn-primary:hover:not(:disabled) {
+.btn.primary:hover:not(:disabled) {
   filter: brightness(0.94);
   color: #fff;
 }
@@ -448,7 +446,7 @@ svg, img {
   padding: 10px 18px;
   font-size: 14.5px;
 }
-.btn.sm, .btn-sm {
+.btn.sm {
   padding: 5px 10px;
   font-size: 12.5px;
   border-radius: 7px;
@@ -727,7 +725,7 @@ svg, img {
   color: var(--text);
   text-decoration: none !important;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.14s, box-shadow 0.14s;
+  transition: transform 0.14s;
   min-width: 0;
 }
 .track-card:hover {
@@ -810,7 +808,7 @@ svg, img {
   padding: 14px 16px;
   color: var(--text);
   text-decoration: none !important;
-  transition: border-color 0.15s, transform 0.14s, box-shadow 0.14s;
+  transition: border-color 0.15s, transform 0.14s;
   min-width: 0;
 }
 .lab-pcard:hover {
@@ -1050,7 +1048,7 @@ svg, img {
   padding: 12px 14px;
   color: var(--text);
   text-decoration: none !important;
-  transition: border-color 0.14s, box-shadow 0.14s;
+  transition: border-color 0.14s;
   min-width: 0;
 }
 .lesson-row:hover {
@@ -2535,8 +2533,7 @@ a.term:hover {
   position: fixed;
   inset: 0;
   z-index: 110;
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(3px);
+  background: rgba(15, 23, 42, 0.55);
   display: none;
   align-items: center;
   justify-content: center;
@@ -4343,20 +4340,34 @@ a.term:hover {
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -4523,7 +4534,18 @@ a.term:hover {
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -4753,11 +4775,6 @@ a.term:hover {
   };
   ACM.dayKey = (d) => `${d.getFullYear()}-${ACM.pad(d.getMonth() + 1)}-${ACM.pad(d.getDate())}`;
   ACM.todayKey = () => ACM.dayKey(new Date());
-  ACM.fmtDate = (ts) => {
-    if (!ts) return '—';
-    const d = new Date(ts);
-    return `${d.getFullYear()}/${ACM.pad(d.getMonth() + 1)}/${ACM.pad(d.getDate())}`;
-  };
 
   /** 中文 IME 選字時的 Enter 不算送出（注音／倉頡／速成安全防護）。 */
   let imeComposing = false;
@@ -4865,7 +4882,10 @@ a.term:hover {
   // 4. 課程與百科索引
   // ---------------------------------------------------------------------------
   let LESSON_MAP = null;
+  let LESSON_LIST = [];
+  let LESSONS_BY_TRACK = {};
   let TERM_MAP = null;
+  let TERM_LIST = [];
   ACM.index = () => {
     LESSON_MAP = new Map();
     const trackIdx = {};
@@ -4873,16 +4893,19 @@ a.term:hover {
     const valid = ACM.LESSONS.filter((L) => L && L.id && ACM.track(L.track));
     valid.sort((a, b) => (trackIdx[a.track] - trackIdx[b.track]) || ((a.order || 0) - (b.order || 0)));
     valid.forEach((L) => { if (!LESSON_MAP.has(L.id)) LESSON_MAP.set(L.id, L); });
+    LESSON_LIST = Array.from(LESSON_MAP.values());
+    LESSONS_BY_TRACK = {};
+    LESSON_LIST.forEach((L) => { (LESSONS_BY_TRACK[L.track] = LESSONS_BY_TRACK[L.track] || []).push(L); });
     TERM_MAP = new Map();
     ACM.GLOSSARY.forEach((g) => { if (g && g.id && !TERM_MAP.has(g.id)) TERM_MAP.set(g.id, g); });
+    TERM_LIST = Array.from(TERM_MAP.values());
   };
   ACM.lessons = (trackId) => {
     if (!LESSON_MAP) ACM.index();
-    const all = Array.from(LESSON_MAP.values());
-    return trackId ? all.filter((L) => L.track === trackId) : all;
+    return (trackId ? LESSONS_BY_TRACK[trackId] || [] : LESSON_LIST).slice();
   };
   ACM.lesson = (id) => { if (!LESSON_MAP) ACM.index(); return LESSON_MAP.get(id) || null; };
-  ACM.terms = () => { if (!TERM_MAP) ACM.index(); return Array.from(TERM_MAP.values()); };
+  ACM.terms = () => { if (!TERM_MAP) ACM.index(); return TERM_LIST.slice(); };
   ACM.term = (id) => { if (!TERM_MAP) ACM.index(); return TERM_MAP.get(id) || null; };
   ACM.neighbors = (id) => {
     const all = ACM.lessons();
@@ -4949,7 +4972,6 @@ a.term:hover {
     d.xp = (d.xp || 0) + (n || 0);
     if (act) d.act[act] = (d.act[act] || 0) + (count == null ? 1 : count);
     ACM.save();
-    if (n > 0) ACM.emit('xp', n);
   };
   const dayActive = (k) => !!ACM.state.days[k] && (ACM.state.days[k].xp || 0) > 0;
   ACM.streak = () => {
@@ -8682,7 +8704,6 @@ a.term:hover {
     }
     return count;
   };
-  ACM.on('content', () => { MATCHER = null; });
 
   // ---------------------------------------------------------------------------
   // 2. 懸浮解釋卡（Popover）
@@ -8729,9 +8750,10 @@ a.term:hover {
     }
     if (pop && !e.target.closest('.term-pop')) closePop();
   });
+  const canHover = window.matchMedia('(hover: hover)');
   document.addEventListener('mouseover', (e) => {
     const a = e.target.closest && e.target.closest('a.term');
-    if (!a || !window.matchMedia('(hover: hover)').matches) return;
+    if (!a || !canHover.matches) return;
     clearTimeout(hoverTimer);
     hoverTimer = setTimeout(() => {
       openPop(a);
@@ -9175,9 +9197,10 @@ a.term:hover {
       <section class="card"><h3>🔥 學習熱度日曆（近 16 週）</h3>${heatmap()}</section>
       <section class="card"><h3>🏫 四大分院完成度</h3><div class="tp-list">${ACM.TRACKS.map((t) => {
         const pr = ACM.trackProgress(t.id);
+        const tls = ACM.lessons(t.id);
         return `<div class="tp-row" style="${ACM.trackStyle(t)}"><a href="#/track/${t.id}"><b>${t.icon} ${esc(t.name)}</b></a>
           <div class="tp-stages">${ACM.STAGES.map((s) => {
-            const sl = ACM.lessons(t.id).filter((L) => L.stage === s.id);
+            const sl = tls.filter((L) => L.stage === s.id);
             const sd = sl.filter((L) => ACM.isDone(L.id)).length;
             return `<div class="tp-st"><small>${s.icon} ${s.name} ${sd}/${sl.length}</small><div class="bar"><i style="width:${sl.length ? ((sd / sl.length) * 100).toFixed(0) : 0}%"></i></div></div>`;
           }).join('')}</div><span class="tp-pct">${Math.round(pr.pct * 100)}%</span></div>`;
@@ -9381,15 +9404,24 @@ a.term:hover {
       if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 76, behavior: 'smooth' });
     });
 
+    // 已讀只需記錄一次：避免捲動時每次進出觀察區都同步寫入 localStorage。
+    let readMarked = false;
+    const markReadOnce = () => {
+      if (readMarked) return;
+      readMarked = true;
+      ACM.markRead(L.id);
+    };
     if ('IntersectionObserver' in window) {
       const links = new Map(ACM.$$('#tocList a', main).map((a) => [a.dataset.to, a]));
+      let onLink = null;
       const io = new IntersectionObserver((ents) => {
         ents.forEach((en) => {
           if (!en.isIntersecting) return;
-          links.forEach((a) => a.classList.remove('on'));
           const a = links.get(en.target.id);
+          if (onLink && onLink !== a) onLink.classList.remove('on');
           if (a) a.classList.add('on');
-          if (en.target.id === 'sec-pitfalls' || en.target.id === 'sec-quiz') ACM.markRead(L.id);
+          onLink = a || null;
+          if (en.target.id === 'sec-pitfalls' || en.target.id === 'sec-quiz') markReadOnce();
         });
       }, { rootMargin: '-80px 0px -60% 0px' });
       items.forEach(([id]) => {
@@ -9398,19 +9430,25 @@ a.term:hover {
       });
       ACM.onCleanup(() => io.disconnect());
     }
-    const readTimer = setTimeout(() => ACM.markRead(L.id), 45000);
+    const readTimer = setTimeout(markReadOnce, 45000);
     ACM.onCleanup(() => clearTimeout(readTimer));
 
     const bar = ACM.$('.read-prog i', main);
     const art = ACM.$('.lesson-main', main);
-    const onScroll = () => {
+    let rafId = 0;
+    const paintBar = () => {
+      rafId = 0;
       const r = art.getBoundingClientRect();
       const pct = ACM.clamp((window.innerHeight - r.top) / (r.height || 1), 0, 1);
-      bar.style.width = `${(pct * 100).toFixed(1)}%`;
+      bar.style.transform = `scaleX(${pct.toFixed(3)})`;
     };
+    const onScroll = () => { if (!rafId) rafId = requestAnimationFrame(paintBar); };
     window.addEventListener('scroll', onScroll, { passive: true });
-    ACM.onCleanup(() => window.removeEventListener('scroll', onScroll));
-    onScroll();
+    ACM.onCleanup(() => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafId);
+    });
+    paintBar();
     bindQuiz(main, L);
   });
 })();
@@ -9938,7 +9976,7 @@ a.term:hover {
     let miIdx = 0;
     let miTurn = 0;
     let miTrust = 50;
-    let miHistory = []; // [{ client, cm, grade, tag, fb }]
+    let miHistory = []; // [{ client, cm, tag }]
     let miPicked = null;
 
     // Tab 3 狀態：資源媒合
@@ -10330,6 +10368,16 @@ a.term:hover {
       return results;
     }
 
+    const auditPassCount = (audit) => audit.filter((x) => x.cls === 'pass').length;
+    const auditListHtml = (audit) => audit.map((a) => `
+                <div class="soap-audit-item ${a.cls}">
+                  <span>${a.icon}</span>
+                  <div>
+                    <b style="display:block">${esc(a.title)}</b>
+                    <span class="small muted">${esc(a.detail)}</span>
+                  </div>
+                </div>`).join('');
+
     function evalBsrs() {
       const sum = bsrsScores.reduce((a, b) => a + b, 0);
       let tier = '';
@@ -10358,7 +10406,7 @@ a.term:hover {
     function renderSoap() {
       const c = SOAP_CASES[soapCaseIdx];
       const audit = auditSoap(soapDraft);
-      const passN = audit.filter((x) => x.cls === 'pass').length;
+      const passN = auditPassCount(audit);
       const bsrs = evalBsrs();
 
       return `<section class="card">
@@ -10436,14 +10484,7 @@ a.term:hover {
             </div>
 
             <div id="soapAuditList">
-              ${audit.map((a) => `
-                <div class="soap-audit-item ${a.cls}">
-                  <span>${a.icon}</span>
-                  <div>
-                    <b style="display:block">${esc(a.title)}</b>
-                    <span class="small muted">${esc(a.detail)}</span>
-                  </div>
-                </div>`).join('')}
+              ${auditListHtml(audit)}
             </div>
 
             <button type="button" class="btn block" id="soapToggleSample" style="margin-top:8px">
@@ -10473,32 +10514,32 @@ a.term:hover {
       bindEvents();
     }
 
+    /** 練功房使用計數：首次使用給 XP，之後只累加次數。 */
+    function bumpLab(key, xp, act) {
+      if (!ACM.state.labs[key]) {
+        ACM.state.labs[key] = 1;
+        ACM.addXP(xp, act);
+      } else {
+        ACM.state.labs[key]++;
+        ACM.save();
+      }
+    }
+
+    const QUAL_FIELDS = { qDeg: 'degree', qMaj: 'major', qLic: 'license', qExp: 'exp', qDrv: 'drive' };
+
     function bindEvents() {
       ACM.$$('[data-tab]', main).forEach((b) => {
         b.onclick = () => switchTab(b.dataset.tab);
       });
 
       if (curTab === 'qual') {
-        const markQual = () => {
-          if (!ACM.state.labs.qualChecked) {
-            ACM.state.labs.qualChecked = 1;
-            ACM.addXP(8, 'lab');
-          } else {
-            ACM.state.labs.qualChecked++;
-            ACM.save();
-          }
-          render();
-        };
-        ['qDeg', 'qMaj', 'qLic', 'qExp', 'qDrv'].forEach((id) => {
+        Object.keys(QUAL_FIELDS).forEach((id) => {
           const el = ACM.$(`#${id}`, main);
           if (!el) return;
           el.onchange = () => {
-            if (id === 'qDeg') qualState.degree = el.value;
-            if (id === 'qMaj') qualState.major = el.value;
-            if (id === 'qLic') qualState.license = el.value;
-            if (id === 'qExp') qualState.exp = el.value;
-            if (id === 'qDrv') qualState.drive = el.value;
-            markQual();
+            qualState[QUAL_FIELDS[id]] = el.value;
+            bumpLab('qualChecked', 8, 'lab');
+            render();
           };
         });
         const copyBtn = ACM.$('#qualCopyBtn', main);
@@ -10512,17 +10553,6 @@ a.term:hover {
       }
 
       if (curTab === 'mi') {
-        ACM.$$('[data-sidx]', main).forEach((b) => {
-          b.onclick = () => {
-            miIdx = +b.dataset.sidx;
-            miTurn = 0;
-            miTrust = 50;
-            miHistory = [];
-            miPicked = null;
-            render();
-          };
-        });
-
         const resetFn = () => {
           miTurn = 0;
           miTrust = 50;
@@ -10530,6 +10560,13 @@ a.term:hover {
           miPicked = null;
           render();
         };
+        ACM.$$('[data-sidx]', main).forEach((b) => {
+          b.onclick = () => {
+            miIdx = +b.dataset.sidx;
+            resetFn();
+          };
+        });
+
         const r1 = ACM.$('#miResetBtn', main);
         if (r1) r1.onclick = resetFn;
         const r2 = ACM.$('#miReplayBtn', main);
@@ -10555,7 +10592,7 @@ a.term:hover {
             const scen = MI_SCENARIOS[miIdx];
             const turnObj = scen.turns[miTurn];
             const ch = turnObj.choices[miPicked];
-            miHistory.push({ client: turnObj.client, cm: ch.text, grade: ch.grade, tag: ch.tag, fb: ch.fb });
+            miHistory.push({ client: turnObj.client, cm: ch.text, tag: ch.tag });
             miTurn++;
             miPicked = null;
             if (miTurn >= scen.turns.length) {
@@ -10582,15 +10619,7 @@ a.term:hover {
       }
 
       if (curTab === 'resource') {
-        const touchRes = () => {
-          if (!ACM.state.labs.resMatched) {
-            ACM.state.labs.resMatched = 1;
-            ACM.addXP(8, 'lab');
-          } else {
-            ACM.state.labs.resMatched++;
-            ACM.save();
-          }
-        };
+        const touchRes = () => bumpLab('resMatched', 8, 'lab');
         ACM.$$('#resChecks input[type="checkbox"]', main).forEach((chk) => {
           chk.onchange = () => {
             if (chk.checked) selectedNeeds.add(chk.value);
@@ -10666,20 +10695,10 @@ a.term:hover {
             if (e.isComposing) return;
             syncInputs();
             const audit = auditSoap(soapDraft);
-            const passN = audit.filter((x) => x.cls === 'pass').length;
             const listEl = ACM.$('#soapAuditList', main);
-            if (listEl) {
-              listEl.innerHTML = audit.map((a) => `
-                <div class="soap-audit-item ${a.cls}">
-                  <span>${a.icon}</span>
-                  <div>
-                    <b style="display:block">${esc(a.title)}</b>
-                    <span class="small muted">${esc(a.detail)}</span>
-                  </div>
-                </div>`).join('');
-            }
+            if (listEl) listEl.innerHTML = auditListHtml(audit);
             const btnEl = ACM.$('#soapAuditBtn', main);
-            if (btnEl) btnEl.textContent = `🔍 執行品質檢核（目前通過 ${passN}/5 項）`;
+            if (btnEl) btnEl.textContent = `🔍 執行品質檢核（目前通過 ${auditPassCount(audit)}/5 項）`;
           });
         });
 
@@ -10715,15 +10734,8 @@ a.term:hover {
         if (auditBtn) {
           auditBtn.onclick = () => {
             syncInputs();
-            const audit = auditSoap(soapDraft);
-            const passN = audit.filter((x) => x.cls === 'pass').length;
-            if (!ACM.state.labs.soapChecked) {
-              ACM.state.labs.soapChecked = 1;
-              ACM.addXP(10, 'soap');
-            } else {
-              ACM.state.labs.soapChecked++;
-              ACM.save();
-            }
+            const passN = auditPassCount(auditSoap(soapDraft));
+            bumpLab('soapChecked', 10, 'soap');
             ACM.toast(passN === 5 ? '🎉 恭喜！5 項 SOAP 專業品質指標全數通過！' : `🔍 已完成檢核：通過 ${passN}/5 項，請參考右側建議微調`, passN === 5 ? 'ok' : 'warn');
             render();
           };
@@ -11109,8 +11121,9 @@ a.term:hover {
       }
 
       if (mode === 'mcq' && session) {
+        const backToSetup = () => { session = null; render(); };
         const quit = ACM.$('#qzQuitBtn', main);
-        if (quit) quit.onclick = () => { session = null; render(); };
+        if (quit) quit.onclick = backToSetup;
 
         const again = ACM.$('#qzAgainBtn', main);
         if (again) again.onclick = startMcqSession;
@@ -11124,7 +11137,7 @@ a.term:hover {
         }
 
         const backSetup = ACM.$('#qzBackSetupBtn', main);
-        if (backSetup) backSetup.onclick = () => { session = null; render(); };
+        if (backSetup) backSetup.onclick = backToSetup;
 
         const optsBox = ACM.$('#qzOpts', main);
         if (optsBox) {
@@ -11169,23 +11182,26 @@ a.term:hover {
       }
 
       if (mode === 'oral') {
+        const gotoOral = (idx) => {
+          stopTimer();
+          oralIdx = idx;
+          oralOpen = false;
+          render();
+        };
         const prev = ACM.$('#oralPrevBtn', main);
-        if (prev) prev.onclick = () => { stopTimer(); oralIdx--; oralOpen = false; render(); };
+        if (prev) prev.onclick = () => gotoOral(oralIdx - 1);
 
         const next = ACM.$('#oralNextBtn', main);
-        if (next) next.onclick = () => { stopTimer(); oralIdx++; oralOpen = false; render(); };
+        if (next) next.onclick = () => gotoOral(oralIdx + 1);
 
         const rand = ACM.$('#oralRandBtn', main);
         if (rand) {
           rand.onclick = () => {
-            stopTimer();
+            let nxt = oralIdx;
             if (orals.length > 1) {
-              let nxt = oralIdx;
               while (nxt === oralIdx) nxt = Math.floor(Math.random() * orals.length);
-              oralIdx = nxt;
             }
-            oralOpen = false;
-            render();
+            gotoOral(nxt);
           };
         }
 
@@ -11240,12 +11256,7 @@ a.term:hover {
         }
 
         ACM.$$('[data-oidx]', main).forEach((b) => {
-          b.onclick = () => {
-            stopTimer();
-            oralIdx = +b.dataset.oidx;
-            oralOpen = false;
-            render();
-          };
+          b.onclick = () => gotoOral(+b.dataset.oidx);
         });
       }
     }
@@ -11390,6 +11401,8 @@ a.term:hover {
       btn.disabled = true;
       btn.textContent = '⏳ 寄送中…';
       const k = KINDS.find((x) => x.id === kind) || KINDS[0];
+      // 送出期間使用者可能已切到別頁：只在仍停留於回饋頁時才重繪，避免蓋掉其他頁面。
+      const rerenderIfHere = () => { if (ACM.curRoute && ACM.curRoute.name === 'feedback') ACM.renderRoute(); };
       const banner = (cls, html) => {
         const b = ACM.$('#fbBanner');
         if (b) {
@@ -11409,7 +11422,7 @@ a.term:hover {
           if (!res.ok) throw new Error(res.error || '送出失敗');
           items = res.items || [res.item].concat(items);
           saveLocal(items);
-          ACM.renderRoute();
+          rerenderIfHere();
           if (!res.item || res.item.mail_sent !== false) {
             banner('ok', '✅ 已收到回饋並寄出通知信，感謝你的寶貴建議！');
           } else {
@@ -11429,7 +11442,7 @@ a.term:hover {
           const sent = await sendStatic(item);
           items = [item].concat(items);
           saveLocal(items);
-          ACM.renderRoute();
+          rerenderIfHere();
           if (sent) banner('ok', '✅ 感謝回饋！已成功寄送給站長。');
           else banner('', fallbackCard(k.label, title, desc));
         }
@@ -11455,7 +11468,7 @@ a.term:hover {
 (function () {
   'use strict';
   var ACM = (window.ACM = window.ACM || {});
-  ACM.RELEASES_DATA = {"current_version":"2.0.0","releases":[{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見信件、意見回饋、校園導覽（共 4 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：藥癮個管師學院頁面結構、頂部與行動導覽列、專業聲明與腳本載入清單（+3 / -1 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1679 / -21 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+25 / -9 行）","[意見信件] 更新 tools/feedback_mailer.py：意見回饋儲存與寄送 okayell@hotmail.com（+4 / -2 行）"],"files_count":4},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"藥癮個管師學院 v1.0.0 初版發布（甄試衝刺 · 毒防實務雙軌）","highlights":["四大分院共 16 堂台灣毒防實務圖解課程（制度與法規、追蹤與減害晤談、資源媒合與紀錄、甄試筆試與口試），內嵌純 SVG 流程圖與對照表","四大互動實戰練功房：報考與任用資格檢核器、5 大情境 MI 動機式晤談對話模擬器、跨網絡資源媒合配對器、SOAP 個管紀錄去標籤化品質檢核器","雙模式甄試題庫：64+ 題高頻筆試選擇題（含錯題本複習）＋ 12 道口試情境抽題閃卡（附評分重點、STAR/MI 擬答與自評追蹤）","48 則台灣藥癮個管專業百科（課文首次出現自動標註懸浮卡片），完整涵蓋緩起訴戒癮治療、美沙冬／丁基原啡因、依托咪酯二級毒品、BSRS-5 與 0800-770-885 專線"],"files_count":22}]};
+  ACM.RELEASES_DATA = {"current_version":"2.1.0","releases":[{"version":"2.1.0","date":"2026-11-07","bump":"minor","title":"更新學院頁面、實戰練功房、後端服務（共 12 個檔案）","highlights":["[後端服務] 更新 server.py：本機 HTTP 伺服器、健康檢查、版本發布與單檔下載端點（+9 / -14 行）","[視覺樣式] 更新 static/css/app.css：藥癮個管師學院溫潤翠綠學術樣式、四大分院主題色與零水平捲軸響應式版面（+11 / -14 行）","[應用啟動] 更新 static/js/app.js：全站搜尋、三層專業倫理聲明視窗與路由分發（+3 / -3 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+32 / -7 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存（acm.* 前綴）、IME 安全快捷鍵與彈窗系統（+9 / -9 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+4 / -2 行）"],"files_count":12},{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見信件、意見回饋、校園導覽（共 4 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：藥癮個管師學院頁面結構、頂部與行動導覽列、專業聲明與腳本載入清單（+3 / -1 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1679 / -21 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+25 / -9 行）","[意見信件] 更新 tools/feedback_mailer.py：意見回饋儲存與寄送 okayell@hotmail.com（+4 / -2 行）"],"files_count":4},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"藥癮個管師學院 v1.0.0 初版發布（甄試衝刺 · 毒防實務雙軌）","highlights":["四大分院共 16 堂台灣毒防實務圖解課程（制度與法規、追蹤與減害晤談、資源媒合與紀錄、甄試筆試與口試），內嵌純 SVG 流程圖與對照表","四大互動實戰練功房：報考與任用資格檢核器、5 大情境 MI 動機式晤談對話模擬器、跨網絡資源媒合配對器、SOAP 個管紀錄去標籤化品質檢核器","雙模式甄試題庫：64+ 題高頻筆試選擇題（含錯題本複習）＋ 12 道口試情境抽題閃卡（附評分重點、STAR/MI 擬答與自評追蹤）","48 則台灣藥癮個管專業百科（課文首次出現自動標註懸浮卡片），完整涵蓋緩起訴戒癮治療、美沙冬／丁基原啡因、依托咪酯二級毒品、BSRS-5 與 0800-770-885 專線"],"files_count":22}]};
 
   var BUMP = {
     major: { badge: 'Major 大改版', cls: 'bad', desc: '進第 1 位數（X.0.0）：整體架構大改版、跨模組大規模升級' },
@@ -11794,6 +11807,9 @@ a.term:hover {
       if (e.target === searchModal) ACM.closeSearch();
     });
     ACM.$('#searchModalClose', searchModal).addEventListener('click', ACM.closeSearch);
+    ACM.$('#globalSearchResults', searchModal).addEventListener('click', (e) => {
+      if (e.target.closest('.s-res-item')) ACM.closeSearch();
+    });
 
     const inp = ACM.$('#globalSearchInput', searchModal);
     let composing = false;
@@ -11898,9 +11914,6 @@ a.term:hover {
     }
 
     box.innerHTML = html;
-    ACM.$$('.s-res-item', box).forEach((a) => {
-      a.addEventListener('click', () => ACM.closeSearch());
-    });
   }
 
   ACM.openSearch = function () {

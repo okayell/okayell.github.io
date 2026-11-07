@@ -84,8 +84,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 90;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
+  background: #fff;
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
 }
@@ -216,7 +215,7 @@ a:hover {
   font-size: 13.5px;
   color: var(--text);
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s;
 }
 
 .global-search-box input:focus {
@@ -525,7 +524,7 @@ a:hover {
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .filter-pill:hover {
@@ -542,7 +541,6 @@ a:hover {
 /* Cards & Grids */
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 
 .card {
   background: var(--surface);
@@ -550,7 +548,7 @@ a:hover {
   border-radius: var(--radius-md);
   padding: 18px;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  transition: transform 0.15s, border-color 0.15s;
 }
 
 .card.hoverable:hover {
@@ -586,22 +584,6 @@ a:hover {
   grid-template-columns: 420px 1fr;
   gap: 22px;
   align-items: start;
-}
-
-.diagram-box {
-  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
-  border: 1px solid #fed7aa;
-  border-radius: var(--radius-md);
-  padding: 12px;
-  text-align: center;
-}
-
-.diagram-box svg {
-  width: 100%;
-  max-width: 290px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
 }
 
 .step-list {
@@ -705,14 +687,13 @@ a:hover {
   stroke: rgba(194, 65, 12, 0.28);
   stroke-width: 2.2px;
   stroke-linejoin: round;
-  transition: fill 0.16s ease, stroke 0.16s ease, filter 0.16s ease;
+  transition: fill 0.16s ease, stroke 0.16s ease;
 }
 
 .muscle-contour:hover {
   fill: rgba(234, 88, 12, 0.28);
   stroke: #ea580c;
   stroke-width: 3.5px;
-  filter: drop-shadow(0 0 8px rgba(234, 88, 12, 0.55));
 }
 
 .muscle-contour.active {
@@ -814,7 +795,7 @@ a:hover {
   font-weight: 600;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .quiz-opt:hover:not(:disabled) {
@@ -924,51 +905,6 @@ a:hover {
   font-size: 15px;
 }
 
-.release-item {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.release-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
-}
-
-.dl-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.back-top-btn {
-  position: fixed;
-  right: 18px;
-  bottom: 20px;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid #fdba74;
-  background: var(--primary);
-  color: #fff;
-  font-size: 18px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(194, 65, 12, 0.3);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 80;
-}
-
-.back-top-btn.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 .fitness-toast {
   position: fixed;
   left: 50%;
@@ -991,9 +927,6 @@ a:hover {
   opacity: 1;
   transform: translate(-50%, 0);
 }
-
-.muted { color: var(--text-muted); }
-.small { font-size: 12.5px; }
 
 /* ==========================================================================
    Real Gym Action Photography & Medical Anatomy Visual Components
@@ -1078,8 +1011,7 @@ a:hover {
   font-size: 11px;
   font-weight: 700;
   color: #fff;
-  background: rgba(15, 23, 42, 0.78);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.84);
 }
 
 .cat-collage-grid {
@@ -1144,7 +1076,6 @@ a:hover {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: opacity 0.18s ease;
 }
 
 .equip-step-pills {
@@ -1153,8 +1084,7 @@ a:hover {
   right: 8px;
   display: inline-flex;
   gap: 4px;
-  background: rgba(15, 23, 42, 0.76);
-  backdrop-filter: blur(6px);
+  background: rgba(15, 23, 42, 0.86);
   padding: 3px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -1249,7 +1179,7 @@ a:hover {
   cursor: pointer;
   padding: 0;
   text-align: left;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s;
 }
 
 .equip-dual-thumb-card.active {
@@ -1416,6 +1346,20 @@ a:hover {
   background: #0f172a;
 }
 
+/* Rendering performance helpers */
+.cv-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
+
+#glossaryGrid > .cv-card {
+  contain-intrinsic-size: auto 150px;
+}
+
+[id^="safety-"] {
+  scroll-margin-top: 130px;
+}
+
 @media (max-width: 960px) {
   .hero-card,
   .detail-layout,
@@ -1426,7 +1370,7 @@ a:hover {
   .body-map-card {
     position: static;
   }
-  .grid-3, .grid-4 {
+  .grid-3 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -1439,7 +1383,7 @@ a:hover {
     width: 100%;
     order: 3;
   }
-  .grid-2, .grid-3, .grid-4, .muscle-detail-visuals, .quiz-visual-banner {
+  .grid-2, .grid-3, .muscle-detail-visuals, .quiz-visual-banner {
     grid-template-columns: 1fr;
   }
   .hero-card {
@@ -3128,20 +3072,34 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -3308,7 +3266,18 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -3375,9 +3344,17 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.FITNESS_RELEASES = {
-  "current_version": "1.1.1",
-  "last_fingerprint": "c6c75497957c4813",
+  "current_version": "1.2.0",
+  "last_fingerprint": "c46ad57dd723309e",
   "releases": [
+    {
+      "version": "1.2.0",
+      "date": "2026-11-07 09:55",
+      "title": "健身學院 v1.2.0 內容與體驗更新",
+      "changes": [
+        "優化健身器材圖解、肌肉解剖圖鑑與安全指南體驗"
+      ]
+    },
     {
       "version": "1.1.1",
       "date": "2026-11-06 15:17",
@@ -3531,47 +3508,28 @@ window.FITNESS_RELEASES = {
     }
   }
 
-  function toggleEquipmentLearned(id) {
+  // Shared toggle / mark helpers for the { id: true } progress maps.
+  function toggleFlag(key, id) {
     const st = loadState();
-    if (st.learnedEquipment[id]) delete st.learnedEquipment[id];
-    else st.learnedEquipment[id] = true;
+    if (st[key][id]) delete st[key][id];
+    else st[key][id] = true;
     saveState(st);
-    return !!st.learnedEquipment[id];
+    return !!st[key][id];
   }
 
-  function markEquipmentViewed(id) {
+  function markFlag(key, id) {
     if (!id) return;
     const st = loadState();
-    if (!st.learnedEquipment[id]) {
-      st.learnedEquipment[id] = true;
+    if (!st[key][id]) {
+      st[key][id] = true;
       saveState(st);
     }
   }
 
-  function toggleMuscleStudied(id) {
-    const st = loadState();
-    if (st.studiedMuscles[id]) delete st.studiedMuscles[id];
-    else st.studiedMuscles[id] = true;
-    saveState(st);
-    return !!st.studiedMuscles[id];
-  }
-
-  function markMuscleViewed(id) {
-    if (!id) return;
-    const st = loadState();
-    if (!st.studiedMuscles[id]) {
-      st.studiedMuscles[id] = true;
-      saveState(st);
-    }
-  }
-
-  function toggleSafetyRead(id) {
-    const st = loadState();
-    if (st.readSafety[id]) delete st.readSafety[id];
-    else st.readSafety[id] = true;
-    saveState(st);
-    return !!st.readSafety[id];
-  }
+  const toggleEquipmentLearned = (id) => toggleFlag('learnedEquipment', id);
+  const markEquipmentViewed = (id) => markFlag('learnedEquipment', id);
+  const markMuscleViewed = (id) => markFlag('studiedMuscles', id);
+  const toggleSafetyRead = (id) => toggleFlag('readSafety', id);
 
   function toast(msg) {
     let el = document.getElementById('fitnessToast');
@@ -3607,12 +3565,69 @@ window.FITNESS_RELEASES = {
     } catch (_) {}
   }
 
+  // --------------------------------------------------------------------------
+  // Event delegation on #appMain (bound once) + route-leave / visibility hooks
+  // --------------------------------------------------------------------------
+  const _delegates = { click: [], input: [], change: [], submit: [] };
+  const _leaveHooks = [];
+  const _visibilityHooks = [];
+  let _root = null;
+
+  function on(type, selector, fn) {
+    _delegates[type].push([selector, fn]);
+  }
+
+  function bindDelegation(root) {
+    if (!root || _root) return;
+    _root = root;
+    Object.keys(_delegates).forEach(type => {
+      root.addEventListener(type, (ev) => {
+        const target = ev.target;
+        if (!target || !target.closest) return;
+        for (const [selector, fn] of _delegates[type]) {
+          const el = target.closest(selector);
+          if (el && root.contains(el)) fn(el, ev, root);
+        }
+      });
+    });
+    document.addEventListener('visibilitychange', () => {
+      _visibilityHooks.forEach(fn => fn(document.hidden));
+    });
+  }
+
+  function onRouteLeave(fn) {
+    _leaveHooks.push(fn);
+  }
+
+  function runRouteLeave() {
+    _leaveHooks.forEach(fn => fn());
+  }
+
+  function onVisibilityChange(fn) {
+    _visibilityHooks.push(fn);
+  }
+
+  // Single-file build embeds images as base64 data: URIs. Convert each one to a
+  // short blob: URL on first use, so re-rendered templates (e.g. the 24-card
+  // equipment grid on every filter keystroke) no longer re-parse ~2 MB of base64.
+  const _blobUrls = {};
+
   function assetUrl(relPath) {
     if (!relPath) return '';
-    if (window.FITNESS_ASSETS && window.FITNESS_ASSETS[relPath]) {
-      return window.FITNESS_ASSETS[relPath];
+    const embedded = window.FITNESS_ASSETS && window.FITNESS_ASSETS[relPath];
+    if (!embedded) return relPath;
+    if (_blobUrls[relPath]) return _blobUrls[relPath];
+    try {
+      const comma = embedded.indexOf(',');
+      const mime = embedded.slice(5, embedded.indexOf(';'));
+      const bin = atob(embedded.slice(comma + 1));
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      _blobUrls[relPath] = URL.createObjectURL(new Blob([bytes], { type: mime }));
+    } catch (_) {
+      _blobUrls[relPath] = embedded;
     }
-    return relPath;
+    return _blobUrls[relPath];
   }
 
   function equipImg(id, step) {
@@ -3635,7 +3650,11 @@ window.FITNESS_RELEASES = {
   window.FitnessCore = {
     esc,
     isEnterSend,
-    assetUrl,
+    on,
+    bindDelegation,
+    onRouteLeave,
+    runRouteLeave,
+    onVisibilityChange,
     equipImg,
     muscleImg,
     bannerImg,
@@ -3649,7 +3668,6 @@ window.FITNESS_RELEASES = {
     updateHeaderProgress,
     toggleEquipmentLearned,
     markEquipmentViewed,
-    toggleMuscleStudied,
     markMuscleViewed,
     toggleSafetyRead,
     toast,
@@ -5761,9 +5779,12 @@ window.FITNESS_QUIZ = [
 (function () {
   'use strict';
 
-  const { esc, equipImg, muscleImg, bannerImg, bodyImg } = window.FitnessCore;
+  const Core = window.FitnessCore;
+  const { esc, equipImg, muscleImg, bannerImg, bodyImg } = Core;
 
   let _detailAnimTimer = null;
+  // Current equipment-detail photo state (set on each detail render).
+  const _detail = { src0: '', src1: '', step: 0 };
 
   function clearDetailAnim() {
     if (_detailAnimTimer) {
@@ -5771,6 +5792,11 @@ window.FITNESS_QUIZ = [
       _detailAnimTimer = null;
     }
   }
+
+  Core.onRouteLeave(clearDetailAnim);
+  Core.onVisibilityChange((hidden) => {
+    if (hidden && _detailAnimTimer) stopDetailAnim('⏸ 已暫停動作切換');
+  });
 
   function fmtMd(str) {
     return esc(str).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
@@ -6035,12 +6061,6 @@ window.FITNESS_QUIZ = [
       </svg>`;
   }
 
-  // 相容舊呼叫介面：回傳對應器材實拍照片元素
-  function renderMachineSvg(diagramOrId) {
-    const id = diagramOrId || 'chest-press';
-    return `<img src="${esc(equipImg(id, 0))}" alt="${esc(id)}" class="equip-photo-img" loading="lazy" />`;
-  }
-
   // --------------------------------------------------------------------------
   // 2. 器材卡片實拍雙圖互動組件（支援 ① 起始 ／ ② 收縮 一鍵切換）
   // --------------------------------------------------------------------------
@@ -6054,7 +6074,7 @@ window.FITNESS_QUIZ = [
                data-src-1="${esc(equipImg(item.id, 1))}"
                alt="${esc(item.name)} 實拍動作示範"
                class="equip-photo-img"
-               loading="lazy" />
+               loading="lazy" decoding="async" />
         </a>
         <div class="equip-step-pills" role="group" aria-label="切換動作階段照片">
           <button type="button" class="equip-step-btn active" data-step-switch="0" title="查看起始準備姿勢">① 起始</button>
@@ -6067,39 +6087,30 @@ window.FITNESS_QUIZ = [
       </div>`;
   }
 
-  function bindEquipPhotoBoxes(root) {
-    root.querySelectorAll('[data-photo-card]').forEach(box => {
-      const img = box.querySelector('img.equip-photo-img');
-      const phaseTxt = box.querySelector('.step-phase-text');
-      const btns = box.querySelectorAll('[data-step-switch]');
-      if (!img || !btns.length) return;
-
-      const setStep = (step) => {
-        const s = Number(step) === 1 ? 1 : 0;
-        img.src = s === 1 ? img.getAttribute('data-src-1') : img.getAttribute('data-src-0');
-        btns.forEach(b => b.classList.toggle('active', Number(b.getAttribute('data-step-switch')) === s));
-        if (phaseTxt) phaseTxt.textContent = s === 1 ? '② 發力收縮' : '① 起始準備';
-      };
-
-      btns.forEach(btn => {
-        btn.addEventListener('click', (ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          setStep(btn.getAttribute('data-step-switch'));
-        });
-      });
+  // Delegated: photo-card step switch (① 起始 / ② 收縮).
+  Core.on('click', '[data-photo-card] [data-step-switch]', (btn, ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    const box = btn.closest('[data-photo-card]');
+    const img = box.querySelector('img.equip-photo-img');
+    if (!img) return;
+    const s = Number(btn.getAttribute('data-step-switch')) === 1 ? 1 : 0;
+    img.src = img.getAttribute(s === 1 ? 'data-src-1' : 'data-src-0');
+    box.querySelectorAll('[data-step-switch]').forEach(b => {
+      b.classList.toggle('active', Number(b.getAttribute('data-step-switch')) === s);
     });
-  }
+    const phaseTxt = box.querySelector('.step-phase-text');
+    if (phaseTxt) phaseTxt.textContent = s === 1 ? '② 發力收縮' : '① 起始準備';
+  });
 
   // --------------------------------------------------------------------------
   // 3. 學院總覽首頁 (#/home)
   // --------------------------------------------------------------------------
   function renderHome(container) {
-    clearDetailAnim();
-    const eqList = window.FitnessCore.getEquipmentList();
-    const muList = window.FitnessCore.getMuscleList();
+    const eqList = Core.getEquipmentList();
+    const muList = Core.getMuscleList();
     const myths = window.FITNESS_MYTHS || [];
-    const prog = window.FitnessCore.computeProgressSummary();
+    const prog = Core.computeProgressSummary();
 
     const dayIdx = Math.floor(Date.now() / 86400000);
     const spotEq = eqList[dayIdx % Math.max(1, eqList.length)] || eqList[0];
@@ -6130,7 +6141,7 @@ window.FITNESS_QUIZ = [
 
         <div class="hero-visual-panel">
           <div class="hero-studio-frame">
-            <img src="${esc(bannerImg('hero_studio'))}" alt="現代健身學院商用器械與自由重量訓練場館" />
+            <img src="${esc(bannerImg('hero_studio'))}" alt="現代健身學院商用器械與自由重量訓練場館" decoding="async" />
             <div class="hero-studio-caption">
               <span>🏟️ 商用器械區 · 自由重量深蹲架 · 有氧訓練全區實景導覽</span>
               <span class="chip orange" style="font-size:11px; padding:1px 7px;">進度 ${prog.pct}%</span>
@@ -6158,7 +6169,7 @@ window.FITNESS_QUIZ = [
       </div>
       <div class="grid-3" style="margin-bottom: 24px;">
         <div class="card">
-          <img src="${esc(bannerImg('safety_warmup'))}" alt="動態暖身與關節活動度啟動" class="sop-card-img" loading="lazy" />
+          <img src="${esc(bannerImg('safety_warmup'))}" alt="動態暖身與關節活動度啟動" class="sop-card-img" loading="lazy" decoding="async" />
           <span class="chip orange" style="margin-bottom:6px;">Step 1 · 動態暖身 5～8 分鐘</span>
           <h3 class="card-title">先提高體溫與關節滑液，別拉死筋</h3>
           <p style="font-size:13.5px; color:var(--text-secondary); margin:6px 0 0;">
@@ -6166,7 +6177,7 @@ window.FITNESS_QUIZ = [
           </p>
         </div>
         <div class="card">
-          <img src="${esc(equipImg('chest-press', 0))}" alt="坐姿器械座椅與轉軸設定檢查" class="sop-card-img" loading="lazy" />
+          <img src="${esc(equipImg('chest-press', 0))}" alt="坐姿器械座椅與轉軸設定檢查" class="sop-card-img" loading="lazy" decoding="async" />
           <span class="chip teal" style="margin-bottom:6px;">Step 2 · 器材上機 3 檢查</span>
           <h3 class="card-title">調座椅對轉軸 → 插銷插到底 → 設安全扣</h3>
           <p style="font-size:13.5px; color:var(--text-secondary); margin:6px 0 0;">
@@ -6174,7 +6185,7 @@ window.FITNESS_QUIZ = [
           </p>
         </div>
         <div class="card">
-          <img src="${esc(bannerImg('safety_bracing'))}" alt="脊椎中立與 360 度核心腹內壓呼吸控制" class="sop-card-img" loading="lazy" />
+          <img src="${esc(bannerImg('safety_bracing'))}" alt="脊椎中立與 360 度核心腹內壓呼吸控制" class="sop-card-img" loading="lazy" decoding="async" />
           <span class="chip green" style="margin-bottom:6px;">Step 3 · 呼吸、腹內壓與留餘力</span>
           <h3 class="card-title">離心吸氣 2 秒、發力吐氣、留 RIR 2</h3>
           <p style="font-size:13.5px; color:var(--text-secondary); margin:6px 0 0;">
@@ -6197,7 +6208,7 @@ window.FITNESS_QUIZ = [
             <h3 class="card-title" style="margin-top:6px;">${esc(spotEq.name)}</h3>
             <span class="card-en">${esc(spotEq.en)}</span>
             <a href="#/equipment/${esc(spotEq.id)}" class="spot-thumb-banner" style="display:block;">
-              <img src="${esc(equipImg(spotEq.id, 1))}" alt="${esc(spotEq.name)}" loading="lazy" />
+              <img src="${esc(equipImg(spotEq.id, 1))}" alt="${esc(spotEq.name)}" loading="lazy" decoding="async" />
               <span class="spot-thumb-tag">實拍發力示範</span>
             </a>
             <p style="font-size:13.5px; color:var(--text-secondary); margin:0 0 10px;">${esc(spotEq.summary)}</p>
@@ -6216,7 +6227,7 @@ window.FITNESS_QUIZ = [
             <h3 class="card-title" style="margin-top:6px;">${esc(spotMu.icon)} ${esc(spotMu.name)}</h3>
             <span class="card-en">${esc(spotMu.en)}</span>
             <a href="#/muscles/${esc(spotMu.id)}" class="spot-thumb-banner" style="display:block;">
-              <img src="${esc(muscleImg(spotMu.id))}" alt="${esc(spotMu.name)} 醫學解剖特寫" loading="lazy" />
+              <img src="${esc(muscleImg(spotMu.id))}" alt="${esc(spotMu.name)} 醫學解剖特寫" loading="lazy" decoding="async" />
               <span class="spot-thumb-tag">醫學解剖特寫</span>
             </a>
             <p style="font-size:13.5px; color:var(--text-secondary); margin:0 0 10px;">${esc(spotMu.biomechanics)}</p>
@@ -6234,7 +6245,7 @@ window.FITNESS_QUIZ = [
             <span class="chip red">❌ 今日迷思破解</span>
             <h3 class="card-title" style="margin-top:6px;">${esc(spotMyth.myth)}</h3>
             <a href="#/safety" class="spot-thumb-banner" style="display:block;">
-              <img src="${esc(bannerImg('safety_nutrition'))}" alt="運動科學與營養實證" loading="lazy" />
+              <img src="${esc(bannerImg('safety_nutrition'))}" alt="運動科學與營養實證" loading="lazy" decoding="async" />
               <span class="spot-thumb-tag">運動科學實證</span>
             </a>
             <p style="font-size:13.3px; color:var(--ok-text); background:var(--ok-bg); padding:10px 12px; border-radius:8px; margin:0 0 12px; font-weight:600;">
@@ -6265,7 +6276,7 @@ window.FITNESS_QUIZ = [
               <div class="cat-collage-grid">
                 ${items.slice(0, 4).map(i => `
                   <a href="#/equipment/${esc(i.id)}" class="cat-collage-item" title="${esc(i.name)}">
-                    <img src="${esc(equipImg(i.id, 1))}" alt="${esc(i.name)}" loading="lazy" />
+                    <img src="${esc(equipImg(i.id, 1))}" alt="${esc(i.name)}" loading="lazy" decoding="async" />
                     <span class="cat-collage-lbl">${esc(i.name.split('（')[0].split(' &')[0])}</span>
                   </a>
                 `).join('')}
@@ -6288,28 +6299,28 @@ window.FITNESS_QUIZ = [
   let _equipOnlyUnlearned = false;
 
   function renderEquipmentDetail(container, equipId) {
-    clearDetailAnim();
-    const eqList = window.FitnessCore.getEquipmentList();
-    const muList = window.FitnessCore.getMuscleList();
+    const eqList = Core.getEquipmentList();
+    const muList = Core.getMuscleList();
     const item = eqList.find(e => e.id === equipId);
     if (!item) {
       container.innerHTML = `<div class="card"><p>找不到器材「${esc(equipId)}」。<a href="#/equipment">返回器材圖鑑</a></p></div>`;
       return;
     }
 
-    window.FitnessCore.markEquipmentViewed(item.id);
-    const st = window.FitnessCore.loadState();
+    Core.markEquipmentViewed(item.id);
+    const st = Core.loadState();
     const isLearned = !!st.learnedEquipment[item.id];
     const findMuscle = (mId) => muList.find(m => m.id === mId);
     const src0 = equipImg(item.id, 0);
     const src1 = equipImg(item.id, 1);
+    Object.assign(_detail, { src0, src1, step: 0 });
     const keyCue = EQUIP_KEY_CUES[item.id] || '';
 
     container.innerHTML = `
       <div style="margin-bottom: 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
         <a href="#/equipment" class="btn ghost sm">← 返回 24 種器材操作圖鑑</a>
-        <button type="button" id="toggleEquipLearnedBtn" class="btn ${isLearned ? 'secondary' : ''} sm">
-          ${isLearned ? '✅ 已標記掌握（點擊取消）' : '☑️ 標記為已掌握此器材'}
+        <button type="button" id="toggleEquipLearnedBtn" data-equip-id="${esc(item.id)}" class="btn ${isLearned ? 'secondary' : ''} sm">
+          ${learnedBtnLabel(isLearned)}
         </button>
       </div>
 
@@ -6318,7 +6329,7 @@ window.FITNESS_QUIZ = [
         <div class="card">
           <div class="equip-motion-stage">
             <div class="equip-motion-main">
-              <img id="detailMainPhoto" src="${esc(src0)}" alt="${esc(item.name)} 動作示範" />
+              <img id="detailMainPhoto" src="${esc(src0)}" alt="${esc(item.name)} 動作示範" decoding="async" />
               <div class="equip-photo-caption">
                 <span id="detailPhaseBadge">① 起始準備姿勢 (Start)</span>
                 <span style="font-weight:600; opacity:0.9;">${esc(keyCue)}</span>
@@ -6332,11 +6343,11 @@ window.FITNESS_QUIZ = [
 
           <div class="equip-dual-thumbs">
             <button type="button" class="equip-dual-thumb-card active" data-detail-step="0">
-              <img src="${esc(src0)}" alt="${esc(item.name)} 起始準備姿勢" />
+              <img src="${esc(src0)}" alt="${esc(item.name)} 起始準備姿勢" decoding="async" />
               <div class="equip-dual-thumb-lbl">① 起始準備姿勢</div>
             </button>
             <button type="button" class="equip-dual-thumb-card" data-detail-step="1">
-              <img src="${esc(src1)}" alt="${esc(item.name)} 發力收縮終點" />
+              <img src="${esc(src1)}" alt="${esc(item.name)} 發力收縮終點" decoding="async" />
               <div class="equip-dual-thumb-lbl">② 發力收縮終點</div>
             </button>
           </div>
@@ -6420,86 +6431,128 @@ window.FITNESS_QUIZ = [
         </div>
       </div>
     `;
+  }
 
-    // 綁定雙圖與連續動作播放
-    let curStep = 0;
+  function learnedBtnLabel(isLearned) {
+    return isLearned ? '✅ 已標記掌握（點擊取消）' : '☑️ 標記為已掌握此器材';
+  }
+
+  function applyDetailStep(s) {
+    _detail.step = Number(s) === 1 ? 1 : 0;
     const mainPhoto = document.getElementById('detailMainPhoto');
+    if (mainPhoto) mainPhoto.src = _detail.step === 1 ? _detail.src1 : _detail.src0;
     const phaseBadge = document.getElementById('detailPhaseBadge');
-    const animStatus = document.getElementById('detailAnimStatus');
-    const playBtn = document.getElementById('detailPlayAnimBtn');
-    const thumbCards = container.querySelectorAll('[data-detail-step]');
-
-    const applyStep = (s) => {
-      curStep = Number(s) === 1 ? 1 : 0;
-      if (mainPhoto) mainPhoto.src = curStep === 1 ? src1 : src0;
-      if (phaseBadge) {
-        phaseBadge.textContent = curStep === 1 ? '② 發力收縮終點 (Peak Contraction)' : '① 起始準備姿勢 (Start)';
-      }
-      thumbCards.forEach(c => c.classList.toggle('active', Number(c.getAttribute('data-detail-step')) === curStep));
-    };
-
-    thumbCards.forEach(card => {
-      card.addEventListener('click', () => {
-        clearDetailAnim();
-        if (playBtn) playBtn.textContent = '▶ 連續動作示範';
-        if (animStatus) animStatus.textContent = '📸 已切換指定動作階段照片';
-        applyStep(card.getAttribute('data-detail-step'));
-      });
+    if (phaseBadge) {
+      phaseBadge.textContent = _detail.step === 1 ? '② 發力收縮終點 (Peak Contraction)' : '① 起始準備姿勢 (Start)';
+    }
+    document.querySelectorAll('#appMain [data-detail-step]').forEach(c => {
+      c.classList.toggle('active', Number(c.getAttribute('data-detail-step')) === _detail.step);
     });
+  }
 
-    if (playBtn) {
-      playBtn.addEventListener('click', () => {
-        if (_detailAnimTimer) {
-          clearDetailAnim();
-          playBtn.textContent = '▶ 連續動作示範';
-          if (animStatus) animStatus.textContent = '⏸ 已暫停動作切換';
-          return;
-        }
-        playBtn.textContent = '⏸ 暫停示範';
-        if (animStatus) animStatus.textContent = '🔄 正在交替示範：起始姿勢 ⇄ 發力收縮';
-        applyStep(curStep === 0 ? 1 : 0);
-        _detailAnimTimer = setInterval(() => {
-          if (!document.getElementById('detailMainPhoto')) {
-            clearDetailAnim();
-            return;
-          }
-          applyStep(curStep === 0 ? 1 : 0);
-        }, 1250);
-      });
-    }
+  function setDetailAnimUi(btnText, statusText) {
+    const playBtn = document.getElementById('detailPlayAnimBtn');
+    const animStatus = document.getElementById('detailAnimStatus');
+    if (playBtn) playBtn.textContent = btnText;
+    if (animStatus) animStatus.textContent = statusText;
+  }
 
-    const btn = document.getElementById('toggleEquipLearnedBtn');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        const now = window.FitnessCore.toggleEquipmentLearned(item.id);
-        window.FitnessCore.toast(now ? `已標記掌握「${item.name}」！` : `已取消標記「${item.name}」`);
-        renderEquipmentDetail(container, equipId);
-      });
+  function stopDetailAnim(statusText) {
+    clearDetailAnim();
+    setDetailAnimUi('▶ 連續動作示範', statusText);
+  }
+
+  Core.on('click', '[data-detail-step]', (card) => {
+    stopDetailAnim('📸 已切換指定動作階段照片');
+    applyDetailStep(card.getAttribute('data-detail-step'));
+  });
+
+  Core.on('click', '#detailPlayAnimBtn', () => {
+    if (_detailAnimTimer) {
+      stopDetailAnim('⏸ 已暫停動作切換');
+      return;
     }
+    setDetailAnimUi('⏸ 暫停示範', '🔄 正在交替示範：起始姿勢 ⇄ 發力收縮');
+    applyDetailStep(_detail.step === 0 ? 1 : 0);
+    _detailAnimTimer = setInterval(() => applyDetailStep(_detail.step === 0 ? 1 : 0), 1250);
+  });
+
+  Core.on('click', '#toggleEquipLearnedBtn', (btn) => {
+    const id = btn.getAttribute('data-equip-id');
+    const item = Core.getEquipmentList().find(e => e.id === id);
+    if (!item) return;
+    const now = Core.toggleEquipmentLearned(item.id);
+    Core.toast(now ? `已標記掌握「${item.name}」！` : `已取消標記「${item.name}」`);
+    btn.classList.toggle('secondary', now);
+    btn.textContent = learnedBtnLabel(now);
+  });
+
+  function renderEquipGrid() {
+    const eqList = Core.getEquipmentList();
+    const muList = Core.getMuscleList();
+    const st = Core.loadState();
+    const q = _equipQuery.toLowerCase();
+
+    return eqList.filter(item => {
+      if (_equipCat !== 'all' && item.cat !== _equipCat) return false;
+      if (_equipOnlyUnlearned && st.learnedEquipment[item.id]) return false;
+      if (q) {
+        const hay = `${item.name} ${item.en} ${item.summary} ${(item.setup || []).join(' ')}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    }).map(item => {
+      const learned = !!st.learnedEquipment[item.id];
+      const primaryNames = (item.primaryMuscles || []).map(mid => {
+        const m = muList.find(x => x.id === mid);
+        return m ? m.name.split('（')[0] : mid;
+      });
+      return `
+        <div class="card hoverable cv-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div class="card-head">
+              <div>
+                <span class="chip orange">${esc(item.icon || '🏋️')} ${esc(item.level || item.difficulty || '推薦器材')}</span>
+              </div>
+              ${learned ? '<span class="chip green">✅ 已掌握</span>' : ''}
+            </div>
+            <h2 class="card-title" style="margin-top:6px;">
+              <a href="#/equipment/${esc(item.id)}" style="color:inherit;">${esc(item.name)}</a>
+            </h2>
+            <span class="card-en" style="margin-bottom:8px;">${esc(item.en)}</span>
+
+            ${renderEquipPhotoBox(item)}
+
+            <p style="font-size:13.2px; color:var(--text-secondary); margin:0 0 10px;">
+              ${esc(item.summary)}
+            </p>
+          </div>
+
+          <div>
+            <div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;">
+              <span style="font-size:12px; color:var(--text-muted); font-weight:700;">主攻肌群：</span>
+              ${primaryNames.map(n => `<span class="chip teal">${esc(n)}</span>`).join('')}
+            </div>
+            <a href="#/equipment/${esc(item.id)}" class="btn sm" style="width:100%;">查看雙圖示範・座椅設定・3 大錯誤 →</a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Filters only refresh the card grid, so the search box keeps focus / IME state.
+  function refreshEquipGrid() {
+    const grid = document.getElementById('equipGrid');
+    if (grid) grid.innerHTML = renderEquipGrid();
   }
 
   function renderEquipment(container, param) {
-    clearDetailAnim();
     if (param) {
       renderEquipmentDetail(container, param);
       return;
     }
 
     const cats = window.FITNESS_EQUIPMENT_CATEGORIES || [];
-    const eqList = window.FitnessCore.getEquipmentList();
-    const muList = window.FitnessCore.getMuscleList();
-    const st = window.FitnessCore.loadState();
-
-    const filtered = eqList.filter(item => {
-      if (_equipCat !== 'all' && item.cat !== _equipCat) return false;
-      if (_equipOnlyUnlearned && st.learnedEquipment[item.id]) return false;
-      if (_equipQuery) {
-        const q = _equipQuery.toLowerCase();
-        const hay = `${item.name} ${item.en} ${item.summary} ${(item.setup || []).join(' ')}`.toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
 
     container.innerHTML = `
       <div class="section-head" style="margin-top:0;">
@@ -6523,77 +6576,27 @@ window.FITNESS_QUIZ = [
         `).join('')}
       </div>
 
-      <div class="grid-3">
-        ${filtered.map(item => {
-          const learned = !!st.learnedEquipment[item.id];
-          const primaryNames = (item.primaryMuscles || []).map(mid => {
-            const m = muList.find(x => x.id === mid);
-            return m ? m.name.split('（')[0] : mid;
-          });
-          return `
-            <div class="card hoverable" style="display:flex; flex-direction:column; justify-content:space-between;">
-              <div>
-                <div class="card-head">
-                  <div>
-                    <span class="chip orange">${esc(item.icon || '🏋️')} ${esc(item.level || item.difficulty || '推薦器材')}</span>
-                  </div>
-                  ${learned ? '<span class="chip green">✅ 已掌握</span>' : ''}
-                </div>
-                <h2 class="card-title" style="margin-top:6px;">
-                  <a href="#/equipment/${esc(item.id)}" style="color:inherit;">${esc(item.name)}</a>
-                </h2>
-                <span class="card-en" style="margin-bottom:8px;">${esc(item.en)}</span>
-
-                ${renderEquipPhotoBox(item)}
-
-                <p style="font-size:13.2px; color:var(--text-secondary); margin:0 0 10px;">
-                  ${esc(item.summary)}
-                </p>
-              </div>
-
-              <div>
-                <div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;">
-                  <span style="font-size:12px; color:var(--text-muted); font-weight:700;">主攻肌群：</span>
-                  ${primaryNames.map(n => `<span class="chip teal">${esc(n)}</span>`).join('')}
-                </div>
-                <a href="#/equipment/${esc(item.id)}" class="btn sm" style="width:100%;">查看雙圖示範・座椅設定・3 大錯誤 →</a>
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
+      <div class="grid-3" id="equipGrid">${renderEquipGrid()}</div>
     `;
-
-    bindEquipPhotoBoxes(container);
-
-    container.querySelectorAll('#equipCatBar [data-cat]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _equipCat = btn.getAttribute('data-cat') || 'all';
-        renderEquipment(container);
-      });
-    });
-
-    const inp = document.getElementById('equipFilterInput');
-    if (inp) {
-      inp.addEventListener('input', () => {
-        _equipQuery = inp.value.trim();
-        renderEquipment(container);
-        const newInp = document.getElementById('equipFilterInput');
-        if (newInp) {
-          newInp.focus();
-          newInp.setSelectionRange(newInp.value.length, newInp.value.length);
-        }
-      });
-    }
-
-    const unBtn = document.getElementById('equipUnlearnedBtn');
-    if (unBtn) {
-      unBtn.addEventListener('click', () => {
-        _equipOnlyUnlearned = !_equipOnlyUnlearned;
-        renderEquipment(container);
-      });
-    }
   }
+
+  Core.on('click', '#equipCatBar [data-cat]', (btn) => {
+    _equipCat = btn.getAttribute('data-cat') || 'all';
+    document.querySelectorAll('#equipCatBar [data-cat]').forEach(b => b.classList.toggle('active', b === btn));
+    refreshEquipGrid();
+  });
+
+  Core.on('input', '#equipFilterInput', (inp) => {
+    _equipQuery = inp.value.trim();
+    refreshEquipGrid();
+  });
+
+  Core.on('click', '#equipUnlearnedBtn', (btn) => {
+    _equipOnlyUnlearned = !_equipOnlyUnlearned;
+    btn.classList.toggle('active', _equipOnlyUnlearned);
+    btn.textContent = _equipOnlyUnlearned ? '☑️ 只看未掌握' : '⬜ 只看未掌握';
+    refreshEquipGrid();
+  });
 
   // --------------------------------------------------------------------------
   // 5. 肌肉解剖圖鑑 (#/muscles & #/muscles/:id)
@@ -6602,9 +6605,8 @@ window.FITNESS_QUIZ = [
   let _activeMuscleId = 'pectorals';
 
   function renderMuscles(container, param) {
-    clearDetailAnim();
-    const muList = window.FitnessCore.getMuscleList();
-    const eqList = window.FitnessCore.getEquipmentList();
+    const muList = Core.getMuscleList();
+    const eqList = Core.getEquipmentList();
     if (param && muList.some(m => m.id === param)) {
       _activeMuscleId = param;
       const target = muList.find(m => m.id === param);
@@ -6613,7 +6615,7 @@ window.FITNESS_QUIZ = [
     }
 
     const activeMuscle = muList.find(m => m.id === _activeMuscleId) || muList[0];
-    window.FitnessCore.markMuscleViewed(activeMuscle.id);
+    Core.markMuscleViewed(activeMuscle.id);
 
     const primaryEquipId = (activeMuscle.bestEquipIds || [])[0] || 'chest-press';
     const primaryEquip = eqList.find(e => e.id === primaryEquipId) || eqList[0];
@@ -6671,14 +6673,14 @@ window.FITNESS_QUIZ = [
           <\!-- 雙欄醫學局部特寫 ＋ 首選器材實戰照片 -->
           <div class="muscle-detail-visuals">
             <div class="muscle-plate-card">
-              <img src="${esc(muscleImg(activeMuscle.id))}" alt="${esc(activeMuscle.name)} 局部醫學解剖特寫" />
+              <img src="${esc(muscleImg(activeMuscle.id))}" alt="${esc(activeMuscle.name)} 局部醫學解剖特寫" decoding="async" />
               <div class="muscle-plate-cap">
                 <span>🔬 局部肌纖維走向解剖特寫</span>
                 <span class="chip orange" style="font-size:10.5px; padding:1px 7px;">醫學圖譜</span>
               </div>
             </div>
             <a href="#/equipment/${esc(primaryEquip.id)}" class="muscle-plate-card" style="text-decoration:none;">
-              <img src="${esc(equipImg(primaryEquip.id, 1))}" alt="${esc(primaryEquip.name)} 實拍訓練示範" />
+              <img src="${esc(equipImg(primaryEquip.id, 1))}" alt="${esc(primaryEquip.name)} 實拍訓練示範" decoding="async" />
               <div class="muscle-plate-cap">
                 <span>🏋️ 代表訓練：${esc(primaryEquip.name.split('（')[0])}</span>
                 <span style="color:var(--primary); font-weight:800;">看圖解 →</span>
@@ -6714,7 +6716,7 @@ window.FITNESS_QUIZ = [
               const eq = eqList.find(e => e.id === eqId);
               return `
                 <div class="ex-action-card">
-                  ${eq ? `<a href="#/equipment/${esc(eq.id)}" style="flex-shrink:0;"><img src="${esc(equipImg(eq.id, idx % 2 === 0 ? 1 : 0))}" alt="${esc(ex.name)}" class="ex-thumb-img" loading="lazy" /></a>` : ''}
+                  ${eq ? `<a href="#/equipment/${esc(eq.id)}" style="flex-shrink:0;"><img src="${esc(equipImg(eq.id, idx % 2 === 0 ? 1 : 0))}" alt="${esc(ex.name)}" class="ex-thumb-img" loading="lazy" decoding="async" /></a>` : ''}
                   <div style="flex:1; min-width:0;">
                     <div style="font-weight:800; font-size:14px;">${esc(ex.name)}</div>
                     <div style="font-size:12.3px; color:var(--primary); font-weight:700; margin:2px 0;">🎯 針對部位：${esc(ex.target)}</div>
@@ -6747,48 +6749,42 @@ window.FITNESS_QUIZ = [
         </div>
       </div>
     `;
-
-    // Bind quick bar buttons
-    container.querySelectorAll('#muscleQuickBar [data-mid]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const mid = btn.getAttribute('data-mid');
-        if (mid) {
-          _activeMuscleId = mid;
-          window.location.hash = `#/muscles/${mid}`;
-        }
-      });
-    });
-
-    // Bind SVG contours & margin callout pills
-    container.querySelectorAll('#bodySvgContainer [data-muscle-id]').forEach(el => {
-      el.addEventListener('click', () => {
-        const mid = el.getAttribute('data-muscle-id');
-        if (mid) {
-          _activeMuscleId = mid;
-          if (window.location.hash === `#/muscles/${mid}`) {
-            renderMuscles(container, mid);
-          } else {
-            window.location.hash = `#/muscles/${mid}`;
-          }
-        }
-      });
-    });
-
-    const vf = document.getElementById('viewFrontBtn');
-    const vb = document.getElementById('viewBackBtn');
-    if (vf) vf.addEventListener('click', () => { _bodyView = 'front'; renderMuscles(container); });
-    if (vb) vb.addEventListener('click', () => { _bodyView = 'back'; renderMuscles(container); });
   }
+
+  function selectMuscle(mid) {
+    if (!mid) return;
+    _activeMuscleId = mid;
+    if (window.location.hash === `#/muscles/${mid}`) {
+      renderMuscles(document.getElementById('appMain'), mid);
+    } else {
+      window.location.hash = `#/muscles/${mid}`;
+    }
+  }
+
+  Core.on('click', '#muscleQuickBar [data-mid]', (btn) => {
+    const mid = btn.getAttribute('data-mid');
+    if (mid) {
+      _activeMuscleId = mid;
+      window.location.hash = `#/muscles/${mid}`;
+    }
+  });
+
+  // SVG contours & margin callout pills
+  Core.on('click', '#bodySvgContainer [data-muscle-id]', (el) => selectMuscle(el.getAttribute('data-muscle-id')));
+
+  Core.on('click', '#viewFrontBtn, #viewBackBtn', (btn, ev, root) => {
+    _bodyView = btn.id === 'viewBackBtn' ? 'back' : 'front';
+    renderMuscles(root);
+  });
 
   // --------------------------------------------------------------------------
   // 6. 健身安全與注意事項 (#/safety)
   // --------------------------------------------------------------------------
   function renderSafety(container) {
-    clearDetailAnim();
-    const sections = window.FitnessCore.getSafetyList();
+    const sections = Core.getSafetyList();
     const domsRows = window.FITNESS_DOMS_VS_INJURY || [];
     const myths = window.FITNESS_MYTHS || [];
-    const st = window.FitnessCore.loadState();
+    const st = Core.loadState();
 
     container.innerHTML = `
       <div class="section-head" style="margin-top:0;">
@@ -6802,7 +6798,7 @@ window.FITNESS_QUIZ = [
       <div class="filter-bar">
         ${sections.map(s => {
           const done = !!st.readSafety[s.id];
-          return `<a href="#safety-sec-${esc(s.id)}" class="filter-pill ${done ? 'active' : ''}" style="text-decoration:none;">${esc(s.icon)} ${esc(s.title.split('（')[0])} ${done ? '✓' : ''}</a>`;
+          return `<a href="#safety-sec-${esc(s.id)}" class="filter-pill ${done ? 'active' : ''}" style="text-decoration:none;">${esc(safetyPillLabel(s, done))}</a>`;
         }).join('')}
         <a href="#safety-doms-table" class="filter-pill" style="text-decoration:none;">🩺 肌肉痠痛 vs 受傷對照表</a>
         <a href="#safety-myths" class="filter-pill" style="text-decoration:none;">💡 10 大健身迷思破解</a>
@@ -6816,7 +6812,7 @@ window.FITNESS_QUIZ = [
           <section id="safety-sec-${esc(sec.id)}" class="card" style="margin-bottom:18px;">
             <div class="safety-chapter-banner">
               <div class="safety-banner-img-wrap">
-                <img src="${esc(vis.src())}" alt="${esc(sec.title)}" loading="lazy" />
+                <img src="${esc(vis.src())}" alt="${esc(sec.title)}" loading="lazy" decoding="async" />
               </div>
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
@@ -6825,7 +6821,7 @@ window.FITNESS_QUIZ = [
                     <p style="font-size:13.8px; color:var(--text-muted); margin:5px 0 8px;">${esc(sec.sub || sec.summary || '')}</p>
                   </div>
                   <button type="button" class="btn ${isRead ? 'secondary' : ''} sm" data-toggle-safety="${esc(sec.id)}">
-                    ${isRead ? '✅ 已讀本章' : '☑️ 標記本章已讀'}
+                    ${safetyBtnLabel(isRead)}
                   </button>
                 </div>
                 <div style="display:inline-flex; align-items:center; gap:6px; background:var(--surface-soft); border:1px solid #fed7aa; border-radius:8px; padding:6px 11px; font-size:12.5px; font-weight:700; color:#7c2d12;">
@@ -6903,29 +6899,39 @@ window.FITNESS_QUIZ = [
         </div>
       </section>
     `;
-
-    container.querySelectorAll('[data-toggle-safety]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const sid = btn.getAttribute('data-toggle-safety');
-        if (sid) {
-          const now = window.FitnessCore.toggleSafetyRead(sid);
-          window.FitnessCore.toast(now ? '已標記本章安全守則為已讀！' : '已取消已讀標記');
-          renderSafety(container);
-        }
-      });
-    });
   }
+
+  function safetyPillLabel(sec, done) {
+    return `${sec.icon} ${sec.title.split('（')[0]} ${done ? '✓' : ''}`;
+  }
+
+  function safetyBtnLabel(isRead) {
+    return isRead ? '✅ 已讀本章' : '☑️ 標記本章已讀';
+  }
+
+  // Toggle in place (no full re-render, so the scroll position stays put).
+  Core.on('click', '[data-toggle-safety]', (btn) => {
+    const sid = btn.getAttribute('data-toggle-safety');
+    if (!sid) return;
+    const now = Core.toggleSafetyRead(sid);
+    Core.toast(now ? '已標記本章安全守則為已讀！' : '已取消已讀標記');
+    btn.classList.toggle('secondary', now);
+    btn.textContent = safetyBtnLabel(now);
+    const sec = Core.getSafetyList().find(x => x.id === sid);
+    const pill = document.querySelector(`#appMain a[href="#safety-sec-${sid}"]`);
+    if (sec && pill) {
+      pill.classList.toggle('active', now);
+      pill.textContent = safetyPillLabel(sec, now);
+    }
+  });
 
   window.FitnessPages = Object.assign(window.FitnessPages || {}, {
     home: renderHome,
     equipment: renderEquipment,
     muscles: renderMuscles,
     safety: renderSafety,
-    renderMachineSvg,
-    renderBodySvg,
   });
 })();
-
 
 // === js/pages_tools.js ===
 // ============================================================================
@@ -6935,15 +6941,70 @@ window.FITNESS_QUIZ = [
 (function () {
   'use strict';
 
-  const { esc, equipImg, muscleImg, bannerImg } = window.FitnessCore;
+  const Core = window.FitnessCore;
+  const { esc, equipImg, muscleImg, bannerImg } = Core;
 
   // --------------------------------------------------------------------------
   // 1. 週課表 ＆ 1RM / TDEE / 組間計時器 (#/planner)
   // --------------------------------------------------------------------------
   let _activeProgramId = 'fullbody-3';
-  let _restRemaining = 90;
+  let _restRemaining = 90; // seconds left while paused
   let _restTotal = 90;
-  let _restInterval = null;
+  let _restDeadline = 0;   // epoch ms when running, 0 when paused
+  let _restTick = null;    // display refresh (only while the planner is visible)
+  let _restDoneTimer = null;
+
+  function restLeft() {
+    return _restDeadline ? Math.max(0, Math.ceil((_restDeadline - Date.now()) / 1000)) : _restRemaining;
+  }
+
+  function paintRest() {
+    const d = document.getElementById('restTimerDisplay');
+    if (!d) return;
+    const txt = formatSec(restLeft());
+    if (d.textContent !== txt) d.textContent = txt;
+  }
+
+  function stopRestTick() {
+    clearInterval(_restTick);
+    _restTick = null;
+  }
+
+  function startRestTick() {
+    if (_restTick || !_restDeadline || document.hidden || !document.getElementById('restTimerDisplay')) return;
+    _restTick = setInterval(paintRest, 250);
+  }
+
+  function stopRest(remaining) {
+    clearTimeout(_restDoneTimer);
+    _restDoneTimer = null;
+    stopRestTick();
+    _restDeadline = 0;
+    _restRemaining = remaining;
+    paintRest();
+  }
+
+  function startRest() {
+    if (_restRemaining <= 0) _restRemaining = _restTotal;
+    _restDeadline = Date.now() + _restRemaining * 1000;
+    // A single timeout fires the chime even if the user is on another page.
+    _restDoneTimer = setTimeout(() => {
+      stopRest(0);
+      Core.playChime();
+      Core.toast('🔔 組間休息結束！準備開始下一組！');
+    }, _restRemaining * 1000);
+    startRestTick();
+  }
+
+  Core.onRouteLeave(stopRestTick);
+  Core.onVisibilityChange((hidden) => {
+    if (hidden) {
+      stopRestTick();
+    } else {
+      paintRest();
+      startRestTick();
+    }
+  });
 
   function calc1RM(weight, reps) {
     const w = Math.max(1, Number(weight) || 60);
@@ -6983,9 +7044,9 @@ window.FITNESS_QUIZ = [
 
   function renderPlanner(container) {
     const programs = window.FITNESS_PROGRAMS || [];
-    const muList = window.FitnessCore.getMuscleList();
+    const muList = Core.getMuscleList();
     const prog = programs.find(p => p.id === _activeProgramId) || programs[0];
-    const st = window.FitnessCore.loadState();
+    const st = Core.loadState();
     const cp = st.calcProfile;
 
     const oneRm = calc1RM(cp.liftWeight, cp.liftReps);
@@ -7116,7 +7177,7 @@ window.FITNESS_QUIZ = [
             </p>
             <div style="text-align:center; background:var(--surface-soft); border:1px solid #fed7aa; border-radius:12px; padding:16px; margin-bottom:12px;">
               <div id="restTimerDisplay" style="font-size:38px; font-weight:900; color:var(--primary); font-variant-numeric:tabular-nums; line-height:1.1;">
-                ${formatSec(_restRemaining)}
+                ${formatSec(restLeft())}
               </div>
               <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">到時將自動發出和弦提示音</div>
             </div>
@@ -7196,7 +7257,7 @@ window.FITNESS_QUIZ = [
                         <tr>
                           <td>
                             <a href="#/equipment/${esc(ex.equipId)}" class="plan-ex-link">
-                              <img src="${esc(equipImg(ex.equipId, 1))}" alt="${esc(ex.name)}" class="plan-thumb" loading="lazy" />
+                              <img src="${esc(equipImg(ex.equipId, 1))}" alt="${esc(ex.name)}" class="plan-thumb" loading="lazy" decoding="async" />
                               <span>${esc(ex.name)}</span>
                             </a>
                           </td>
@@ -7221,94 +7282,64 @@ window.FITNESS_QUIZ = [
       </div>
     `;
 
-    // Bind 1RM inputs
-    const update1RM = () => {
-      const wEl = document.getElementById('calcLiftWeight');
-      const rEl = document.getElementById('calcLiftReps');
-      if (!wEl || !rEl) return;
-      const stNow = window.FitnessCore.loadState();
-      stNow.calcProfile.liftWeight = Number(wEl.value) || 60;
-      stNow.calcProfile.liftReps = Number(rEl.value) || 8;
-      window.FitnessCore.saveState(stNow);
-      renderPlanner(container);
-    };
-    ['calcLiftWeight', 'calcLiftReps'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('change', update1RM);
-    });
-
-    // Bind TDEE inputs
-    const updateTdee = () => {
-      const stNow = window.FitnessCore.loadState();
-      const g = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
-      stNow.calcProfile.sex = g('calcSex') || 'male';
-      stNow.calcProfile.age = Number(g('calcAge')) || 28;
-      stNow.calcProfile.height = Number(g('calcHeight')) || 172;
-      stNow.calcProfile.weight = Number(g('calcWeight')) || 68;
-      stNow.calcProfile.activity = Number(g('calcActivity')) || 1.55;
-      stNow.calcProfile.goal = g('calcGoal') || 'gain';
-      window.FitnessCore.saveState(stNow);
-      renderPlanner(container);
-    };
-    ['calcSex', 'calcAge', 'calcHeight', 'calcWeight', 'calcActivity', 'calcGoal'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener('change', updateTdee);
-    });
-
-    // Bind Rest Timer
-    const disp = document.getElementById('restTimerDisplay');
-    container.querySelectorAll('[data-rest-preset]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const sec = Number(btn.getAttribute('data-rest-preset')) || 90;
-        clearInterval(_restInterval);
-        _restInterval = null;
-        _restTotal = sec;
-        _restRemaining = sec;
-        if (disp) disp.textContent = formatSec(_restRemaining);
-      });
-    });
-
-    const startBtn = document.getElementById('restStartBtn');
-    const resetBtn = document.getElementById('restResetBtn');
-    if (startBtn) {
-      startBtn.addEventListener('click', () => {
-        if (_restInterval) {
-          clearInterval(_restInterval);
-          _restInterval = null;
-          window.FitnessCore.toast('計時器已暫停');
-          return;
-        }
-        if (_restRemaining <= 0) _restRemaining = _restTotal;
-        _restInterval = setInterval(() => {
-          _restRemaining = Math.max(0, _restRemaining - 1);
-          const d = document.getElementById('restTimerDisplay');
-          if (d) d.textContent = formatSec(_restRemaining);
-          if (_restRemaining <= 0) {
-            clearInterval(_restInterval);
-            _restInterval = null;
-            window.FitnessCore.playChime();
-            window.FitnessCore.toast('🔔 組間休息結束！準備開始下一組！');
-          }
-        }, 1000);
-      });
-    }
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        clearInterval(_restInterval);
-        _restInterval = null;
-        _restRemaining = _restTotal;
-        if (disp) disp.textContent = formatSec(_restRemaining);
-      });
-    }
-
-    // Bind Program Tabs
-    container.querySelectorAll('#programTabBar [data-prog-id]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _activeProgramId = btn.getAttribute('data-prog-id') || 'fullbody-3';
-        renderPlanner(container);
-      });
-    });
+    // Planner was just re-rendered: resume the display tick if the timer is running.
+    startRestTick();
   }
+
+  function readField(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+  }
+
+  function updateCalcProfile(patch) {
+    const stNow = Core.loadState();
+    Object.assign(stNow.calcProfile, patch);
+    Core.saveState(stNow);
+    renderPlanner(document.getElementById('appMain'));
+  }
+
+  // 1RM inputs
+  Core.on('change', '#calcLiftWeight, #calcLiftReps', () => {
+    updateCalcProfile({
+      liftWeight: Number(readField('calcLiftWeight')) || 60,
+      liftReps: Number(readField('calcLiftReps')) || 8,
+    });
+  });
+
+  // TDEE inputs
+  Core.on('change', '#calcSex, #calcAge, #calcHeight, #calcWeight, #calcActivity, #calcGoal', () => {
+    updateCalcProfile({
+      sex: readField('calcSex') || 'male',
+      age: Number(readField('calcAge')) || 28,
+      height: Number(readField('calcHeight')) || 172,
+      weight: Number(readField('calcWeight')) || 68,
+      activity: Number(readField('calcActivity')) || 1.55,
+      goal: readField('calcGoal') || 'gain',
+    });
+  });
+
+  // Rest timer
+  Core.on('click', '[data-rest-preset]', (btn) => {
+    _restTotal = Number(btn.getAttribute('data-rest-preset')) || 90;
+    stopRest(_restTotal);
+  });
+
+  Core.on('click', '#restStartBtn', () => {
+    if (_restDeadline) {
+      stopRest(restLeft());
+      Core.toast('計時器已暫停');
+      return;
+    }
+    startRest();
+  });
+
+  Core.on('click', '#restResetBtn', () => stopRest(_restTotal));
+
+  // Program tabs
+  Core.on('click', '#programTabBar [data-prog-id]', (btn, ev, root) => {
+    _activeProgramId = btn.getAttribute('data-prog-id') || 'fullbody-3';
+    renderPlanner(root);
+  });
 
   // --------------------------------------------------------------------------
   // 2. 健身術語百科 (#/glossary)
@@ -7316,18 +7347,30 @@ window.FITNESS_QUIZ = [
   let _glossaryCat = 'all';
   let _glossaryQuery = '';
 
+  function glossaryGridHtml() {
+    const list = window.FITNESS_GLOSSARY || [];
+    const q = _glossaryQuery.toLowerCase();
+    return list.filter(item => {
+      if (_glossaryCat !== 'all' && item.cat !== _glossaryCat) return false;
+      if (q && !(`${item.term} ${item.zh} ${item.desc}`).toLowerCase().includes(q)) return false;
+      return true;
+    }).map(item => `
+      <div class="card cv-card">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title" style="color:#7c2d12;">${esc(item.zh)}</h2>
+            <span class="card-en" style="font-weight:700; color:var(--primary);">${esc(item.term)}</span>
+          </div>
+          <span class="chip orange">${esc(item.cat)}</span>
+        </div>
+        <p style="font-size:13.6px; color:var(--text-secondary); margin:8px 0 0;">${esc(item.desc)}</p>
+      </div>
+    `).join('');
+  }
+
   function renderGlossary(container) {
     const list = window.FITNESS_GLOSSARY || [];
     const cats = ['all'].concat(Array.from(new Set(list.map(x => x.cat))));
-
-    const filtered = list.filter(item => {
-      if (_glossaryCat !== 'all' && item.cat !== _glossaryCat) return false;
-      if (_glossaryQuery) {
-        const q = _glossaryQuery.toLowerCase();
-        if (!(`${item.term} ${item.zh} ${item.desc}`).toLowerCase().includes(q)) return false;
-      }
-      return true;
-    });
 
     container.innerHTML = `
       <div class="section-head" style="margin-top:0;">
@@ -7346,42 +7389,26 @@ window.FITNESS_QUIZ = [
         `).join('')}
       </div>
 
-      <div class="grid-2">
-        ${filtered.map(item => `
-          <div class="card">
-            <div class="card-head">
-              <div>
-                <h2 class="card-title" style="color:#7c2d12;">${esc(item.zh)}</h2>
-                <span class="card-en" style="font-weight:700; color:var(--primary);">${esc(item.term)}</span>
-              </div>
-              <span class="chip orange">${esc(item.cat)}</span>
-            </div>
-            <p style="font-size:13.6px; color:var(--text-secondary); margin:8px 0 0;">${esc(item.desc)}</p>
-          </div>
-        `).join('')}
-      </div>
+      <div class="grid-2" id="glossaryGrid">${glossaryGridHtml()}</div>
     `;
-
-    container.querySelectorAll('#glossaryCatBar [data-gcat]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _glossaryCat = btn.getAttribute('data-gcat') || 'all';
-        renderGlossary(container);
-      });
-    });
-
-    const inp = document.getElementById('glossarySearchInput');
-    if (inp) {
-      inp.addEventListener('input', () => {
-        _glossaryQuery = inp.value.trim();
-        renderGlossary(container);
-        const ni = document.getElementById('glossarySearchInput');
-        if (ni) {
-          ni.focus();
-          ni.setSelectionRange(ni.value.length, ni.value.length);
-        }
-      });
-    }
   }
+
+  // Filters only refresh the card grid, so the search box keeps focus / IME state.
+  function refreshGlossaryGrid() {
+    const grid = document.getElementById('glossaryGrid');
+    if (grid) grid.innerHTML = glossaryGridHtml();
+  }
+
+  Core.on('click', '#glossaryCatBar [data-gcat]', (btn) => {
+    _glossaryCat = btn.getAttribute('data-gcat') || 'all';
+    document.querySelectorAll('#glossaryCatBar [data-gcat]').forEach(b => b.classList.toggle('active', b === btn));
+    refreshGlossaryGrid();
+  });
+
+  Core.on('input', '#glossarySearchInput', (inp) => {
+    _glossaryQuery = inp.value.trim();
+    refreshGlossaryGrid();
+  });
 
   // --------------------------------------------------------------------------
   // 3. 隨堂測驗 (#/quiz)
@@ -7427,15 +7454,10 @@ window.FITNESS_QUIZ = [
 
   function renderQuiz(container) {
     const pool = getActiveQuizPool();
-    const st = window.FitnessCore.loadState();
+    const st = Core.loadState();
 
     if (_quizFinished || _quizIdx >= pool.length) {
       const pct = pool.length ? Math.round((_quizScore / pool.length) * 100) : 0;
-      if (pct > (st.quizBestScore || 0)) {
-        st.quizBestScore = pct;
-      }
-      st.quizTotalPlayed = (st.quizTotalPlayed || 0) + 1;
-      window.FitnessCore.saveState(st);
 
       container.innerHTML = `
         <div class="card" style="max-width:680px; margin:20px auto; text-align:center; padding:28px;">
@@ -7451,16 +7473,6 @@ window.FITNESS_QUIZ = [
           </div>
         </div>
       `;
-      const rb = document.getElementById('quizRestartBtn');
-      if (rb) {
-        rb.addEventListener('click', () => {
-          _quizIdx = 0;
-          _quizSelected = null;
-          _quizScore = 0;
-          _quizFinished = false;
-          renderQuiz(container);
-        });
-      }
       return;
     }
 
@@ -7499,7 +7511,7 @@ window.FITNESS_QUIZ = [
           const vis = visFn ? visFn() : { src: bannerImg('hero_studio'), label: '健身學院隨堂知識情境題' };
           return `
             <div class="quiz-visual-banner">
-              <img src="${esc(vis.src)}" alt="${esc(vis.label)}" />
+              <img src="${esc(vis.src)}" alt="${esc(vis.label)}" decoding="async" />
               <div>
                 <div style="font-size:12px; font-weight:800; color:var(--primary); margin-bottom:4px;">🔎 題目對應器材／解剖實景提示</div>
                 <div style="font-size:14px; font-weight:700; color:#7c2d12;">${esc(vis.label)}</div>
@@ -7543,41 +7555,55 @@ window.FITNESS_QUIZ = [
         ` : ''}
       </div>
     `;
-
-    container.querySelectorAll('#quizCatBar [data-qcat]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _quizCat = btn.getAttribute('data-qcat') || 'all';
-        _quizIdx = 0;
-        _quizSelected = null;
-        _quizScore = 0;
-        _quizFinished = false;
-        renderQuiz(container);
-      });
-    });
-
-    container.querySelectorAll('#quizOptionsWrap [data-opt-idx]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (_quizSelected !== null) return;
-        const idx = Number(btn.getAttribute('data-opt-idx'));
-        _quizSelected = idx;
-        if (idx === q.ans) _quizScore += 1;
-        renderQuiz(container);
-      });
-    });
-
-    const nextBtn = document.getElementById('quizNextBtn');
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        if (_quizIdx + 1 < pool.length) {
-          _quizIdx += 1;
-          _quizSelected = null;
-        } else {
-          _quizFinished = true;
-        }
-        renderQuiz(container);
-      });
-    }
   }
+
+  function resetQuiz() {
+    _quizIdx = 0;
+    _quizSelected = null;
+    _quizScore = 0;
+    _quizFinished = false;
+  }
+
+  function recordQuizResult(pool) {
+    const st = Core.loadState();
+    const pct = pool.length ? Math.round((_quizScore / pool.length) * 100) : 0;
+    if (pct > (st.quizBestScore || 0)) st.quizBestScore = pct;
+    st.quizTotalPlayed = (st.quizTotalPlayed || 0) + 1;
+    Core.saveState(st);
+  }
+
+  Core.on('click', '#quizRestartBtn', (btn, ev, root) => {
+    resetQuiz();
+    renderQuiz(root);
+  });
+
+  Core.on('click', '#quizCatBar [data-qcat]', (btn, ev, root) => {
+    _quizCat = btn.getAttribute('data-qcat') || 'all';
+    resetQuiz();
+    renderQuiz(root);
+  });
+
+  Core.on('click', '#quizOptionsWrap [data-opt-idx]', (btn, ev, root) => {
+    if (_quizSelected !== null) return;
+    const q = getActiveQuizPool()[_quizIdx];
+    if (!q) return;
+    const idx = Number(btn.getAttribute('data-opt-idx'));
+    _quizSelected = idx;
+    if (idx === q.ans) _quizScore += 1;
+    renderQuiz(root);
+  });
+
+  Core.on('click', '#quizNextBtn', (btn, ev, root) => {
+    const pool = getActiveQuizPool();
+    if (_quizIdx + 1 < pool.length) {
+      _quizIdx += 1;
+      _quizSelected = null;
+    } else {
+      _quizFinished = true;
+      recordQuizResult(pool);
+    }
+    renderQuiz(root);
+  });
 
   // --------------------------------------------------------------------------
   // 4. 意見回饋（極簡 3 欄位標準表單）(#/feedback)
@@ -7621,53 +7647,50 @@ window.FITNESS_QUIZ = [
         </form>
       </div>
     `;
-
-    const form = document.getElementById('feedbackForm');
-    if (form) {
-      form.addEventListener('submit', async (ev) => {
-        ev.preventDefault();
-        const category = document.getElementById('fbCategory').value.trim();
-        const title = document.getElementById('fbTitle').value.trim();
-        const message = document.getElementById('fbMessage').value.trim();
-        const statusEl = document.getElementById('fbStatusText');
-        const btn = document.getElementById('fbSubmitBtn');
-        if (!message && !title) return;
-
-        btn.disabled = true;
-        statusEl.textContent = '正在送出回饋…';
-
-        try {
-          const resp = await fetch('/api/feedback', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ category, title, message, page: window.location.hash || '#/feedback' }),
-          });
-          if (!resp.ok) throw new Error('HTTP ' + resp.status);
-          statusEl.style.color = 'var(--ok-text)';
-          statusEl.textContent = '✅ 已成功送出回饋！感謝您的寶貴建議。';
-          form.reset();
-        } catch (_) {
-          if (window.CampusNav && typeof window.CampusNav.sendStaticFeedback === 'function') {
-            window.CampusNav.sendStaticFeedback({
-              tool: 'fitness',
-              toolTitle: '健身學院',
-              category,
-              title,
-              message,
-            });
-          }
-          const st = window.FitnessCore.loadState();
-          st.localFeedback.push({ ts: new Date().toISOString(), category, title, message });
-          window.FitnessCore.saveState(st);
-          statusEl.style.color = 'var(--ok-text)';
-          statusEl.textContent = '✅ 已儲存回饋並開啟寄信視窗！';
-          form.reset();
-        } finally {
-          btn.disabled = false;
-        }
-      });
-    }
   }
+
+  Core.on('submit', '#feedbackForm', async (form, ev) => {
+    ev.preventDefault();
+    const category = document.getElementById('fbCategory').value.trim();
+    const title = document.getElementById('fbTitle').value.trim();
+    const message = document.getElementById('fbMessage').value.trim();
+    const statusEl = document.getElementById('fbStatusText');
+    const btn = document.getElementById('fbSubmitBtn');
+    if (!message && !title) return;
+
+    btn.disabled = true;
+    statusEl.textContent = '正在送出回饋…';
+
+    try {
+      const resp = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, title, message, page: window.location.hash || '#/feedback' }),
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      statusEl.style.color = 'var(--ok-text)';
+      statusEl.textContent = '✅ 已成功送出回饋！感謝您的寶貴建議。';
+      form.reset();
+    } catch (_) {
+      if (window.CampusNav && typeof window.CampusNav.sendStaticFeedback === 'function') {
+        window.CampusNav.sendStaticFeedback({
+          tool: 'fitness',
+          toolTitle: '健身學院',
+          category,
+          title,
+          message,
+        });
+      }
+      const st = Core.loadState();
+      st.localFeedback.push({ ts: new Date().toISOString(), category, title, message });
+      Core.saveState(st);
+      statusEl.style.color = 'var(--ok-text)';
+      statusEl.textContent = '✅ 已儲存回饋並開啟寄信視窗！';
+      form.reset();
+    } finally {
+      btn.disabled = false;
+    }
+  });
 
   window.FitnessPages = Object.assign(window.FitnessPages || {}, {
     planner: renderPlanner,
@@ -7686,7 +7709,9 @@ window.FITNESS_QUIZ = [
 (function () {
   'use strict';
 
-  const { esc, isEnterSend, equipImg, muscleImg, bannerImg } = window.FitnessCore;
+  const Core = window.FitnessCore;
+  const { esc, isEnterSend, equipImg, muscleImg, bannerImg } = Core;
+  const ROUTES = ['equipment', 'muscles', 'safety', 'planner', 'glossary', 'quiz', 'feedback'];
 
   function parseHash() {
     const raw = (window.location.hash || '#/home').replace(/^#\/?/, '');
@@ -7696,6 +7721,8 @@ window.FITNESS_QUIZ = [
     return { route, param };
   }
 
+  let _navTabs = null;
+
   function renderCurrentRoute() {
     const main = document.getElementById('appMain');
     if (!main) return;
@@ -7704,39 +7731,38 @@ window.FITNESS_QUIZ = [
     const pages = window.FitnessPages || {};
 
     // Highlight active tab
-    document.querySelectorAll('#mainNavTabs .nav-tab').forEach(tab => {
-      const nav = tab.getAttribute('data-nav');
-      tab.classList.toggle('active', nav === route);
+    if (!_navTabs) _navTabs = document.querySelectorAll('#mainNavTabs .nav-tab');
+    _navTabs.forEach(tab => {
+      tab.classList.toggle('active', tab.getAttribute('data-nav') === route);
     });
 
-    if (route === 'equipment' && pages.equipment) {
-      pages.equipment(main, param);
-    } else if (route === 'muscles' && pages.muscles) {
-      pages.muscles(main, param);
-    } else if (route === 'safety' && pages.safety) {
-      pages.safety(main, param);
-    } else if (route === 'planner' && pages.planner) {
-      pages.planner(main, param);
-    } else if (route === 'glossary' && pages.glossary) {
-      pages.glossary(main, param);
-    } else if (route === 'quiz' && pages.quiz) {
-      pages.quiz(main, param);
-    } else if (route === 'feedback' && pages.feedback) {
-      pages.feedback(main, param);
+    // Stop page-scoped timers of the previous page before rendering the next one.
+    Core.runRouteLeave();
+    if (ROUTES.includes(route) && pages[route]) {
+      pages[route](main, param);
     } else if (pages.home) {
       pages.home(main);
     }
 
-    window.FitnessCore.updateHeaderProgress();
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    Core.updateHeaderProgress();
+    window.scrollTo(0, 0);
   }
+
+  // In-page anchors (e.g. #safety-sec-warmup) must scroll instead of being
+  // treated as hash routes (which used to re-render the home page).
+  Core.on('click', 'a[href^="#"]:not([href^="#/"])', (el, ev) => {
+    const target = document.getElementById(el.getAttribute('href').slice(1));
+    if (!target) return;
+    ev.preventDefault();
+    target.scrollIntoView({ block: 'start' });
+  });
 
   // --------------------------------------------------------------------------
   // Global Search Index & Dropdown
   // --------------------------------------------------------------------------
   function buildSearchIndex() {
     const items = [];
-    (window.FitnessCore.getEquipmentList() || []).forEach(eq => {
+    (Core.getEquipmentList() || []).forEach(eq => {
       items.push({
         title: `🏋️ ${eq.name}`,
         sub: `${eq.en} · ${eq.summary}`,
@@ -7747,7 +7773,7 @@ window.FITNESS_QUIZ = [
       });
     });
 
-    (window.FitnessCore.getMuscleList() || []).forEach(mu => {
+    (Core.getMuscleList() || []).forEach(mu => {
       const headsText = (mu.subHeads || []).join(' ');
       items.push({
         title: `${mu.icon} ${mu.name}`,
@@ -7767,7 +7793,7 @@ window.FITNESS_QUIZ = [
       nutrition_myths: bannerImg('safety_nutrition'),
       etiquette: bannerImg('safety_bench'),
     };
-    (window.FitnessCore.getSafetyList() || []).forEach(sf => {
+    (Core.getSafetyList() || []).forEach(sf => {
       items.push({
         title: `${sf.icon} ${sf.title}`,
         sub: sf.sub || sf.summary || '',
@@ -7797,7 +7823,7 @@ window.FITNESS_QUIZ = [
     const dd = document.getElementById('globalSearchDropdown');
     if (!inp || !dd) return;
 
-    const idx = buildSearchIndex();
+    let idx = null; // built lazily on first query
     let currentMatches = [];
 
     function renderDropdown(q) {
@@ -7809,6 +7835,7 @@ window.FITNESS_QUIZ = [
         return;
       }
 
+      if (!idx) idx = buildSearchIndex();
       currentMatches = idx.filter(it => it.hay.includes(query)).slice(0, 10);
       if (!currentMatches.length) {
         dd.innerHTML = `<div class="search-item"><span class="search-item-sub">找不到符合「${esc(q)}」的器材、肌群或術語</span></div>`;
@@ -7819,7 +7846,7 @@ window.FITNESS_QUIZ = [
       dd.innerHTML = currentMatches.map(it => `
         <a href="${esc(it.href)}" class="search-item">
           <div class="search-item-left">
-            ${it.thumb ? `<img src="${esc(it.thumb)}" alt="" class="search-thumb" />` : ''}
+            ${it.thumb ? `<img src="${esc(it.thumb)}" alt="" class="search-thumb" decoding="async" />` : ''}
             <div style="min-width:0;">
               <div class="search-item-title">${esc(it.title)}</div>
               <div class="search-item-sub">${esc(it.sub.slice(0, 64))}${it.sub.length > 64 ? '…' : ''}</div>
@@ -7882,15 +7909,18 @@ window.FITNESS_QUIZ = [
       verText.textContent = 'v' + localData.current_version;
     }
 
-    fetch('/api/releases')
-      .then(r => (r.ok ? r.json() : null))
-      .then(data => {
-        if (!data) return;
-        if (verText && data.current_version) verText.textContent = 'v' + data.current_version;
-        if (dot) dot.hidden = !(data.unreleased && data.unreleased.dirty);
-        window.FITNESS_RELEASES = data;
-      })
-      .catch(() => {});
+    // The single-file build has no backend; skip the API probe there.
+    if (!window.__STATIC_SINGLE_FILE__) {
+      fetch('/api/releases')
+        .then(r => (r.ok ? r.json() : null))
+        .then(data => {
+          if (!data) return;
+          if (verText && data.current_version) verText.textContent = 'v' + data.current_version;
+          if (dot) dot.hidden = !(data.unreleased && data.unreleased.dirty);
+          window.FITNESS_RELEASES = data;
+        })
+        .catch(() => {});
+    }
 
     function openModal() {
       if (!modal || !body) return;
@@ -7933,6 +7963,7 @@ window.FITNESS_QUIZ = [
 
   window.addEventListener('hashchange', renderCurrentRoute);
   window.addEventListener('DOMContentLoaded', () => {
+    Core.bindDelegation(document.getElementById('appMain'));
     initGlobalSearch();
     initReleaseModal();
     renderCurrentRoute();

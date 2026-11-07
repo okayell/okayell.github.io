@@ -16,8 +16,6 @@
 
 :root {
   --bg: #f4f7fb;
-  --surface: #ffffff;
-  --surface-soft: #f0f9ff;
   --surface-code: #f8fafc;
   --border: #dbe3ee;
   --border-strong: #cbd5e1;
@@ -26,20 +24,13 @@
   --text-muted: #64748b;
   --primary: #0e7490;
   --primary-dark: #155e75;
-  --primary-soft: #ecfeff;
   --py-blue: #2563eb;
-  --py-gold: #d97706;
   --ok-bg: #dcfce7;
   --ok-fg: #166534;
   --warn-bg: #fef3c7;
   --warn-fg: #92400e;
-  --bad-bg: #fee2e2;
-  --bad-fg: #991b1b;
   --info-bg: #dbeafe;
   --info-fg: #1e40af;
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
   --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
   --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
   --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -73,8 +64,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 90;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
   border-bottom: 1px solid var(--border);
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
@@ -320,7 +310,6 @@ a {
   border-radius: 14px;
   border: 1.5px solid var(--border);
   background: #ffffff;
-  transition: transform 0.15s, box-shadow 0.15s;
 }
 .lang-wing-card.active {
   border-color: #0284c7;
@@ -456,7 +445,7 @@ a {
   font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 .btn:hover {
   background: #f8fafc;
@@ -494,7 +483,6 @@ a {
 }
 .chip.ok { background: var(--ok-bg); color: var(--ok-fg); }
 .chip.warn { background: var(--warn-bg); color: var(--warn-fg); }
-.chip.bad { background: var(--bad-bg); color: var(--bad-fg); }
 .chip.info { background: var(--info-bg); color: var(--info-fg); }
 
 /* Module Grid (6 Tracks) */
@@ -531,7 +519,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, border-color 0.15s;
 }
 .track-card:hover {
   transform: translateY(-2px);
@@ -799,7 +787,6 @@ a {
 .tok-cm { color: #64748b; font-style: italic; }
 .tok-dec { color: #b45309; font-weight: 700; }
 .tok-num { color: #0369a1; font-weight: 600; }
-.tok-fn { color: #1d4ed8; font-weight: 700; }
 
 /* Pitfall vs Best-Practice Diff Grid */
 .pitfall-grid {
@@ -899,7 +886,7 @@ a {
   padding: 10px 12px;
   background: #ffffff;
   margin-bottom: 8px;
-  transition: all 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
 }
 .dom-preview-card.matched {
   border: 2px solid #0284c7;
@@ -949,7 +936,7 @@ a {
   font-size: 14px;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.12s;
+  transition: border-color 0.12s, background-color 0.12s, color 0.12s;
 }
 .quiz-opt-btn:hover:not(:disabled) {
   border-color: var(--primary);
@@ -1176,7 +1163,9 @@ a {
 }
 
 .code-card, .pitfall-box, .key-point-item, .diagram-card { min-width: 0; max-width: 100%; }
-.code-pre { overflow-x: auto; }
+
+/* 速查表每包含大量程式碼區塊：畫面外的包延後排版／繪製 */
+.cs-pack { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 
 </style>
 </head>
@@ -2866,20 +2855,34 @@ window.__STATIC_SINGLE_FILE__ = true;
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -3046,7 +3049,18 @@ window.__STATIC_SINGLE_FILE__ = true;
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -3113,9 +3127,17 @@ window.__STATIC_SINGLE_FILE__ = true;
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.CODING_RELEASES = {
-  "current_version": "1.0.1",
-  "last_fingerprint": "96ae57113fc1dd6a",
+  "current_version": "1.1.0",
+  "last_fingerprint": "ee354d144b6e1218",
   "releases": [
+    {
+      "version": "1.1.0",
+      "date": "2026-11-07 09:55",
+      "title": "程式語言學院 v1.1.0 內容與體驗更新",
+      "changes": [
+        "優化 Python 專院課程圖解、互動實驗室與測試範例"
+      ]
+    },
     {
       "version": "1.0.1",
       "date": "2026-11-06 15:17",
@@ -3323,6 +3345,40 @@ window.CODING_RELEASES = {
     return !!st.bookmarks[id];
   }
 
+  // 本機 server.py 提供 /api/*；離線單檔與 GitHub Pages 則否
+  function isLocalServer() {
+    return !window.__STATIC_SINGLE_FILE__ &&
+      (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || !!location.port);
+  }
+
+  // 篩選膠囊用的短專章名稱（去掉 "Python " 前綴）
+  function shortModName(mod) {
+    return mod.name.replace(/^Python\s*/, '');
+  }
+
+  // 依 module id 分組的課程清單（資料於所有 script 載入後即固定，首次呼叫時建立快取）
+  let _lessonsByModule = null;
+  function getLessonsByModule() {
+    if (!_lessonsByModule) {
+      _lessonsByModule = {};
+      getAllLessons().forEach((l) => {
+        (_lessonsByModule[l.module] = _lessonsByModule[l.module] || []).push(l);
+      });
+    }
+    return _lessonsByModule;
+  }
+
+  // 頁面離開（切換路由／切換實驗室分頁）時要清掉的計時器等資源
+  let _routeCleanups = [];
+  function onRouteLeave(fn) {
+    _routeCleanups.push(fn);
+  }
+  function runRouteCleanup() {
+    const fns = _routeCleanups;
+    _routeCleanups = [];
+    fns.forEach((fn) => { try { fn(); } catch (_) {} });
+  }
+
   function toast(msg) {
     let el = document.getElementById('codingToast');
     if (!el) {
@@ -3343,9 +3399,11 @@ window.CODING_RELEASES = {
     if (!btn) return;
     const code = decodeURIComponent(btn.getAttribute('data-copy-code') || '');
     const done = () => {
-      const prev = btn.textContent;
+      // 連點時保留最初的按鈕文字，避免把「✅ 已複製」當成原文字還原
+      if (!btn.dataset.label) btn.dataset.label = btn.textContent;
       btn.textContent = '✅ 已複製';
-      setTimeout(() => { btn.textContent = prev; }, 1600);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => { btn.textContent = btn.dataset.label; }, 1600);
       toast('📋 程式碼已複製到剪貼簿！');
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -3369,12 +3427,17 @@ window.CODING_RELEASES = {
     saveState,
     getModules,
     getAllLessons,
+    getLessonsByModule,
     computeProgressSummary,
     updateHeaderProgress,
     toggleLessonCompleted,
     markLessonCompleted,
     markLabVisited,
     toggleBookmark,
+    isLocalServer,
+    shortModName,
+    onRouteLeave,
+    runRouteCleanup,
     toast,
   };
 })();
@@ -5479,7 +5542,6 @@ finally:
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', mergeZeroExtras, { once: true, capture: true });
   }
-  window.CodingZeroMerge = mergeZeroExtras;
   mergeZeroExtras();
 
   // ==========================================================================
@@ -8852,9 +8914,12 @@ mitmdump -s tamper.py -p 8080`,
     loadState,
     getModules,
     getAllLessons,
+    getLessonsByModule,
     computeProgressSummary,
     toggleLessonCompleted,
+    markLessonCompleted,
     toggleBookmark,
+    shortModName,
     toast,
   } = window.CodingCore;
 
@@ -9406,8 +9471,9 @@ mitmdump -s tamper.py -p 8080`,
       </div>
     `;
 
+    const lessonsByModule = getLessonsByModule();
     const tracksHtml = modules.map((mod) => {
-      const modLessons = lessons.filter((l) => l.module === mod.id);
+      const modLessons = lessonsByModule[mod.id] || [];
       const doneCnt = modLessons.filter((l) => st.completedLessons[l.id]).length;
       const pct = Math.round((doneCnt / Math.max(1, modLessons.length)) * 100);
       const linksHtml = modLessons.map((l, idx) => {
@@ -9437,7 +9503,7 @@ mitmdump -s tamper.py -p 8080`,
           <h3>${esc(mod.name)}</h3>
           <p>${esc(mod.desc)}</p>
           <div style="background:#eef2f7;height:6px;border-radius:999px;overflow:hidden;">
-            <div style="width:${pct}%;height:100%;background:${mod.color};transition:width 0.3s;"></div>
+            <div style="width:${pct}%;height:100%;background:${mod.color};"></div>
           </div>
           <div class="track-lesson-mini">
             ${linksHtml}
@@ -9508,7 +9574,7 @@ mitmdump -s tamper.py -p 8080`,
       <a href="#/courses/zero" class="info-card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;text-decoration:none;color:inherit;border:1.5px solid #86efac;background:linear-gradient(90deg,#f0fdf4,#ffffff);">
         <span style="font-size:34px;">🐣</span>
         <div style="flex:1;min-width:240px;">
-          <div style="font-weight:900;font-size:16px;color:#166534;">🎒 0. 完全新手從這裡開始：Python 零基礎入門語法（${lessons.filter((l) => l.module === 'zero').length} 堂）</div>
+          <div style="font-weight:900;font-size:16px;color:#166534;">🎒 0. 完全新手從這裡開始：Python 零基礎入門語法（${(lessonsByModule.zero || []).length} 堂）</div>
           <div style="font-size:13px;color:#475569;margin-top:3px;">print 與縮排 · 資料型別 · 運算子 · 字串 · if / elif / else · for / while 迴圈 · list / dict · 函式 · class 物件導向與繼承 · 例外處理 · 檔案讀寫小專案（每堂附執行結果與動手練習）</div>
         </div>
         <span class="btn primary sm">開始上課 →</span>
@@ -9520,7 +9586,7 @@ mitmdump -s tamper.py -p 8080`,
       <a href="#/courses/platformqa" class="info-card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;text-decoration:none;color:inherit;border:1.5px solid #c4b5fd;background:linear-gradient(90deg,#f5f3ff,#ffffff);">
         <span style="font-size:34px;">🎮</span>
         <div style="flex:1;min-width:240px;">
-          <div style="font-weight:900;font-size:16px;color:#5b21b6;">🎯 求職加碼：遊戲與電子錢包平台 QA 自動化實戰（${lessons.filter((l) => l.module === 'platformqa').length} 堂）</div>
+          <div style="font-weight:900;font-size:16px;color:#5b21b6;">🎯 求職加碼：遊戲與電子錢包平台 QA 自動化實戰（${(lessonsByModule.platformqa || []).length} 堂）</div>
           <div style="font-size:13px;color:#475569;margin-top:3px;">每堂附「🧒 白話比喻」：pytest 框架 · 金額不能算錯 · API 防竄改 · 即時連線 · 網頁與遊戲畫面自動化 · 同時操作多領錢 · 錢包串接 · 機率驗證 · 對帳與 CI · 面試情境題</div>
         </div>
         <span class="btn primary sm">進入專章 →</span>
@@ -9543,22 +9609,24 @@ mitmdump -s tamper.py -p 8080`,
       </div>
     `;
 
-    main.querySelectorAll('[data-goto]').forEach((el) => {
-      el.addEventListener('click', () => {
-        window.location.hash = el.getAttribute('data-goto');
-      });
-    });
-    main.querySelectorAll('[data-planned-wing]').forEach((el) => {
-      el.addEventListener('click', () => {
-        toast('🚧 ' + el.getAttribute('data-planned-wing') + ' 正在緊鑼密鼓籌備中，敬請期待！');
-      });
-    });
+    main.onclick = (ev) => {
+      const goto = ev.target.closest('[data-goto]');
+      if (goto) {
+        window.location.hash = goto.getAttribute('data-goto');
+        return;
+      }
+      const wing = ev.target.closest('[data-planned-wing]');
+      if (wing) {
+        toast('🚧 ' + wing.getAttribute('data-planned-wing') + ' 正在緊鑼密鼓籌備中，敬請期待！');
+      }
+    };
   };
 
   // ======================== 🐍 六大專章課程閱讀器 ========================
   window.CodingPages.courses = function renderCourses(main, param) {
     const modules = getModules();
     const allLessons = getAllLessons();
+    const lessonsByModule = getLessonsByModule();
     const st = loadState();
 
     // Determine active module filter & selected lesson
@@ -9592,14 +9660,14 @@ mitmdump -s tamper.py -p 8080`,
       const pillsHtml = [
         `<button type="button" class="filter-pill ${filterMod === 'all' ? 'active' : ''}" data-mod-pill="all">📚 全部專章 (${allLessons.length})</button>`,
         ...modules.map((m) => {
-          const cnt = allLessons.filter((l) => l.module === m.id).length;
-          return `<button type="button" class="filter-pill ${filterMod === m.id ? 'active' : ''}" data-mod-pill="${esc(m.id)}">${m.icon} ${esc(m.name.replace(/^Python\s*/, ''))} (${cnt})</button>`;
+          const cnt = (lessonsByModule[m.id] || []).length;
+          return `<button type="button" class="filter-pill ${filterMod === m.id ? 'active' : ''}" data-mod-pill="${esc(m.id)}">${m.icon} ${esc(shortModName(m))} (${cnt})</button>`;
         }),
         `<button type="button" class="filter-pill ${filterMod === 'bookmarks' ? 'active' : ''}" data-mod-pill="bookmarks">⭐ 收藏 (${bookmarkCount})</button>`,
       ].join('');
 
       const sidebarGroupsHtml = visibleModules.map((mod) => {
-        let modLessons = allLessons.filter((l) => l.module === mod.id);
+        let modLessons = lessonsByModule[mod.id] || [];
         if (filterMod === 'bookmarks') {
           modLessons = modLessons.filter((l) => state.bookmarks[l.id]);
         }
@@ -9648,10 +9716,10 @@ mitmdump -s tamper.py -p 8080`,
           <aside class="lesson-sidebar" aria-label="課程章節目錄">
             ${sidebarGroupsHtml}
           </aside>
-          <article class="lesson-article" id="lessonReaderTop">
+          <article class="lesson-article">
             <div class="lesson-head-meta">
               <span class="chip info">${curMod.icon} ${esc(curMod.name)}</span>
-              <span class="chip warn">第 ${currentLesson.order} / ${allLessons.filter((l) => l.module === currentLesson.module).length} 堂 · ${esc(currentLesson.level)}</span>
+              <span class="chip warn">第 ${currentLesson.order} / ${(lessonsByModule[currentLesson.module] || []).length} 堂 · ${esc(currentLesson.level)}</span>
               <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
                 <button type="button" class="btn sm" id="btnBookmarkLesson">
                   ${isBookmarked ? '⭐ 已收藏' : '☆ 收藏本堂'}
@@ -9735,74 +9803,59 @@ mitmdump -s tamper.py -p 8080`,
           </article>
         </div>
       `;
-
-      // Bind module filter pills
-      main.querySelectorAll('[data-mod-pill]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          filterMod = btn.getAttribute('data-mod-pill');
-          if (filterMod !== 'all' && filterMod !== 'bookmarks') {
-            if (currentLesson.module !== filterMod) {
-              currentLesson = allLessons.find((l) => l.module === filterMod) || currentLesson;
-            }
-          } else if (filterMod === 'bookmarks') {
-            const stNow = loadState();
-            const firstBm = allLessons.find((l) => stNow.bookmarks[l.id]);
-            if (firstBm) currentLesson = firstBm;
-          }
-          renderView();
-        });
-      });
-
-      // Bind lesson selection
-      main.querySelectorAll('[data-pick-lesson]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const targetId = btn.getAttribute('data-pick-lesson');
-          const found = allLessons.find((l) => l.id === targetId);
-          if (found) {
-            currentLesson = found;
-            history.replaceState(null, '', `#/courses/${encodeURIComponent(found.id)}`);
-            renderView();
-            window.scrollTo({ top: 0, behavior: 'instant' });
-          }
-        });
-      });
-
-      const doneBtn = document.getElementById('btnToggleDoneLesson');
-      if (doneBtn) {
-        doneBtn.addEventListener('click', () => {
-          const nowDone = toggleLessonCompleted(currentLesson.id);
-          toast(nowDone ? '🎉 已標記本堂課為「已學完」！' : '已取消本堂完課標記');
-          if (nowDone && window.CampusNav && typeof window.CampusNav.unlockAch === 'function') {
-            window.CampusNav.unlockAch('acad_py_1');
-          }
-          renderView();
-        });
-      }
-
-      const bmBtn = document.getElementById('btnBookmarkLesson');
-      if (bmBtn) {
-        bmBtn.addEventListener('click', () => {
-          const nowBm = toggleBookmark(currentLesson.id);
-          toast(nowBm ? '⭐ 已加入課程收藏夾' : '已從收藏夾移除');
-          renderView();
-        });
-      }
-
-      const nextAndDoneBtn = document.getElementById('btnNextAndDone');
-      if (nextAndDoneBtn) {
-        nextAndDoneBtn.addEventListener('click', () => {
-          window.CodingCore.markLessonCompleted(currentLesson.id);
-          const nextId = nextAndDoneBtn.getAttribute('data-next-id');
-          const found = allLessons.find((l) => l.id === nextId);
-          if (found) {
-            currentLesson = found;
-            history.replaceState(null, '', `#/courses/${encodeURIComponent(found.id)}`);
-            renderView();
-            window.scrollTo({ top: 0, behavior: 'instant' });
-          }
-        });
-      }
     }
+
+    function openLesson(found) {
+      currentLesson = found;
+      history.replaceState(null, '', `#/courses/${encodeURIComponent(found.id)}`);
+      renderView();
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    // 單一委派處理器：renderView 重繪內容時不需重新綁定
+    main.onclick = (ev) => {
+      const pill = ev.target.closest('[data-mod-pill]');
+      if (pill) {
+        filterMod = pill.getAttribute('data-mod-pill');
+        if (filterMod !== 'all' && filterMod !== 'bookmarks') {
+          if (currentLesson.module !== filterMod) {
+            currentLesson = (lessonsByModule[filterMod] || [])[0] || currentLesson;
+          }
+        } else if (filterMod === 'bookmarks') {
+          const stNow = loadState();
+          const firstBm = allLessons.find((l) => stNow.bookmarks[l.id]);
+          if (firstBm) currentLesson = firstBm;
+        }
+        renderView();
+        return;
+      }
+
+      const pick = ev.target.closest('[data-pick-lesson]');
+      if (pick) {
+        const found = allLessons.find((l) => l.id === pick.getAttribute('data-pick-lesson'));
+        if (found) openLesson(found);
+        return;
+      }
+
+      const btn = ev.target.closest('button[id]');
+      if (!btn) return;
+      if (btn.id === 'btnToggleDoneLesson') {
+        const nowDone = toggleLessonCompleted(currentLesson.id);
+        toast(nowDone ? '🎉 已標記本堂課為「已學完」！' : '已取消本堂完課標記');
+        if (nowDone && window.CampusNav && typeof window.CampusNav.unlockAch === 'function') {
+          window.CampusNav.unlockAch('acad_py_1');
+        }
+        renderView();
+      } else if (btn.id === 'btnBookmarkLesson') {
+        const nowBm = toggleBookmark(currentLesson.id);
+        toast(nowBm ? '⭐ 已加入課程收藏夾' : '已從收藏夾移除');
+        renderView();
+      } else if (btn.id === 'btnNextAndDone') {
+        markLessonCompleted(currentLesson.id);
+        const found = allLessons.find((l) => l.id === btn.getAttribute('data-next-id'));
+        if (found) openLesson(found);
+      }
+    };
 
     renderView();
   };
@@ -9827,6 +9880,10 @@ mitmdump -s tamper.py -p 8080`,
     saveState,
     getModules,
     markLabVisited,
+    isLocalServer,
+    shortModName,
+    onRouteLeave,
+    runRouteCleanup,
     toast,
   } = window.CodingCore;
 
@@ -9841,6 +9898,15 @@ mitmdump -s tamper.py -p 8080`,
     { id: 'crawler', icon: '🕷️', name: '4. 爬蟲 CSS Selector 即時解析' },
     { id: 'autotest', icon: '🤖', name: '5. 自動化測試腳本骨架產生器' },
   ];
+
+  const LAB_RENDERERS = {
+    trace: renderTraceLab,
+    mem: renderMemLab,
+    pytest: renderPytestLab,
+    pyqt: renderPyqtLab,
+    crawler: renderCrawlerLab,
+    autotest: renderAutotestLab,
+  };
 
   window.CodingPages.lab = function renderLabs(main, param) {
     let activeLab = LAB_DEFS.some((d) => d.id === param) ? param : 'trace';
@@ -9864,22 +9930,17 @@ mitmdump -s tamper.py -p 8080`,
         <div class="lab-panel" id="labContentMount"></div>
       `;
 
-      main.querySelectorAll('[data-lab-tab]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          activeLab = btn.getAttribute('data-lab-tab');
-          history.replaceState(null, '', `#/lab/${activeLab}`);
-          drawLabShell();
-        });
-      });
-
-      const mount = document.getElementById('labContentMount');
-      if (activeLab === 'trace') renderTraceLab(mount);
-      else if (activeLab === 'mem') renderMemLab(mount);
-      else if (activeLab === 'pytest') renderPytestLab(mount);
-      else if (activeLab === 'pyqt') renderPyqtLab(mount);
-      else if (activeLab === 'crawler') renderCrawlerLab(mount);
-      else renderAutotestLab(mount);
+      LAB_RENDERERS[activeLab](document.getElementById('labContentMount'));
     }
+
+    main.onclick = (ev) => {
+      const tab = ev.target.closest('[data-lab-tab]');
+      if (!tab) return;
+      activeLab = tab.getAttribute('data-lab-tab');
+      history.replaceState(null, '', `#/lab/${activeLab}`);
+      runRouteCleanup(); // 停掉上一個實驗室的計時器
+      drawLabShell();
+    };
 
     drawLabShell();
   };
@@ -9899,8 +9960,15 @@ mitmdump -s tamper.py -p 8080`,
       if (timer) { clearInterval(timer); timer = null; }
     }
 
+    // 每個範例的語法高亮只計算一次（自動播放每 900ms 重繪一次）
+    const hlCache = {};
+    function highlightedLines(trace) {
+      if (!hlCache[trace.id]) hlCache[trace.id] = trace.code.split('\n').map((ln) => highlightPython(ln) || ' ');
+      return hlCache[trace.id];
+    }
+
     function draw() {
-      const lines = cur.code.split('\n');
+      const lines = highlightedLines(cur);
       const st = step >= 0 ? cur.steps[step] : null;
       const prev = step > 0 ? cur.steps[step - 1] : null;
       const outLines = cur.steps.slice(0, step + 1).filter((x) => x.out != null).map((x) => x.out);
@@ -9925,7 +9993,7 @@ mitmdump -s tamper.py -p 8080`,
         </div>
         <div class="trace-grid">
           <div class="trace-code" aria-label="程式碼">
-            ${lines.map((ln, i) => `<div class="trace-line ${st && st.line === i + 1 ? 'cur' : ''}"><span class="ln">${i + 1}</span><span>${highlightPython(ln) || ' '}</span></div>`).join('')}
+            ${lines.map((hl, i) => `<div class="trace-line ${st && st.line === i + 1 ? 'cur' : ''}"><span class="ln">${i + 1}</span><span>${hl}</span></div>`).join('')}
           </div>
           <div class="trace-side">
             <div class="trace-note">💬 ${st ? esc(st.note || `執行第 ${st.line} 行`) : '按「下一步 ▶」開始執行。'}</div>
@@ -9940,29 +10008,36 @@ mitmdump -s tamper.py -p 8080`,
           </div>
         </div>
       `;
+    }
 
-      mount.querySelectorAll('[data-trace-pick]').forEach((b) => {
-        b.addEventListener('click', () => {
-          stopAuto();
-          cur = traces.find((t) => t.id === b.getAttribute('data-trace-pick')) || cur;
-          step = -1;
-          draw();
-        });
-      });
-      mount.querySelector('#trReset').addEventListener('click', () => { stopAuto(); step = -1; draw(); });
-      mount.querySelector('#trPrev').addEventListener('click', () => { stopAuto(); step = Math.max(-1, step - 1); draw(); });
-      mount.querySelector('#trNext').addEventListener('click', () => { stopAuto(); step = Math.min(cur.steps.length - 1, step + 1); draw(); });
-      mount.querySelector('#trAuto').addEventListener('click', () => {
+    onRouteLeave(stopAuto);
+
+    mount.onclick = (ev) => {
+      const pick = ev.target.closest('[data-trace-pick]');
+      if (pick) {
+        stopAuto();
+        cur = traces.find((t) => t.id === pick.getAttribute('data-trace-pick')) || cur;
+        step = -1;
+        draw();
+        return;
+      }
+      const btn = ev.target.closest('button[id]');
+      if (!btn) return;
+      if (btn.id === 'trReset') { stopAuto(); step = -1; draw(); }
+      else if (btn.id === 'trPrev') { stopAuto(); step = Math.max(-1, step - 1); draw(); }
+      else if (btn.id === 'trNext') { stopAuto(); step = Math.min(cur.steps.length - 1, step + 1); draw(); }
+      else if (btn.id === 'trAuto') {
         if (timer) { stopAuto(); draw(); return; }
         if (step >= cur.steps.length - 1) step = -1;
         timer = setInterval(() => {
-          if (!document.body.contains(mount) || step >= cur.steps.length - 1) { stopAuto(); if (document.body.contains(mount)) draw(); return; }
+          if (document.hidden) return; // 分頁隱藏時暫停播放
+          if (!mount.isConnected || step >= cur.steps.length - 1) { stopAuto(); if (mount.isConnected) draw(); return; }
           step++;
           draw();
         }, 900);
         draw();
-      });
-    }
+      }
+    };
 
     draw();
   }
@@ -10094,25 +10169,28 @@ print(b)              # [[10, 20], [30]] -> 完全不受 a 修改影響！`,
           </div>
         </div>
       `;
+    }
 
-      mount.querySelectorAll('[data-mem-mode]').forEach((b) => {
-        b.addEventListener('click', () => {
-          curMode = b.getAttribute('data-mem-mode');
-          draw();
-        });
-      });
-      document.getElementById('btnCallMutableFn').addEventListener('click', () => {
+    mount.onclick = (ev) => {
+      const modeBtn = ev.target.closest('[data-mem-mode]');
+      if (modeBtn) {
+        curMode = modeBtn.getAttribute('data-mem-mode');
+        draw();
+        return;
+      }
+      const btn = ev.target.closest('button[id]');
+      if (!btn) return;
+      if (btn.id === 'btnCallMutableFn') {
         const tag = `task_${badCalls.length + 1}`;
         badCalls.push(tag);
         goodCalls = [tag];
         draw();
-      });
-      document.getElementById('btnResetMutableFn').addEventListener('click', () => {
+      } else if (btn.id === 'btnResetMutableFn') {
         badCalls = [];
         goodCalls = [];
         draw();
-      });
-    }
+      }
+    };
 
     draw();
   }
@@ -10228,12 +10306,20 @@ def test_checkout_flow() -> None:
           </div>
         </div>
       `;
-
-      document.getElementById('chkPatchRight').onchange = (e) => { patchRightPlace = e.target.checked; draw(); };
-      document.getElementById('chkAutospec').onchange = (e) => { useAutospec = e.target.checked; draw(); };
-      document.getElementById('chkProdTypo').onchange = (e) => { hasTypoInProd = e.target.checked; draw(); };
-      document.getElementById('chkRetrySideEffect').onchange = (e) => { testRetryBranch = e.target.checked; draw(); };
     }
+
+    const PYTEST_TOGGLES = {
+      chkPatchRight: (v) => { patchRightPlace = v; },
+      chkAutospec: (v) => { useAutospec = v; },
+      chkProdTypo: (v) => { hasTypoInProd = v; },
+      chkRetrySideEffect: (v) => { testRetryBranch = v; },
+    };
+    mount.onchange = (ev) => {
+      const setter = PYTEST_TOGGLES[ev.target.id];
+      if (!setter) return;
+      setter(ev.target.checked);
+      draw();
+    };
 
     draw();
   }
@@ -10246,6 +10332,7 @@ def test_checkout_flow() -> None:
     let clickCount = 0;
     let frozen = false;
     let timerId = null;
+    let freezeTimer = null;
 
     function buildPySideCode() {
       const layoutCls = layoutType === 'vbox' ? 'QVBoxLayout' : (layoutType === 'hbox' ? 'QHBoxLayout' : 'QGridLayout');
@@ -10307,10 +10394,10 @@ class InspectorWindow(QMainWindow):
               </div>
               <div style="padding:16px;${containerStyle}">
                 <div style="${layoutType === 'grid' ? 'grid-column:1 / -1;' : 'flex:1;'}background:#ffffff;border:1px solid #cbd5e1;padding:9px 12px;border-radius:8px;font-size:13px;">
-                  <strong>狀態列 QLabel：</strong><span id="qtMockStatus">${esc(statusText)}</span>
+                  <strong>狀態列 QLabel：</strong><span>${esc(statusText)}</span>
                 </div>
                 <div style="flex:1;min-width:160px;background:#e2e8f0;height:22px;border-radius:999px;overflow:hidden;position:relative;">
-                  <div style="width:${pct}%;height:100%;background:${frozen ? '#dc2626' : '#059669'};transition:width 0.18s;"></div>
+                  <div style="width:${pct}%;height:100%;background:${frozen ? '#dc2626' : '#059669'};"></div>
                   <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;color:#0f172a;">QProgressBar: ${pct}%</span>
                 </div>
                 <button type="button" class="btn sm" id="btnQtPing" ${frozen ? 'disabled' : ''}>
@@ -10334,44 +10421,48 @@ class InspectorWindow(QMainWindow):
           </div>
         </div>
       `;
+    }
 
-      mount.querySelectorAll('[data-qt-ly]').forEach((b) => {
-        b.addEventListener('click', () => {
-          layoutType = b.getAttribute('data-qt-ly');
-          draw();
-        });
-      });
+    function stopTimers() {
+      clearInterval(timerId);
+      clearTimeout(freezeTimer);
+    }
+    onRouteLeave(stopTimers);
 
-      const pingBtn = document.getElementById('btnQtPing');
-      if (pingBtn) {
-        pingBtn.addEventListener('click', () => {
-          clickCount++;
-          statusText = `UI 主執行緒即時回應點擊！（累計 ${clickCount} 次，零延遲卡頓）`;
-          draw();
-        });
+    mount.onclick = (ev) => {
+      const lyBtn = ev.target.closest('[data-qt-ly]');
+      if (lyBtn) {
+        layoutType = lyBtn.getAttribute('data-qt-ly');
+        draw();
+        return;
       }
-
-      document.getElementById('btnSimFreeze').addEventListener('click', () => {
+      const btn = ev.target.closest('button[id]');
+      if (!btn) return;
+      if (btn.id === 'btnQtPing') {
+        clickCount++;
+        statusText = `UI 主執行緒即時回應點擊！（累計 ${clickCount} 次，零延遲卡頓）`;
+        draw();
+      } else if (btn.id === 'btnSimFreeze') {
         clearInterval(timerId);
         frozen = true;
         pct = 15;
         statusText = '⚠️ 主執行緒正被同步 I/O 阻塞中！此時按鈕無法點擊、畫面完全凍結…';
         draw();
-        setTimeout(() => {
+        clearTimeout(freezeTimer);
+        freezeTimer = setTimeout(() => {
           frozen = false;
           pct = 100;
           statusText = '剛從 2.4 秒卡死恢復——實務上超過 100ms 的任務都必須移入 QThread！';
           draw();
         }, 2400);
-      });
-
-      document.getElementById('btnSimQThread').addEventListener('click', () => {
+      } else if (btn.id === 'btnSimQThread') {
         clearInterval(timerId);
         frozen = false;
         pct = 0;
         statusText = '🚀 QThread 背景執行中… 試著狂點「👆 測試主畫面互動」，UI 依然 100% 流暢！';
         draw();
         timerId = setInterval(() => {
+          if (document.hidden) return; // 分頁隱藏時暫停
           pct = Math.min(100, pct + 25);
           if (pct >= 100) {
             clearInterval(timerId);
@@ -10379,8 +10470,8 @@ class InspectorWindow(QMainWindow):
           }
           draw();
         }, 380);
-      });
-    }
+      }
+    };
 
     draw();
   }
@@ -10403,8 +10494,7 @@ class InspectorWindow(QMainWindow):
 
     let selector = 'article.course-card.on-sale';
 
-    function draw() {
-      const sampleHtml = sampleItems.map((it) => `
+    const sampleHtml = sampleItems.map((it) => `
         <article class="course-card dom-preview-card ${it.discount ? 'on-sale' : ''}" data-sku="${it.id}" data-price-high="${it.price >= 1800 ? '1' : '0'}">
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <strong class="course-title">${esc(it.title)}</strong>
@@ -10417,6 +10507,7 @@ class InspectorWindow(QMainWindow):
         </article>
       `).join('');
 
+    function draw() {
       mount.innerHTML = `
         <h3 style="margin-top:0;">🕷️ 網路爬蟲 CSS Selector 即時定位器 ＆ 程式碼產生器</h3>
         <div class="pill-bar">
@@ -10450,27 +10541,30 @@ class InspectorWindow(QMainWindow):
         </div>
       `;
 
-      function evaluateSelector(selStr) {
-        const sandbox = document.getElementById('crawlerSandboxDom');
-        const errBox = document.getElementById('crawlerErrMsg');
-        sandbox.querySelectorAll('.matched').forEach((el) => el.classList.remove('matched'));
-        try {
-          const matched = Array.from(sandbox.querySelectorAll(selStr));
-          errBox.hidden = true;
-          const rows = matched.map((el) => {
-            const card = el.closest('.dom-preview-card') || el;
-            card.classList.add('matched');
-            return {
-              tag: el.tagName.toLowerCase(),
-              text: el.textContent.replace(/\s+/g, ' ').trim().slice(0, 64),
-              href: el.getAttribute('href') || undefined,
-              sku: el.getAttribute('data-sku') || undefined,
-            };
-          });
-          document.getElementById('matchedCountLbl').textContent = String(matched.length);
-          document.getElementById('extractedJsonBox').textContent = JSON.stringify(rows, null, 2);
+      evaluateSelector(selector);
+    }
 
-          const pySnippet = `from urllib.parse import urljoin
+    function evaluateSelector(selStr) {
+      const sandbox = mount.querySelector('#crawlerSandboxDom');
+      const errBox = mount.querySelector('#crawlerErrMsg');
+      sandbox.querySelectorAll('.matched').forEach((el) => el.classList.remove('matched'));
+      try {
+        const matched = Array.from(sandbox.querySelectorAll(selStr));
+        errBox.hidden = true;
+        const rows = matched.map((el) => {
+          const card = el.closest('.dom-preview-card') || el;
+          card.classList.add('matched');
+          return {
+            tag: el.tagName.toLowerCase(),
+            text: el.textContent.replace(/\s+/g, ' ').trim().slice(0, 64),
+            href: el.getAttribute('href') || undefined,
+            sku: el.getAttribute('data-sku') || undefined,
+          };
+        });
+        mount.querySelector('#matchedCountLbl').textContent = String(matched.length);
+        mount.querySelector('#extractedJsonBox').textContent = JSON.stringify(rows, null, 2);
+
+        const pySnippet = `from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import httpx
 
@@ -10485,34 +10579,30 @@ for node in soup.select(${JSON.stringify(selStr)}):
     href = node.get("href")
     full_url = urljoin(BASE_URL, str(href)) if href else None
     print({"text": text, "url": full_url})`;
-          document.getElementById('crawlerPyCodeMount').innerHTML = renderCodeCard('自動生成的 httpx + BeautifulSoup4 爬蟲程式碼', pySnippet);
-        } catch (err) {
-          errBox.hidden = false;
-          errBox.textContent = '⚠️ CSS Selector 語法無效：' + err.message;
-        }
+        mount.querySelector('#crawlerPyCodeMount').innerHTML = renderCodeCard('自動生成的 httpx + BeautifulSoup4 爬蟲程式碼', pySnippet);
+      } catch (err) {
+        errBox.hidden = false;
+        errBox.textContent = '⚠️ CSS Selector 語法無效：' + err.message;
       }
-
-      evaluateSelector(selector);
-
-      mount.querySelectorAll('[data-sel-preset]').forEach((b) => {
-        b.addEventListener('click', () => {
-          selector = b.getAttribute('data-sel-preset');
-          draw();
-        });
-      });
-
-      const inp = document.getElementById('crawlerSelInput');
-      document.getElementById('btnApplySelector').addEventListener('click', () => {
-        selector = inp.value.trim() || 'article.course-card';
-        evaluateSelector(selector);
-      });
-      inp.addEventListener('keydown', (ev) => {
-        if (isEnterSend(ev)) {
-          selector = inp.value.trim() || 'article.course-card';
-          evaluateSelector(selector);
-        }
-      });
     }
+
+    function applyInput() {
+      selector = mount.querySelector('#crawlerSelInput').value.trim() || 'article.course-card';
+      evaluateSelector(selector);
+    }
+
+    mount.onclick = (ev) => {
+      const preset = ev.target.closest('[data-sel-preset]');
+      if (preset) {
+        selector = preset.getAttribute('data-sel-preset');
+        draw();
+      } else if (ev.target.closest('#btnApplySelector')) {
+        applyInput();
+      }
+    };
+    mount.onkeydown = (ev) => {
+      if (ev.target.id === 'crawlerSelInput' && isEnterSend(ev)) applyInput();
+    };
 
     draw();
   }
@@ -10645,14 +10735,14 @@ def check_sla(environment, **_kw) -> None:
         </div>
         ${renderCodeCard(cur.name + ' 標準腳本範本（點擊右上角即可複製）', cur.code)}
       `;
-
-      mount.querySelectorAll('[data-tpl]').forEach((b) => {
-        b.addEventListener('click', () => {
-          picked = b.getAttribute('data-tpl');
-          draw();
-        });
-      });
     }
+
+    mount.onclick = (ev) => {
+      const tpl = ev.target.closest('[data-tpl]');
+      if (!tpl) return;
+      picked = tpl.getAttribute('data-tpl');
+      draw();
+    };
 
     draw();
   }
@@ -10660,6 +10750,24 @@ def check_sla(environment, **_kw) -> None:
   // ==========================================================================
   // 📋 實戰速查表 (Cheat Sheet)
   // ==========================================================================
+  // 每個速查包（含所有程式碼高亮）只組一次 HTML，切換篩選時直接重用
+  const cheatPackHtml = new Map();
+  function renderCheatPack(pack) {
+    if (!cheatPackHtml.has(pack)) {
+      cheatPackHtml.set(pack, `
+            <section class="info-card cs-pack">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span style="font-size:22px;">${pack.icon}</span>
+                <h3 style="margin:0;font-size:17px;">${esc(pack.title)}</h3>
+              </div>
+              <p style="margin:0 0 12px;font-size:13px;color:#64748b;">${esc(pack.subtitle)}</p>
+              ${pack.items.map((it) => renderCodeCard(it.label, it.code)).join('')}
+            </section>
+          `);
+    }
+    return cheatPackHtml.get(pack);
+  }
+
   window.CodingPages.cheatsheet = function renderCheatSheet(main) {
     const packs = window.CODING_CHEATSHEETS || [];
     let filterCat = 'all';
@@ -10676,26 +10784,17 @@ def check_sla(environment, **_kw) -> None:
           ${packs.map((p) => `<button type="button" class="filter-pill ${filterCat === p.cat ? 'active' : ''}" data-cs-cat="${esc(p.cat)}">${p.icon} ${esc(p.title.split('：')[0])}</button>`).join('')}
         </div>
         <div class="cards-grid-2">
-          ${shown.map((pack) => `
-            <section class="info-card">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                <span style="font-size:22px;">${pack.icon}</span>
-                <h3 style="margin:0;font-size:17px;">${esc(pack.title)}</h3>
-              </div>
-              <p style="margin:0 0 12px;font-size:13px;color:#64748b;">${esc(pack.subtitle)}</p>
-              ${pack.items.map((it) => renderCodeCard(it.label, it.code)).join('')}
-            </section>
-          `).join('')}
+          ${shown.map(renderCheatPack).join('')}
         </div>
       `;
-
-      main.querySelectorAll('[data-cs-cat]').forEach((b) => {
-        b.addEventListener('click', () => {
-          filterCat = b.getAttribute('data-cs-cat');
-          draw();
-        });
-      });
     }
+
+    main.onclick = (ev) => {
+      const pill = ev.target.closest('[data-cs-cat]');
+      if (!pill) return;
+      filterCat = pill.getAttribute('data-cs-cat');
+      draw();
+    };
 
     draw();
   };
@@ -10709,7 +10808,26 @@ def check_sla(environment, **_kw) -> None:
     let cat = 'all';
     let query = '';
 
-    function draw() {
+    // 頁面骨架（篩選膠囊與輸入框）只建立一次；篩選時只更新卡片網格，輸入框不會被替換、焦點不中斷
+    main.innerHTML = `
+      <div class="section-hd" style="margin-top:0;">
+        <h2>📖 Python 與自動化測試中英雙語術語百科（共 ${items.length} 詞）</h2>
+        <span>快速釐清面試、Code Review 與官方文件常見的核心工程詞彙</span>
+      </div>
+      <div class="pill-bar">
+        <button type="button" class="filter-pill active" data-gl-cat="all">全部 (${items.length})</button>
+        ${modules.map((m) => `<button type="button" class="filter-pill" data-gl-cat="${esc(m.id)}">${m.icon} ${esc(shortModName(m))}</button>`).join('')}
+      </div>
+      <div class="form-row">
+        <input id="glossaryFilterInput" class="form-input" value="" placeholder="輸入中英文關鍵字篩選（例如：autospec、GIL、QThread、Semaphore、POM、Flaky）…" />
+      </div>
+      <div class="cards-grid-3" id="glossaryGrid"></div>
+    `;
+    const grid = main.querySelector('#glossaryGrid');
+    const inp = main.querySelector('#glossaryFilterInput');
+    const pills = main.querySelectorAll('[data-gl-cat]');
+
+    function drawGrid() {
       const qLower = query.trim().toLowerCase();
       const filtered = items.filter((g) => {
         if (cat !== 'all' && g.cat !== cat) return false;
@@ -10721,22 +10839,9 @@ def check_sla(environment, **_kw) -> None:
         );
       });
 
-      main.innerHTML = `
-        <div class="section-hd" style="margin-top:0;">
-          <h2>📖 Python 與自動化測試中英雙語術語百科（共 ${items.length} 詞）</h2>
-          <span>快速釐清面試、Code Review 與官方文件常見的核心工程詞彙</span>
-        </div>
-        <div class="pill-bar">
-          <button type="button" class="filter-pill ${cat === 'all' ? 'active' : ''}" data-gl-cat="all">全部 (${items.length})</button>
-          ${modules.map((m) => `<button type="button" class="filter-pill ${cat === m.id ? 'active' : ''}" data-gl-cat="${esc(m.id)}">${m.icon} ${esc(m.name.replace(/^Python\s*/, ''))}</button>`).join('')}
-        </div>
-        <div class="form-row">
-          <input id="glossaryFilterInput" class="form-input" value="${esc(query)}" placeholder="輸入中英文關鍵字篩選（例如：autospec、GIL、QThread、Semaphore、POM、Flaky）…" />
-        </div>
-        <div class="cards-grid-3" id="glossaryGrid">
-          ${filtered.map((g) => {
-            const mod = modules.find((m) => m.id === g.cat);
-            return `
+      grid.innerHTML = filtered.map((g) => {
+        const mod = modules.find((m) => m.id === g.cat);
+        return `
               <article class="info-card">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;">
                   <span class="chip info">${mod ? mod.icon + ' ' + esc(mod.name.slice(0, 8)) : esc(g.cat)}</span>
@@ -10746,27 +10851,24 @@ def check_sla(environment, **_kw) -> None:
                 <p style="margin:0;font-size:13.2px;color:#334155;">${esc(g.desc)}</p>
               </article>
             `;
-          }).join('') || '<div class="info-card">找不到符合關鍵字的術語，請換個關鍵字試試！</div>'}
-        </div>
-      `;
-
-      main.querySelectorAll('[data-gl-cat]').forEach((b) => {
-        b.addEventListener('click', () => {
-          cat = b.getAttribute('data-gl-cat');
-          draw();
-        });
-      });
-
-      const inp = document.getElementById('glossaryFilterInput');
-      inp.focus();
-      inp.setSelectionRange(inp.value.length, inp.value.length);
-      inp.addEventListener('input', () => {
-        query = inp.value;
-        draw();
-      });
+      }).join('') || '<div class="info-card">找不到符合關鍵字的術語，請換個關鍵字試試！</div>';
     }
 
-    draw();
+    main.onclick = (ev) => {
+      const pill = ev.target.closest('[data-gl-cat]');
+      if (!pill) return;
+      cat = pill.getAttribute('data-gl-cat');
+      pills.forEach((p) => p.classList.toggle('active', p === pill));
+      drawGrid();
+      inp.focus();
+    };
+    inp.addEventListener('input', () => {
+      query = inp.value;
+      drawGrid();
+    });
+
+    drawGrid();
+    inp.focus();
   };
 
   // ==========================================================================
@@ -10780,6 +10882,7 @@ def check_sla(environment, **_kw) -> None:
     let idx = 0;
     let score = 0;
     let pickedIdx = null;
+    let resultSaved = false;
 
     function buildDeck() {
       const st = loadState();
@@ -10796,6 +10899,7 @@ def check_sla(environment, **_kw) -> None:
       idx = 0;
       score = 0;
       pickedIdx = null;
+      resultSaved = false;
     }
 
     buildDeck();
@@ -10808,7 +10912,7 @@ def check_sla(environment, **_kw) -> None:
         <div class="pill-bar" style="justify-content:center;">
           <button type="button" class="filter-pill ${modeCat === 'all' ? 'active' : ''}" data-qz-mode="all">⚡ 綜合精選 (12題)</button>
           <button type="button" class="filter-pill ${modeCat === 'full36' ? 'active' : ''}" data-qz-mode="full36">🏆 全題庫大挑戰 (${bank.length}題)</button>
-          ${modules.map((m) => `<button type="button" class="filter-pill ${modeCat === m.id ? 'active' : ''}" data-qz-mode="${esc(m.id)}">${m.icon} ${esc(m.name.replace(/^Python\s*/, '').slice(0, 6))}</button>`).join('')}
+          ${modules.map((m) => `<button type="button" class="filter-pill ${modeCat === m.id ? 'active' : ''}" data-qz-mode="${esc(m.id)}">${m.icon} ${esc(shortModName(m).slice(0, 6))}</button>`).join('')}
           <button type="button" class="filter-pill ${modeCat === 'wrong' ? 'active' : ''}" data-qz-mode="wrong">📕 錯題複習本 (${wrongCnt})</button>
         </div>
       `;
@@ -10821,17 +10925,20 @@ def check_sla(environment, **_kw) -> None:
             <p style="color:#475569;">代表你目前沒有待複習的錯題，可點選上方任一專章或全題庫開始測驗。</p>
           </div>
         `;
-        bindModeBtns();
         return;
       }
 
       if (idx >= deck.length) {
         const finalPct = Math.round((score / deck.length) * 100);
-        st.quizTotalPlayed = (st.quizTotalPlayed || 0) + 1;
-        if (finalPct > (st.quizBestScore || 0)) st.quizBestScore = finalPct;
-        saveState(st);
-        if (finalPct >= 80 && window.CampusNav && typeof window.CampusNav.unlockAch === 'function') {
-          window.CampusNav.unlockAch('acad_py_2');
+        // 同一回合的成績只記錄一次（避免結算畫面重繪時重複累加）
+        if (!resultSaved) {
+          resultSaved = true;
+          st.quizTotalPlayed = (st.quizTotalPlayed || 0) + 1;
+          if (finalPct > (st.quizBestScore || 0)) st.quizBestScore = finalPct;
+          saveState(st);
+          if (finalPct >= 80 && window.CampusNav && typeof window.CampusNav.unlockAch === 'function') {
+            window.CampusNav.unlockAch('acad_py_2');
+          }
         }
 
         main.innerHTML = `
@@ -10850,11 +10957,6 @@ def check_sla(environment, **_kw) -> None:
             </div>
           </div>
         `;
-        bindModeBtns();
-        document.getElementById('btnRetryQuiz').addEventListener('click', () => {
-          buildDeck();
-          draw();
-        });
         return;
       }
 
@@ -10899,45 +11001,46 @@ def check_sla(environment, **_kw) -> None:
           ` : ''}
         </div>
       `;
+    }
 
-      bindModeBtns();
-
-      main.querySelectorAll('[data-opt-idx]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          pickedIdx = Number(btn.getAttribute('data-opt-idx'));
-          const stNow = loadState();
-          const wrongs = new Set(stNow.quizWrongIds || []);
-          if (pickedIdx === q.ans) {
-            score++;
-            wrongs.delete(q.id);
-          } else {
-            wrongs.add(q.id);
-          }
-          stNow.quizWrongIds = Array.from(wrongs);
-          saveState(stNow);
-          draw();
-        });
-      });
-
-      const nextBtn = document.getElementById('btnNextQuestion');
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          idx++;
-          pickedIdx = null;
-          draw();
-        });
+    main.onclick = (ev) => {
+      const modeBtn = ev.target.closest('[data-qz-mode]');
+      if (modeBtn) {
+        modeCat = modeBtn.getAttribute('data-qz-mode');
+        buildDeck();
+        draw();
+        return;
       }
-    }
 
-    function bindModeBtns() {
-      main.querySelectorAll('[data-qz-mode]').forEach((b) => {
-        b.addEventListener('click', () => {
-          modeCat = b.getAttribute('data-qz-mode');
-          buildDeck();
-          draw();
-        });
-      });
-    }
+      const optBtn = ev.target.closest('[data-opt-idx]');
+      if (optBtn) {
+        const q = deck[idx];
+        pickedIdx = Number(optBtn.getAttribute('data-opt-idx'));
+        const stNow = loadState();
+        const wrongs = new Set(stNow.quizWrongIds || []);
+        if (pickedIdx === q.ans) {
+          score++;
+          wrongs.delete(q.id);
+        } else {
+          wrongs.add(q.id);
+        }
+        stNow.quizWrongIds = Array.from(wrongs);
+        saveState(stNow);
+        draw();
+        return;
+      }
+
+      const btn = ev.target.closest('button[id]');
+      if (!btn) return;
+      if (btn.id === 'btnRetryQuiz') {
+        buildDeck();
+        draw();
+      } else if (btn.id === 'btnNextQuestion') {
+        idx++;
+        pickedIdx = null;
+        draw();
+      }
+    };
 
     draw();
   };
@@ -10982,18 +11085,23 @@ def check_sla(environment, **_kw) -> None:
       </div>
     `;
 
-    const form = document.getElementById('codingFeedbackForm');
+    // 先取得元素參照：送出期間若已切到別頁，也不會因 getElementById 取不到而出錯
+    const form = main.querySelector('#codingFeedbackForm');
+    const catEl = form.querySelector('#fbCategory');
+    const titleEl = form.querySelector('#fbTitle');
+    const msgInput = form.querySelector('#fbMessage');
+    const btn = form.querySelector('#fbSubmitBtn');
+    const msgEl = form.querySelector('#fbStatusMsg');
+
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
       if (sending) return;
-      const category = document.getElementById('fbCategory').value;
-      const title = document.getElementById('fbTitle').value.trim();
-      const message = document.getElementById('fbMessage').value.trim();
+      const category = catEl.value;
+      const title = titleEl.value.trim();
+      const message = msgInput.value.trim();
       if (!title || !message) return;
 
       sending = true;
-      const btn = document.getElementById('fbSubmitBtn');
-      const msgEl = document.getElementById('fbStatusMsg');
       btn.disabled = true;
       btn.textContent = '傳送中…';
 
@@ -11008,7 +11116,7 @@ def check_sla(environment, **_kw) -> None:
 
       try {
         let delivered = false;
-        if (!window.__STATIC_SINGLE_FILE__ && (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port)) {
+        if (isLocalServer()) {
           const resp = await fetch('/api/feedback', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -11025,8 +11133,8 @@ def check_sla(environment, **_kw) -> None:
         st.localFeedback.unshift({ category, title, message, ts: new Date().toISOString() });
         saveState(st);
 
-        document.getElementById('fbTitle').value = '';
-        document.getElementById('fbMessage').value = '';
+        titleEl.value = '';
+        msgInput.value = '';
         msgEl.style.color = '#166534';
         msgEl.textContent = '✅ 感謝你的寶貴回饋，已成功送出！';
         toast('✅ 回饋已成功送出！');
@@ -11057,6 +11165,8 @@ def check_sla(environment, **_kw) -> None:
     getModules,
     getAllLessons,
     updateHeaderProgress,
+    isLocalServer,
+    runRouteCleanup,
   } = window.CodingCore;
 
   function parseRoute() {
@@ -11067,39 +11177,41 @@ def check_sla(environment, **_kw) -> None:
     return { route, param };
   }
 
+  let navLinks = null;
   function syncNavHighlight(route) {
     const effective = route === 'lesson' ? 'courses' : route;
-    document.querySelectorAll('#mainNavTabs [data-nav]').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-nav') === effective);
-    });
-    document.querySelectorAll('.mobile-nav [data-mnav]').forEach((el) => {
-      el.classList.toggle('active', el.getAttribute('data-mnav') === effective);
+    if (!navLinks) navLinks = document.querySelectorAll('#mainNavTabs [data-nav], .mobile-nav [data-mnav]');
+    navLinks.forEach((el) => {
+      el.classList.toggle('active', (el.dataset.nav || el.dataset.mnav) === effective);
     });
   }
+
+  // 路由 → 頁面渲染函式（未知路由回到首頁）
+  const ROUTE_PAGES = {
+    courses: 'courses',
+    lesson: 'courses',
+    lab: 'lab',
+    cheatsheet: 'cheatsheet',
+    glossary: 'glossary',
+    quiz: 'quiz',
+    feedback: 'feedback',
+  };
 
   function renderCurrentRoute() {
     const main = document.getElementById('appMain');
     if (!main) return;
     const { route, param } = parseRoute();
+    // 清掉上一頁的計時器與委派處理器，確保只有當前頁在運作
+    runRouteCleanup();
+    main.onclick = null;
+    main.oninput = null;
+    main.onchange = null;
+    main.onkeydown = null;
     syncNavHighlight(route);
     updateHeaderProgress();
 
     const pages = window.CodingPages || {};
-    if (route === 'courses' || route === 'lesson') {
-      pages.courses(main, param);
-    } else if (route === 'lab') {
-      pages.lab(main, param);
-    } else if (route === 'cheatsheet') {
-      pages.cheatsheet(main);
-    } else if (route === 'glossary') {
-      pages.glossary(main);
-    } else if (route === 'quiz') {
-      pages.quiz(main);
-    } else if (route === 'feedback') {
-      pages.feedback(main);
-    } else {
-      pages.home(main);
-    }
+    pages[Object.prototype.hasOwnProperty.call(ROUTE_PAGES, route) ? ROUTE_PAGES[route] : 'home'](main, param);
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
@@ -11145,7 +11257,10 @@ def check_sla(environment, **_kw) -> None:
 
     const searchIdx = buildIndex();
 
-    input.addEventListener('input', () => {
+    // 以 rAF 合併同一畫格內的多次輸入，避免快速打字時重複重繪下拉選單
+    let searchRaf = 0;
+    function runSearch() {
+      searchRaf = 0;
       const q = input.value.trim().toLowerCase();
       if (!q) {
         dropdown.hidden = true;
@@ -11167,6 +11282,10 @@ def check_sla(environment, **_kw) -> None:
         </a>
       `).join('');
       dropdown.hidden = false;
+    }
+
+    input.addEventListener('input', () => {
+      if (!searchRaf) searchRaf = requestAnimationFrame(runSearch);
     });
 
     input.addEventListener('keydown', (ev) => {
@@ -11174,6 +11293,10 @@ def check_sla(environment, **_kw) -> None:
         dropdown.hidden = true;
         input.blur();
       } else if (isEnterSend(ev)) {
+        if (searchRaf) {
+          cancelAnimationFrame(searchRaf);
+          runSearch();
+        }
         const first = dropdown.querySelector('a.search-item');
         if (first) {
           dropdown.hidden = true;
@@ -11255,7 +11378,7 @@ def check_sla(environment, **_kw) -> None:
     }
 
     // Check unreleased status locally when served by server.py
-    if (!window.__STATIC_SINGLE_FILE__ && (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port)) {
+    if (isLocalServer()) {
       fetch('/api/release_status').then((r) => r.json()).then((d) => {
         const dot = document.getElementById('unreleasedDot');
         if (dot && d && d.unreleased_changes) dot.hidden = false;

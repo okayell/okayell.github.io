@@ -73,8 +73,7 @@ button, input, select, textarea {
   position: sticky;
   top: 0;
   z-index: 90;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
+  background: #fff;
   border-bottom: 1px solid var(--border);
   box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
@@ -176,20 +175,13 @@ button, input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  transition: all 0.15s ease;
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
 }
 
 .ver-pill:hover {
   border-color: var(--primary);
   color: var(--primary-dark);
   background: #f0fdfa;
-}
-
-.unreleased-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #f59e0b;
 }
 
 .header-actions {
@@ -451,7 +443,7 @@ button, input, select, textarea {
   border-radius: 14px;
   padding: 14px 16px;
   cursor: pointer;
-  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s, border-color 0.15s;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -495,7 +487,7 @@ button, input, select, textarea {
   background: #fff;
   color: var(--text);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
 }
 
 .btn:hover {
@@ -569,7 +561,7 @@ button, input, select, textarea {
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.14s;
+  transition: color 0.14s, background-color 0.14s, border-color 0.14s;
 }
 
 .filter-pill:hover {
@@ -637,7 +629,7 @@ button, input, select, textarea {
   font-size: 13px;
   font-weight: 700;
   color: var(--text);
-  transition: all 0.15s;
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
   min-width: 0;
 }
 
@@ -920,7 +912,7 @@ button, input, select, textarea {
   justify-content: center;
   gap: 6px;
   user-select: none;
-  transition: transform 0.06s, box-shadow 0.12s;
+  transition: transform 0.06s;
   box-shadow: 0 6px 0 #fda4af;
 }
 
@@ -962,7 +954,7 @@ button, input, select, textarea {
   font-weight: 600;
   color: var(--text);
   margin-bottom: 8px;
-  transition: all 0.14s;
+  transition: color 0.14s, background-color 0.14s, border-color 0.14s;
 }
 
 .quiz-opt-btn:hover:not(:disabled) {
@@ -1207,7 +1199,6 @@ button, input, select, textarea {
         </a>
         <button id="versionBadgeBtn" class="ver-pill" type="button" title="查看版本更新紀錄與下載離線單檔版">
           <span id="verText">v1.0.0</span>
-          <span id="unreleasedDot" class="unreleased-dot" hidden title="有尚未發布的修改"></span>
         </button>
       </div>
 
@@ -2877,20 +2868,34 @@ window.__STATIC_SINGLE_FILE__ = true;
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -3057,7 +3062,18 @@ window.__STATIC_SINGLE_FILE__ = true;
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -3124,9 +3140,17 @@ window.__STATIC_SINGLE_FILE__ = true;
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.HC_RELEASES = {
-  "current_version": "1.0.1",
-  "last_fingerprint": "c3a2824b1267c766",
+  "current_version": "1.1.0",
+  "last_fingerprint": "f914a5c9defe2569",
   "releases": [
+    {
+      "version": "1.1.0",
+      "date": "2026-11-07 09:54",
+      "title": "醫療保健學院 v1.1.0 內容與體驗更新",
+      "changes": [
+        "優化急救處置圖解、常備藥品百科與互動演練體驗"
+      ]
+    },
     {
       "version": "1.0.1",
       "date": "2026-11-06 15:17",
@@ -3229,44 +3253,38 @@ window.HC_RELEASES = {
     return !!state[mapName][id];
   }
 
+  /* [key prefix, HC data array, fallback total, state map] for the 🩺 保健護照 progress. */
+  var PROGRESS_PARTS = [
+    ['fa', 'FIRST_AID_ITEMS', 16, 'learnedFirstAid'],
+    ['med', 'PHARMACY_ITEMS', 18, 'learnedMeds'],
+    ['dis', 'DISEASES', 24, 'learnedDiseases'],
+    ['kit', 'MEDKIT_CHECKLIST', 16, 'checkedMedkit'],
+    ['myth', 'MYTHS', 18, 'mythAnswers'],
+    ['sc', 'SCENARIOS', 6, 'scenarioAnswers']
+  ];
+
   function computeProgress() {
     var HC = window.HC || {};
-    var faTotal = (HC.FIRST_AID_ITEMS || []).length || 16;
-    var medTotal = (HC.PHARMACY_ITEMS || []).length || 18;
-    var disTotal = (HC.DISEASES || []).length || 24;
-    var kitTotal = (HC.MEDKIT_CHECKLIST || []).length || 16;
-    var mythTotal = (HC.MYTHS || []).length || 18;
-    var scTotal = (HC.SCENARIOS || []).length || 6;
-
-    var faDone = Object.keys(state.learnedFirstAid || {}).length;
-    var medDone = Object.keys(state.learnedMeds || {}).length;
-    var disDone = Object.keys(state.learnedDiseases || {}).length;
-    var kitDone = Object.keys(state.checkedMedkit || {}).length;
-    var mythDone = Object.keys(state.mythAnswers || {}).length;
-    var scDone = Object.keys(state.scenarioAnswers || {}).length;
-
-    var denom = faTotal + medTotal + disTotal + kitTotal + mythTotal + scTotal;
-    var num = Math.min(faDone, faTotal) + Math.min(medDone, medTotal) +
-      Math.min(disDone, disTotal) + Math.min(kitDone, kitTotal) +
-      Math.min(mythDone, mythTotal) + Math.min(scDone, scTotal);
-    var pct = denom ? Math.min(100, Math.round((num / denom) * 100)) : 0;
-    return {
-      pct: pct,
-      faDone: faDone, faTotal: faTotal,
-      medDone: medDone, medTotal: medTotal,
-      disDone: disDone, disTotal: disTotal,
-      kitDone: kitDone, kitTotal: kitTotal,
-      mythDone: mythDone, mythTotal: mythTotal,
-      scDone: scDone, scTotal: scTotal,
-      bestQuizPct: state.bestQuizPct || 0
-    };
+    var out = { bestQuizPct: state.bestQuizPct || 0 };
+    var num = 0;
+    var denom = 0;
+    PROGRESS_PARTS.forEach(function (p) {
+      var total = (HC[p[1]] || []).length || p[2];
+      var done = Object.keys(state[p[3]] || {}).length;
+      out[p[0] + 'Done'] = done;
+      out[p[0] + 'Total'] = total;
+      num += Math.min(done, total);
+      denom += total;
+    });
+    out.pct = denom ? Math.min(100, Math.round((num / denom) * 100)) : 0;
+    return out;
   }
 
   function updateProgressBadge() {
     var el = document.getElementById('headerProgressText');
     if (!el) return;
-    var p = computeProgress();
-    el.textContent = p.pct + '%';
+    var txt = computeProgress().pct + '%';
+    if (el.textContent !== txt) el.textContent = txt;
   }
 
   function loadLocalFeedback() {
@@ -3284,8 +3302,35 @@ window.HC_RELEASES = {
     } catch (e) { /* ignore */ }
   }
 
-  /* 16 Custom Medical Vector Diagrams (320 x 168) */
+  /*
+   * Route-scoped event delegation: one handler per event type on the persistent page root,
+   * replaced (never stacked) on every render. `map` is {selector: fn(matchedEl, ev)}; the first
+   * selector whose closest() match lies inside root wins.
+   */
+  function delegate(root, type, map) {
+    root['on' + type] = function (ev) {
+      var t = ev.target;
+      if (!t || !t.closest) return;
+      for (var sel in map) {
+        var el = t.closest(sel);
+        if (el && root.contains(el)) {
+          map[sel](el, ev);
+          return;
+        }
+      }
+    };
+  }
+
+  /* Diagram strings are pure functions of `kind`; build each once and reuse on every redraw. */
+  var svgCache = {};
   function renderFirstAidSvg(kind) {
+    var key = String(kind);
+    if (!svgCache[key]) svgCache[key] = buildFirstAidSvg(kind);
+    return svgCache[key];
+  }
+
+  /* 16 Custom Medical Vector Diagrams (320 x 168) */
+  function buildFirstAidSvg(kind) {
     var wrapStart = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 168" role="img" aria-label="急救圖解">';
     var bg = '<rect width="320" height="168" fill="#f8fafc"/><rect x="6" y="6" width="308" height="156" rx="10" fill="#ffffff" stroke="#e2e8f0"/>';
     var body = '';
@@ -3538,6 +3583,7 @@ window.HC_RELEASES = {
     esc: esc,
     loadLocalFeedback: loadLocalFeedback,
     saveLocalFeedback: saveLocalFeedback,
+    delegate: delegate,
     renderFirstAidSvg: renderFirstAidSvg
   };
 })();
@@ -6348,6 +6394,30 @@ window.HC_RELEASES = {
     return 'mint';
   }
 
+  /* Click handler for the 「標記已讀」 buttons: flips state[mapName][id] and updates the button in place. */
+  function learnToggle(mapName, attr, doneText) {
+    return function (btn) {
+      var nowDone = window.HcCore.toggleMapKey(mapName, btn.getAttribute(attr));
+      btn.classList.toggle('btn-done', nowDone);
+      btn.textContent = nowDone ? doneText : '標記已讀';
+    };
+  }
+
+  /* Replaces the <section> that contains #anchorId with freshly rendered markup (partial redraw). */
+  function replaceSectionOf(anchorId, html) {
+    var anchor = document.getElementById(anchorId);
+    var sec = anchor && anchor.closest('section');
+    if (sec) sec.outerHTML = html;
+  }
+
+  function focusCard(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.classList.add('highlight-flash');
+      el.scrollIntoView({ block: 'center' });
+    }
+  }
+
   function tierChipClass(t) {
     var s = String(t || '');
     if (s.indexOf('處方') >= 0) return 'bad';
@@ -6454,18 +6524,13 @@ window.HC_RELEASES = {
 
     root.innerHTML = html;
 
-    root.querySelectorAll('[data-goto]').forEach(function (card) {
-      card.addEventListener('click', function () {
-        window.location.hash = card.getAttribute('data-goto');
-      });
-    });
-
     var grid = document.getElementById('symptomBtnGrid');
     var host = document.getElementById('triageDetailHost');
-    if (grid && host) {
-      grid.addEventListener('click', function (ev) {
-        var btn = ev.target.closest('[data-sym]');
-        if (!btn) return;
+    window.HcCore.delegate(root, 'click', {
+      '[data-goto]': function (card) {
+        window.location.hash = card.getAttribute('data-goto');
+      },
+      '[data-sym]': function (btn) {
         var sid = btn.getAttribute('data-sym');
         var found = symptoms.find(function (x) { return x.id === sid; });
         if (!found) return;
@@ -6475,8 +6540,8 @@ window.HC_RELEASES = {
           b.classList.toggle('active', b.getAttribute('data-sym') === sid);
         });
         host.innerHTML = renderTriageDetail(found);
-      });
-    }
+      }
+    });
   };
 
   function renderTriageDetail(sym) {
@@ -6587,35 +6652,19 @@ window.HC_RELEASES = {
           }).join('') +
         '</div>';
 
-      var bar = document.getElementById('faCatBar');
-      if (bar) {
-        bar.addEventListener('click', function (ev) {
-          var b = ev.target.closest('[data-cat]');
-          if (!b) return;
-          curFaCat = b.getAttribute('data-cat');
-          draw();
-        });
-      }
-
-      root.querySelectorAll('[data-learn-fa]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var id = btn.getAttribute('data-learn-fa');
-          var nowDone = window.HcCore.toggleMapKey('learnedFirstAid', id);
-          btn.classList.toggle('btn-done', nowDone);
-          btn.textContent = nowDone ? '✓ 已熟記' : '標記已讀';
-        });
-      });
-
       if (focusId) {
-        var targetEl = document.getElementById('fa-' + focusId);
-        if (targetEl) {
-          targetEl.classList.add('highlight-flash');
-          targetEl.scrollIntoView({ block: 'center' });
-        }
+        focusCard('fa-' + focusId);
         focusId = null;
       }
     }
 
+    window.HcCore.delegate(root, 'click', {
+      '[data-cat]': function (b) {
+        curFaCat = b.getAttribute('data-cat');
+        draw();
+      },
+      '[data-learn-fa]': learnToggle('learnedFirstAid', 'data-learn-fa', '✓ 已熟記')
+    });
     draw();
   };
 
@@ -6633,15 +6682,9 @@ window.HC_RELEASES = {
     var disposal = HC.DISPOSAL_STEPS || [];
     if (focusId) curPharmCat = 'all';
 
-    function draw() {
-      var filteredMeds = curPharmCat === 'all' ? meds : meds.filter(function (m) { return m.cat === curPharmCat; });
-      var learnedMeds = window.HcCore.state.learnedMeds || {};
-      var checkedKit = window.HcCore.state.checkedMedkit || {};
-      var activeInter = inters.find(function (x) { return x.id === curInterId; }) || inters[0];
-      var kitDoneCount = Object.keys(checkedKit).length;
-
-      root.innerHTML =
-        /* 1. 台灣藥品三級制 */
+    /* 1. 台灣藥品三級制 */
+    function tiersHtml() {
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -6666,9 +6709,15 @@ window.HC_RELEASES = {
               );
             }).join('') +
           '</div>' +
-        '</section>' +
+        '</section>'
+      );
+    }
 
-        /* 2. 18 種常備藥品與醫材圖鑑 */
+    /* 2. 18 種常備藥品與醫材圖鑑 */
+    function medsHtml() {
+      var filteredMeds = curPharmCat === 'all' ? meds : meds.filter(function (m) { return m.cat === curPharmCat; });
+      var learnedMeds = window.HcCore.state.learnedMeds || {};
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -6716,9 +6765,14 @@ window.HC_RELEASES = {
               );
             }).join('') +
           '</div>' +
-        '</section>' +
+        '</section>'
+      );
+    }
 
-        /* 3. 食物 × 飲品 × 藥物交互作用雷達 */
+    /* 3. 食物 × 飲品 × 藥物交互作用雷達 */
+    function interHtml() {
+      var activeInter = inters.find(function (x) { return x.id === curInterId; }) || inters[0];
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -6753,14 +6807,23 @@ window.HC_RELEASES = {
               '</div>' +
             '</div>'
           ) : '') +
-        '</section>' +
+        '</section>'
+      );
+    }
 
-        /* 4. 家庭醫藥箱點檢表 & 廢棄藥品六步驟 */
+    function kitTitle(doneCount) {
+      return '🧰 居家＆宿舍醫藥箱點檢表（' + doneCount + ' / ' + medkit.length + '）';
+    }
+
+    /* 4. 家庭醫藥箱點檢表 & 廢棄藥品六步驟 */
+    function kitAndDisposalHtml() {
+      var checkedKit = window.HcCore.state.checkedMedkit || {};
+      return (
         '<div class="cards-grid-2">' +
           '<section class="section-card" style="margin-bottom:0">' +
             '<div class="section-head">' +
               '<div>' +
-                '<h2>🧰 居家＆宿舍醫藥箱點檢表（' + kitDoneCount + ' / ' + medkit.length + '）</h2>' +
+                '<h2>' + kitTitle(Object.keys(checkedKit).length) + '</h2>' +
                 '<p>建議每半年檢查一次效期與包裝完整性，避免放在潮濕浴室或陽光直射處。</p>' +
               '</div>' +
             '</div>' +
@@ -6801,59 +6864,37 @@ window.HC_RELEASES = {
               }).join('') +
             '</div>' +
           '</section>' +
-        '</div>';
-
-      var pBar = document.getElementById('pharmCatBar');
-      if (pBar) {
-        pBar.addEventListener('click', function (ev) {
-          var b = ev.target.closest('[data-pcat]');
-          if (!b) return;
-          curPharmCat = b.getAttribute('data-pcat');
-          draw();
-        });
-      }
-
-      var iBar = document.getElementById('interBar');
-      if (iBar) {
-        iBar.addEventListener('click', function (ev) {
-          var b = ev.target.closest('[data-inter]');
-          if (!b) return;
-          curInterId = b.getAttribute('data-inter');
-          draw();
-        });
-      }
-
-      root.querySelectorAll('[data-learn-med]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var id = btn.getAttribute('data-learn-med');
-          var nowDone = window.HcCore.toggleMapKey('learnedMeds', id);
-          btn.classList.toggle('btn-done', nowDone);
-          btn.textContent = nowDone ? '✓ 已掌握' : '標記已讀';
-        });
-      });
-
-      var kitGrid = document.getElementById('medkitGrid');
-      if (kitGrid) {
-        kitGrid.addEventListener('change', function (ev) {
-          var cb = ev.target.closest('[data-kit]');
-          if (!cb) return;
-          var kid = cb.getAttribute('data-kit');
-          window.HcCore.toggleMapKey('checkedMedkit', kid);
-          draw();
-        });
-      }
-
-      if (focusId) {
-        var el = document.getElementById('med-' + focusId);
-        if (el) {
-          el.classList.add('highlight-flash');
-          el.scrollIntoView({ block: 'center' });
-        }
-        focusId = null;
-      }
+        '</div>'
+      );
     }
 
-    draw();
+    root.innerHTML = tiersHtml() + medsHtml() + interHtml() + kitAndDisposalHtml();
+
+    /* Filters re-render only their own section; checklist ticks update in place. */
+    window.HcCore.delegate(root, 'click', {
+      '[data-pcat]': function (b) {
+        curPharmCat = b.getAttribute('data-pcat');
+        replaceSectionOf('pharmCatBar', medsHtml());
+      },
+      '[data-inter]': function (b) {
+        curInterId = b.getAttribute('data-inter');
+        replaceSectionOf('interBar', interHtml());
+      },
+      '[data-learn-med]': learnToggle('learnedMeds', 'data-learn-med', '✓ 已掌握')
+    });
+    window.HcCore.delegate(root, 'change', {
+      '[data-kit]': function (cb) {
+        var on = window.HcCore.toggleMapKey('checkedMedkit', cb.getAttribute('data-kit'));
+        cb.checked = on;
+        if (on) cb.setAttribute('checked', '');
+        else cb.removeAttribute('checked');
+        cb.closest('.check-item').classList.toggle('checked', on);
+        cb.closest('section').querySelector('h2').textContent =
+          kitTitle(Object.keys(window.HcCore.state.checkedMedkit || {}).length);
+      }
+    });
+
+    if (focusId) focusCard('med-' + focusId);
   };
 
   /* ======================= 4. 🦠 疾病小百科 (#/diseases) ======================= */
@@ -6866,12 +6907,9 @@ window.HC_RELEASES = {
     var diseases = HC.DISEASES || [];
     if (focusId) curDisCat = 'all';
 
-    function draw() {
-      var list = curDisCat === 'all' ? diseases : diseases.filter(function (d) { return d.cat === curDisCat; });
-      var learnedDis = window.HcCore.state.learnedDiseases || {};
-
-      root.innerHTML =
-        /* 1. 呼吸道四大相似症狀鑑別表 */
+    /* 1. 呼吸道四大相似症狀鑑別表 */
+    function diffTableHtml() {
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -6896,9 +6934,15 @@ window.HC_RELEASES = {
               '</tbody>' +
             '</table>' +
           '</div>' +
-        '</section>' +
+        '</section>'
+      );
+    }
 
-        /* 2. 六大系統 24 種常見疾病百科 */
+    /* 2. 六大系統 24 種常見疾病百科 */
+    function diseaseListHtml() {
+      var list = curDisCat === 'all' ? diseases : diseases.filter(function (d) { return d.cat === curDisCat; });
+      var learnedDis = window.HcCore.state.learnedDiseases || {};
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -6950,38 +6994,21 @@ window.HC_RELEASES = {
               );
             }).join('') +
           '</div>' +
-        '</section>';
-
-      var dBar = document.getElementById('disCatBar');
-      if (dBar) {
-        dBar.addEventListener('click', function (ev) {
-          var b = ev.target.closest('[data-dcat]');
-          if (!b) return;
-          curDisCat = b.getAttribute('data-dcat');
-          draw();
-        });
-      }
-
-      root.querySelectorAll('[data-learn-dis]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var id = btn.getAttribute('data-learn-dis');
-          var nowDone = window.HcCore.toggleMapKey('learnedDiseases', id);
-          btn.classList.toggle('btn-done', nowDone);
-          btn.textContent = nowDone ? '✓ 已讀' : '標記已讀';
-        });
-      });
-
-      if (focusId) {
-        var el = document.getElementById('dis-' + focusId);
-        if (el) {
-          el.classList.add('highlight-flash');
-          el.scrollIntoView({ block: 'center' });
-        }
-        focusId = null;
-      }
+        '</section>'
+      );
     }
 
-    draw();
+    root.innerHTML = diffTableHtml() + diseaseListHtml();
+
+    window.HcCore.delegate(root, 'click', {
+      '[data-dcat]': function (b) {
+        curDisCat = b.getAttribute('data-dcat');
+        replaceSectionOf('disCatBar', diseaseListHtml());
+      },
+      '[data-learn-dis]': learnToggle('learnedDiseases', 'data-learn-dis', '✓ 已讀')
+    });
+
+    if (focusId) focusCard('dis-' + focusId);
   };
 })();
 
@@ -6993,6 +7020,14 @@ window.HC_RELEASES = {
 
   var HcPages = (window.HcPages = window.HcPages || {});
   var esc = window.HcCore.esc;
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  /* Replaces the <section> that contains #anchorId with freshly rendered markup (partial redraw). */
+  function replaceSectionOf(anchorId, html) {
+    var anchor = document.getElementById(anchorId);
+    var sec = anchor && anchor.closest('section');
+    if (sec) sec.outerHTML = html;
+  }
 
   /* ======================= 5. 🧬 醫學常識 (#/literacy) ======================= */
   var vitalsVal = {
@@ -7002,7 +7037,15 @@ window.HC_RELEASES = {
     heightCm: 170, weightKg: 65, waistCm: 80, sex: 'M',
     tempC: 36.7, spo2: 98
   };
+  /* 情境範例 buttons (data-vpreset) -> vitals values. */
+  var VITAL_PRESETS = {
+    healthy: { sbp: 116, dbp: 74, fbg: 89, hba1c: 5.3, ldl: 96, heightCm: 170, weightKg: 64, waistCm: 78, tempC: 36.6, spo2: 99 },
+    metabolic: { sbp: 146, dbp: 94, fbg: 132, hba1c: 6.8, ldl: 168, heightCm: 170, weightKg: 84, waistCm: 95, tempC: 36.8, spo2: 97 },
+    hypo: { sbp: 124, dbp: 78, fbg: 58, hba1c: 6.9, ldl: 110, heightCm: 165, weightKg: 60, waistCm: 76, tempC: 36.4, spo2: 98 },
+    crisis: { sbp: 186, dbp: 118, fbg: 112, hba1c: 5.8, ldl: 135, heightCm: 172, weightKg: 70, waistCm: 84, tempC: 39.8, spo2: 89 }
+  };
   var curMythCat = 'all';
+  var MYTH_CATS = ['all', '急救迷思', '用藥迷思', '疾病迷思', '日常保健'];
 
   function evalBp(s, d) {
     if (s >= 180 || d >= 120) return { cls: 'bad', label: '🚨 高血壓危象（≥180/120）', advice: '若伴隨劇烈頭痛、胸痛、呼吸喘、視力模糊或單側無力，請立即撥 119 送急診！若無症狀請靜坐 5 分鐘重測並儘速就醫。' };
@@ -7054,19 +7097,14 @@ window.HC_RELEASES = {
     var myths = HC.MYTHS || [];
     var guides = HC.HEALTH_SYSTEM_GUIDES || [];
 
-    function draw() {
+    /* 1. 生命徵象與健檢報告數值判讀器 */
+    function vitalsHtml() {
       var bpRes = evalBp(vitalsVal.sbp, vitalsVal.dbp);
       var sgRes = evalSugar(vitalsVal.fbg, vitalsVal.hba1c);
       var ldlRes = evalLdl(vitalsVal.ldl);
       var bwRes = evalBmiWaist(vitalsVal.heightCm, vitalsVal.weightKg, vitalsVal.waistCm, vitalsVal.sex);
       var tsRes = evalTempSpo2(vitalsVal.tempC, vitalsVal.spo2);
-
-      var mythCats = ['all', '急救迷思', '用藥迷思', '疾病迷思', '日常保健'];
-      var filteredMyths = curMythCat === 'all' ? myths : myths.filter(function (m) { return m.category === curMythCat; });
-      var ansMap = window.HcCore.state.mythAnswers || {};
-
-      root.innerHTML =
-        /* 1. 生命徵象與健檢報告數值判讀器 */
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -7141,9 +7179,15 @@ window.HC_RELEASES = {
               '</ul>' +
             '</div>' +
           '</div>' +
-        '</section>' +
+        '</section>'
+      );
+    }
 
-        /* 2. 18 題醫學迷思是非翻牌大破解 */
+    /* 2. 18 題醫學迷思是非翻牌大破解 */
+    function mythsHtml() {
+      var filteredMyths = curMythCat === 'all' ? myths : myths.filter(function (m) { return m.category === curMythCat; });
+      var ansMap = window.HcCore.state.mythAnswers || {};
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -7152,7 +7196,7 @@ window.HC_RELEASES = {
             '</div>' +
           '</div>' +
           '<div class="filter-bar" id="mythCatBar">' +
-            mythCats.map(function (c) {
+            MYTH_CATS.map(function (c) {
               var label = c === 'all' ? '全部題目 (' + myths.length + ')' : c;
               return '<button type="button" class="filter-pill' + (curMythCat === c ? ' active' : '') + '" data-mcat="' + esc(c) + '">' + esc(label) + '</button>';
             }).join('') +
@@ -7184,9 +7228,13 @@ window.HC_RELEASES = {
               );
             }).join('') +
           '</div>' +
-        '</section>' +
+        '</section>'
+      );
+    }
 
-        /* 3. 台灣醫療制度與就醫聰明指南 */
+    /* 3. 台灣醫療制度與就醫聰明指南 */
+    function guidesHtml() {
+      return (
         '<section class="section-card">' +
           '<div class="section-head">' +
             '<div>' +
@@ -7210,68 +7258,47 @@ window.HC_RELEASES = {
               );
             }).join('') +
           '</div>' +
-        '</section>';
-
-      var vGrid = document.getElementById('vitalsInputGrid');
-      if (vGrid) {
-        vGrid.querySelectorAll('input[data-vf]').forEach(function (inp) {
-          inp.addEventListener('change', function () {
-            var k = inp.getAttribute('data-vf');
-            var num = parseFloat(inp.value);
-            if (!isNaN(num)) {
-              vitalsVal[k] = num;
-              draw();
-            }
-          });
-        });
-      }
-
-      var presets = document.getElementById('vitalPresets');
-      if (presets) {
-        presets.addEventListener('click', function (ev) {
-          var b = ev.target.closest('[data-vpreset]');
-          if (!b) return;
-          var p = b.getAttribute('data-vpreset');
-          if (p === 'healthy') Object.assign(vitalsVal, { sbp: 116, dbp: 74, fbg: 89, hba1c: 5.3, ldl: 96, heightCm: 170, weightKg: 64, waistCm: 78, tempC: 36.6, spo2: 99 });
-          else if (p === 'metabolic') Object.assign(vitalsVal, { sbp: 146, dbp: 94, fbg: 132, hba1c: 6.8, ldl: 168, heightCm: 170, weightKg: 84, waistCm: 95, tempC: 36.8, spo2: 97 });
-          else if (p === 'hypo') Object.assign(vitalsVal, { sbp: 124, dbp: 78, fbg: 58, hba1c: 6.9, ldl: 110, heightCm: 165, weightKg: 60, waistCm: 76, tempC: 36.4, spo2: 98 });
-          else if (p === 'crisis') Object.assign(vitalsVal, { sbp: 186, dbp: 118, fbg: 112, hba1c: 5.8, ldl: 135, heightCm: 172, weightKg: 70, waistCm: 84, tempC: 39.8, spo2: 89 });
-          draw();
-        });
-      }
-
-      var mBar = document.getElementById('mythCatBar');
-      if (mBar) {
-        mBar.addEventListener('click', function (ev) {
-          var b = ev.target.closest('[data-mcat]');
-          if (!b) return;
-          curMythCat = b.getAttribute('data-mcat');
-          draw();
-        });
-      }
-
-      root.querySelectorAll('[data-myth]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var mid = btn.getAttribute('data-myth');
-          var pick = btn.getAttribute('data-pick');
-          if (!window.HcCore.state.mythAnswers) window.HcCore.state.mythAnswers = {};
-          window.HcCore.state.mythAnswers[mid] = pick;
-          window.HcCore.saveState();
-          draw();
-        });
-      });
-
-      if (focusId) {
-        var el = document.getElementById('myth-' + focusId);
-        if (el) {
-          el.classList.add('highlight-flash');
-          el.scrollIntoView({ block: 'center' });
-        }
-        focusId = null;
-      }
+        '</section>'
+      );
     }
 
-    draw();
+    root.innerHTML = vitalsHtml() + mythsHtml() + guidesHtml();
+
+    /* Each interaction re-renders only the section it affects. */
+    window.HcCore.delegate(root, 'change', {
+      'input[data-vf]': function (inp) {
+        var num = parseFloat(inp.value);
+        if (!isNaN(num)) {
+          vitalsVal[inp.getAttribute('data-vf')] = num;
+          replaceSectionOf('vitalsInputGrid', vitalsHtml());
+        }
+      }
+    });
+    window.HcCore.delegate(root, 'click', {
+      '[data-vpreset]': function (b) {
+        var preset = VITAL_PRESETS[b.getAttribute('data-vpreset')];
+        if (preset) Object.assign(vitalsVal, preset);
+        replaceSectionOf('vitalsInputGrid', vitalsHtml());
+      },
+      '[data-mcat]': function (b) {
+        curMythCat = b.getAttribute('data-mcat');
+        replaceSectionOf('mythCatBar', mythsHtml());
+      },
+      '[data-myth]': function (btn) {
+        if (!window.HcCore.state.mythAnswers) window.HcCore.state.mythAnswers = {};
+        window.HcCore.state.mythAnswers[btn.getAttribute('data-myth')] = btn.getAttribute('data-pick');
+        window.HcCore.saveState();
+        replaceSectionOf('mythCatBar', mythsHtml());
+      }
+    });
+
+    if (focusId) {
+      var el = document.getElementById('myth-' + focusId);
+      if (el) {
+        el.classList.add('highlight-flash');
+        el.scrollIntoView({ block: 'center' });
+      }
+    }
   };
 
   /* ======================= 6. ⚡ 實戰演練 (#/drill) ======================= */
@@ -7300,12 +7327,41 @@ window.HC_RELEASES = {
     } catch (e) { /* ignore audio errors */ }
   }
 
+  var METRO_MS = Math.round(60000 / 110);
+  var metroPausedByHide = false;
+
+  function startMetroTimer() {
+    metroTimer = setInterval(function () {
+      playClickBeep(920, 0.05);
+      var pad = document.getElementById('cprTapPad');
+      if (pad) {
+        pad.classList.add('beat-pulse');
+        setTimeout(function () { pad.classList.remove('beat-pulse'); }, 110);
+      }
+    }, METRO_MS);
+  }
+
   HcPages.stopMetronome = function () {
+    metroPausedByHide = false;
     if (metroTimer) {
       clearInterval(metroTimer);
       metroTimer = null;
     }
   };
+
+  /* Pause the 110 BPM interval while the tab is hidden; resume it when the tab is visible again. */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (metroTimer) {
+        clearInterval(metroTimer);
+        metroTimer = null;
+        metroPausedByHide = true;
+      }
+    } else if (metroPausedByHide) {
+      metroPausedByHide = false;
+      startMetroTimer();
+    }
+  });
 
   HcPages.renderDrill = function (root) {
     HcPages.stopMetronome();
@@ -7406,7 +7462,7 @@ window.HC_RELEASES = {
                       else if (idx === pickedIdx) cls = ' wrong';
                     }
                     return '<button type="button" class="quiz-opt-btn' + cls + '" data-sc="' + esc(sc.id) + '" data-idx="' + idx + '">' +
-                      '<strong>' + ['A', 'B', 'C', 'D'][idx] + '.</strong> ' + esc(ch.text) +
+                      '<strong>' + LETTERS[idx] + '.</strong> ' + esc(ch.text) +
                     '</button>';
                   }).join('') +
                 '</div>' +
@@ -7423,10 +7479,6 @@ window.HC_RELEASES = {
         '</div>' +
       '</section>';
 
-    /* Wire CPR Metronome & Tap Pad */
-    var metroBtn = document.getElementById('metroToggleBtn');
-    var pad = document.getElementById('cprTapPad');
-    var resetBtn = document.getElementById('cprResetBtn');
     var bpmEl = document.getElementById('cprBpmVal');
     var cycEl = document.getElementById('cprCycleVal');
     var gradeEl = document.getElementById('cprGradeVal');
@@ -7440,84 +7492,65 @@ window.HC_RELEASES = {
       if (tapTimes.length > 8) tapTimes.shift();
       tapCountInCycle = (tapCountInCycle % 30) + 1;
       playClickBeep(660, 0.04);
-      if (cycEl) cycEl.textContent = tapCountInCycle + ' / 30';
+      cycEl.textContent = tapCountInCycle + ' / 30';
       if (tapTimes.length >= 2) {
         var spanSec = (tapTimes[tapTimes.length - 1] - tapTimes[0]) / 1000;
         var bpm = Math.round(((tapTimes.length - 1) / spanSec) * 60);
-        if (bpmEl) bpmEl.textContent = String(bpm);
-        if (gradeEl) {
-          if (bpm >= 100 && bpm <= 120) {
-            gradeEl.textContent = '✅ 完美黃金速率！';
-            gradeEl.style.color = '#15803d';
-          } else if (bpm < 100) {
-            gradeEl.textContent = '⚠️ 偏慢（請加快至 100–120）';
-            gradeEl.style.color = '#b45309';
-          } else {
-            gradeEl.textContent = '⚠️ 偏快（注意胸廓完全回彈）';
-            gradeEl.style.color = '#be123c';
-          }
+        bpmEl.textContent = String(bpm);
+        if (bpm >= 100 && bpm <= 120) {
+          gradeEl.textContent = '✅ 完美黃金速率！';
+          gradeEl.style.color = '#15803d';
+        } else if (bpm < 100) {
+          gradeEl.textContent = '⚠️ 偏慢（請加快至 100–120）';
+          gradeEl.style.color = '#b45309';
+        } else {
+          gradeEl.textContent = '⚠️ 偏快（注意胸廓完全回彈）';
+          gradeEl.style.color = '#be123c';
         }
       }
     }
 
-    if (pad) pad.addEventListener('click', recordTap);
-    if (resetBtn) {
-      resetBtn.addEventListener('click', function () {
+    window.HcCore.delegate(root, 'click', {
+      /* CPR metronome & tap pad */
+      '#cprTapPad': recordTap,
+      '#cprResetBtn': function () {
         tapTimes = [];
         tapCountInCycle = 0;
-        if (bpmEl) bpmEl.textContent = '--';
-        if (cycEl) cycEl.textContent = '0 / 30';
-        if (gradeEl) { gradeEl.textContent = '等待按壓…'; gradeEl.style.color = ''; }
-      });
-    }
-    if (metroBtn) {
-      metroBtn.addEventListener('click', function () {
+        bpmEl.textContent = '--';
+        cycEl.textContent = '0 / 30';
+        gradeEl.textContent = '等待按壓…';
+        gradeEl.style.color = '';
+      },
+      '#metroToggleBtn': function (metroBtn) {
         if (metroTimer) {
           HcPages.stopMetronome();
           metroBtn.textContent = '🔊 開啟 110 BPM 節拍引導音';
         } else {
           playClickBeep(920, 0.05);
           metroBtn.textContent = '⏹️ 停止 110 BPM 節拍音';
-          metroTimer = setInterval(function () {
-            playClickBeep(920, 0.05);
-            if (pad) {
-              pad.classList.add('beat-pulse');
-              setTimeout(function () { pad.classList.remove('beat-pulse'); }, 110);
-            }
-          }, Math.round(60000 / 110));
+          startMetroTimer();
         }
-      });
-    }
-
-    /* Wire AED Simulator */
-    root.querySelectorAll('[data-aed-act]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      },
+      /* AED simulator */
+      '[data-aed-act]': function (btn) {
         var stepNum = parseInt(btn.getAttribute('data-aed-act'), 10);
         if (stepNum <= aedStep + 1) {
           aedStep = stepNum;
           playClickBeep(stepNum === 4 ? 1200 : 780, 0.08);
           HcPages.renderDrill(root);
         }
-      });
-    });
-    var aedReset = document.getElementById('aedResetBtn');
-    if (aedReset) {
-      aedReset.addEventListener('click', function () {
+      },
+      '#aedResetBtn': function () {
         aedStep = 0;
         HcPages.renderDrill(root);
-      });
-    }
-
-    /* Wire Scenarios */
-    root.querySelectorAll('[data-sc]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var sid = btn.getAttribute('data-sc');
-        var idx = parseInt(btn.getAttribute('data-idx'), 10);
+      },
+      /* Scenarios */
+      '[data-sc]': function (btn) {
         if (!window.HcCore.state.scenarioAnswers) window.HcCore.state.scenarioAnswers = {};
-        window.HcCore.state.scenarioAnswers[sid] = idx;
+        window.HcCore.state.scenarioAnswers[btn.getAttribute('data-sc')] = parseInt(btn.getAttribute('data-idx'), 10);
         window.HcCore.saveState();
         HcPages.renderDrill(root);
-      });
+      }
     });
   };
 
@@ -7608,13 +7641,13 @@ window.HC_RELEASES = {
                       else if (oIdx === picked) cls = ' wrong';
                     }
                     return '<button type="button" class="quiz-opt-btn' + cls + '" data-qidx="' + qIdx + '" data-oidx="' + oIdx + '">' +
-                      '<strong>' + ['A', 'B', 'C', 'D'][oIdx] + '.</strong> ' + esc(opt) +
+                      '<strong>' + LETTERS[oIdx] + '.</strong> ' + esc(opt) +
                     '</button>';
                   }).join('') +
                 '</div>' +
                 (hasAns ? (
                   '<div class="pearl-box">' +
-                    (picked === q.ans ? '✅ <strong>答對了！</strong> ' : '❌ <strong>正確答案為 ' + ['A', 'B', 'C', 'D'][q.ans] + '。</strong> ') +
+                    (picked === q.ans ? '✅ <strong>答對了！</strong> ' : '❌ <strong>正確答案為 ' + LETTERS[q.ans] + '。</strong> ') +
                     esc(q.exp) +
                   '</div>'
                 ) : '') +
@@ -7624,31 +7657,19 @@ window.HC_RELEASES = {
         '</div>' +
       '</section>';
 
-    var mBar = document.getElementById('quizModeBar');
-    if (mBar) {
-      mBar.addEventListener('click', function (ev) {
-        var b = ev.target.closest('[data-qmode]');
-        if (!b) return;
+    window.HcCore.delegate(root, 'click', {
+      '[data-qmode]': function (b) {
         startQuizSession(b.getAttribute('data-qmode'));
         HcPages.renderQuiz(root);
-      });
-    }
-
-    var restartBtn = document.getElementById('quizRestartBtn');
-    if (restartBtn) {
-      restartBtn.addEventListener('click', function () {
+      },
+      '#quizRestartBtn': function () {
         startQuizSession(quizSession.mode);
         HcPages.renderQuiz(root);
-      });
-    }
-
-    root.querySelectorAll('[data-qidx]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var qi = parseInt(btn.getAttribute('data-qidx'), 10);
-        var oi = parseInt(btn.getAttribute('data-oidx'), 10);
-        quizSession.picks[qi] = oi;
+      },
+      '[data-qidx]': function (btn) {
+        quizSession.picks[parseInt(btn.getAttribute('data-qidx'), 10)] = parseInt(btn.getAttribute('data-oidx'), 10);
         HcPages.renderQuiz(root);
-      });
+      }
     });
   };
 
@@ -7833,6 +7854,18 @@ window.HC_RELEASES = {
 
   var esc = window.HcCore.esc;
 
+  /* Hash route -> HcPages renderer (also the whitelist of valid routes). */
+  var RENDERERS = {
+    'home': 'renderHome',
+    'first-aid': 'renderFirstAid',
+    'pharmacy': 'renderPharmacy',
+    'diseases': 'renderDiseases',
+    'literacy': 'renderLiteracy',
+    'drill': 'renderDrill',
+    'quiz': 'renderQuiz',
+    'feedback': 'renderFeedback'
+  };
+
   function parseRoute() {
     var raw = (window.location.hash || '#/home').replace(/^#\/?/, '');
     var qIdx = raw.indexOf('?');
@@ -7846,31 +7879,27 @@ window.HC_RELEASES = {
       });
     }
     var seg = (path.split('/')[0] || 'home').toLowerCase();
-    var valid = ['home', 'first-aid', 'pharmacy', 'diseases', 'literacy', 'drill', 'quiz', 'feedback'];
-    if (valid.indexOf(seg) < 0) seg = 'home';
+    if (!Object.prototype.hasOwnProperty.call(RENDERERS, seg)) seg = 'home';
     return { route: seg, focus: focus };
   }
 
+  var navLinks = null;
+
   function renderCurrentRoute() {
-    if (window.HcPages && window.HcPages.stopMetronome) {
-      window.HcPages.stopMetronome();
-    }
+    window.HcPages.stopMetronome();
     var r = parseRoute();
     var main = document.getElementById('appMain');
     if (!main) return;
 
-    document.querySelectorAll('[data-nav]').forEach(function (a) {
+    navLinks = navLinks || document.querySelectorAll('[data-nav]');
+    navLinks.forEach(function (a) {
       a.classList.toggle('active', a.getAttribute('data-nav') === r.route);
     });
 
-    if (r.route === 'home') window.HcPages.renderHome(main);
-    else if (r.route === 'first-aid') window.HcPages.renderFirstAid(main, r.focus);
-    else if (r.route === 'pharmacy') window.HcPages.renderPharmacy(main, r.focus);
-    else if (r.route === 'diseases') window.HcPages.renderDiseases(main, r.focus);
-    else if (r.route === 'literacy') window.HcPages.renderLiteracy(main, r.focus);
-    else if (r.route === 'drill') window.HcPages.renderDrill(main);
-    else if (r.route === 'quiz') window.HcPages.renderQuiz(main);
-    else if (r.route === 'feedback') window.HcPages.renderFeedback(main);
+    /* Drop the previous page's delegated handlers before the next page installs its own. */
+    main.onclick = null;
+    main.onchange = null;
+    window.HcPages[RENDERERS[r.route]](main, r.focus);
 
     if (!r.focus) {
       window.scrollTo(0, 0);
@@ -7925,7 +7954,7 @@ window.HC_RELEASES = {
     var input = document.getElementById('globalSearchInput');
     var dd = document.getElementById('globalSearchDropdown');
     if (!input || !dd) return;
-    var index = buildSearchIndex();
+    var index = null; /* built lazily on first keystroke to keep startup light */
 
     input.addEventListener('input', function () {
       var q = (input.value || '').trim().toLowerCase();
@@ -7933,6 +7962,7 @@ window.HC_RELEASES = {
         dd.hidden = true;
         return;
       }
+      index = index || buildSearchIndex();
       var hits = index.filter(function (x) { return x.kw.indexOf(q) >= 0; }).slice(0, 10);
       if (!hits.length) {
         dd.innerHTML = '<div style="padding:10px 12px;font-size:13px;color:var(--text-muted)">找不到符合「' + esc(input.value) + '」的急救、藥品或疾病條目</div>';

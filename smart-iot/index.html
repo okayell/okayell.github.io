@@ -18,26 +18,14 @@
   --bg: #f3f7fa;
   --surface: #ffffff;
   --surface-soft: #f0f9ff;
-  --surface-muted: #f8fafc;
   --border: #dbe4ee;
-  --border-strong: #bae6fd;
   --primary: #0e7490;
   --primary-hover: #155e75;
-  --primary-light: #e0f2fe;
-  --accent: #0284c7;
-  --teal: #0d9488;
-  --indigo: #4f46e5;
-  --amber: #d97706;
-  --emerald: #059669;
-  --rose: #e11d48;
   --text-main: #0f172a;
   --text-secondary: #334155;
   --text-muted: #64748b;
   --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
   --shadow-md: 0 8px 24px rgba(14, 116, 144, 0.09);
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
 }
 
 *, *::before, *::after {
@@ -70,8 +58,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 90;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
+  background: #fdfeff;
   border-bottom: 1px solid var(--border);
   box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
 }
@@ -168,7 +155,7 @@ a {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background-color 0.15s, border-color 0.15s;
 }
 
 .ver-pill:hover {
@@ -219,7 +206,7 @@ a {
   font-size: 13px;
   color: var(--text-main);
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
 }
 
 .global-search-box input:focus {
@@ -251,7 +238,7 @@ a {
   padding: 8px 10px;
   border-radius: 10px;
   color: var(--text-main);
-  transition: background 0.12s;
+  transition: background-color 0.12s;
 }
 
 .search-item:hover {
@@ -322,7 +309,7 @@ a {
 /* Main Navigation */
 .main-nav {
   border-top: 1px solid #eef2f6;
-  background: rgba(248, 250, 252, 0.9);
+  background: #f8fafc;
 }
 
 .nav-inner {
@@ -350,7 +337,7 @@ a {
   color: #475569;
   border-bottom: 3px solid transparent;
   white-space: nowrap;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  transition: color 0.15s, border-color 0.15s, background-color 0.15s;
 }
 
 .nav-tab:hover {
@@ -396,7 +383,7 @@ a {
   font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
+  transition: background-color 0.15s, transform 0.12s;
   white-space: nowrap;
 }
 
@@ -526,8 +513,7 @@ a {
   left: 10px;
   right: 10px;
   bottom: 10px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid #bae6fd;
   border-radius: 10px;
   padding: 7px 11px;
@@ -557,7 +543,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  transition: transform 0.14s, border-color 0.14s, box-shadow 0.14s;
+  transition: transform 0.14s, border-color 0.14s;
   color: var(--text-main);
 }
 
@@ -638,7 +624,7 @@ a {
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.14s;
+  transition: background-color 0.14s, border-color 0.14s, color 0.14s;
 }
 
 .cat-pill:hover {
@@ -659,6 +645,16 @@ a {
   gap: 16px;
 }
 
+#devResults .dev-card,
+#glCards .dev-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
+
+#glCards .dev-card {
+  contain-intrinsic-size: auto 190px;
+}
+
 .dev-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -668,28 +664,13 @@ a {
   display: flex;
   flex-direction: column;
   gap: 11px;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  transition: transform 0.15s, border-color 0.15s;
 }
 
 .dev-card:hover {
   transform: translateY(-2px);
   border-color: #7dd3fc;
   box-shadow: var(--shadow-md);
-}
-
-.dev-visual-stage {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #dbeafe;
-  background: linear-gradient(145deg, #f8fafc 0%, #eff6ff 55%, #ecfeff 100%);
-  padding: 10px;
-}
-
-.dev-visual-stage svg {
-  width: 100%;
-  height: auto;
-  display: block;
 }
 
 .dev-title-row {
@@ -856,7 +837,7 @@ a {
   background: #f8fafc;
   cursor: pointer;
   margin-bottom: 8px;
-  transition: all 0.14s;
+  transition: background-color 0.14s, border-color 0.14s, color 0.14s;
 }
 
 .ep-btn:hover {
@@ -897,7 +878,7 @@ a {
   font-size: 13px;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
 }
 
 .scene-btn:hover {
@@ -922,7 +903,6 @@ a {
   border: 1.5px solid #cbd5e1;
   background: #f8fafc;
   padding: 14px;
-  transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
 }
 
 .room-card.lit {
@@ -976,7 +956,7 @@ a {
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.14s;
+  transition: background-color 0.14s, border-color 0.14s, color 0.14s;
 }
 
 .sim-toggle.on {
@@ -1028,7 +1008,7 @@ a {
   font-weight: 600;
   cursor: pointer;
   margin-bottom: 9px;
-  transition: all 0.14s;
+  transition: background-color 0.14s, border-color 0.14s, color 0.14s;
 }
 
 .quiz-opt:hover:not(:disabled) {
@@ -1122,8 +1102,7 @@ a {
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(15, 23, 42, 0.46);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2915,20 +2894,34 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     }, 5000);
 
     // 在學院內每次互動點擊（練習題、播放音訊、切換篩選、送出表單）累積實作次數
+    // 點擊當下只記數，300ms 後（或離開頁面前）合併寫入一次，避免每次點擊都同步解析／寫回 localStorage 與 cookie
+    var pendingActs = 0, pendingTrivia = false, actTimer = 0;
+    function flushActs() {
+      clearTimeout(actTimer);
+      actTimer = 0;
+      if (!pendingActs && !pendingTrivia) return;
+      var cur = loadFunState();
+      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (pendingTrivia) cur.triviaSubmitted = true;
+      pendingActs = 0;
+      pendingTrivia = false;
+      saveFunState(cur);
+      checkAcademyProgress(cur, toolId);
+    }
     document.addEventListener('click', function (e) {
       var t = e.target && e.target.closest
         ? e.target.closest('button, .btn, [role="button"], .quiz-opt, .opt-btn, .card, .tab, [data-act]')
         : null;
       if (!t || t.classList.contains('campus-home')) return;
-      var cur = loadFunState();
-      cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + 1;
+      pendingActs++;
       if (toolId === 'trivia' && (t.id === 'subSubmitBtn' || /投稿/.test(t.textContent || ''))) {
         var form = t.closest ? t.closest('form') : null;
-        if (form || t.type === 'submit') cur.triviaSubmitted = true;
+        if (form || t.type === 'submit') pendingTrivia = true;
       }
-      saveFunState(cur);
-      checkAcademyProgress(cur, toolId);
+      if (!actTimer) actTimer = setTimeout(flushActs, 300);
     }, true);
+    window.addEventListener('pagehide', flushActs);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flushActs(); });
   }
 
 
@@ -3095,7 +3088,18 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     }
     wireGoLinks(document);
     if (window.MutationObserver && document.body) {
-      var mo = new MutationObserver(function () { wireGoLinks(document); });
+      // 只處理新插入的節點（SPA 每次重繪不再整份文件 querySelectorAll）；點擊時仍會再補一次 href
+      var mo = new MutationObserver(function (recs) {
+        for (var r = 0; r < recs.length; r++) {
+          var added = recs[r].addedNodes;
+          for (var k = 0; k < added.length; k++) {
+            var n = added[k];
+            if (n.nodeType !== 1) continue;
+            if (n.hasAttribute('data-campus-go')) wireGoLinks(n.parentNode);
+            else if (n.firstElementChild) wireGoLinks(n);
+          }
+        }
+      });
       mo.observe(document.body, { childList: true, subtree: true });
     }
     document.addEventListener('click', function (e) {
@@ -3162,9 +3166,17 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.IOT_RELEASES = {
-  "current_version": "1.0.1",
-  "last_fingerprint": "9f156fbf816cc662",
+  "current_version": "1.1.0",
+  "last_fingerprint": "72d8c475138f1e2b",
   "releases": [
+    {
+      "version": "1.1.0",
+      "date": "2026-11-07 09:55",
+      "title": "智慧生活與物聯網學院 v1.1.0 內容與體驗更新",
+      "changes": [
+        "優化智慧家電圖鑑、Matter/Thread 協定解析與模擬器體驗"
+      ]
+    },
     {
       "version": "1.0.1",
       "date": "2026-11-06 15:17",
@@ -3215,13 +3227,9 @@ window.IOT_RELEASES = {
     return true;
   }
 
+  const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   function esc(str) {
-    return String(str == null ? '' : str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+    return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ESC_MAP[ch]);
   }
 
   function defaultState() {
@@ -3321,46 +3329,22 @@ window.IOT_RELEASES = {
     }
   }
 
-  function toggleDeviceLearned(id) {
+  // Shared progress-flag helpers (learnedDevices / studiedProtocols / readBlueprints).
+  function toggleFlag(key, id) {
     const st = loadState();
-    if (st.learnedDevices[id]) delete st.learnedDevices[id];
-    else st.learnedDevices[id] = true;
+    if (st[key][id]) delete st[key][id];
+    else st[key][id] = true;
     saveState(st);
-    return !!st.learnedDevices[id];
+    return !!st[key][id];
   }
 
-  function markDeviceViewed(id) {
+  function markFlag(key, id) {
     if (!id) return;
     const st = loadState();
-    if (!st.learnedDevices[id]) {
-      st.learnedDevices[id] = true;
+    if (!st[key][id]) {
+      st[key][id] = true;
       saveState(st);
     }
-  }
-
-  function toggleProtocolStudied(id) {
-    const st = loadState();
-    if (st.studiedProtocols[id]) delete st.studiedProtocols[id];
-    else st.studiedProtocols[id] = true;
-    saveState(st);
-    return !!st.studiedProtocols[id];
-  }
-
-  function markProtocolViewed(id) {
-    if (!id) return;
-    const st = loadState();
-    if (!st.studiedProtocols[id]) {
-      st.studiedProtocols[id] = true;
-      saveState(st);
-    }
-  }
-
-  function toggleBlueprintRead(id) {
-    const st = loadState();
-    if (st.readBlueprints[id]) delete st.readBlueprints[id];
-    else st.readBlueprints[id] = true;
-    saveState(st);
-    return !!st.readBlueprints[id];
   }
 
   function toast(msg) {
@@ -3399,37 +3383,58 @@ window.IOT_RELEASES = {
     } catch (_) {}
   }
 
+  // Single-file build embeds images as base64 data: URIs. Convert each one to a
+  // short blob: URL once, so re-rendered innerHTML strings stay tiny (no
+  // re-parsing of ~10–60KB attribute strings on every render).
+  const _assetUrlCache = Object.create(null);
   function assetUrl(relPath) {
     if (!relPath) return '';
-    if (window.IOT_ASSETS && window.IOT_ASSETS[relPath]) {
-      return window.IOT_ASSETS[relPath];
+    const cached = _assetUrlCache[relPath];
+    if (cached) return cached;
+    const data = window.IOT_ASSETS && window.IOT_ASSETS[relPath];
+    if (!data) return relPath;
+    let url = data;
+    const m = /^data:([^;,]+);base64,/.exec(data);
+    if (m && window.URL && URL.createObjectURL) {
+      try {
+        const bin = atob(data.slice(m[0].length));
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        url = URL.createObjectURL(new Blob([bytes], { type: m[1] }));
+      } catch (_) {
+        url = data;
+      }
     }
-    return relPath;
+    _assetUrlCache[relPath] = url;
+    return url;
   }
 
   function bannerImg(name) {
     return assetUrl(`img/${name}.webp`);
   }
 
+  const CAT_BANNERS = {
+    lighting: 'iot_cat_lighting',
+    security: 'iot_cat_security',
+    climate: 'iot_cat_climate',
+    hub: 'iot_cat_hub_mesh',
+  };
   function catBannerFor(cat) {
-    const map = {
-      lighting: 'iot_cat_lighting',
-      security: 'iot_cat_security',
-      climate: 'iot_cat_climate',
-      hub: 'iot_cat_hub_mesh',
-    };
-    return bannerImg(map[cat] || 'iot_hero_smarthome');
+    return bannerImg(CAT_BANNERS[cat] || 'iot_hero_smarthome');
   }
 
+  const PROTO_CHIP_RULES = [
+    ['matter', ['matter']],
+    ['thread', ['thread']],
+    ['zigbee', ['zigbee']],
+    ['wifi', ['wi-fi', 'wifi', 'webrtc']],
+    ['ble', ['ble', 'bluetooth']],
+    ['mqtt', ['mqtt', 'poe']],
+  ];
   function protoChipClass(p) {
     const s = String(p || '').toLowerCase();
-    if (s.includes('matter')) return 'matter';
-    if (s.includes('thread')) return 'thread';
-    if (s.includes('zigbee')) return 'zigbee';
-    if (s.includes('wi-fi') || s.includes('wifi') || s.includes('webrtc')) return 'wifi';
-    if (s.includes('ble') || s.includes('bluetooth')) return 'ble';
-    if (s.includes('mqtt') || s.includes('poe')) return 'mqtt';
-    return '';
+    const hit = PROTO_CHIP_RULES.find(([, keys]) => keys.some(k => s.includes(k)));
+    return hit ? hit[0] : '';
   }
 
   window.IotCore = {
@@ -3446,11 +3451,10 @@ window.IOT_RELEASES = {
     getBlueprintList,
     computeProgressSummary,
     updateHeaderProgress,
-    toggleDeviceLearned,
-    markDeviceViewed,
-    toggleProtocolStudied,
-    markProtocolViewed,
-    toggleBlueprintRead,
+    toggleDeviceLearned: id => toggleFlag('learnedDevices', id),
+    markDeviceViewed: id => markFlag('learnedDevices', id),
+    markProtocolViewed: id => markFlag('studiedProtocols', id),
+    toggleBlueprintRead: id => toggleFlag('readBlueprints', id),
     toast,
     copyText,
   };
@@ -4779,7 +4783,6 @@ window.IOT_QUIZ_BANK = [
     computeProgressSummary,
     toggleDeviceLearned,
     markDeviceViewed,
-    toggleProtocolStudied,
     markProtocolViewed,
     toast,
   } = window.IotCore;
@@ -4788,6 +4791,17 @@ window.IOT_QUIZ_BANK = [
 
   function devPhotoFor(dev) {
     return window.IotCore.assetUrl(`img/dev/${dev.id}.webp`) || catBannerFor(dev.cat);
+  }
+
+  function protoChipsHtml(protocols) {
+    return (protocols || []).map(p => `<span class="chip ${protoChipClass(p)}">${esc(p)}</span>`).join('');
+  }
+
+  // Toggle `.active` on a pill group without re-rendering the whole page.
+  function syncActivePills(root, selector, attr, value) {
+    root.querySelectorAll(selector).forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute(attr) === String(value));
+    });
   }
 
   // ==========================================================================
@@ -4846,7 +4860,7 @@ window.IOT_QUIZ_BANK = [
           </div>
         </div>
         <div class="hero-visual-box">
-          <img src="${esc(bannerImg('iot_hero_smarthome'))}" alt="現代全屋智慧家庭立體剖面與網狀網路示意" />
+          <img src="${esc(bannerImg('iot_hero_smarthome'))}" alt="現代全屋智慧家庭立體剖面與網狀網路示意" decoding="async" />
           <div class="hero-visual-caption">
             <span>✨ 本地優先（Local-First）全屋自動化架構</span>
             <span class="chip matter">Matter 1.4 + Thread Mesh</span>
@@ -4888,7 +4902,7 @@ window.IOT_QUIZ_BANK = [
         ${catCards.map(c => `
           <a href="${esc(c.href)}" class="dev-card" style="text-decoration:none;">
             <div class="hero-visual-box" style="box-shadow:none;">
-              <img src="${esc(c.img)}" alt="${esc(c.title)}" loading="lazy" />
+              <img src="${esc(c.img)}" alt="${esc(c.title)}" loading="lazy" decoding="async" />
             </div>
             <h3 class="dev-name" style="margin-top:4px;">${esc(c.title)}</h3>
             <p class="dev-summary">${esc(c.desc)}</p>
@@ -4913,7 +4927,7 @@ window.IOT_QUIZ_BANK = [
           </div>
           <div>
             <div class="hero-visual-box" style="box-shadow:none; margin-bottom:10px;">
-              <img src="${esc(bannerImg('iot_wiring_blueprint'))}" alt="水電零火線暗盒與弱電箱 PoE 交換器標準配置" loading="lazy" />
+              <img src="${esc(bannerImg('iot_wiring_blueprint'))}" alt="水電零火線暗盒與弱電箱 PoE 交換器標準配置" loading="lazy" decoding="async" />
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
               <span style="font-size:12.8px; color:var(--text-muted);">▲ 裝潢階段預留「中性線（N 線）」與有線網路回程，勝過事後花十倍預算補救</span>
@@ -4932,6 +4946,61 @@ window.IOT_QUIZ_BANK = [
   let _devQuery = '';
   let _devUnlearnedOnly = false;
 
+  function devResultsHtml(devices, st) {
+    const q = _devQuery.toLowerCase();
+    const filtered = devices.filter(d => {
+      if (_devCat !== 'all' && d.cat !== _devCat) return false;
+      if (_devUnlearnedOnly && st.learnedDevices[d.id]) return false;
+      if (q) {
+        const hay = `${d.name} ${d.en} ${d.summary} ${d.matterCluster} ${(d.protocols || []).join(' ')}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      return `
+        <div class="card-panel" style="text-align:center; padding:36px;">
+          <p style="margin:0 0 10px; font-weight:700;">找不到符合篩選條件的設備</p>
+          <button type="button" class="btn sm outline" id="resetDevFilterBtn">重設篩選條件</button>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="cards-grid">
+        ${filtered.map(d => {
+          const done = !!st.learnedDevices[d.id];
+          return `
+            <article class="dev-card">
+              <a href="#/devices/${esc(d.id)}" class="hero-visual-box" style="box-shadow:none; display:block;">
+                <img src="${esc(devPhotoFor(d))}" alt="${esc(d.name)}" loading="lazy" decoding="async" />
+                <div class="hero-visual-caption" style="padding:5px 9px;">
+                  <span>${esc(d.icon)} ${esc(d.badge)}</span>
+                  <span class="chip ${done ? 'ok' : ''}">${done ? '✓ 已掌握' : '待研讀'}</span>
+                </div>
+              </a>
+              <div class="dev-title-row">
+                <div>
+                  <h3 class="dev-name"><a href="#/devices/${esc(d.id)}" style="color:inherit;">${esc(d.name)}</a></h3>
+                  <div class="dev-en">${esc(d.en)}</div>
+                </div>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:5px;">
+                ${protoChipsHtml(d.protocols)}
+              </div>
+              <p class="dev-summary">${esc(d.summary)}</p>
+              <div style="font-size:11.8px; color:var(--primary); background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:6px 9px; font-family:ui-monospace,monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                ${esc(d.matterCluster)}
+              </div>
+              <a href="#/devices/${esc(d.id)}" class="btn sm" style="width:100%;">查看工作原理・接線預留・3 大避坑 →</a>
+            </article>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
   window.IotPages.devices = function renderDevices(root, param, queryParams) {
     const devices = getDeviceList();
     if (queryParams && queryParams.cat) {
@@ -4948,17 +5017,7 @@ window.IOT_QUIZ_BANK = [
       }
     }
 
-    const st = loadState();
     const cats = window.IOT_DEVICE_CATEGORIES || [];
-    const filtered = devices.filter(d => {
-      if (_devCat !== 'all' && d.cat !== _devCat) return false;
-      if (_devUnlearnedOnly && st.learnedDevices[d.id]) return false;
-      if (_devQuery) {
-        const hay = `${d.name} ${d.en} ${d.summary} ${d.matterCluster} ${(d.protocols || []).join(' ')}`.toLowerCase();
-        if (!hay.includes(_devQuery.toLowerCase())) return false;
-      }
-      return true;
-    });
 
     root.innerHTML = `
       <div class="sec-head">
@@ -4982,83 +5041,45 @@ window.IOT_QUIZ_BANK = [
         </div>
       </div>
 
-      ${filtered.length === 0 ? `
-        <div class="card-panel" style="text-align:center; padding:36px;">
-          <p style="margin:0 0 10px; font-weight:700;">找不到符合篩選條件的設備</p>
-          <button type="button" class="btn sm outline" id="resetDevFilterBtn">重設篩選條件</button>
-        </div>
-      ` : `
-        <div class="cards-grid">
-          ${filtered.map(d => {
-            const done = !!st.learnedDevices[d.id];
-            return `
-              <article class="dev-card">
-                <a href="#/devices/${esc(d.id)}" class="hero-visual-box" style="box-shadow:none; display:block;">
-                  <img src="${esc(devPhotoFor(d))}" alt="${esc(d.name)}" loading="lazy" />
-                  <div class="hero-visual-caption" style="padding:5px 9px;">
-                    <span>${esc(d.icon)} ${esc(d.badge)}</span>
-                    <span class="chip ${done ? 'ok' : ''}">${done ? '✓ 已掌握' : '待研讀'}</span>
-                  </div>
-                </a>
-                <div class="dev-title-row">
-                  <div>
-                    <h3 class="dev-name"><a href="#/devices/${esc(d.id)}" style="color:inherit;">${esc(d.name)}</a></h3>
-                    <div class="dev-en">${esc(d.en)}</div>
-                  </div>
-                </div>
-                <div style="display:flex; flex-wrap:wrap; gap:5px;">
-                  ${(d.protocols || []).map(p => `<span class="chip ${protoChipClass(p)}">${esc(p)}</span>`).join('')}
-                </div>
-                <p class="dev-summary">${esc(d.summary)}</p>
-                <div style="font-size:11.8px; color:var(--primary); background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:6px 9px; font-family:ui-monospace,monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                  ${esc(d.matterCluster)}
-                </div>
-                <a href="#/devices/${esc(d.id)}" class="btn sm" style="width:100%;">查看工作原理・接線預留・3 大避坑 →</a>
-              </article>
-            `;
-          }).join('')}
-        </div>
-      `}
+      <div id="devResults">${devResultsHtml(devices, loadState())}</div>
     `;
 
-    root.querySelectorAll('#devCatPills .cat-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _devCat = btn.getAttribute('data-cat') || 'all';
-        renderDevices(root, '');
-      });
-    });
+    // Filtering only re-renders the results grid (input keeps focus; header/filters untouched).
+    const results = root.querySelector('#devResults');
+    const refresh = () => {
+      syncActivePills(root, '#devCatPills .cat-pill', 'data-cat', _devCat);
+      results.innerHTML = devResultsHtml(devices, loadState());
+    };
 
-    const inp = document.getElementById('devFilterInput');
-    if (inp) {
-      inp.addEventListener('input', () => {
-        _devQuery = inp.value;
-        renderDevices(root, '');
-        const nextInp = document.getElementById('devFilterInput');
-        if (nextInp) {
-          nextInp.focus({ preventScroll: true });
-          nextInp.setSelectionRange(nextInp.value.length, nextInp.value.length);
-        }
-      });
-    }
-
-    const chk = document.getElementById('devUnlearnedChk');
-    if (chk) {
-      chk.addEventListener('change', () => {
-        _devUnlearnedOnly = chk.checked;
-        renderDevices(root, '');
-      });
-    }
-
-    const resetBtn = document.getElementById('resetDevFilterBtn');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
+    root.onclick = ev => {
+      const pill = ev.target.closest('#devCatPills .cat-pill');
+      if (pill) {
+        _devCat = pill.getAttribute('data-cat') || 'all';
+        refresh();
+      } else if (ev.target.closest('#resetDevFilterBtn')) {
         _devCat = 'all';
         _devQuery = '';
         _devUnlearnedOnly = false;
-        renderDevices(root, '');
-      });
-    }
+        root.querySelector('#devFilterInput').value = '';
+        root.querySelector('#devUnlearnedChk').checked = false;
+        refresh();
+      }
+    };
+    root.oninput = ev => {
+      if (ev.target.id !== 'devFilterInput') return;
+      _devQuery = ev.target.value;
+      refresh();
+    };
+    root.onchange = ev => {
+      if (ev.target.id !== 'devUnlearnedChk') return;
+      _devUnlearnedOnly = ev.target.checked;
+      refresh();
+    };
   };
+
+  function learnedLabel(done) {
+    return done ? '✓ 已標記掌握（點擊取消）' : '☆ 標記為已掌握';
+  }
 
   function renderDeviceDetail(root, dev, allDevices) {
     const st = loadState();
@@ -5081,7 +5102,7 @@ window.IOT_QUIZ_BANK = [
           <div>
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
               <span class="chip matter">${esc(dev.icon)} ${esc(dev.badge)}</span>
-              ${(dev.protocols || []).map(p => `<span class="chip ${protoChipClass(p)}">${esc(p)}</span>`).join('')}
+              ${protoChipsHtml(dev.protocols)}
             </div>
             <h1 style="margin:0 0 4px; font-size:25px; font-weight:900;">${esc(dev.name)}</h1>
             <div style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px;">${esc(dev.en)}</div>
@@ -5104,7 +5125,7 @@ window.IOT_QUIZ_BANK = [
 
             <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
               <button type="button" class="btn ${isLearned ? 'soft' : ''}" id="toggleDevLearnedBtn">
-                ${isLearned ? '✓ 已標記掌握（點擊取消）' : '☆ 標記為已掌握'}
+                ${learnedLabel(isLearned)}
               </button>
               <a href="#/simulator" class="btn outline">🎛️ 去全屋模擬器實測聯動</a>
             </div>
@@ -5112,7 +5133,7 @@ window.IOT_QUIZ_BANK = [
 
           <div>
             <div class="hero-visual-box" style="margin-bottom:14px;">
-              <img src="${esc(devPhotoFor(dev))}" alt="${esc(dev.name)}" />
+              <img src="${esc(devPhotoFor(dev))}" alt="${esc(dev.name)}" decoding="async" />
             </div>
             <div class="spec-box" style="background:#f0f9ff; border-color:#bae6fd;">
               <div class="spec-label" style="color:#0369a1; font-size:12.5px;">🛠️ 安裝、水電預留與設定檢核清單（Checklist）</div>
@@ -5137,14 +5158,14 @@ window.IOT_QUIZ_BANK = [
       </section>
     `;
 
-    const btn = document.getElementById('toggleDevLearnedBtn');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        const nowDone = toggleDeviceLearned(dev.id);
-        toast(nowDone ? `✅ 已將「${dev.name}」加入已掌握清單` : '已取消掌握標記');
-        renderDeviceDetail(root, dev, allDevices);
-      });
-    }
+    root.onclick = ev => {
+      const btn = ev.target.closest('#toggleDevLearnedBtn');
+      if (!btn) return;
+      const nowDone = toggleDeviceLearned(dev.id);
+      toast(nowDone ? `✅ 已將「${dev.name}」加入已掌握清單` : '已取消掌握標記');
+      btn.classList.toggle('soft', nowDone);
+      btn.textContent = learnedLabel(nowDone);
+    };
   }
 
   // ==========================================================================
@@ -5153,39 +5174,8 @@ window.IOT_QUIZ_BANK = [
   let _activeProtoId = 'matter';
   let _activeEpId = 1;
 
-  window.IotPages.protocols = function renderProtocols(root, param) {
-    const protos = getProtocolList();
-    if (param && protos.some(p => p.id === param)) {
-      _activeProtoId = param;
-    }
-    markProtocolViewed(_activeProtoId);
-
-    const activeProto = protos.find(p => p.id === _activeProtoId) || protos[0];
-    const matterModel = window.IOT_MATTER_MODEL || { endpoints: [] };
-    const activeEp = matterModel.endpoints.find(e => e.id === _activeEpId) || matterModel.endpoints[0];
-    const commSteps = window.IOT_COMMISSIONING_STEPS || [];
-
-    root.innerHTML = `
-      <div class="sec-head">
-        <div>
-          <h1 class="sec-title">📡 通訊協定與 Matter 1.4 架構全圖解</h1>
-          <p class="sec-sub">一次釐清 Matter、Thread、Zigbee 3.0、Wi-Fi 6、BLE 與 MQTT 的層級分工，並親手解剖 Matter 端點叢集（Cluster）與加密配網流程</p>
-        </div>
-      </div>
-
-      <\!-- 協定切換膠囊 -->
-      <div class="filter-bar">
-        <div class="cat-pills" id="protoPills">
-          ${protos.map(p => `
-            <button type="button" class="cat-pill ${p.id === activeProto.id ? 'active' : ''}" data-proto="${esc(p.id)}">
-              ${esc(p.icon)} ${esc(p.name)}
-            </button>
-          `).join('')}
-        </div>
-      </div>
-
-      <\!-- 單一協定深度卡片 -->
-      <section class="card-panel">
+  function protoDetailHtml(activeProto) {
+    return `
         <div class="two-col">
           <div>
             <span class="chip ${protoChipClass(activeProto.name)}" style="margin-bottom:8px;">${esc(activeProto.layer)}</span>
@@ -5203,7 +5193,7 @@ window.IOT_QUIZ_BANK = [
 
           <div>
             <div class="hero-visual-box" style="margin-bottom:12px;">
-              <img src="${esc(bannerImg('iot_cat_hub_mesh'))}" alt="Thread 邊界路由器與多節點自癒網狀網路架構" />
+              <img src="${esc(bannerImg('iot_cat_hub_mesh'))}" alt="Thread 邊界路由器與多節點自癒網狀網路架構" decoding="async" />
             </div>
             <div class="spec-list">
               <div class="spec-box">
@@ -5229,23 +5219,11 @@ window.IOT_QUIZ_BANK = [
             </div>
           </div>
         </div>
-      </section>
+    `;
+  }
 
-      <\!-- 互動式 Matter 資料模型解剖器 -->
-      <section class="card-panel">
-        <div class="sec-head" style="margin-bottom:12px;">
-          <div>
-            <h2 class="sec-title" style="font-size:19px;">🧬 互動式 Matter 資料模型解剖器（Node → Endpoint → Cluster → Attribute / Command）</h2>
-            <p class="sec-sub">點選左側不同端點（Endpoint 0–3），即時觀察一顆「智慧三合一牆壁面板」在 Matter 底層是如何向 Apple / Google / HA 表達能力</p>
-          </div>
-        </div>
-
-        <div style="background:#ecfeff; border:1px solid #a5f3fc; border-radius:12px; padding:10px 14px; margin-bottom:14px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-          <strong>📦 ${esc(matterModel.nodeName)}</strong>
-          <span style="font-family:ui-monospace,monospace; font-size:12.5px; color:#0e7490;">${esc(matterModel.vendorInfo)}</span>
-        </div>
-
-        <div class="matter-tree-grid">
+  function matterTreeHtml(matterModel, activeEp) {
+    return `
           <div id="matterEpList">
             ${matterModel.endpoints.map(ep => `
               <button type="button" class="ep-btn ${ep.id === activeEp.id ? 'active' : ''}" data-ep="${ep.id}">
@@ -5286,7 +5264,58 @@ window.IOT_QUIZ_BANK = [
               `).join('')}
             </div>
           </div>
+    `;
+  }
+
+  window.IotPages.protocols = function renderProtocols(root, param) {
+    const protos = getProtocolList();
+    if (param && protos.some(p => p.id === param)) {
+      _activeProtoId = param;
+    }
+    markProtocolViewed(_activeProtoId);
+
+    const activeProto = protos.find(p => p.id === _activeProtoId) || protos[0];
+    const matterModel = window.IOT_MATTER_MODEL || { endpoints: [] };
+    const activeEp = matterModel.endpoints.find(e => e.id === _activeEpId) || matterModel.endpoints[0];
+    const commSteps = window.IOT_COMMISSIONING_STEPS || [];
+
+    root.innerHTML = `
+      <div class="sec-head">
+        <div>
+          <h1 class="sec-title">📡 通訊協定與 Matter 1.4 架構全圖解</h1>
+          <p class="sec-sub">一次釐清 Matter、Thread、Zigbee 3.0、Wi-Fi 6、BLE 與 MQTT 的層級分工，並親手解剖 Matter 端點叢集（Cluster）與加密配網流程</p>
         </div>
+      </div>
+
+      <\!-- 協定切換膠囊 -->
+      <div class="filter-bar">
+        <div class="cat-pills" id="protoPills">
+          ${protos.map(p => `
+            <button type="button" class="cat-pill ${p.id === activeProto.id ? 'active' : ''}" data-proto="${esc(p.id)}">
+              ${esc(p.icon)} ${esc(p.name)}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
+      <\!-- 單一協定深度卡片 -->
+      <section class="card-panel" id="protoDetail">${protoDetailHtml(activeProto)}</section>
+
+      <\!-- 互動式 Matter 資料模型解剖器 -->
+      <section class="card-panel">
+        <div class="sec-head" style="margin-bottom:12px;">
+          <div>
+            <h2 class="sec-title" style="font-size:19px;">🧬 互動式 Matter 資料模型解剖器（Node → Endpoint → Cluster → Attribute / Command）</h2>
+            <p class="sec-sub">點選左側不同端點（Endpoint 0–3），即時觀察一顆「智慧三合一牆壁面板」在 Matter 底層是如何向 Apple / Google / HA 表達能力</p>
+          </div>
+        </div>
+
+        <div style="background:#ecfeff; border:1px solid #a5f3fc; border-radius:12px; padding:10px 14px; margin-bottom:14px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <strong>📦 ${esc(matterModel.nodeName)}</strong>
+          <span style="font-family:ui-monospace,monospace; font-size:12.5px; color:#0e7490;">${esc(matterModel.vendorInfo)}</span>
+        </div>
+
+        <div class="matter-tree-grid" id="matterTree">${matterTreeHtml(matterModel, activeEp)}</div>
       </section>
 
       <\!-- Matter Commissioning 5 步驟流程 -->
@@ -5375,21 +5404,24 @@ window.IOT_QUIZ_BANK = [
       </section>
     `;
 
-    root.querySelectorAll('#protoPills .cat-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _activeProtoId = btn.getAttribute('data-proto') || 'matter';
-        toggleProtocolStudied(_activeProtoId);
+    // Pill / endpoint clicks only patch their own section (no full-page re-render).
+    root.onclick = ev => {
+      const pill = ev.target.closest('#protoPills .cat-pill');
+      if (pill) {
+        _activeProtoId = pill.getAttribute('data-proto') || 'matter';
         markProtocolViewed(_activeProtoId);
-        renderProtocols(root, _activeProtoId);
-      });
-    });
-
-    root.querySelectorAll('#matterEpList .ep-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _activeEpId = Number(btn.getAttribute('data-ep') || 0);
-        renderProtocols(root, _activeProtoId);
-      });
-    });
+        const proto = protos.find(p => p.id === _activeProtoId) || protos[0];
+        syncActivePills(root, '#protoPills .cat-pill', 'data-proto', proto.id);
+        root.querySelector('#protoDetail').innerHTML = protoDetailHtml(proto);
+        return;
+      }
+      const epBtn = ev.target.closest('#matterEpList .ep-btn');
+      if (epBtn) {
+        _activeEpId = Number(epBtn.getAttribute('data-ep') || 0);
+        const ep = matterModel.endpoints.find(e => e.id === _activeEpId) || matterModel.endpoints[0];
+        root.querySelector('#matterTree').innerHTML = matterTreeHtml(matterModel, ep);
+      }
+    };
   };
 })();
 
@@ -5510,6 +5542,8 @@ window.IOT_QUIZ_BANK = [
     },
   };
 
+  const BUS_CHIP = { Matter: 'matter', Thread: 'thread', MQTT: 'mqtt' };
+
   function pushBus(proto, topic, msg) {
     const now = new Date();
     const ts = now.toTimeString().slice(0, 8);
@@ -5517,34 +5551,42 @@ window.IOT_QUIZ_BANK = [
     if (_simHome.busLogs.length > 18) _simHome.busLogs.length = 18;
   }
 
+  // Rule automation side effects, keyed by RULE_ACTIONS id.
+  const RULE_EFFECTS = {
+    entry_light_on_welcome(r) {
+      _simHome.entryLight = true;
+      _simHome.livingLight = true;
+      _simHome.livingKelvin = 4000;
+      pushBus('AutoEngine', `rule/${r.id}`, `⚡ 自動化觸發：「${r.name}」→ 玄關燈與客廳主燈自動點亮`);
+    },
+    living_light_on_4000k(r) {
+      _simHome.livingLight = true;
+      _simHome.livingKelvin = 4000;
+      pushBus('AutoEngine', `rule/${r.id}`, `⚡ 自動化觸發：「${r.name}」→ 客廳主燈開啟 4000K`);
+    },
+    living_light_off(r) {
+      _simHome.livingLight = false;
+      pushBus('AutoEngine', `rule/${r.id}`, `⚡ 自動化觸發：「${r.name}」→ 客廳無人滿 30s 自動關燈`);
+    },
+    shutoff_water_valve_alert(r) {
+      _simHome.waterValveOpen = false;
+      pushBus('AutoEngine', `rule/${r.id}`, `🚨 本地防災聯動：「${r.name}」→ 總水閥已緊急關閉！`);
+    },
+    bed_erv_boost_ac_26(r) {
+      _simHome.bedAcOn = true;
+      _simHome.bedAcTemp = 26;
+      _simHome.bedCo2 = 560;
+      pushBus('AutoEngine', `rule/${r.id}`, `🍃 空氣聯動：「${r.name}」→ 新風換氣啟動，CO₂ 降至 560 ppm`);
+    },
+  };
+
   function evaluateSimAutomations(eventKey) {
     const st = loadState();
     (st.customRules || []).forEach(r => {
       if (!r.enabled || r.trigger !== eventKey) return;
       if (r.condition === 'lux_below_80' && _simHome.livingLux >= 80) return;
       if (r.condition === 'entry_unlocked_or_evening' && _simHome.entryLockLocked) return;
-
-      if (r.action === 'entry_light_on_welcome') {
-        _simHome.entryLight = true;
-        _simHome.livingLight = true;
-        _simHome.livingKelvin = 4000;
-        pushBus('AutoEngine', `rule/${r.id}`, `⚡ 自動化觸發：「${r.name}」→ 玄關燈與客廳主燈自動點亮`);
-      } else if (r.action === 'living_light_on_4000k') {
-        _simHome.livingLight = true;
-        _simHome.livingKelvin = 4000;
-        pushBus('AutoEngine', `rule/${r.id}`, `⚡ 自動化觸發：「${r.name}」→ 客廳主燈開啟 4000K`);
-      } else if (r.action === 'living_light_off') {
-        _simHome.livingLight = false;
-        pushBus('AutoEngine', `rule/${r.id}`, `⚡ 自動化觸發：「${r.name}」→ 客廳無人滿 30s 自動關燈`);
-      } else if (r.action === 'shutoff_water_valve_alert') {
-        _simHome.waterValveOpen = false;
-        pushBus('AutoEngine', `rule/${r.id}`, `🚨 本地防災聯動：「${r.name}」→ 總水閥已緊急關閉！`);
-      } else if (r.action === 'bed_erv_boost_ac_26') {
-        _simHome.bedAcOn = true;
-        _simHome.bedAcTemp = 26;
-        _simHome.bedCo2 = 560;
-        pushBus('AutoEngine', `rule/${r.id}`, `🍃 空氣聯動：「${r.name}」→ 新風換氣啟動，CO₂ 降至 560 ppm`);
-      }
+      if (Object.prototype.hasOwnProperty.call(RULE_EFFECTS, r.action)) RULE_EFFECTS[r.action](r);
     });
   }
 
@@ -5610,7 +5652,7 @@ window.IOT_QUIZ_BANK = [
     ].join('\n');
   }
 
-  window.IotPages.simulator = function renderSimulator(root) {
+  function renderSimulator(root) {
     const st = loadState();
     const yamlText = buildGeneratedYaml();
 
@@ -5758,7 +5800,7 @@ window.IOT_QUIZ_BANK = [
               ${_simHome.busLogs.map(item => `
                 <div class="bus-row">
                   <span style="color:#64748b;">[${esc(item.ts)}]</span>
-                  <span class="chip ${item.proto === 'Matter' ? 'matter' : item.proto === 'Thread' ? 'thread' : item.proto === 'MQTT' ? 'mqtt' : 'ok'}" style="font-size:10.5px; padding:1px 6px;">${esc(item.proto)}</span>
+                  <span class="chip ${BUS_CHIP[item.proto] || 'ok'}" style="font-size:10.5px; padding:1px 6px;">${esc(item.proto)}</span>
                   <strong style="color:#0369a1;">${esc(item.topic)}</strong>
                   <span style="color:#0f172a;">${esc(item.msg)}</span>
                 </div>
@@ -5821,80 +5863,88 @@ window.IOT_QUIZ_BANK = [
       </div>
     `;
 
-    root.querySelectorAll('#simSceneBar .scene-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        applyScene(btn.getAttribute('data-scene'));
-        renderSimulator(root);
-      });
-    });
+    bindSimulatorHandlers(root, yamlText);
+  }
 
-    root.querySelectorAll('[data-act]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const act = btn.getAttribute('data-act');
-        _simHome.activeScene = 'custom';
-        if (act === 'toggle_living_light') {
-          _simHome.livingLight = !_simHome.livingLight;
-          pushBus('Matter', 'ep1/OnOff', `Toggle → OnOff = ${_simHome.livingLight}`);
-        } else if (act === 'cycle_curtain') {
-          _simHome.livingCurtainOpen = _simHome.livingCurtainOpen === 100 ? 0 : _simHome.livingCurtainOpen === 0 ? 50 : 100;
-          _simHome.livingLux = _simHome.livingCurtainOpen === 0 ? 22 : _simHome.livingCurtainOpen === 50 ? 68 : 260;
-          pushBus('Matter', 'ep1/WindowCovering', `LiftPercent = ${_simHome.livingCurtainOpen}% (室內照度變為 ${_simHome.livingLux} lux)`);
-        } else if (act === 'toggle_mmwave') {
-          _simHome.livingMmwave = !_simHome.livingMmwave;
-          pushBus('MQTT', 'zigbee2mqtt/living_mmwave', `{"occupancy":${_simHome.livingMmwave},"illuminance_lux":${_simHome.livingLux}}`);
-          evaluateSimAutomations(_simHome.livingMmwave ? 'living_mmwave_occupied' : 'living_mmwave_clear_30s');
-        } else if (act === 'toggle_lock') {
-          _simHome.entryLockLocked = !_simHome.entryLockLocked;
-          pushBus('Thread', 'ep1/DoorLock', `LockState = ${_simHome.entryLockLocked ? 'Locked (1)' : 'Unlocked (2) via Home Key NFC'}`);
-        } else if (act === 'toggle_door') {
-          _simHome.entryDoorOpen = !_simHome.entryDoorOpen;
-          pushBus('Thread', 'ep1/BooleanState', `FrontDoor Contact = ${_simHome.entryDoorOpen ? 'OPEN' : 'CLOSED'}`);
-          if (_simHome.entryDoorOpen) evaluateSimAutomations('entry_door_opened');
-        } else if (act === 'toggle_entry_light') {
-          _simHome.entryLight = !_simHome.entryLight;
-          pushBus('Matter', 'entry/OnOff', `Entry Light = ${_simHome.entryLight}`);
-        } else if (act === 'toggle_bed_ac') {
-          _simHome.bedAcOn = !_simHome.bedAcOn;
-          pushBus('Matter', 'bed/Thermostat', `SystemMode = ${_simHome.bedAcOn ? 'Cool (' + _simHome.bedAcTemp + '°C)' : 'Off'}`);
-        } else if (act === 'spike_co2') {
-          _simHome.bedCo2 = _simHome.bedCo2 > 1000 ? 580 : 1280;
-          pushBus('Matter', 'bed/CarbonDioxide', `MeasuredValue = ${_simHome.bedCo2} ppm (NDIR Optical)`);
-          if (_simHome.bedCo2 > 1000) evaluateSimAutomations('bed_co2_high');
-        } else if (act === 'toggle_bed_light') {
-          _simHome.bedLight = !_simHome.bedLight;
-          pushBus('Matter', 'bed/OnOff', `Bed Strip = ${_simHome.bedLight}`);
-        } else if (act === 'toggle_leak') {
-          _simHome.kitchenLeak = !_simHome.kitchenLeak;
-          pushBus('Zigbee', 'zigbee2mqtt/kitchen_leak', `{"water_leak":${_simHome.kitchenLeak}}`);
-          if (_simHome.kitchenLeak) evaluateSimAutomations('kitchen_leak_detected');
-        } else if (act === 'toggle_valve') {
-          _simHome.waterValveOpen = !_simHome.waterValveOpen;
-          pushBus('Zigbee', 'zigbee2mqtt/main_water_valve', `{"state":"${_simHome.waterValveOpen ? 'OPEN' : 'CLOSED'}"}`);
-        } else if (act === 'toggle_washer') {
-          _simHome.kitchenPlugWatts = _simHome.kitchenPlugWatts > 30 ? 2 : 420;
-          pushBus('Matter', 'plug/PowerMeasurement', `ActivePower = ${_simHome.kitchenPlugWatts}W ${
-            _simHome.kitchenPlugWatts <= 3 ? '→ 🔔 觸發洗衣完成語音廣播！' : '(洗衣行程運轉中)'
-          }`);
-        }
-        renderSimulator(root);
-      });
-    });
+  // Device toggles in the 4-room sandbox (data-act="…").
+  const SIM_ACTIONS = {
+    toggle_living_light() {
+      _simHome.livingLight = !_simHome.livingLight;
+      pushBus('Matter', 'ep1/OnOff', `Toggle → OnOff = ${_simHome.livingLight}`);
+    },
+    cycle_curtain() {
+      _simHome.livingCurtainOpen = _simHome.livingCurtainOpen === 100 ? 0 : _simHome.livingCurtainOpen === 0 ? 50 : 100;
+      _simHome.livingLux = _simHome.livingCurtainOpen === 0 ? 22 : _simHome.livingCurtainOpen === 50 ? 68 : 260;
+      pushBus('Matter', 'ep1/WindowCovering', `LiftPercent = ${_simHome.livingCurtainOpen}% (室內照度變為 ${_simHome.livingLux} lux)`);
+    },
+    toggle_mmwave() {
+      _simHome.livingMmwave = !_simHome.livingMmwave;
+      pushBus('MQTT', 'zigbee2mqtt/living_mmwave', `{"occupancy":${_simHome.livingMmwave},"illuminance_lux":${_simHome.livingLux}}`);
+      evaluateSimAutomations(_simHome.livingMmwave ? 'living_mmwave_occupied' : 'living_mmwave_clear_30s');
+    },
+    toggle_lock() {
+      _simHome.entryLockLocked = !_simHome.entryLockLocked;
+      pushBus('Thread', 'ep1/DoorLock', `LockState = ${_simHome.entryLockLocked ? 'Locked (1)' : 'Unlocked (2) via Home Key NFC'}`);
+    },
+    toggle_door() {
+      _simHome.entryDoorOpen = !_simHome.entryDoorOpen;
+      pushBus('Thread', 'ep1/BooleanState', `FrontDoor Contact = ${_simHome.entryDoorOpen ? 'OPEN' : 'CLOSED'}`);
+      if (_simHome.entryDoorOpen) evaluateSimAutomations('entry_door_opened');
+    },
+    toggle_entry_light() {
+      _simHome.entryLight = !_simHome.entryLight;
+      pushBus('Matter', 'entry/OnOff', `Entry Light = ${_simHome.entryLight}`);
+    },
+    toggle_bed_ac() {
+      _simHome.bedAcOn = !_simHome.bedAcOn;
+      pushBus('Matter', 'bed/Thermostat', `SystemMode = ${_simHome.bedAcOn ? 'Cool (' + _simHome.bedAcTemp + '°C)' : 'Off'}`);
+    },
+    spike_co2() {
+      _simHome.bedCo2 = _simHome.bedCo2 > 1000 ? 580 : 1280;
+      pushBus('Matter', 'bed/CarbonDioxide', `MeasuredValue = ${_simHome.bedCo2} ppm (NDIR Optical)`);
+      if (_simHome.bedCo2 > 1000) evaluateSimAutomations('bed_co2_high');
+    },
+    toggle_bed_light() {
+      _simHome.bedLight = !_simHome.bedLight;
+      pushBus('Matter', 'bed/OnOff', `Bed Strip = ${_simHome.bedLight}`);
+    },
+    toggle_leak() {
+      _simHome.kitchenLeak = !_simHome.kitchenLeak;
+      pushBus('Zigbee', 'zigbee2mqtt/kitchen_leak', `{"water_leak":${_simHome.kitchenLeak}}`);
+      if (_simHome.kitchenLeak) evaluateSimAutomations('kitchen_leak_detected');
+    },
+    toggle_valve() {
+      _simHome.waterValveOpen = !_simHome.waterValveOpen;
+      pushBus('Zigbee', 'zigbee2mqtt/main_water_valve', `{"state":"${_simHome.waterValveOpen ? 'OPEN' : 'CLOSED'}"}`);
+    },
+    toggle_washer() {
+      _simHome.kitchenPlugWatts = _simHome.kitchenPlugWatts > 30 ? 2 : 420;
+      pushBus('Matter', 'plug/PowerMeasurement', `ActivePower = ${_simHome.kitchenPlugWatts}W ${
+        _simHome.kitchenPlugWatts <= 3 ? '→ 🔔 觸發洗衣完成語音廣播！' : '(洗衣行程運轉中)'
+      }`);
+    },
+  };
 
-    ['simTrigSel', 'simCondSel', 'simActSel'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener('change', () => {
-          _ruleDraft.trigger = document.getElementById('simTrigSel').value;
-          _ruleDraft.condition = document.getElementById('simCondSel').value;
-          _ruleDraft.action = document.getElementById('simActSel').value;
-          renderSimulator(root);
-        });
+  function bindSimulatorHandlers(root, yamlText) {
+    root.onclick = ev => {
+      const t = ev.target;
+      const sceneBtn = t.closest('#simSceneBar .scene-btn');
+      if (sceneBtn) {
+        applyScene(sceneBtn.getAttribute('data-scene'));
+        renderSimulator(root);
+        return;
       }
-    });
 
-    const addBtn = document.getElementById('addSimRuleBtn');
-    if (addBtn) {
-      addBtn.addEventListener('click', () => {
+      const actBtn = t.closest('[data-act]');
+      if (actBtn) {
+        const act = actBtn.getAttribute('data-act');
+        _simHome.activeScene = 'custom';
+        if (Object.prototype.hasOwnProperty.call(SIM_ACTIONS, act)) SIM_ACTIONS[act]();
+        renderSimulator(root);
+        return;
+      }
+
+      if (t.closest('#addSimRuleBtn')) {
         const cur = loadState();
         const tLabel = (RULE_TRIGGERS[_ruleDraft.trigger] || {}).label || '';
         const aLabel = (RULE_ACTIONS[_ruleDraft.action] || {}).label || '';
@@ -5909,17 +5959,17 @@ window.IOT_QUIZ_BANK = [
         saveState(cur);
         toast('✅ 已加入新自動化規則！快點擊左側對應感測器測試觸發');
         renderSimulator(root);
-      });
-    }
+        return;
+      }
 
-    const copyBtn = document.getElementById('copyYamlBtn');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', () => copyText(yamlText, '✅ 已複製 Home Assistant YAML！'));
-    }
+      if (t.closest('#copyYamlBtn')) {
+        copyText(yamlText, '✅ 已複製 Home Assistant YAML！');
+        return;
+      }
 
-    root.querySelectorAll('[data-rule-toggle]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const rid = btn.getAttribute('data-rule-toggle');
+      const ruleBtn = t.closest('[data-rule-toggle]');
+      if (ruleBtn) {
+        const rid = ruleBtn.getAttribute('data-rule-toggle');
         const cur = loadState();
         const item = (cur.customRules || []).find(r => r.id === rid);
         if (item) {
@@ -5927,9 +5977,19 @@ window.IOT_QUIZ_BANK = [
           saveState(cur);
           renderSimulator(root);
         }
-      });
-    });
-  };
+      }
+    };
+
+    root.onchange = ev => {
+      if (!['simTrigSel', 'simCondSel', 'simActSel'].includes(ev.target.id)) return;
+      _ruleDraft.trigger = root.querySelector('#simTrigSel').value;
+      _ruleDraft.condition = root.querySelector('#simCondSel').value;
+      _ruleDraft.action = root.querySelector('#simActSel').value;
+      renderSimulator(root);
+    };
+  }
+
+  window.IotPages.simulator = renderSimulator;
 
   // ==========================================================================
   // 5. 🛠️ 裝潢佈線防坑全書 ＆ 2.4GHz 頻譜干擾分析儀 (#/blueprint)
@@ -6003,10 +6063,8 @@ window.IOT_QUIZ_BANK = [
     };
   }
 
-  window.IotPages.blueprint = function renderBlueprint(root) {
-    const st = loadState();
-    const chapters = getBlueprintList();
-    const { wifiCh, zigbeeCh, threadCh } = st.rfConfig;
+  function rfSpectrumHtml(rfConfig) {
+    const { wifiCh, zigbeeCh, threadCh } = rfConfig;
     const spec = renderSpectrumSvg(wifiCh, zigbeeCh, threadCh);
 
     let statusHtml = '';
@@ -6017,6 +6075,14 @@ window.IOT_QUIZ_BANK = [
     } else {
       statusHtml = `<div class="pitfall-fix" style="margin-top:10px;">✅ <strong>完美零重疊黃金配置！</strong>Wi-Fi Ch ${wifiCh}、Zigbee Ch ${zigbeeCh} 與 Thread Ch ${threadCh} 在 2.4GHz 頻譜上彼此錯開，LQI 鏈路品質最佳！</div>`;
     }
+
+    return spec.svg + statusHtml;
+  }
+
+  function renderBlueprint(root) {
+    const st = loadState();
+    const chapters = getBlueprintList();
+    const { wifiCh, zigbeeCh, threadCh } = st.rfConfig;
 
     root.innerHTML = `
       <div class="sec-head">
@@ -6041,7 +6107,7 @@ window.IOT_QUIZ_BANK = [
           </div>
         </div>
         <div style="border-radius:14px; overflow:hidden; border:1px solid #cbd5e1; max-height:210px;">
-          <img src="${esc(window.IotCore.assetUrl('img/iot_wiring_blueprint.webp'))}" alt="全屋中性線預留開關盒與智慧配電盤實物圖解" style="width:100%; height:210px; object-fit:cover; display:block;" />
+          <img src="${esc(bannerImg('iot_wiring_blueprint'))}" alt="全屋中性線預留開關盒與智慧配電盤實物圖解" decoding="async" style="width:100%; height:210px; object-fit:cover; display:block;" />
         </div>
       </section>
 
@@ -6076,8 +6142,7 @@ window.IOT_QUIZ_BANK = [
           </div>
         </div>
 
-        ${spec.svg}
-        ${statusHtml}
+        <div id="rfSpectrumMount">${rfSpectrumHtml(st.rfConfig)}</div>
       </section>
 
       <\!-- 6 大裝潢佈線與排錯專章 -->
@@ -6110,40 +6175,42 @@ window.IOT_QUIZ_BANK = [
       </div>
     `;
 
-    ['rfWifiSel', 'rfZigbeeSel', 'rfThreadSel'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener('change', () => {
-          const cur = loadState();
-          cur.rfConfig.wifiCh = Number(document.getElementById('rfWifiSel').value);
-          cur.rfConfig.zigbeeCh = Number(document.getElementById('rfZigbeeSel').value);
-          cur.rfConfig.threadCh = Number(document.getElementById('rfThreadSel').value);
-          saveState(cur);
-          renderBlueprint(root);
-        });
-      }
-    });
+    // Channel changes only redraw the spectrum chart; chapter toggles patch their own button.
+    const mount = root.querySelector('#rfSpectrumMount');
+    root.onchange = ev => {
+      if (!['rfWifiSel', 'rfZigbeeSel', 'rfThreadSel'].includes(ev.target.id)) return;
+      const cur = loadState();
+      cur.rfConfig.wifiCh = Number(root.querySelector('#rfWifiSel').value);
+      cur.rfConfig.zigbeeCh = Number(root.querySelector('#rfZigbeeSel').value);
+      cur.rfConfig.threadCh = Number(root.querySelector('#rfThreadSel').value);
+      saveState(cur);
+      mount.innerHTML = rfSpectrumHtml(cur.rfConfig);
+    };
 
-    const goldBtn = document.getElementById('applyGoldenRfBtn');
-    if (goldBtn) {
-      goldBtn.addEventListener('click', () => {
+    root.onclick = ev => {
+      if (ev.target.closest('#applyGoldenRfBtn')) {
         const cur = loadState();
         cur.rfConfig = { wifiCh: 1, threadCh: 15, zigbeeCh: 25 };
         saveState(cur);
         toast('✨ 已套用 2.4GHz 零衝突黃金頻道配置！');
-        renderBlueprint(root);
-      });
-    }
-
-    root.querySelectorAll('[data-bp-done]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-bp-done');
-        const nowDone = toggleBlueprintRead(id);
+        root.querySelector('#rfWifiSel').value = '1';
+        root.querySelector('#rfZigbeeSel').value = '25';
+        root.querySelector('#rfThreadSel').value = '15';
+        mount.innerHTML = rfSpectrumHtml(cur.rfConfig);
+        return;
+      }
+      const bpBtn = ev.target.closest('[data-bp-done]');
+      if (bpBtn) {
+        const nowDone = toggleBlueprintRead(bpBtn.getAttribute('data-bp-done'));
         toast(nowDone ? '✅ 已記錄專章研讀進度' : '已取消專章標記');
-        renderBlueprint(root);
-      });
-    });
-  };
+        bpBtn.classList.toggle('soft', nowDone);
+        bpBtn.classList.toggle('outline', !nowDone);
+        bpBtn.textContent = nowDone ? '✓ 已研讀完成' : '標記已讀';
+      }
+    };
+  }
+
+  window.IotPages.blueprint = renderBlueprint;
 
   // ==========================================================================
   // 6. 📖 物聯網與 Matter 術語百科 (#/glossary)
@@ -6151,17 +6218,31 @@ window.IOT_QUIZ_BANK = [
   let _glCat = '全部';
   let _glQuery = '';
 
-  window.IotPages.glossary = function renderGlossary(root) {
-    const list = window.IOT_GLOSSARY || [];
-    const cats = ['全部'].concat(Array.from(new Set(list.map(i => i.cat))));
+  function glossaryCardsHtml(list) {
+    const q = _glQuery.toLowerCase();
     const filtered = list.filter(it => {
       if (_glCat !== '全部' && it.cat !== _glCat) return false;
-      if (_glQuery) {
+      if (q) {
         const hay = `${it.term} ${it.zh} ${it.desc} ${it.cat}`.toLowerCase();
-        if (!hay.includes(_glQuery.toLowerCase())) return false;
+        if (!hay.includes(q)) return false;
       }
       return true;
     });
+    return filtered.map(it => `
+          <div class="dev-card" style="gap:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+              <span class="chip matter">${esc(it.cat)}</span>
+              <code style="font-size:12px; color:var(--primary); font-weight:800;">${esc(it.term)}</code>
+            </div>
+            <h3 style="margin:2px 0; font-size:16.5px; font-weight:800;">${esc(it.zh)}</h3>
+            <p class="dev-summary">${esc(it.desc)}</p>
+          </div>
+        `).join('');
+  }
+
+  window.IotPages.glossary = function renderGlossary(root) {
+    const list = window.IOT_GLOSSARY || [];
+    const cats = ['全部'].concat(Array.from(new Set(list.map(i => i.cat))));
 
     root.innerHTML = `
       <div class="sec-head">
@@ -6178,45 +6259,38 @@ window.IOT_QUIZ_BANK = [
         <input id="glSearchInput" type="search" value="${esc(_glQuery)}" placeholder="輸入英文縮寫或中文搜尋（如 mDNS、乾接點、SSED）…" style="height:34px; padding:0 12px; border-radius:999px; border:1px solid #cbd5e1; font-size:13px; min-width:250px;" />
       </div>
 
-      <div class="cards-grid" style="grid-template-columns:repeat(auto-fill, minmax(310px, 1fr));">
-        ${filtered.map(it => `
-          <div class="dev-card" style="gap:6px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-              <span class="chip matter">${esc(it.cat)}</span>
-              <code style="font-size:12px; color:var(--primary); font-weight:800;">${esc(it.term)}</code>
-            </div>
-            <h3 style="margin:2px 0; font-size:16.5px; font-weight:800;">${esc(it.zh)}</h3>
-            <p class="dev-summary">${esc(it.desc)}</p>
-          </div>
-        `).join('')}
-      </div>
+      <div class="cards-grid" id="glCards" style="grid-template-columns:repeat(auto-fill, minmax(310px, 1fr));">${glossaryCardsHtml(list)}</div>
     `;
 
-    root.querySelectorAll('#glCatPills .cat-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        _glCat = btn.getAttribute('data-gcat') || '全部';
-        renderGlossary(root);
+    // Filtering only swaps the card grid; the search input keeps focus/caret natively.
+    const grid = root.querySelector('#glCards');
+    root.onclick = ev => {
+      const pill = ev.target.closest('#glCatPills .cat-pill');
+      if (!pill) return;
+      _glCat = pill.getAttribute('data-gcat') || '全部';
+      root.querySelectorAll('#glCatPills .cat-pill').forEach(btn => {
+        btn.classList.toggle('active', btn === pill);
       });
-    });
-
-    const inp = document.getElementById('glSearchInput');
-    if (inp) {
-      inp.addEventListener('input', () => {
-        _glQuery = inp.value;
-        renderGlossary(root);
-        const nextInp = document.getElementById('glSearchInput');
-        if (nextInp) {
-          nextInp.focus({ preventScroll: true });
-          nextInp.setSelectionRange(nextInp.value.length, nextInp.value.length);
-        }
-      });
-    }
+      grid.innerHTML = glossaryCardsHtml(list);
+    };
+    root.oninput = ev => {
+      if (ev.target.id !== 'glSearchInput') return;
+      _glQuery = ev.target.value;
+      grid.innerHTML = glossaryCardsHtml(list);
+    };
   };
 
   // ==========================================================================
   // 7. 🎯 隨堂情境測驗 (#/quiz)
   // ==========================================================================
   let _quizSession = null;
+
+  const QUIZ_MODES = [
+    { id: 'all', label: '🌟 綜合全屋實戰 (隨機8題)' },
+    { id: 'devices', label: '🏠 家電選購與接線' },
+    { id: 'protocols', label: '📡 Matter・Thread・MQTT' },
+    { id: 'blueprint', label: '🛠️ 自動化邏輯與裝潢防坑' },
+  ];
 
   function startQuizSession(cat) {
     const bank = (window.IOT_QUIZ_BANK || []).filter(q => cat === 'all' || q.cat === cat);
@@ -6252,21 +6326,15 @@ window.IOT_QUIZ_BANK = [
           </div>
         </section>
       `;
-      document.getElementById('retryQuizBtn').addEventListener('click', () => {
+      root.onclick = ev => {
+        if (!ev.target.closest('#retryQuizBtn')) return;
         startQuizSession(qs.cat);
         renderQuiz(root);
-      });
+      };
       return;
     }
 
     const curQ = qs.questions[qs.idx];
-    const catModes = [
-      { id: 'all', label: '🌟 綜合全屋實戰 (隨機8題)' },
-      { id: 'devices', label: '🏠 家電選購與接線' },
-      { id: 'protocols', label: '📡 Matter・Thread・MQTT' },
-      { id: 'blueprint', label: '🛠️ 自動化邏輯與裝潢防坑' },
-    ];
-
     root.innerHTML = `
       <div class="sec-head">
         <div>
@@ -6277,7 +6345,7 @@ window.IOT_QUIZ_BANK = [
 
       <div class="filter-bar">
         <div class="cat-pills" id="quizModePills">
-          ${catModes.map(m => `<button type="button" class="cat-pill ${qs.cat === m.id ? 'active' : ''}" data-qcat="${esc(m.id)}">${esc(m.label)}</button>`).join('')}
+          ${QUIZ_MODES.map(m => `<button type="button" class="cat-pill ${qs.cat === m.id ? 'active' : ''}" data-qcat="${esc(m.id)}">${esc(m.label)}</button>`).join('')}
         </div>
         <span class="chip matter">第 ${qs.idx + 1} / ${qs.questions.length} 題 · 目前答對 ${qs.score} 題</span>
       </div>
@@ -6315,26 +6383,25 @@ window.IOT_QUIZ_BANK = [
       </section>
     `;
 
-    root.querySelectorAll('#quizModePills .cat-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        startQuizSession(btn.getAttribute('data-qcat') || 'all');
+    root.onclick = ev => {
+      const modeBtn = ev.target.closest('#quizModePills .cat-pill');
+      if (modeBtn) {
+        startQuizSession(modeBtn.getAttribute('data-qcat') || 'all');
         renderQuiz(root);
-      });
-    });
+        return;
+      }
 
-    root.querySelectorAll('#quizOptList .quiz-opt').forEach(btn => {
-      btn.addEventListener('click', () => {
+      const optBtn = ev.target.closest('#quizOptList .quiz-opt');
+      if (optBtn) {
         if (qs.picked !== null) return;
-        const pick = Number(btn.getAttribute('data-opt'));
+        const pick = Number(optBtn.getAttribute('data-opt'));
         qs.picked = pick;
         if (pick === curQ.ans) qs.score += 1;
         renderQuiz(root);
-      });
-    });
+        return;
+      }
 
-    const nextBtn = document.getElementById('nextQuizQBtn');
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
+      if (ev.target.closest('#nextQuizQBtn')) {
         if (qs.idx + 1 >= qs.questions.length) {
           qs.finished = true;
           const pct = Math.round((qs.score / Math.max(1, qs.questions.length)) * 100);
@@ -6347,8 +6414,8 @@ window.IOT_QUIZ_BANK = [
           qs.picked = null;
         }
         renderQuiz(root);
-      });
-    }
+      }
+    };
   };
 
   // ==========================================================================
@@ -6356,8 +6423,101 @@ window.IOT_QUIZ_BANK = [
   // ==========================================================================
   let _fbSending = false;
 
-  window.IotPages.feedback = function renderFeedback(root) {
+  function fbItemHtml(item, withStatus) {
+    return `
+                <div class="spec-box">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span class="chip matter">${esc(item.type)}</span>
+                    <span style="font-size:11.5px; color:var(--text-muted);">${esc(item.created_at || '')}${withStatus ? ` · ${esc(item.status || '已收到')}` : ''}</span>
+                  </div>
+                  <div style="font-weight:800; font-size:14px;">${esc(item.title)}</div>
+                  <div style="font-size:13px; color:var(--text-secondary); margin-top:3px; white-space:pre-wrap;">${esc(item.content)}</div>
+                </div>
+              `;
+  }
+
+  // Async callbacks must not re-render if the user already navigated to another page.
+  function stillOnFeedback() {
+    return !!document.getElementById('iotFeedbackForm');
+  }
+
+  async function submitFeedback(root) {
+    if (_fbSending) return;
+    const type = root.querySelector('#fbType').value;
+    const titleEl = root.querySelector('#fbTitle');
+    const contentEl = root.querySelector('#fbContent');
+    const title = titleEl.value.trim();
+    const content = contentEl.value.trim();
+    if (!title || !content) return;
+
+    _fbSending = true;
+    const btn = root.querySelector('#fbSubmitBtn');
+    const mount = root.querySelector('#fbResultMount');
+    if (btn) btn.disabled = true;
+
+    // 立即清空輸入框防重複送出（Playbook 規範）
+    titleEl.value = '';
+    contentEl.value = '';
+
+    const createdAt = new Date().toISOString().slice(0, 16).replace('T', ' ');
+    const cur = loadState();
+    cur.localFeedback = cur.localFeedback || [];
+    cur.localFeedback.unshift({ type, title, content, created_at: createdAt });
+    saveState(cur);
+
+    let serverOk = false;
+    if (!window.__STATIC_SINGLE_FILE__ && window.location.protocol !== 'file:') {
+      try {
+        const resp = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, title, content }),
+        });
+        const data = await resp.json();
+        if (resp.ok && data && data.ok) serverOk = true;
+      } catch (_) {}
+    }
+
+    if (serverOk) {
+      toast('✅ 感謝您的回饋！已成功儲存並通知維護團隊');
+      _fbSending = false;
+      if (stillOnFeedback()) renderFeedback(root);
+      return;
+    }
+
+    if (window.CampusNav && window.CampusNav.sendStaticFeedback) {
+      const res = await window.CampusNav.sendStaticFeedback({
+        tool: '智慧生活與物聯網學院',
+        kindLabel: type,
+        title,
+        description: content,
+        createdAt,
+      });
+      _fbSending = false;
+      if (btn) btn.disabled = false;
+      if (res && res.sent) {
+        toast('✅ 感謝您的回饋！已成功寄出');
+        if (stillOnFeedback()) renderFeedback(root);
+      } else if (mount && mount.isConnected && window.CampusNav.fallbackHtml) {
+        mount.innerHTML = window.CampusNav.fallbackHtml({
+          tool: '智慧生活與物聯網學院',
+          kindLabel: type,
+          title,
+          description: content,
+          links: res && res.links,
+        });
+      }
+    } else {
+      _fbSending = false;
+      if (btn) btn.disabled = false;
+      toast('✅ 已儲存至本機回饋紀錄');
+      if (stillOnFeedback()) renderFeedback(root);
+    }
+  }
+
+  function renderFeedback(root) {
     const st = loadState();
+    const localItems = st.localFeedback || [];
 
     root.innerHTML = `
       <div class="sec-head">
@@ -6395,18 +6555,9 @@ window.IOT_QUIZ_BANK = [
         <section class="card-panel">
           <h2 style="margin:0 0 12px; font-size:17.5px;">📋 近期回饋紀錄</h2>
           <div id="fbListMount" style="display:flex; flex-direction:column; gap:10px;">
-            ${(st.localFeedback || []).length === 0
+            ${localItems.length === 0
               ? '<div style="font-size:13.2px; color:var(--text-muted);">尚無本機回饋紀錄，歡迎在左側提交第一則建議！</div>'
-              : (st.localFeedback || []).map(item => `
-                <div class="spec-box">
-                  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
-                    <span class="chip matter">${esc(item.type)}</span>
-                    <span style="font-size:11.5px; color:var(--text-muted);">${esc(item.created_at || '')}</span>
-                  </div>
-                  <div style="font-weight:800; font-size:14px;">${esc(item.title)}</div>
-                  <div style="font-size:13px; color:var(--text-secondary); margin-top:3px; white-space:pre-wrap;">${esc(item.content)}</div>
-                </div>
-              `).join('')
+              : localItems.map(item => fbItemHtml(item, false)).join('')
             }
           </div>
         </section>
@@ -6421,103 +6572,22 @@ window.IOT_QUIZ_BANK = [
           if (!d || !Array.isArray(d.items) || !d.items.length) return;
           const mount = document.getElementById('fbListMount');
           if (!mount) return;
-          mount.innerHTML = d.items.map(item => `
-            <div class="spec-box">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
-                <span class="chip matter">${esc(item.type)}</span>
-                <span style="font-size:11.5px; color:var(--text-muted);">${esc(item.created_at || '')} · ${esc(item.status || '已收到')}</span>
-              </div>
-              <div style="font-weight:800; font-size:14px;">${esc(item.title)}</div>
-              <div style="font-size:13px; color:var(--text-secondary); margin-top:3px; white-space:pre-wrap;">${esc(item.content)}</div>
-            </div>
-          `).join('');
+          mount.innerHTML = d.items.map(item => fbItemHtml(item, true)).join('');
         })
         .catch(() => {});
     }
 
-    const form = document.getElementById('iotFeedbackForm');
-    const titleEl = document.getElementById('fbTitle');
-    if (titleEl) {
-      titleEl.addEventListener('keydown', ev => {
-        if (isEnterSend(ev)) ev.preventDefault();
-      });
-    }
+    root.onkeydown = ev => {
+      if (ev.target.id === 'fbTitle' && isEnterSend(ev)) ev.preventDefault();
+    };
+    root.onsubmit = ev => {
+      if (ev.target.id !== 'iotFeedbackForm') return;
+      ev.preventDefault();
+      submitFeedback(root);
+    };
+  }
 
-    if (form) {
-      form.addEventListener('submit', async ev => {
-        ev.preventDefault();
-        if (_fbSending) return;
-        const type = document.getElementById('fbType').value;
-        const title = document.getElementById('fbTitle').value.trim();
-        const content = document.getElementById('fbContent').value.trim();
-        if (!title || !content) return;
-
-        _fbSending = true;
-        const btn = document.getElementById('fbSubmitBtn');
-        const mount = document.getElementById('fbResultMount');
-        if (btn) btn.disabled = true;
-
-        // 立即清空輸入框防重複送出（Playbook 規範）
-        document.getElementById('fbTitle').value = '';
-        document.getElementById('fbContent').value = '';
-
-        const createdAt = new Date().toISOString().slice(0, 16).replace('T', ' ');
-        const cur = loadState();
-        cur.localFeedback = cur.localFeedback || [];
-        cur.localFeedback.unshift({ type, title, content, created_at: createdAt });
-        saveState(cur);
-
-        let serverOk = false;
-        if (!window.__STATIC_SINGLE_FILE__ && window.location.protocol !== 'file:') {
-          try {
-            const resp = await fetch('/api/feedback', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ type, title, content }),
-            });
-            const data = await resp.json();
-            if (resp.ok && data && data.ok) serverOk = true;
-          } catch (_) {}
-        }
-
-        if (serverOk) {
-          toast('✅ 感謝您的回饋！已成功儲存並通知維護團隊');
-          _fbSending = false;
-          renderFeedback(root);
-          return;
-        }
-
-        if (window.CampusNav && window.CampusNav.sendStaticFeedback) {
-          const res = await window.CampusNav.sendStaticFeedback({
-            tool: '智慧生活與物聯網學院',
-            kindLabel: type,
-            title,
-            description: content,
-            createdAt,
-          });
-          _fbSending = false;
-          if (btn) btn.disabled = false;
-          if (res && res.sent) {
-            toast('✅ 感謝您的回饋！已成功寄出');
-            renderFeedback(root);
-          } else if (mount && window.CampusNav.fallbackHtml) {
-            mount.innerHTML = window.CampusNav.fallbackHtml({
-              tool: '智慧生活與物聯網學院',
-              kindLabel: type,
-              title,
-              description: content,
-              links: res && res.links,
-            });
-          }
-        } else {
-          _fbSending = false;
-          if (btn) btn.disabled = false;
-          toast('✅ 已儲存至本機回饋紀錄');
-          renderFeedback(root);
-        }
-      });
-    }
-  };
+  window.IotPages.feedback = renderFeedback;
 })();
 
 
@@ -6546,6 +6616,8 @@ window.IOT_QUIZ_BANK = [
     return { route, param, queryParams };
   }
 
+  let _navTabs = null;
+
   function renderCurrentRoute() {
     const main = document.getElementById('appMain');
     if (!main) return;
@@ -6553,25 +6625,18 @@ window.IOT_QUIZ_BANK = [
     const { route, param, queryParams } = parseHash();
     const pages = window.IotPages || {};
 
-    document.querySelectorAll('#mainNavTabs .nav-tab').forEach(tab => {
-      const nav = tab.getAttribute('data-nav');
-      tab.classList.toggle('active', nav === route);
+    if (!_navTabs) _navTabs = document.querySelectorAll('#mainNavTabs .nav-tab');
+    _navTabs.forEach(tab => {
+      tab.classList.toggle('active', tab.getAttribute('data-nav') === route);
     });
 
-    if (route === 'devices' && pages.devices) {
-      pages.devices(main, param, queryParams);
-    } else if (route === 'protocols' && pages.protocols) {
-      pages.protocols(main, param, queryParams);
-    } else if (route === 'simulator' && pages.simulator) {
-      pages.simulator(main, param, queryParams);
-    } else if (route === 'blueprint' && pages.blueprint) {
-      pages.blueprint(main, param, queryParams);
-    } else if (route === 'glossary' && pages.glossary) {
-      pages.glossary(main, param, queryParams);
-    } else if (route === 'quiz' && pages.quiz) {
-      pages.quiz(main, param, queryParams);
-    } else if (route === 'feedback' && pages.feedback) {
-      pages.feedback(main, param, queryParams);
+    // Pages bind ONE delegated handler per event type on #appMain via on* properties;
+    // reset them so a previous page's handlers never leak into the next page.
+    main.onclick = main.onchange = main.oninput = main.onsubmit = main.onkeydown = null;
+
+    const page = route !== 'home' && Object.prototype.hasOwnProperty.call(pages, route) ? pages[route] : null;
+    if (page) {
+      page(main, param, queryParams);
     } else if (pages.home) {
       pages.home(main);
     }
@@ -6637,7 +6702,7 @@ window.IOT_QUIZ_BANK = [
     const dd = document.getElementById('globalSearchDropdown');
     if (!inp || !dd) return;
 
-    const idx = buildSearchIndex();
+    let idx = null; // built lazily on first query (keeps first paint fast)
     let currentMatches = [];
 
     function renderDropdown(q) {
@@ -6649,6 +6714,7 @@ window.IOT_QUIZ_BANK = [
         return;
       }
 
+      if (!idx) idx = buildSearchIndex();
       currentMatches = idx.filter(it => it.hay.includes(query)).slice(0, 10);
       if (!currentMatches.length) {
         dd.innerHTML = `<div class="search-item"><span class="search-item-sub">找不到符合「${esc(q)}」的設備、協定或術語</span></div>`;
@@ -6659,7 +6725,7 @@ window.IOT_QUIZ_BANK = [
       dd.innerHTML = currentMatches.map(it => `
         <a href="${esc(it.href)}" class="search-item">
           <div class="search-item-left">
-            ${it.thumb ? `<img src="${esc(it.thumb)}" alt="" class="search-thumb" />` : ''}
+            ${it.thumb ? `<img src="${esc(it.thumb)}" alt="" class="search-thumb" decoding="async" />` : ''}
             <div style="min-width:0;">
               <div class="search-item-title">${esc(it.title)}</div>
               <div class="search-item-sub">${esc(it.sub.slice(0, 64))}${it.sub.length > 64 ? '…' : ''}</div>
@@ -6689,7 +6755,7 @@ window.IOT_QUIZ_BANK = [
 
     dd.addEventListener('click', () => { dd.hidden = true; });
     document.addEventListener('click', ev => {
-      if (!inp.contains(ev.target) && !dd.contains(ev.target)) dd.hidden = true;
+      if (!dd.hidden && !inp.contains(ev.target) && !dd.contains(ev.target)) dd.hidden = true;
     });
 
     window.addEventListener('keydown', ev => {
