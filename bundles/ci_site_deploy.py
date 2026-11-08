@@ -38,6 +38,7 @@ ARENAS: dict[str, dict[str, str]] = {
     'epl-odds-iq': {'db': 'epl_betting.sqlite3', 'kind': 'sports'},
     'f1-odds-iq': {'db': 'f1_betting.sqlite3', 'kind': 'sports'},
     'tw-basketball': {'db': 'tw_basketball.db', 'kind': 'sports'},
+    'cinema': {'db': 'now_playing.json', 'kind': 'cinema'},
 }
 
 
@@ -74,7 +75,10 @@ def _save_json(fp: str, data: dict[str, Any]) -> None:
 
 
 def _valid_db(fp: str) -> bool:
-  return os.path.isfile(fp) and os.path.getsize(fp) >= 4096
+  if not os.path.isfile(fp):
+    return False
+  min_sz = 64 if fp.endswith('.json') else 4096
+  return os.path.getsize(fp) >= min_sz
 
 
 def _stock_max_date(db_path: str) -> str:
@@ -122,6 +126,9 @@ def _data_freshness(arena: str, data_dir: str) -> str:
   info = ARENAS[arena]
   if info['kind'] == 'stock':
     return _stock_freshness(os.path.join(data_dir, info['db']))
+  if info['kind'] == 'cinema':
+    d = _load_json(os.path.join(data_dir, info['db']))
+    return str(d.get('updatedAt') or '')
   return _sports_freshness(data_dir, info['db'])
 
 
@@ -288,6 +295,11 @@ def _due_arenas(now_tw: dt.datetime, cache_dir: str = '') -> list[str]:
     stock_last = _stock_max_date(stock_db) if stock_db else ''
     if mins >= 435 or stock_last < now_tw.strftime('%Y-%m-%d'):
       due.append('tw-stock-insight')
+  cin_json = os.path.join(cache_dir, 'cinema', 'data', 'now_playing.json') if cache_dir else ''
+  cin_wk = str(_load_json(cin_json).get('weekKey') or '') if cin_json else ''
+  cur_wk = now_tw.strftime('%G-W%V')
+  if wd == 0 or not cin_wk or cin_wk < cur_wk:
+    due.append('cinema')
   return due
 
 
