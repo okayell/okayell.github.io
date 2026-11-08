@@ -1038,7 +1038,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
           <span class="brand-logo">あ</span>
           <span class="brand-txt"><b>日語學院</b><small>五十音 → A1–C2・聽說讀寫</small></span>
         </a>
-        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes">v2.2.0</button>
+        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes">v2.2.1</button>
       </div>
       <nav class="main-nav" id="mainNav" aria-label="主要導覽"></nav>
       <div class="header-right" id="headerStats"></div>
@@ -1630,7 +1630,17 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
   var _navEsRetryT = 0;
   var _navEsBackoff = 2000;
   var _navMqttClients = [];
-  var _lastActMs = Date.now();
+  var _lastActMs = (function () {
+    if (typeof document !== 'undefined' && document.hidden) {
+      try {
+        var ls = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {};
+        if (+ls.activeTs > 1700000000) return Math.min(Date.now(), +ls.activeTs * 1000);
+      } catch (e) { /* ignore */ }
+      return Date.now() - 120000;
+    }
+    return Date.now();
+  })();
+  var _anyOtherTabActive = false;
   var _lastMqttSendMs = 0;
   var _lastNtfySendMs = 0;
   var _lastApiSendMs = 0;
@@ -1781,6 +1791,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
 
   function touchTabLease(locId) {
     var otherAlive = 0;
+    var otherActive = false;
     try {
       var now = Date.now();
       var map = JSON.parse(window.localStorage.getItem(TABS_KEY) || '{}') || {};
@@ -1789,11 +1800,17 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         var it = map[k];
         if (!it || now - (+it.ts || 0) > TAB_LEASE_MS) return;
         next[k] = it;
-        if (k !== TAB_ID) otherAlive += 1;
+        if (k !== TAB_ID) {
+          otherAlive += 1;
+          var oAct = +it.actMs || 0;
+          if (oAct > _lastActMs && oAct <= now + 5000) _lastActMs = Math.min(now, oAct);
+          if (it.vis && now - oAct < 90000) otherActive = true;
+        }
       });
-      next[TAB_ID] = { ts: now, loc: locId || '', vis: !document.hidden };
+      next[TAB_ID] = { ts: now, loc: locId || '', vis: !document.hidden, actMs: _lastActMs };
       window.localStorage.setItem(TABS_KEY, JSON.stringify(next));
     } catch (e) { /* ignore */ }
+    _anyOtherTabActive = otherActive;
     return otherAlive;
   }
 
@@ -1882,9 +1899,14 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
       stu.score = Math.max(+stu.score || 0, +lsStu.score || 0, +ckStu.score || 0, minBadgeScore);
 
       var isLeave = !!opts.leave;
-      var curState = isLeave ? 'offline' : ((!document.hidden && (Date.now() - _lastActMs < 90000)) ? 'active' : 'away');
+      var idleSec = Math.max(0, Math.floor((Date.now() - _lastActMs) / 1000));
+      var actSec = Math.max(0, navNowSec() - idleSec);
+      var prevActSec = Math.max(+lsStu.activeTs || 0, +ckStu.activeTs || 0);
+      if (prevActSec > actSec && prevActSec <= navNowSec()) actSec = prevActSec;
+      var curState = isLeave ? 'offline' : (((!document.hidden && idleSec < 90) || _anyOtherTabActive) ? 'active' : 'away');
       stu.state = curState;
       stu.ts = navNowSec();
+      stu.activeTs = actSec;
       if (!isLeave) {
         var persisted = Object.assign({}, stu);
         delete persisted.action;
@@ -1903,6 +1925,8 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         title: stu.title || (isConfirmed ? '🌱 開心學園新生' : '🌱 校園訪客'),
         confirmed: isConfirmed,
         guest: !isConfirmed,
+        activeTs: actSec,
+        idleSec: idleSec,
       });
       if (isLeave) {
         wireMsg.action = 'leave';
@@ -2161,7 +2185,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         sendPresenceHeartbeat(toolId, { forceRemote: true, event: 'active' });
       }
     };
-    ['pointerdown', 'keydown', 'touchstart'].forEach(function (evName) {
+    ['pointerdown', 'keydown', 'touchstart', 'touchmove', 'wheel'].forEach(function (evName) {
       window.addEventListener(evName, onUserAct, { passive: true });
     });
 
@@ -19333,8 +19357,18 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
   'use strict';
   const JA = (window.JA = window.JA || {});
   JA.RELEASES_DATA = {
-  "current_version": "2.2.0",
+  "current_version": "2.2.1",
   "releases": [
+    {
+      "version": "2.2.1",
+      "date": "2026-11-08",
+      "bump": "patch",
+      "title": "更新校園導覽（共 1 個檔案）",
+      "highlights": [
+        "[校園導覽] 更新 static/js/campus_nav.js：🏫 校園按鈕：回到開心學園校園地圖（共用片段）（+29 / -5 行）"
+      ],
+      "files_count": 1
+    },
     {
       "version": "2.2.0",
       "date": "2026-11-08",

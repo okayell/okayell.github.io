@@ -1396,7 +1396,17 @@ a.cat-badge:hover { filter: brightness(0.96); }
   var _navEsRetryT = 0;
   var _navEsBackoff = 2000;
   var _navMqttClients = [];
-  var _lastActMs = Date.now();
+  var _lastActMs = (function () {
+    if (typeof document !== 'undefined' && document.hidden) {
+      try {
+        var ls = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {};
+        if (+ls.activeTs > 1700000000) return Math.min(Date.now(), +ls.activeTs * 1000);
+      } catch (e) { /* ignore */ }
+      return Date.now() - 120000;
+    }
+    return Date.now();
+  })();
+  var _anyOtherTabActive = false;
   var _lastMqttSendMs = 0;
   var _lastNtfySendMs = 0;
   var _lastApiSendMs = 0;
@@ -1547,6 +1557,7 @@ a.cat-badge:hover { filter: brightness(0.96); }
 
   function touchTabLease(locId) {
     var otherAlive = 0;
+    var otherActive = false;
     try {
       var now = Date.now();
       var map = JSON.parse(window.localStorage.getItem(TABS_KEY) || '{}') || {};
@@ -1555,11 +1566,17 @@ a.cat-badge:hover { filter: brightness(0.96); }
         var it = map[k];
         if (!it || now - (+it.ts || 0) > TAB_LEASE_MS) return;
         next[k] = it;
-        if (k !== TAB_ID) otherAlive += 1;
+        if (k !== TAB_ID) {
+          otherAlive += 1;
+          var oAct = +it.actMs || 0;
+          if (oAct > _lastActMs && oAct <= now + 5000) _lastActMs = Math.min(now, oAct);
+          if (it.vis && now - oAct < 90000) otherActive = true;
+        }
       });
-      next[TAB_ID] = { ts: now, loc: locId || '', vis: !document.hidden };
+      next[TAB_ID] = { ts: now, loc: locId || '', vis: !document.hidden, actMs: _lastActMs };
       window.localStorage.setItem(TABS_KEY, JSON.stringify(next));
     } catch (e) { /* ignore */ }
+    _anyOtherTabActive = otherActive;
     return otherAlive;
   }
 
@@ -1648,9 +1665,14 @@ a.cat-badge:hover { filter: brightness(0.96); }
       stu.score = Math.max(+stu.score || 0, +lsStu.score || 0, +ckStu.score || 0, minBadgeScore);
 
       var isLeave = !!opts.leave;
-      var curState = isLeave ? 'offline' : ((!document.hidden && (Date.now() - _lastActMs < 90000)) ? 'active' : 'away');
+      var idleSec = Math.max(0, Math.floor((Date.now() - _lastActMs) / 1000));
+      var actSec = Math.max(0, navNowSec() - idleSec);
+      var prevActSec = Math.max(+lsStu.activeTs || 0, +ckStu.activeTs || 0);
+      if (prevActSec > actSec && prevActSec <= navNowSec()) actSec = prevActSec;
+      var curState = isLeave ? 'offline' : (((!document.hidden && idleSec < 90) || _anyOtherTabActive) ? 'active' : 'away');
       stu.state = curState;
       stu.ts = navNowSec();
+      stu.activeTs = actSec;
       if (!isLeave) {
         var persisted = Object.assign({}, stu);
         delete persisted.action;
@@ -1669,6 +1691,8 @@ a.cat-badge:hover { filter: brightness(0.96); }
         title: stu.title || (isConfirmed ? '🌱 開心學園新生' : '🌱 校園訪客'),
         confirmed: isConfirmed,
         guest: !isConfirmed,
+        activeTs: actSec,
+        idleSec: idleSec,
       });
       if (isLeave) {
         wireMsg.action = 'leave';
@@ -1927,7 +1951,7 @@ a.cat-badge:hover { filter: brightness(0.96); }
         sendPresenceHeartbeat(toolId, { forceRemote: true, event: 'active' });
       }
     };
-    ['pointerdown', 'keydown', 'touchstart'].forEach(function (evName) {
+    ['pointerdown', 'keydown', 'touchstart', 'touchmove', 'wheel'].forEach(function (evName) {
       window.addEventListener(evName, onUserAct, { passive: true });
     });
 
@@ -11242,7 +11266,7 @@ TRV.FACTS.push({
 (function () {
   'use strict';
   var TRV = (window.TRV = window.TRV || {});
-  TRV.RELEASES_DATA = {"current_version":"2.2.0","releases":[{"version":"2.2.0","date":"2026-11-08","bump":"minor","title":"更新校園導覽（共 1 個檔案）","highlights":["[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+89 / -2 行）"],"files_count":1},{"version":"2.1.0","date":"2026-11-07","bump":"minor","title":"更新學院頁面、意見回饋、應用啟動（共 8 個檔案）","highlights":["[視覺樣式] 更新 static/css/app.css：冷知識學院靛藍＋燈泡黃淺色樣式、十八大分類主題色與零水平捲軸響應式版面（+82 / -80 行）","[應用啟動] 更新 static/js/app.js：全站搜尋、頂部學習統計與路由分發（+7 / -4 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+32 / -7 行）","[核心引擎] 更新 static/js/core.js：路由、冷知識索引、每日一則、已讀／收藏／反應與 XP 儲存（trv.* 前綴）、IME 安全輸入（+14 / -4 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋與歷史紀錄（+1 / -3 行）","[學院頁面] 更新 static/js/pages.js：學院大廳、冷知識圖書館（分類／標籤／冷度／搜尋）、單則冷知識與我的冷知識（+20 / -3 行）"],"files_count":8},{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見回饋、校園導覽、讀者投稿（共 4 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：冷知識學院頁面結構、頂部與行動導覽列與腳本載入清單（+3 / -1 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1555 / -110 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋與歷史紀錄（+22 / -3 行）","[讀者投稿] 更新 tools/ai_draft.py：🤖 AI 查證並把投稿整理成冷知識卡（Jetski 直連）（+16 / -2 行）"],"files_count":4},{"version":"1.1.1","date":"2026-10-30","bump":"patch","title":"修正轉送站重複匯入：記住已處理的訊息，刪除的投稿不會再回來","highlights":["ntfy 轉送站的 since 參數以秒為單位，同一秒的訊息會被重送；改為記住已處理的訊息編號，不再重複匯入","刪除的投稿會留下墓碑紀錄，轉送站重送或重複貼上 Email 匯入代碼都不會讓它復活"],"files_count":1},{"version":"1.1.0","date":"2026-10-30","bump":"minor","title":"📮 讀者投稿上線：投稿表單＋自動收件＋🛡️ 審核台（AI 查證整理、一鍵收錄掛名）","highlights":["新增「📮 投稿冷知識」頁：分類、一句話冷知識、詳細說明、出處與暱稱署名；邊打字邊提示相似的既有冷知識並即時預覽卡片，「我的投稿」在收錄上架後自動變成 🎉 已收錄","投稿雙通道不漏接：公開版同時送到轉送站（Cloudtop 每 5 分鐘自動收進審核佇列）與站長信箱（信內附匯入代碼，可一鍵匯入），本機版直接進佇列；網路都失敗時才改用一鍵寄信","Cloudtop 專用「🛡️ 投稿審核台」：🤖 AI 上網查證並整理成完整冷知識卡（附查證摘要）、人工編修、即時格式檢查與相似題比對、✅ 一鍵收錄寫入分類檔（自動編號、✍️ 掛名、驗證失敗自動還原）、不收錄與刪除垃圾訊息","冷知識卡片顯示 ✍️ 投稿者署名，圖書館新增「✍️ 讀者投稿」篩選；大廳新增投稿邀請，本機版頂部顯示「🛡️ 待審 N」提醒"],"files_count":12},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"冷知識學院 v1.0.0 新開幕（十八大分類 · 580 則五花八門冷知識）","highlights":["十八大分類共 580 則冷知識：動物、植物與自然、人體、宇宙、物理化學、歷史、世界各國、台灣在地、美食、生活、語言、科技、運動、影視藝術、數學、心理、品牌經濟與迷思破解；每類再以標籤細分子分類","每則冷知識都有「猜猜看」提問、答案、背後原因、標籤、冷度 🧊 分級與真假挑戰題；全部內容經撰寫員查證與獨立事實查核兩道把關","🏠 每日一則冷知識、📚 冷知識圖書館（分類／子分類標籤／冷度／搜尋／排序）、🎰 轉蛋抽卡與 🤔 真的假的？是非挑戰（含錯題本）","⭐ 收藏、🤯 長知識／😎 早就知道、已讀進度、18 枚分類徽章、稱號與學習日曆（localStorage，免登入）；💬 意見回饋可直接投稿冷知識"],"files_count":34}]};
+  TRV.RELEASES_DATA = {"current_version":"2.2.1","releases":[{"version":"2.2.1","date":"2026-11-08","bump":"patch","title":"更新校園導覽（共 1 個檔案）","highlights":["[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+29 / -5 行）"],"files_count":1},{"version":"2.2.0","date":"2026-11-08","bump":"minor","title":"更新校園導覽（共 1 個檔案）","highlights":["[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+89 / -2 行）"],"files_count":1},{"version":"2.1.0","date":"2026-11-07","bump":"minor","title":"更新學院頁面、意見回饋、應用啟動（共 8 個檔案）","highlights":["[視覺樣式] 更新 static/css/app.css：冷知識學院靛藍＋燈泡黃淺色樣式、十八大分類主題色與零水平捲軸響應式版面（+82 / -80 行）","[應用啟動] 更新 static/js/app.js：全站搜尋、頂部學習統計與路由分發（+7 / -4 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+32 / -7 行）","[核心引擎] 更新 static/js/core.js：路由、冷知識索引、每日一則、已讀／收藏／反應與 XP 儲存（trv.* 前綴）、IME 安全輸入（+14 / -4 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋與歷史紀錄（+1 / -3 行）","[學院頁面] 更新 static/js/pages.js：學院大廳、冷知識圖書館（分類／標籤／冷度／搜尋）、單則冷知識與我的冷知識（+20 / -3 行）"],"files_count":8},{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見回饋、校園導覽、讀者投稿（共 4 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：冷知識學院頁面結構、頂部與行動導覽列與腳本載入清單（+3 / -1 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1555 / -110 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋與歷史紀錄（+22 / -3 行）","[讀者投稿] 更新 tools/ai_draft.py：🤖 AI 查證並把投稿整理成冷知識卡（Jetski 直連）（+16 / -2 行）"],"files_count":4},{"version":"1.1.1","date":"2026-10-30","bump":"patch","title":"修正轉送站重複匯入：記住已處理的訊息，刪除的投稿不會再回來","highlights":["ntfy 轉送站的 since 參數以秒為單位，同一秒的訊息會被重送；改為記住已處理的訊息編號，不再重複匯入","刪除的投稿會留下墓碑紀錄，轉送站重送或重複貼上 Email 匯入代碼都不會讓它復活"],"files_count":1},{"version":"1.1.0","date":"2026-10-30","bump":"minor","title":"📮 讀者投稿上線：投稿表單＋自動收件＋🛡️ 審核台（AI 查證整理、一鍵收錄掛名）","highlights":["新增「📮 投稿冷知識」頁：分類、一句話冷知識、詳細說明、出處與暱稱署名；邊打字邊提示相似的既有冷知識並即時預覽卡片，「我的投稿」在收錄上架後自動變成 🎉 已收錄","投稿雙通道不漏接：公開版同時送到轉送站（Cloudtop 每 5 分鐘自動收進審核佇列）與站長信箱（信內附匯入代碼，可一鍵匯入），本機版直接進佇列；網路都失敗時才改用一鍵寄信","Cloudtop 專用「🛡️ 投稿審核台」：🤖 AI 上網查證並整理成完整冷知識卡（附查證摘要）、人工編修、即時格式檢查與相似題比對、✅ 一鍵收錄寫入分類檔（自動編號、✍️ 掛名、驗證失敗自動還原）、不收錄與刪除垃圾訊息","冷知識卡片顯示 ✍️ 投稿者署名，圖書館新增「✍️ 讀者投稿」篩選；大廳新增投稿邀請，本機版頂部顯示「🛡️ 待審 N」提醒"],"files_count":12},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"冷知識學院 v1.0.0 新開幕（十八大分類 · 580 則五花八門冷知識）","highlights":["十八大分類共 580 則冷知識：動物、植物與自然、人體、宇宙、物理化學、歷史、世界各國、台灣在地、美食、生活、語言、科技、運動、影視藝術、數學、心理、品牌經濟與迷思破解；每類再以標籤細分子分類","每則冷知識都有「猜猜看」提問、答案、背後原因、標籤、冷度 🧊 分級與真假挑戰題；全部內容經撰寫員查證與獨立事實查核兩道把關","🏠 每日一則冷知識、📚 冷知識圖書館（分類／子分類標籤／冷度／搜尋／排序）、🎰 轉蛋抽卡與 🤔 真的假的？是非挑戰（含錯題本）","⭐ 收藏、🤯 長知識／😎 早就知道、已讀進度、18 枚分類徽章、稱號與學習日曆（localStorage，免登入）；💬 意見回饋可直接投稿冷知識"],"files_count":34}]};
 
   var BUMP = {
     major: { badge: 'Major 大改版', cls: 'bad', desc: '進第 1 位數（X.0.0）：整體架構大改版、跨模組大規模升級' },

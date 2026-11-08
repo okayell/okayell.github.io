@@ -2927,7 +2927,17 @@ a.term:hover {
   var _navEsRetryT = 0;
   var _navEsBackoff = 2000;
   var _navMqttClients = [];
-  var _lastActMs = Date.now();
+  var _lastActMs = (function () {
+    if (typeof document !== 'undefined' && document.hidden) {
+      try {
+        var ls = JSON.parse(window.localStorage.getItem(STU_KEY) || '{}') || {};
+        if (+ls.activeTs > 1700000000) return Math.min(Date.now(), +ls.activeTs * 1000);
+      } catch (e) { /* ignore */ }
+      return Date.now() - 120000;
+    }
+    return Date.now();
+  })();
+  var _anyOtherTabActive = false;
   var _lastMqttSendMs = 0;
   var _lastNtfySendMs = 0;
   var _lastApiSendMs = 0;
@@ -3078,6 +3088,7 @@ a.term:hover {
 
   function touchTabLease(locId) {
     var otherAlive = 0;
+    var otherActive = false;
     try {
       var now = Date.now();
       var map = JSON.parse(window.localStorage.getItem(TABS_KEY) || '{}') || {};
@@ -3086,11 +3097,17 @@ a.term:hover {
         var it = map[k];
         if (!it || now - (+it.ts || 0) > TAB_LEASE_MS) return;
         next[k] = it;
-        if (k !== TAB_ID) otherAlive += 1;
+        if (k !== TAB_ID) {
+          otherAlive += 1;
+          var oAct = +it.actMs || 0;
+          if (oAct > _lastActMs && oAct <= now + 5000) _lastActMs = Math.min(now, oAct);
+          if (it.vis && now - oAct < 90000) otherActive = true;
+        }
       });
-      next[TAB_ID] = { ts: now, loc: locId || '', vis: !document.hidden };
+      next[TAB_ID] = { ts: now, loc: locId || '', vis: !document.hidden, actMs: _lastActMs };
       window.localStorage.setItem(TABS_KEY, JSON.stringify(next));
     } catch (e) { /* ignore */ }
+    _anyOtherTabActive = otherActive;
     return otherAlive;
   }
 
@@ -3179,9 +3196,14 @@ a.term:hover {
       stu.score = Math.max(+stu.score || 0, +lsStu.score || 0, +ckStu.score || 0, minBadgeScore);
 
       var isLeave = !!opts.leave;
-      var curState = isLeave ? 'offline' : ((!document.hidden && (Date.now() - _lastActMs < 90000)) ? 'active' : 'away');
+      var idleSec = Math.max(0, Math.floor((Date.now() - _lastActMs) / 1000));
+      var actSec = Math.max(0, navNowSec() - idleSec);
+      var prevActSec = Math.max(+lsStu.activeTs || 0, +ckStu.activeTs || 0);
+      if (prevActSec > actSec && prevActSec <= navNowSec()) actSec = prevActSec;
+      var curState = isLeave ? 'offline' : (((!document.hidden && idleSec < 90) || _anyOtherTabActive) ? 'active' : 'away');
       stu.state = curState;
       stu.ts = navNowSec();
+      stu.activeTs = actSec;
       if (!isLeave) {
         var persisted = Object.assign({}, stu);
         delete persisted.action;
@@ -3200,6 +3222,8 @@ a.term:hover {
         title: stu.title || (isConfirmed ? '🌱 開心學園新生' : '🌱 校園訪客'),
         confirmed: isConfirmed,
         guest: !isConfirmed,
+        activeTs: actSec,
+        idleSec: idleSec,
       });
       if (isLeave) {
         wireMsg.action = 'leave';
@@ -3458,7 +3482,7 @@ a.term:hover {
         sendPresenceHeartbeat(toolId, { forceRemote: true, event: 'active' });
       }
     };
-    ['pointerdown', 'keydown', 'touchstart'].forEach(function (evName) {
+    ['pointerdown', 'keydown', 'touchstart', 'touchmove', 'wheel'].forEach(function (evName) {
       window.addEventListener(evName, onUserAct, { passive: true });
     });
 
@@ -13957,7 +13981,7 @@ FIN.GLOSSARY.push(
 (function () {
   'use strict';
   var FIN = (window.FIN = window.FIN || {});
-  FIN.RELEASES_DATA = {"current_version":"2.2.0","releases":[{"version":"2.2.0","date":"2026-11-08","bump":"minor","title":"更新校園導覽（共 1 個檔案）","highlights":["[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+89 / -2 行）"],"files_count":1},{"version":"2.1.0","date":"2026-11-07","bump":"minor","title":"更新專案檔案、意見回饋、應用啟動（共 12 個檔案）","highlights":["[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+16 / -10 行）","[應用啟動] 更新 static/js/app.js：全站搜尋、三層免責聲明視窗與路由分發（+16 / -17 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+32 / -7 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+0 / -7 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+4 / -2 行）","[課程閱讀器] 更新 static/js/lesson.js：課程章節導覽、互動圖表掛載、隨堂測驗與台股智慧選股實戰橋接（+12 / -6 行）"],"files_count":12},{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見信件、意見回饋、校園導覽（共 6 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：財經學院頁面結構、頂部導覽列、免責聲明與腳本載入清單（+4 / -1 行）","[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+4 / -2 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1733 / -12 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+3 / -5 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+24 / -3 行）","[意見信件] 更新 tools/feedback_mailer.py：意見回饋儲存與寄送 okayell@hotmail.com（+4 / -2 行）"],"files_count":6},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"財經學院 v1.0.0 初版發布（技術分析 · 基本面 · 籌碼面 · 消息面）","highlights":["四大分院共 46 堂台股核心課程（技術分析 12 課、基本面 12 課、籌碼面 11 課、消息面 11 課），依入門 → 進階 → 實戰三階段編排","內建 38 組純 SVG 互動模擬圖表（K 線、均線、KD、RSI、MACD、布林通道、財報三表、本益比河流圖、三大法人、融資維持率 130% 試算等）","150+ 則台股術語百科（課文首次出現自動標註懸浮卡片）與跨分院綜合測驗＋錯題本","每課無縫串接「台股智慧選股」實戰區深連結，並整合開心學園「🏫 校園」導覽與三層教育免責聲明"],"files_count":28}]};
+  FIN.RELEASES_DATA = {"current_version":"2.2.1","releases":[{"version":"2.2.1","date":"2026-11-08","bump":"patch","title":"更新校園導覽（共 1 個檔案）","highlights":["[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+29 / -5 行）"],"files_count":1},{"version":"2.2.0","date":"2026-11-08","bump":"minor","title":"更新校園導覽（共 1 個檔案）","highlights":["[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+89 / -2 行）"],"files_count":1},{"version":"2.1.0","date":"2026-11-07","bump":"minor","title":"更新專案檔案、意見回饋、應用啟動（共 12 個檔案）","highlights":["[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+16 / -10 行）","[應用啟動] 更新 static/js/app.js：全站搜尋、三層免責聲明視窗與路由分發（+16 / -17 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+32 / -7 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+0 / -7 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+4 / -2 行）","[課程閱讀器] 更新 static/js/lesson.js：課程章節導覽、互動圖表掛載、隨堂測驗與台股智慧選股實戰橋接（+12 / -6 行）"],"files_count":12},{"version":"2.0.0","date":"2026-11-06","bump":"major","title":"更新意見信件、意見回饋、校園導覽（共 6 個檔案）","highlights":["[頁面骨架] 更新 static/index.html：財經學院頁面結構、頂部導覽列、免責聲明與腳本載入清單（+4 / -1 行）","[視覺樣式] 更新 static/css/app.css：財經學院響應式版面、四分院主題色與互動圖表樣式（+4 / -2 行）","[校園導覽] 更新 static/js/campus_nav.js：開心學園共用「🏫 校園」返回按鈕（+1733 / -12 行）","[核心引擎] 更新 static/js/core.js：路由、進度與 XP 儲存、IME 安全快捷鍵與實戰深連結（+3 / -5 行）","[意見回饋] 更新 static/js/feedback.js：三欄位意見回饋表單與歷史紀錄（+24 / -3 行）","[意見信件] 更新 tools/feedback_mailer.py：意見回饋儲存與寄送 okayell@hotmail.com（+4 / -2 行）"],"files_count":6},{"version":"1.0.0","date":"2026-10-30","bump":"major","title":"財經學院 v1.0.0 初版發布（技術分析 · 基本面 · 籌碼面 · 消息面）","highlights":["四大分院共 46 堂台股核心課程（技術分析 12 課、基本面 12 課、籌碼面 11 課、消息面 11 課），依入門 → 進階 → 實戰三階段編排","內建 38 組純 SVG 互動模擬圖表（K 線、均線、KD、RSI、MACD、布林通道、財報三表、本益比河流圖、三大法人、融資維持率 130% 試算等）","150+ 則台股術語百科（課文首次出現自動標註懸浮卡片）與跨分院綜合測驗＋錯題本","每課無縫串接「台股智慧選股」實戰區深連結，並整合開心學園「🏫 校園」導覽與三層教育免責聲明"],"files_count":28}]};
 
   var BUMP = {
     major: { badge: 'Major 大改版', cls: 'bad', desc: '進第 1 位數（X.0.0）：整體架構大改版、跨模組大規模升級' },
