@@ -1,7 +1,7 @@
 {
   "tw-stock-insight": {
     "freshness": "2026-11-06|2026-11-06T21:31:45+08:00",
-    "bytes": 1162640
+    "bytes": 1163903
   },
   "nba-betting-iq": {
     "freshness": "2026-11-09T06:40:18+08:00",
@@ -20,8 +20,8 @@
     "bytes": 496806
   },
   "cinema": {
-    "freshness": "2026-11-09 00:17",
-    "bytes": 928375
+    "freshness": "2026-11-09 09:51",
+    "bytes": 920839
   },
   "_stock_seed": {
     "v": 2,
