@@ -1024,7 +1024,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
           <small>四十音 → A1–C2・聽說讀寫</small>
         </span>
       </a>
-      <button type="button" class="ver-badge" id="verBadgeBtn" title="版本資訊、更新日誌與離線匯出">v2.4.0</button>
+      <button type="button" class="ver-badge" id="verBadgeBtn" title="版本資訊、更新日誌與離線匯出">v2.4.1</button>
     </div>
     <nav class="top-nav" id="topNav" aria-label="主要功能"></nav>
     <div class="header-stats" id="headerStats"></div>
@@ -4971,6 +4971,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         if (meterCtx) { try { meterCtx.close(); } catch {} meterCtx = null; }
       };
 
+      const startedAt = Date.now();
       mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
       let resolvedUrl = null;
       const stopped = new Promise((resolve) => {
@@ -4978,16 +4979,13 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
           if (resolvedUrl !== null) return;
           closeMeter();
           try { stream.getTracks().forEach((t) => t.stop()); } catch {}
+          const ms = Date.now() - startedAt;
           const type = mr.mimeType || mime || 'audio/webm';
           const blob = new Blob(chunks, { type });
-          KO.rec.silent = KO.rec.metered && KO.rec.peak < 0.008;
+          KO.rec.silent = blob.size < 600 || ms < 400 || (KO.rec.metered && KO.rec.peak < 0.012);
           resolvedUrl = blob.size > 0 ? URL.createObjectURL(blob) : '';
-          if (resolvedUrl) {
-            if (KO.rec.lastUrl && KO.rec.lastUrl !== resolvedUrl) {
-              try { URL.revokeObjectURL(KO.rec.lastUrl); } catch {}
-            }
-            KO.rec.lastUrl = resolvedUrl;
-          }
+          KO.rec.lastUrl = resolvedUrl || null;
+          KO.rec.last = { url: resolvedUrl || null, silent: KO.rec.silent, bytes: blob.size, peak: KO.rec.peak, ms };
           resolve(resolvedUrl);
         };
         mr.onstop = finalize;
@@ -5049,6 +5047,203 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
         },
       };
     },
+  };
+
+  const ASR_FATAL_ERRORS = new Set(['network', 'service-not-allowed', 'language-not-supported', 'audio-capture', 'start-failed', 'busy']);
+  const koSleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let asrBroken = false;
+  let asrMutesMic = false;
+  let activeCapture = null;
+
+  KO.isCapturing = () => !!activeCapture;
+  KO.stopCaptureSpeech = () => { if (activeCapture && activeCapture.stop) activeCapture.stop(); };
+  KO.abortCaptureSpeech = () => { if (activeCapture && activeCapture.abort) activeCapture.abort(); };
+  KO.captureSpeech = async function (opts = {}) {
+    if (activeCapture) { try { activeCapture.abort(); } catch {} activeCapture = null; }
+    KO.tts.stop();
+    stopPlayUrl();
+    const secOk = typeof window !== 'undefined' && !!window.isSecureContext;
+    const canRec = KO.rec.supported && secOk;
+    const useAsr = KO.asr.status().ok && !asrBroken && !asrMutesMic && opts.pureRecord !== true;
+    if (!canRec && !useAsr) {
+      const st = KO.asr.status();
+      return { text: '', alts: [], audioUrl: null, error: st.code || 'unsupported', msg: st.msg || '無法使用麥克風' };
+    }
+
+    let aborted = false;
+    let userStopped = false;
+    let inPureVad = !useAsr;
+    let vadDoneResolve = null;
+    let vadTimer = null;
+    let recHandle = null;
+    let asrHandle = null;
+    const t0 = Date.now();
+    let heard = false;
+    let lastLoud = t0;
+    const maxMs = opts.maxMs || 20000;
+    const vadSilenceMs = opts.vadSilenceMs || 1800;
+    const minMs = opts.minMs || 1000;
+
+    const clearVad = () => {
+      if (vadTimer) { clearInterval(vadTimer); vadTimer = null; }
+    };
+    const finishVad = () => {
+      clearVad();
+      if (vadDoneResolve) { const fn = vadDoneResolve; vadDoneResolve = null; fn(); }
+    };
+    const startVadWait = () => {
+      if (aborted || userStopped) return Promise.resolve();
+      inPureVad = true;
+      if (opts.onModeChange) { try { opts.onModeChange('record'); } catch {} }
+      return new Promise((resolve) => {
+        vadDoneResolve = resolve;
+        clearVad();
+        vadTimer = setInterval(() => {
+          if (aborted || userStopped) { finishVad(); return; }
+          const lv = KO.rec.level || 0;
+          const now = Date.now();
+          if (lv > 0.04) { heard = true; lastLoud = now; }
+          if ((heard && now - lastLoud > vadSilenceMs && now - t0 > minMs) || now - t0 > maxMs) {
+            finishVad();
+          }
+        }, 100);
+      });
+    };
+
+    const stopRecClean = async () => {
+      if (!recHandle) return { audioUrl: null, recSilent: false };
+      const rh = recHandle;
+      recHandle = null;
+      let rawUrl = '';
+      try { rawUrl = await rh.stop(); } catch { rawUrl = ''; }
+      const info = KO.rec.last;
+      const recSilent = !!(info && info.silent);
+      if (!rawUrl || recSilent) {
+        if (rawUrl) { try { URL.revokeObjectURL(rawUrl); } catch {} }
+        return { audioUrl: null, recSilent };
+      }
+      return { audioUrl: rawUrl, recSilent: false };
+    };
+
+    const ctrl = {
+      stop() {
+        userStopped = true;
+        if (asrHandle && asrHandle.stop) { try { asrHandle.stop(); } catch {} }
+        else if (KO.asr.listening) KO.asr.stop();
+        finishVad();
+      },
+      abort() {
+        aborted = true;
+        userStopped = true;
+        KO.asr.abort();
+        finishVad();
+        if (recHandle) {
+          const rh = recHandle;
+          recHandle = null;
+          try { rh.stop().then((u) => { if (u) URL.revokeObjectURL(u); }).catch(() => {}); } catch {}
+        }
+      },
+    };
+    activeCapture = ctrl;
+
+    try {
+      if (canRec) {
+        try {
+          recHandle = await KO.rec.start({
+            onLevel: (lv) => {
+              if (aborted) return;
+              if (lv > 0.04) { heard = true; lastLoud = Date.now(); }
+              if (opts.onLevel) { try { opts.onLevel(lv, inPureVad); } catch {} }
+            },
+          });
+        } catch {
+          recHandle = null;
+        }
+      }
+
+      if (aborted) {
+        await stopRecClean();
+        return { text: '', alts: [], audioUrl: null, aborted: true };
+      }
+
+      if (!useAsr) {
+        if (!recHandle) {
+          return { text: '', alts: [], audioUrl: null, error: 'not-allowed', msg: '無法啟動麥克風：請在瀏覽器網址列允許麥克風存取。' };
+        }
+        await startVadWait();
+        const { audioUrl, recSilent } = await stopRecClean();
+        if (aborted) {
+          if (audioUrl) { try { URL.revokeObjectURL(audioUrl); } catch {} }
+          return { text: '', alts: [], audioUrl: null, aborted: true };
+        }
+        return {
+          text: '',
+          alts: [],
+          audioUrl,
+          fallbackRecorded: !!audioUrl,
+          recSilent,
+          error: audioUrl ? null : 'no-speech',
+          msg: audioUrl ? '' : '沒有錄到聲音：請確認麥克風沒有被靜音、靠近一點再說一次。',
+        };
+      }
+
+      asrHandle = KO.asr.listen({
+        lang: opts.lang || 'ko-KR',
+        continuous: opts.continuous !== undefined ? opts.continuous : true,
+        maxMs: Math.max(30000, maxMs),
+        silenceMs: opts.silenceMs || 3600,
+        onInterim: (t) => {
+          if (!aborted && opts.onInterim) opts.onInterim(t);
+        },
+      });
+      const r = await asrHandle;
+      asrHandle = null;
+
+      if (aborted) {
+        await stopRecClean();
+        return { text: '', alts: [], audioUrl: null, aborted: true };
+      }
+
+      if (r.error && ASR_FATAL_ERRORS.has(r.error)) {
+        asrBroken = true;
+      }
+
+      if (!r.text && recHandle && !userStopped && r.error !== 'not-allowed') {
+        await startVadWait();
+      } else if (r.text && recHandle && !userStopped) {
+        await koSleep(140);
+      }
+
+      const hadRec = !!recHandle;
+      const { audioUrl, recSilent } = await stopRecClean();
+      if (aborted) {
+        if (audioUrl) { try { URL.revokeObjectURL(audioUrl); } catch {} }
+        return { text: '', alts: [], audioUrl: null, aborted: true };
+      }
+
+      let switchedToPureRec = false;
+      if (r.text && hadRec && recSilent && KO.rec.metered) {
+        asrMutesMic = true;
+        switchedToPureRec = true;
+      } else if (!r.text && audioUrl) {
+        asrBroken = true;
+      }
+
+      return {
+        text: r.text || '',
+        alts: r.alts || (r.text ? [r.text] : []),
+        confidence: r.confidence || 0,
+        audioUrl,
+        recSilent,
+        switchedToPureRec,
+        fallbackRecorded: !r.text && !!audioUrl,
+        error: (r.text || audioUrl) ? null : (r.error || 'no-speech'),
+        msg: (r.text || audioUrl) ? '' : (r.msg || '沒有偵測到聲音，請靠近麥克風再試一次。'),
+      };
+    } finally {
+      clearVad();
+      if (activeCapture === ctrl) activeCapture = null;
+    }
   };
 
   KO.playUrl = function (url, btn) {
@@ -27512,44 +27707,31 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
   function renderShadow(body, ctx) {
     const { lesson, genders } = ctx;
     const prog = KO.lessonProg(lesson.id);
+    const asrOk = KO.asr.status().ok;
+    const micOk = asrOk || (KO.rec.supported && window.isSecureContext);
     let idx = Math.max(0, Math.min(lesson.lines.length - 1, ctx.startIdx || 0));
     let recUrl = null;
-    let listening = false;
-    let recHandle = null;
-    let recOnlyHandle = null;
-    let asrHandle = null;
+    let lastResIdx = -1;
+    let lastResHtml = '';
     let disposed = false;
 
+    function revokeRec() {
+      if (recUrl) {
+        try { URL.revokeObjectURL(recUrl); } catch {}
+        recUrl = null;
+      }
+    }
+
     function stopActiveShadow() {
-      listening = false;
       KO.tts.stop();
-      if (asrHandle) {
-        const a = asrHandle;
-        asrHandle = null;
-        try { a.stop(); } catch {}
-      } else {
-        KO.asr.stop();
-      }
-      if (recHandle) {
-        const r = recHandle;
-        recHandle = null;
-        try { r.stop(); } catch {}
-      }
-      if (recOnlyHandle) {
-        const ro = recOnlyHandle;
-        recOnlyHandle = null;
-        try { ro.stop(); } catch {}
-      }
+      KO.abortCaptureSpeech();
     }
 
     if (KO.onCleanup) {
       KO.onCleanup(() => {
         disposed = true;
         stopActiveShadow();
-        if (recUrl) {
-          try { URL.revokeObjectURL(recUrl); } catch {}
-          recUrl = null;
-        }
+        revokeRec();
       });
     }
 
@@ -27557,7 +27739,10 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
       const jumpBtn = e.target.closest('[data-j]');
       if (jumpBtn && body.contains(jumpBtn)) {
         stopActiveShadow();
+        revokeRec();
         idx = +jumpBtn.dataset.j;
+        lastResIdx = -1;
+        lastResHtml = '';
         draw();
         return;
       }
@@ -27592,43 +27777,43 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
             <div class="sh-zh">${esc(ln.zh)}</div>
           </div>
 
-          <div class="sh-PromptBtns">
-            <button class="btn" id="shListen">🔊 先聽示範</button>
-            <button class="btn" id="shSlow">🐢 慢速 0.65×</button>
-            ${recUrl ? `<button class="btn" id="shPlayMine">▶️ 聽自己的錄音</button>` : ''}
+          <div class="sh-PromptBtns" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <button type="button" class="btn" id="shListen">🔊 聽原音</button>
+            <button type="button" class="btn" id="shSlow">🐢 慢速 0.65×</button>
+            <button type="button" class="btn primary lg mic-btn" id="shMic" ${micOk ? '' : 'disabled'}>🎤 開始跟讀</button>
+            <button type="button" class="btn" id="shPlayMine" ${recUrl ? '' : 'disabled'}>🔈 聽我的錄音</button>
           </div>
 
-          <div class="sh-mic-row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-            ${KO.asr.supported ? `
-              <button class="btn primary lg mic-btn" id="shMic">
-                🎙️ 按一下開始唸韓文（唸完自動評分）
-              </button>` : `
-              <div class="warn-box">
-                此瀏覽器不支援即時韓語語音辨識（建議使用 Chrome 或 Edge）。您仍可使用下方錄音自我對照，或直接輸入剛才唸出的韓文檢查：
-                <div style="display:flex;gap:8px;margin-top:8px">
-                  <input id="shManual" class="search-in ko-txt" style="flex:1" placeholder="輸入韓文或羅馬拼音自我檢測…">
-                  <button class="btn primary" id="shManualBtn">比對</button>
-                </div>
-              </div>`}
-            ${KO.rec.supported ? `<button class="btn lg" id="shRecOnly" title="只錄下您的聲音並立即重播對照（避免語音辨識搶麥克風）">🎙️ 只錄音</button>` : ''}
-          </div>
+          ${!micOk ? `
+            <div class="warn-box" style="margin-top:10px">
+              此環境無法使用麥克風（請確認為安全連線 HTTPS / localhost 並允許麥克風權限）。您仍可直接輸入剛才唸出的韓文或羅馬拼音自我檢測：
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <input id="shManual" class="search-in ko-txt" style="flex:1" placeholder="輸入韓文或羅馬拼音自我檢測…">
+                <button type="button" class="btn primary" id="shManualBtn">比對</button>
+              </div>
+            </div>` : (!asrOk ? `<div class="small muted" style="margin-top:6px">💡 此瀏覽器不支援即時語音辨識評分，按「🎤 開始跟讀」會自動錄下您的發音並回放與原音比對。</div>` : '')}
 
           <div id="shLive" class="sh-live muted"></div>
-          <div id="shResult"></div>
+          <div id="shResult">${lastResIdx === idx ? lastResHtml : ''}</div>
 
           <div class="sh-nav">
-            <button class="btn" id="shPrev" ${idx === 0 ? 'disabled' : ''}>← 上一句</button>
-            <button class="btn primary" id="shNext">${idx === lesson.lines.length - 1 ? '完成跟讀 → 角色扮演' : '下一句 →'}</button>
+            <button type="button" class="btn" id="shPrev" ${idx === 0 ? 'disabled' : ''}>← 上一句</button>
+            <button type="button" class="btn primary" id="shNext">${idx === lesson.lines.length - 1 ? '完成跟讀 → 角色扮演' : '下一句 →'}</button>
           </div>
         </div>
       `;
 
-      qs('#shListen', body).onclick = (e) =>
+      qs('#shListen', body).onclick = (e) => {
+        KO.abortCaptureSpeech();
         KO.tts.speak(ln.ko, { gender: genders[ln.sp], btn: e.currentTarget });
-      qs('#shSlow', body).onclick = (e) =>
+      };
+      qs('#shSlow', body).onclick = (e) => {
+        KO.abortCaptureSpeech();
         KO.tts.speak(ln.ko, { gender: genders[ln.sp], rate: 0.65, btn: e.currentTarget });
-      if (recUrl && qs('#shPlayMine', body)) {
-        qs('#shPlayMine', body).onclick = (e) => KO.playUrl(recUrl, e.currentTarget);
+      };
+      const playMineBtn = qs('#shPlayMine', body);
+      if (playMineBtn) {
+        playMineBtn.onclick = (e) => { if (recUrl) KO.playUrl(recUrl, e.currentTarget); };
       }
 
       const showResult = (heard) => {
@@ -27644,9 +27829,8 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
         if (Object.keys(shadowed).length >= Math.ceil(lesson.lines.length * 0.6)) KO.completeLesson(lesson.id);
 
         const missed = KO.missedOf(res.items);
-        const resEl = qs('#shResult', body);
-        if (!resEl) return;
-        resEl.innerHTML = `
+        lastResIdx = idx;
+        lastResHtml = `
           <div class="sh-result">
             <div class="score-head">
               <div class="score-num ${tier}">${res.pct}%</div>
@@ -27657,171 +27841,92 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
             </div>
             <div class="scored-line">${KO.scoredHtml(res.items)}</div>
             <div class="small muted">綠＝完全正確・藍＝連音發音一致・黃＝接近・紅底線＝漏讀（點下方詞可單獨慢速練發音）</div>
-            ${missed.length ? `<div class="missed-row" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${missed.map((w) => `<button class="btn sm" data-mw="${esc(w)}">🔊 <span class="ko-txt">${esc(w)}</span></button>`).join('')}</div>` : ''}
+            ${missed.length ? `<div class="missed-row" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${missed.map((w) => `<button type="button" class="btn sm" data-mw="${esc(w)}">🔊 <span class="ko-txt">${esc(w)}</span></button>`).join('')}</div>` : ''}
           </div>`;
+        draw();
       };
 
       const micBtn = qs('#shMic', body);
-      if (micBtn) {
+      if (micBtn && micOk) {
         micBtn.onclick = async () => {
-          if (listening) {
-            listening = false;
-            asrHandle && asrHandle.stop();
+          if (KO.isCapturing()) {
+            KO.stopCaptureSpeech();
             return;
           }
-          listening = true;
+          const myIdx = idx;
           micBtn.classList.add('recording');
-          micBtn.textContent = '⏹ 正在聆聽韓語… 唸完請點一下結束';
-          qs('#shLive', body).textContent = '請開始用韓語朗讀上方句子…';
-          if (KO.rec.supported) {
-            try { recHandle = await KO.rec.start(); } catch { recHandle = null; }
-          }
-          if (disposed || !body.isConnected) {
-            if (recHandle) { try { recHandle.stop(); } catch {} recHandle = null; }
-            return;
-          }
-          asrHandle = KO.asr.listen({
+          micBtn.textContent = '⏹ 說完了';
+          const lv = qs('#shLive', body);
+          let hasInterim = false;
+          if (lv) lv.textContent = '🎙️ 請開始用韓語朗讀…（說完自動停，或再按一下「⏹ 說完了」）';
+          const chars = (ln.koPlain || ln.ko || '').length;
+          const cap = await KO.captureSpeech({
             lang: 'ko-KR',
+            continuous: true,
+            maxMs: Math.max(15000, 10000 + chars * 450),
+            silenceMs: 3600,
+            vadSilenceMs: 1800,
             onInterim: (t) => {
-              if (disposed || !body.isConnected) return;
-              const lv = qs('#shLive', body);
-              if (lv) lv.textContent = `即時辨識：${t}`;
+              if (disposed || !body.isConnected || idx !== myIdx) return;
+              hasInterim = true;
+              const liveEl = qs('#shLive', body);
+              if (liveEl) liveEl.textContent = `🎙️ 即時辨識：${t}`;
             },
-            onFinal: async (t) => {
-              listening = false;
-              asrHandle = null;
-              if (recHandle) {
-                const rh = recHandle;
-                recHandle = null;
-                try {
-                  const u = await rh.stop();
-                  if (disposed) { if (u) URL.revokeObjectURL(u); return; }
-                  if (recUrl && recUrl !== u) URL.revokeObjectURL(recUrl);
-                  recUrl = u;
-                } catch {}
-              }
-              if (disposed || !body.isConnected) return;
-              micBtn.classList.remove('recording');
-              micBtn.textContent = '🎙️ 再唸一次';
-              const lv = qs('#shLive', body);
-              if (lv) lv.textContent = '';
-              showResult(t);
-              if (KO.rec.silent && lv) {
-                lv.textContent = '💡 提示：瀏覽器在語音辨識時可能獨佔麥克風導致錄音無聲，想聽自己的發音請點「🎙️ 只錄音」。';
-              }
-              if (recUrl && !qs('#shPlayMine', body)) {
-                const pb = document.createElement('button');
-                pb.className = 'btn';
-                pb.id = 'shPlayMine';
-                pb.textContent = '▶️ 聽自己的錄音';
-                pb.onclick = (e) => KO.playUrl(recUrl, e.currentTarget);
-                const row = qs('.sh-PromptBtns', body);
-                if (row) row.appendChild(pb);
-              }
-            },
-            onError: async (err) => {
-              listening = false;
-              asrHandle = null;
-              if (recHandle) {
-                const rh = recHandle;
-                recHandle = null;
-                try {
-                  const u = await rh.stop();
-                  if (disposed) { if (u) URL.revokeObjectURL(u); return; }
-                  if (u) {
-                    if (recUrl && recUrl !== u) URL.revokeObjectURL(recUrl);
-                    recUrl = u;
-                  }
-                } catch {}
-              }
-              if (disposed || !body.isConnected) return;
-              micBtn.classList.remove('recording');
-              micBtn.textContent = '🎙️ 按一下開始唸韓文';
-              if (recUrl && !qs('#shPlayMine', body)) {
-                const pb = document.createElement('button');
-                pb.className = 'btn';
-                pb.id = 'shPlayMine';
-                pb.textContent = '▶️ 聽自己的錄音';
-                pb.onclick = (e) => KO.playUrl(recUrl, e.currentTarget);
-                const row = qs('.sh-PromptBtns', body);
-                if (row) row.appendChild(pb);
-              }
-              const tip = err === 'not-allowed' ? '麥克風權限被拒，請在瀏覽器網址列允許麥克風存取' : err === 'no-speech' ? '沒有偵測到語音辨識，可直接點「🎙️ 只錄音」錄下聲音重播對照' : `語音辨識中斷（${err}），可點「🎙️ 只錄音」直接錄音重播`;
-              const lv = qs('#shLive', body);
-              if (lv) lv.textContent = tip;
+            onLevel: (level, pureVad) => {
+              if (disposed || !body.isConnected || idx !== myIdx || (!pureVad && hasInterim)) return;
+              const bars = '▮'.repeat(Math.min(10, Math.max(1, Math.round(level * 32))));
+              const liveEl = qs('#shLive', body);
+              if (liveEl) liveEl.textContent = `🎙️ 錄音中 ${bars}（說完自動停，或按「⏹ 說完了」）`;
             },
           });
+          if (cap.aborted || disposed || !body.isConnected || idx !== myIdx) {
+            if (cap.audioUrl) { try { URL.revokeObjectURL(cap.audioUrl); } catch {} }
+            return;
+          }
+          if (cap.audioUrl) {
+            if (recUrl && recUrl !== cap.audioUrl) { try { URL.revokeObjectURL(recUrl); } catch {} }
+            recUrl = cap.audioUrl;
+          }
+          if (cap.text) {
+            showResult(cap.text);
+            const liveEl = qs('#shLive', body);
+            if (liveEl) {
+              if (cap.switchedToPureRec) {
+                liveEl.textContent = '💡 偵測到此裝置語音辨識會獨佔麥克風，已自動切換為穩定錄音模式；再按一次「🎤 開始跟讀」即可錄下聲音回放對照。';
+              } else if (recUrl) {
+                liveEl.textContent = '✅ 已同步錄音！可按「🔈 聽我的錄音」與原音比對。';
+              }
+            }
+            return;
+          }
+          if (cap.audioUrl) {
+            const shadowed = { ...(prog.shadowed || {}) };
+            shadowed[idx] = Math.max(shadowed[idx] || 0, 85);
+            prog.shadowed = shadowed;
+            KO.bumpDay('lines', 1);
+            KO.markLesson(lesson.id, { shadowed });
+            if (Object.keys(shadowed).length >= Math.ceil(lesson.lines.length * 0.6)) KO.completeLesson(lesson.id);
+            draw();
+            const liveEl = qs('#shLive', body);
+            if (liveEl) liveEl.textContent = '✅ 錄音完成！可按「🔈 聽我的錄音」與「🔊 聽原音」反覆比對發音。';
+            KO.playUrl(recUrl, qs('#shPlayMine', body));
+            return;
+          }
+          draw();
+          const liveEl = qs('#shLive', body);
+          if (liveEl) liveEl.textContent = `⚠️ ${cap.msg || '沒有錄到聲音：請確認麥克風沒有被靜音、靠近一點再說一次。'}`;
         };
       }
 
       const manBtn = qs('#shManualBtn', body);
       if (manBtn) manBtn.onclick = () => showResult(qs('#shManual', body).value);
 
-      const recOnly = qs('#shRecOnly', body);
-      if (recOnly) {
-        recOnly.onclick = async () => {
-          if (listening && asrHandle) {
-            listening = false;
-            try { asrHandle.stop(); } catch {}
-          }
-          if (!recOnlyHandle) {
-            try {
-              KO.tts.stop();
-              KO.asr.abort();
-              recOnly.classList.add('recording');
-              recOnly.textContent = '⏹ 停止並重播';
-              qs('#shLive', body).textContent = '🎙️ 正在錄音中… 請開口朗讀，唸完再點一下「⏹ 停止並重播」';
-              recOnlyHandle = await KO.rec.start({
-                onLevel: (lv) => {
-                  if (disposed || !body.isConnected) return;
-                  const bars = Math.min(10, Math.max(1, Math.round(lv * 38)));
-                  const liveEl = qs('#shLive', body);
-                  if (liveEl) liveEl.textContent = `🎙️ 正在錄音中 ${'▮'.repeat(bars)}${'▯'.repeat(10 - bars)}（唸完點「⏹ 停止並重播」）`;
-                },
-              });
-              if (disposed || !body.isConnected) {
-                const ro = recOnlyHandle;
-                recOnlyHandle = null;
-                try { ro.stop(); } catch {}
-              }
-            } catch {
-              recOnlyHandle = null;
-              recOnly.classList.remove('recording');
-              recOnly.textContent = '🎙️ 只錄音';
-              KO.toast('無法啟用麥克風，請檢查瀏覽器麥克風權限');
-            }
-          } else {
-            const curH = recOnlyHandle;
-            recOnlyHandle = null;
-            recOnly.classList.remove('recording');
-            recOnly.textContent = '🎙️ 只錄音';
-            const u = await curH.stop();
-            if (disposed || !body.isConnected) {
-              if (u) { try { URL.revokeObjectURL(u); } catch {} }
-              return;
-            }
-            if (u) {
-              if (recUrl && recUrl !== u) { try { URL.revokeObjectURL(recUrl); } catch {} }
-              recUrl = u;
-            }
-            draw();
-            if (recUrl) {
-              const liveEl = qs('#shLive', body);
-              if (liveEl) {
-                liveEl.textContent = KO.rec.silent
-                  ? '⚠️ 錄音音量極低，請確認系統麥克風輸入未被靜音'
-                  : '✅ 錄音完成！正在為您播放剛才的錄音（也可隨時點「▶️ 聽自己的錄音」重聽）';
-              }
-              const playBtn = qs('#shPlayMine', body);
-              KO.playUrl(recUrl, playBtn);
-            }
-          }
-        };
-      }
-
-      qs('#shPrev', body).onclick = () => { stopActiveShadow(); idx--; draw(); };
+      qs('#shPrev', body).onclick = () => { stopActiveShadow(); revokeRec(); lastResIdx = -1; lastResHtml = ''; idx--; draw(); };
       qs('#shNext', body).onclick = () => {
         stopActiveShadow();
+        revokeRec();
+        lastResIdx = -1;
+        lastResHtml = '';
         if (idx < lesson.lines.length - 1) { idx++; draw(); }
         else location.hash = `#/lesson/${lesson.id}/role`;
       };
@@ -27833,6 +27938,7 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
   // ==================== 模式 3：角色扮演（每句右側直接開口說韓語＋可選從頭自動對話） ====================
   function renderRole(body, ctx) {
     const { lesson, genders } = ctx;
+    const micOk = KO.asr.status().ok || (KO.rec.supported && window.isSecureContext);
     const speakers = [];
     lesson.lines.forEach((l) => { if (!speakers.includes(l.sp)) speakers.push(l.sp); });
     let myRole = speakers[1] || speakers[0];
@@ -27841,8 +27947,6 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
     let autoStep = -1;
     let autoAdvanceTimer = 0;
     let recIdx = -1;
-    let activeAsr = null;
-    let activeRec = null;
     let scores = {};
     let scoredItems = {};
     let heardText = {};
@@ -27857,18 +27961,7 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
         autoAdvanceTimer = 0;
       }
       KO.tts.stop();
-      if (activeAsr) {
-        const h = activeAsr;
-        activeAsr = null;
-        try { h.stop(); } catch {}
-      } else {
-        KO.asr.stop();
-      }
-      if (activeRec) {
-        const r = activeRec;
-        activeRec = null;
-        try { r.stop(); } catch {}
-      }
+      KO.abortCaptureSpeech();
       recIdx = -1;
     }
 
@@ -27980,21 +28073,20 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
                     ${masked ? '' : `<div class="ro">${esc(KO.romaji(ln.ko))}</div>`}
                     <div class="rb-zh">${esc(ln.zh)}</div>
                     ${heardText[i] ? `<div class="small muted rb-heard">🎧 辨識：<span class="ko-txt">${esc(heardText[i])}</span></div>` : ''}
-                    <div class="rb-live small" data-rlive="${i}">${isRec ? '🎙️ 正在聆聽韓語… 說完請點右側「⏹ 說完點此」' : ''}</div>
+                    <div class="rb-live small" data-rlive="${i}">${isRec ? '🎙️ 正在聆聽韓語… 說完請點右側「⏹ 說完了」' : ''}</div>
                   </div>
                   <div class="rbub-acts">
                     ${mine ? `
-                      ${KO.asr.supported ? `
+                      ${micOk ? `
                         <button type="button" class="btn primary mic-btn rb-mic-btn ${isRec ? 'recording' : ''}" data-rmic="${i}">
-                          ${isRec ? '⏹ 說完點此' : sc != null ? '🎙️ 再說一次' : '🎙️ 按一下開始說韓語'}
+                          ${isRec ? '⏹ 說完了' : sc != null ? '🎙️ 再說一次' : '🎙️ 按一下開始說韓語'}
                         </button>
                       ` : `
-                        ${KO.rec.supported ? `<button type="button" class="btn sm ${isRec ? 'recording mic-btn' : ''}" data-rrec="${i}">${isRec ? '⏹ 停止錄音' : '⏺ 錄音'}</button>` : ''}
                         <button type="button" class="btn primary sm" data-rdone="${i}">${sc != null ? '✓ 已唸過' : '✓ 我唸過了'}</button>
                       `}
                       <button type="button" class="btn sm" data-rhint="${i}" title="聽標準韓語示範">🔊 聽示範</button>
                       <button type="button" class="icon-btn" data-rslow="${i}" title="慢速播放 (0.65×)">🐢</button>
-                      ${recUrls[i] ? `<button type="button" class="btn sm" data-rmine="${i}" title="聽自己的錄音">▶️ 聽錄音</button>` : ''}
+                      ${recUrls[i] ? `<button type="button" class="btn sm" data-rmine="${i}" title="聽自己的錄音">🔈 聽錄音</button>` : ''}
                       ${active ? `<button type="button" class="btn sm" data-rpass="${i}">下一句 →</button>` : ''}
                     ` : `
                       <button type="button" class="btn sm" data-rhint="${i}" title="播放對方台詞">🔊 播放</button>
@@ -28049,80 +28141,85 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
     }
 
     async function toggleMicForLine(i) {
-      if (recIdx === i && activeAsr) {
-        activeAsr.stop();
+      if (recIdx === i && KO.isCapturing()) {
+        KO.stopCaptureSpeech();
         return;
       }
       stopActiveMedia();
       recIdx = i;
       draw();
       const ln = lesson.lines[i];
-      if (KO.rec.supported) {
-        try { activeRec = await KO.rec.start(); } catch { activeRec = null; }
-      }
-      if (disposed || !document.body.contains(body)) {
-        if (activeRec) { try { activeRec.stop(); } catch {} activeRec = null; }
-        return;
-      }
       const mySessionIdx = i;
-      activeAsr = KO.asr.listen({
+      const chars = (ln.koPlain || ln.ko || '').length;
+      let hasInterim = false;
+      const cap = await KO.captureSpeech({
         lang: 'ko-KR',
+        continuous: true,
+        maxMs: Math.max(15000, 10000 + chars * 450),
+        silenceMs: 3600,
+        vadSilenceMs: 1800,
         onInterim: (t) => {
           if (disposed) return;
+          hasInterim = true;
           const liveEl = qs(`[data-rlive="${mySessionIdx}"]`, body);
           if (liveEl) liveEl.textContent = `🎙️ 即時辨識：${t}`;
         },
-        onFinal: async (t) => {
-          activeAsr = null;
-          recIdx = -1;
-          if (activeRec) {
-            const ar = activeRec;
-            activeRec = null;
-            try {
-              const u = await ar.stop();
-              if (disposed) { if (u) URL.revokeObjectURL(u); return; }
-              if (recUrls[mySessionIdx]) URL.revokeObjectURL(recUrls[mySessionIdx]);
-              recUrls[mySessionIdx] = u;
-            } catch {}
-          }
-          if (disposed || !document.body.contains(body)) return;
-          const res = KO.score(ln.ko, t);
-          scores[mySessionIdx] = res.pct;
-          scoredItems[mySessionIdx] = res.items;
-          heardText[mySessionIdx] = res.heard || t || '（未偵測到語音）';
-          revealed[mySessionIdx] = true;
-          KO.bumpDay('lines', 1);
-          updateProgressIfReady(false);
-          draw();
-          if (autoRunning && autoStep === mySessionIdx) {
-            autoAdvanceTimer = setTimeout(() => {
-              autoAdvanceTimer = 0;
-              if (!disposed && autoRunning && autoStep === mySessionIdx) advanceAuto(mySessionIdx + 1);
-            }, 700);
-          }
-        },
-        onError: async (err) => {
-          activeAsr = null;
-          recIdx = -1;
-          if (activeRec) {
-            const ar = activeRec;
-            activeRec = null;
-            try {
-              const u = await ar.stop();
-              if (u) URL.revokeObjectURL(u);
-            } catch {}
-          }
-          if (disposed || !document.body.contains(body)) return;
-          draw();
+        onLevel: (lv, pureVad) => {
+          if (disposed || (!pureVad && hasInterim)) return;
           const liveEl = qs(`[data-rlive="${mySessionIdx}"]`, body);
-          const tip = err === 'not-allowed'
-            ? '⚠️ 麥克風權限被拒，請在瀏覽器網址列允許麥克風存取'
-            : err === 'no-speech'
-            ? '⚠️ 沒有偵測到聲音，請靠近麥克風再試一次'
-            : `⚠️ 語音辨識中斷（${err}），請再按一次`;
-          if (liveEl) liveEl.textContent = tip;
+          if (liveEl) {
+            const bars = '▮'.repeat(Math.min(10, Math.max(1, Math.round(lv * 30))));
+            liveEl.textContent = `🎙️ 錄音中 ${bars}（說完自動停，或點右側「⏹ 說完了」）`;
+          }
         },
       });
+      if (cap.aborted || disposed || !document.body.contains(body)) {
+        if (cap.audioUrl) { try { URL.revokeObjectURL(cap.audioUrl); } catch {} }
+        return;
+      }
+      if (cap.audioUrl) {
+        if (recUrls[mySessionIdx] && recUrls[mySessionIdx] !== cap.audioUrl) {
+          try { URL.revokeObjectURL(recUrls[mySessionIdx]); } catch {}
+        }
+        recUrls[mySessionIdx] = cap.audioUrl;
+      }
+      if (recIdx === mySessionIdx) recIdx = -1;
+      if (cap.text) {
+        const res = KO.score(ln.ko, cap.text);
+        scores[mySessionIdx] = res.pct;
+        scoredItems[mySessionIdx] = res.items;
+        heardText[mySessionIdx] = res.heard || cap.text || '（未偵測到語音）';
+        revealed[mySessionIdx] = true;
+        KO.bumpDay('lines', 1);
+        updateProgressIfReady(false);
+        draw();
+        if (autoRunning && autoStep === mySessionIdx) {
+          autoAdvanceTimer = setTimeout(() => {
+            autoAdvanceTimer = 0;
+            if (!disposed && autoRunning && autoStep === mySessionIdx) advanceAuto(mySessionIdx + 1);
+          }, 700);
+        }
+        return;
+      }
+      if (cap.audioUrl) {
+        scores[mySessionIdx] = scores[mySessionIdx] ?? 85;
+        revealed[mySessionIdx] = true;
+        KO.bumpDay('lines', 1);
+        updateProgressIfReady(false);
+        draw();
+        const liveEl = qs(`[data-rlive="${mySessionIdx}"]`, body);
+        if (liveEl) liveEl.textContent = '✅ 已錄下發音！可點右側「🔈 聽錄音」回放對照';
+        if (autoRunning && autoStep === mySessionIdx) {
+          autoAdvanceTimer = setTimeout(() => {
+            autoAdvanceTimer = 0;
+            if (!disposed && autoRunning && autoStep === mySessionIdx) advanceAuto(mySessionIdx + 1);
+          }, 700);
+        }
+        return;
+      }
+      draw();
+      const liveEl = qs(`[data-rlive="${mySessionIdx}"]`, body);
+      if (liveEl) liveEl.textContent = `⚠️ ${cap.msg || '沒有錄到聲音，請再按一次右側按鈕'}`;
     }
 
     const swapRole = () => {
@@ -28209,31 +28306,6 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
         updateProgressIfReady(false);
         if (autoRunning && autoStep === i) advanceAuto(i + 1);
         else draw();
-        return;
-      }
-      const recBtn = e.target.closest('[data-rrec]');
-      if (recBtn) {
-        const i = +recBtn.dataset.rrec;
-        if (recIdx === i && activeRec) {
-          const ar = activeRec;
-          activeRec = null;
-          recIdx = -1;
-          try {
-            if (recUrls[i]) URL.revokeObjectURL(recUrls[i]);
-            recUrls[i] = await ar.stop();
-          } catch {}
-          if (!disposed) draw();
-          return;
-        }
-        stopActiveMedia();
-        try {
-          activeRec = await KO.rec.start();
-          if (disposed) { try { activeRec.stop(); } catch {} activeRec = null; return; }
-          recIdx = i;
-          draw();
-        } catch {
-          KO.toast('無法啟用麥克風');
-        }
         return;
       }
       const passBtn = e.target.closest('[data-rpass]');
@@ -30561,8 +30633,19 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
   'use strict';
   const KO = (window.KO = window.KO || {});
   KO.RELEASES_DATA = {
-  "current_version": "2.4.0",
+  "current_version": "2.4.1",
   "releases": [
+    {
+      "version": "2.4.1",
+      "date": "2026-11-09",
+      "bump": "patch",
+      "title": "整合單一「開始跟讀」智慧錄音與評分引擎",
+      "highlights": [
+        "移除跟讀與角色扮演多餘的「🎙️ 只錄音／⏺ 錄音」按鈕，統一整合為單一顆「🎤 開始跟讀」智慧按鈕：支援韓語語音辨識時同步評分與錄音，若語音辨識無法連線或獨佔麥克風則自動無縫轉為純錄音回放，確保 100% 錄得到音。",
+        "修復角色扮演多句錄音 URL 提前釋放問題，確保每句自己的錄音皆可隨時重聽比對。"
+      ],
+      "files_count": 2
+    },
     {
       "version": "2.4.0",
       "date": "2026-11-09",

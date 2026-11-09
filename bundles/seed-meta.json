@@ -1,31 +1,31 @@
 {
   "tw-stock-insight": {
-    "freshness": "2026-11-06|2026-11-06T21:31:45+08:00",
-    "bytes": 1163903
+    "freshness": "2026-11-09|2026-11-09T12:32:42+08:00",
+    "bytes": 1161333
   },
   "nba-betting-iq": {
-    "freshness": "2026-11-09T06:40:18+08:00",
-    "bytes": 1447935
+    "freshness": "2026-11-09T11:40:30+08:00",
+    "bytes": 1490437
   },
   "epl-odds-iq": {
-    "freshness": "2026-11-09T07:30:33+08:00",
-    "bytes": 651504
+    "freshness": "2026-11-09T12:30:22+08:00",
+    "bytes": 654933
   },
   "f1-odds-iq": {
-    "freshness": "2026-11-09T07:31:02+08:00",
-    "bytes": 369798
+    "freshness": "2026-11-09T12:30:56+08:00",
+    "bytes": 372307
   },
   "tw-basketball": {
-    "freshness": "2026-11-09T07:40:13+08:00",
-    "bytes": 496806
+    "freshness": "2026-11-09T12:30:58+08:00",
+    "bytes": 496815
   },
   "cinema": {
     "freshness": "2026-11-09 09:51",
-    "bytes": 920839
+    "bytes": 920861
   },
   "_stock_seed": {
     "v": 2,
-    "max_date": "2026-11-06",
-    "bytes": 7660172
+    "max_date": "2026-11-09",
+    "bytes": 7681144
   }
 }

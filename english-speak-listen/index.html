@@ -925,7 +925,7 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
           <span class="brand-logo">🎓</span>
           <span class="brand-txt"><b>英語學院</b><small>聽・說・讀・單字 一次學齊</small></span>
         </a>
-        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes 與未發布檔案修改檢測">v3.4.0</button>
+        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes 與未發布檔案修改檢測">v3.4.1</button>
       </div>
       <nav class="main-nav" id="mainNav" aria-label="主要導覽"></nav>
       <div class="header-right" id="headerStats"></div>
@@ -4404,11 +4404,10 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
   };
 
   // ---------------------------------------------------------------------------
-  // 3. 錄音（回放自己的聲音）
-  //    - MediaRecorder 以 250ms timeslice 收資料（避免在部分瀏覽器 stop() 太快拿到 0 byte）
-  //    - 以 AnalyserNode 量測音量峰值：若整段幾乎無聲（例如 Android Chrome 的語音辨識獨佔麥克風），回報 silent，
-  //      讓 UI 提示改用「只錄音」模式
-  //    - recordOnly()：不經語音辨識、純錄音（說完自動停、最長 maxMs），任何支援 MediaRecorder 的瀏覽器都能回放
+  // 3. 錄音（回放自己的聲音）與智慧整合跟讀引擎
+  //    - MediaRecorder 以 250ms timeslice 收資料，stop() 前 requestData() 並釋放麥克風軌道
+  //    - ES.captureSpeech()：單一「🎤 開始跟讀」智慧整合（辨識可用時同步評分＋錄音；
+  //      若語音辨識失敗、秒斷或搶佔麥克風導致靜音，自動無縫轉為 VAD 純錄音回放）
   // ---------------------------------------------------------------------------
   function pickRecorderMime() {
     if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) return '';
@@ -4505,6 +4504,10 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
           if (settled) return;
           settled = true;
           this._stopMeter();
+          if (this.stream) {
+            try { this.stream.getTracks().forEach((t) => t.stop()); } catch (e) { /* ignore */ }
+            this.stream = null;
+          }
           const blob = new Blob(this.chunks, { type: mr.mimeType || this.mimeType || 'audio/webm' });
           // 以峰值判斷是否幾乎無聲（0.015 ≈ 背景噪音）；錄太短（< 400ms）也視為沒錄到
           const silent = blob.size < 600 || ms < 400 || (this.metered && this.peak < 0.015);
@@ -4514,6 +4517,9 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
         };
         mr.onstop = finish;
         mr.onerror = finish;
+        try {
+          if (mr.state === 'recording' && typeof mr.requestData === 'function') mr.requestData();
+        } catch (e) { /* ignore */ }
         try { mr.stop(); } catch (e) { finish(); }
         setTimeout(finish, 1500);
       });
@@ -4558,6 +4564,180 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
       this._stopMeter();
       if (this.stream) { this.stream.getTracks().forEach((t) => t.stop()); this.stream = null; }
     },
+  };
+
+  const ASR_FATAL_ERRORS = new Set(['network', 'service-not-allowed', 'language-not-supported', 'audio-capture', 'start-failed', 'busy']);
+  let asrBroken = false;
+  let asrMutesMic = false;
+  let activeCapture = null;
+
+  ES.isCapturing = () => !!activeCapture;
+  ES.stopCaptureSpeech = () => { if (activeCapture && activeCapture.stop) activeCapture.stop(); };
+  ES.abortCaptureSpeech = () => { if (activeCapture && activeCapture.abort) activeCapture.abort(); };
+  ES.captureSpeech = async (opts) => {
+    opts = opts || {};
+    if (activeCapture) { try { activeCapture.abort(); } catch (e) { /* ignore */ } activeCapture = null; }
+    ES.tts.stop();
+    const secOk = typeof window !== 'undefined' && !!window.isSecureContext;
+    const canRec = ES.rec.supported && secOk;
+    const useAsr = ES.asr.status().ok && !asrBroken && !asrMutesMic && opts.pureRecord !== true;
+    if (!canRec && !useAsr) {
+      const st = ES.asr.status();
+      return { text: '', alts: [], audioUrl: null, error: st.code || 'unsupported', msg: st.msg || '無法使用麥克風' };
+    }
+
+    let aborted = false;
+    let userStopped = false;
+    let inPureVad = !useAsr;
+    let vadDoneResolve = null;
+    let vadTimer = null;
+    const t0 = Date.now();
+    let heard = false;
+    let lastLoud = t0;
+    const maxMs = opts.maxMs || 20000;
+    const vadSilenceMs = opts.vadSilenceMs || 1800;
+    const minMs = opts.minMs || 1000;
+
+    const clearVad = () => {
+      if (vadTimer) { clearInterval(vadTimer); vadTimer = null; }
+    };
+    const finishVad = () => {
+      clearVad();
+      if (vadDoneResolve) { const fn = vadDoneResolve; vadDoneResolve = null; fn(); }
+    };
+    const startVadWait = () => {
+      if (aborted || userStopped) return Promise.resolve();
+      inPureVad = true;
+      if (opts.onModeChange) { try { opts.onModeChange('record'); } catch (e) { /* ignore */ } }
+      return new Promise((resolve) => {
+        vadDoneResolve = resolve;
+        clearVad();
+        vadTimer = setInterval(() => {
+          if (aborted || userStopped) { finishVad(); return; }
+          const lv = ES.rec.level || 0;
+          const now = Date.now();
+          if (lv > 0.045) { heard = true; lastLoud = now; }
+          if ((heard && now - lastLoud > vadSilenceMs && now - t0 > minMs) || now - t0 > maxMs) {
+            finishVad();
+          }
+        }, 100);
+      });
+    };
+
+    const ctrl = {
+      stop() {
+        userStopped = true;
+        if (ES.asr.listening) ES.asr.stop();
+        finishVad();
+      },
+      abort() {
+        aborted = true;
+        userStopped = true;
+        ES.asr.abort();
+        finishVad();
+        ES.rec.release();
+      },
+    };
+    activeCapture = ctrl;
+
+    try {
+      const recOn = canRec ? await ES.rec.start({
+        force: true,
+        onLevel: (lv) => {
+          if (aborted) return;
+          if (lv > 0.045) { heard = true; lastLoud = Date.now(); }
+          if (opts.onLevel) { try { opts.onLevel(lv, inPureVad); } catch (e) { /* ignore */ } }
+        },
+      }) : false;
+
+      if (aborted) {
+        if (recOn) {
+          const u = await ES.rec.stop();
+          if (u) { try { URL.revokeObjectURL(u); } catch (e) { /* ignore */ } }
+        }
+        return { text: '', alts: [], audioUrl: null, aborted: true };
+      }
+
+      if (!useAsr) {
+        if (!recOn) {
+          return { text: '', alts: [], audioUrl: null, error: 'not-allowed', msg: '無法啟動麥克風：請允許這個網站使用麥克風（網址列左邊的 🔒 圖示）。' };
+        }
+        await startVadWait();
+        const audioUrl = await ES.rec.stop();
+        if (aborted) {
+          if (audioUrl) { try { URL.revokeObjectURL(audioUrl); } catch (e) { /* ignore */ } }
+          return { text: '', alts: [], audioUrl: null, aborted: true };
+        }
+        const silent = !!(ES.rec.last && ES.rec.last.silent);
+        return {
+          text: '',
+          alts: [],
+          audioUrl,
+          fallbackRecorded: !!audioUrl,
+          recSilent: silent,
+          error: audioUrl ? null : 'no-speech',
+          msg: audioUrl ? '' : '沒有錄到聲音：請確認麥克風沒有被靜音、靠近一點再說一次。',
+        };
+      }
+
+      const r = await ES.asr.listen({
+        lang: opts.lang,
+        continuous: opts.continuous !== undefined ? opts.continuous : true,
+        maxMs: Math.max(30000, maxMs),
+        silenceMs: opts.silenceMs || 3200,
+        onInterim: (t) => {
+          if (!aborted && opts.onInterim) opts.onInterim(t);
+        },
+      });
+
+      if (aborted) {
+        if (recOn) {
+          const u = await ES.rec.stop();
+          if (u) { try { URL.revokeObjectURL(u); } catch (e) { /* ignore */ } }
+        }
+        return { text: '', alts: [], audioUrl: null, aborted: true };
+      }
+
+      if (r.error && ASR_FATAL_ERRORS.has(r.error)) {
+        asrBroken = true;
+      }
+
+      if (!r.text && recOn && !userStopped && r.error !== 'not-allowed') {
+        await startVadWait();
+      } else if (r.text && recOn && !userStopped) {
+        await ES.sleep(140);
+      }
+
+      const audioUrl = recOn ? await ES.rec.stop() : null;
+      if (aborted) {
+        if (audioUrl) { try { URL.revokeObjectURL(audioUrl); } catch (e) { /* ignore */ } }
+        return { text: '', alts: [], audioUrl: null, aborted: true };
+      }
+
+      const recSilent = !!(recOn && !audioUrl && ES.rec.last && ES.rec.last.silent);
+      let switchedToPureRec = false;
+      if (r.text && recSilent && ES.rec.metered) {
+        asrMutesMic = true;
+        switchedToPureRec = true;
+      } else if (!r.text && audioUrl) {
+        asrBroken = true;
+      }
+
+      return {
+        text: r.text || '',
+        alts: r.alts || (r.text ? [r.text] : []),
+        confidence: r.confidence || 0,
+        audioUrl,
+        recSilent,
+        switchedToPureRec,
+        fallbackRecorded: !r.text && !!audioUrl,
+        error: (r.text || audioUrl) ? null : (r.error || 'no-speech'),
+        msg: (r.text || audioUrl) ? '' : (r.msg || '沒有聽到聲音，請靠近麥克風再試一次。'),
+      };
+    } finally {
+      clearVad();
+      if (activeCapture === ctrl) activeCapture = null;
+    }
   };
   ES.playUrl = (url) => {
     if (!url) return Promise.resolve();
@@ -18149,8 +18329,12 @@ ES.WORDS.push(
     const st = ES.asr.status();
     if (st.ok) return '';
     if (st.code === 'unsupported') {
-      return `<div class="card mic-help"><h3>🎤 這個瀏覽器不支援語音辨識</h3>
-        <p>請改用<b>電腦版 Google Chrome</b> 開啟這個網址，就能使用跟讀評分、角色扮演與口說練習。聽力、閱讀與聽寫在任何瀏覽器都能用。</p></div>`;
+      if (ES.rec && ES.rec.supported && window.isSecureContext) {
+        return `<div class="card mic-help"><h3>💡 已自動啟用「錄音對照」模式</h3>
+          <p>此瀏覽器不支援即時語音辨識評分，按「<b>🎤 開始跟讀</b>」會自動錄下你的發音並回放與原音比對（若想加上逐字發音評分，可改用電腦版 Google Chrome）。</p></div>`;
+      }
+      return `<div class="card mic-help"><h3>🎤 這個瀏覽器不支援語音辨識與錄音</h3>
+        <p>請改用<b>電腦版 Google Chrome</b> 開啟這個網址，就能使用跟讀與角色扮演。聽力、閱讀與聽寫在任何瀏覽器都能用。</p></div>`;
     }
     const origin = location.origin;
     const port = location.port || '8911';
@@ -18809,13 +18993,12 @@ ES.WORDS.push(
   LUI.modes.shadow = (pane, L, query) => {
     const units = LUI.unitsOf(L);
     const asrOk = ES.asr.status().ok;
+    const micOk = asrOk || (ES.rec.supported && window.isSecureContext);
     const best = () => ((ES.prog(L.id).shadow || {}).s || {});
     let idx = units.findIndex((u) => u.key === query.u);
     if (idx < 0) idx = Math.max(0, units.findIndex((u) => best()[u.key] == null));
     const opt = { hide: false, auto: false };
     let lastRec = null;
-    let recSilentHint = false;
-    let recOnlyOn = false;
     let lastRes = null;
     let autoOn = false;
     pane.innerHTML = `<div class="shadow-layout">
@@ -18825,12 +19008,11 @@ ES.WORDS.push(
         <div class="card sh-card" id="shCard"></div>
         <div class="card sh-opts">
           <label class="tg"><input type="checkbox" id="shHide"><span>🙈 隱藏英文（挑戰模式）</span></label>
-          <label class="tg"><input type="checkbox" id="shAuto" ${asrOk ? '' : 'disabled'}><span>🔄 自動模式：播放 → 跟讀 → 評分 → 下一句</span></label>
+          <label class="tg"><input type="checkbox" id="shAuto" ${micOk ? '' : 'disabled'}><span>🔄 自動模式：播放 → 跟讀 → 下一句</span></label>
           ${LUI.rateSeg()}
         </div>
-        <div class="card tip-card"><b>🗣️ 跟讀（Shadowing）怎麼練？</b><p>先按 ▶ 聽一次，注意連音、重音和語調；再按 🎤 模仿著唸出來，系統會逐字比對：
-          <span class="tok ok">綠</span> 正確、<span class="tok near">橘</span> 接近、<span class="tok miss">紅</span> 漏掉或不清楚。每句練到 80 分以上再換下一句！
-          ${ES.rec.supported ? '跟讀時會同時錄音，按「🔈 聽我的錄音」和原音比較。' : ''}</p></div>
+        <div class="card tip-card"><b>🗣️ 跟讀（Shadowing）怎麼練？</b><p>先按 ▶ 聽一次，注意連音、重音和語調；再按「🎤 開始跟讀」模仿著唸出來。
+          支援語音辨識時會逐字比對（<span class="tok ok">綠</span> 正確、<span class="tok near">橘</span> 接近、<span class="tok miss">紅</span> 漏掉或不清楚）並同步錄音；若環境無語音辨識也會自動錄下你的發音，按「🔈 聽我的錄音」與原音比較！</p></div>
       </section></div>`;
     LUI.bindRateSeg(pane);
     const list = ES.$('#shList', pane);
@@ -18862,94 +19044,101 @@ ES.WORDS.push(
         <div class="sh-ctrls">
           <button type="button" class="btn" data-sh="listen">▶ 聽原音</button>
           <button type="button" class="btn" data-sh="slow">🐢 慢速</button>
-          <button type="button" class="btn primary big mic" data-sh="mic" ${asrOk ? '' : 'disabled'}>🎤 開始跟讀</button>
-          <button type="button" class="btn" data-sh="rec" ${ES.rec.supported ? '' : 'disabled'} title="不經語音辨識、純錄音（說完會自動停）；任何瀏覽器都能回放比較">🎙️ 只錄音</button>
+          <button type="button" class="btn primary big mic" data-sh="mic" ${micOk ? '' : 'disabled'}>🎤 開始跟讀</button>
           <button type="button" class="btn" data-sh="mine" ${lastRec ? '' : 'disabled'}>🔈 聽我的錄音</button>
         </div>
-        <div class="sh-live" id="shLive">${recSilentHint ? '<span class="bad-txt">⚠️ 這次錄到的是靜音（瀏覽器語音辨識佔用了麥克風）。想聽自己的聲音，請改按「🎙️ 只錄音」。</span>' : ''}</div>
+        <div class="sh-live" id="shLive"></div>
         <div class="sh-result">${res ? resultHtml(res) : ''}</div>
         <div class="sh-nav">
           <button type="button" class="btn ghost" data-sh="prev" ${idx === 0 ? 'disabled' : ''}>⏮ 上一句</button>
-          ${asrOk ? '' : '<button type="button" class="btn" data-sh="self">👍 我跟著唸完了</button>'}
+          ${micOk ? '' : '<button type="button" class="btn" data-sh="self">👍 我跟著唸完了</button>'}
           <button type="button" class="btn ghost" data-sh="next" ${idx >= units.length - 1 ? 'disabled' : ''}>下一句 ⏭</button>
         </div>`;
     }
+    function revokeRec() {
+      if (lastRec) { try { URL.revokeObjectURL(lastRec); } catch (e) { /* ignore */ } lastRec = null; }
+    }
     function go(i) {
       ES.tts.stop();
-      ES.asr.abort();
+      ES.abortCaptureSpeech();
+      revokeRec();
       idx = ES.clamp(i, 0, units.length - 1);
       lastRes = null;
-      lastRec = null;
       renderList();
       renderCard();
     }
     async function doMic() {
-      if (ES.asr.listening) { ES.asr.stop(); return null; }
+      if (ES.isCapturing()) { ES.stopCaptureSpeech(); return null; }
       ES.tts.stop();
       const u = units[idx];
       const micBtn = ES.$('[data-sh="mic"]', card);
-      micBtn.classList.add('rec');
-      micBtn.textContent = '⏹ 說完了';
+      if (micBtn) {
+        micBtn.classList.add('rec');
+        micBtn.textContent = '⏹ 說完了';
+      }
       const live = ES.$('#shLive', card);
-      live.textContent = '🎙️ 請開始說…';
-      const recOn = await ES.rec.start();
+      let hasInterim = false;
+      if (live) live.textContent = '🎙️ 請開始說…（說完會自動停，或再按一下「⏹ 說完了」）';
       const words = (u.text.match(/\S+/g) || []).length;
-      const r = await ES.asr.listen({
+      const cap = await ES.captureSpeech({
         continuous: true,
-        maxMs: Math.max(30000, 12000 + words * 1200),
-        silenceMs: 3800,
-        onInterim: (t) => { live.textContent = `🎙️ ${t}`; },
+        maxMs: Math.max(15000, 10000 + words * 1100),
+        silenceMs: 3200,
+        vadSilenceMs: 1800,
+        onInterim: (t) => {
+          hasInterim = true;
+          if (live) live.textContent = `🎙️ ${t}`;
+        },
+        onLevel: (lv, pureVad) => {
+          if (!live || (!pureVad && hasInterim)) return;
+          const bars = '▮'.repeat(Math.min(12, Math.max(1, Math.round(lv * 26))));
+          live.textContent = `🎙️ 錄音中 ${bars}（說完自動停，或按「⏹ 說完了」）`;
+        },
       });
-      lastRec = recOn ? await ES.rec.stop() : null;
-      recSilentHint = recOn && !lastRec && ES.rec.last && ES.rec.last.silent;
-      if (units[idx] !== u) return null;
-      if (!r.text) {
-        renderCard();
-        ES.$('#shLive', card).innerHTML = `<span class="bad-txt">${esc(r.msg || '沒有聽到聲音')}</span>`;
+      if (cap.aborted || units[idx] !== u) {
+        if (cap.audioUrl) { try { URL.revokeObjectURL(cap.audioUrl); } catch (e) { /* ignore */ } }
         return null;
       }
-      const res = ES.score(u.text, r.alts.length ? r.alts : [r.text]);
-      res.key = u.key;
-      lastRes = res;
-      const { isNew } = recordUnit(L, 'shadow', u.key, res.score);
-      ES.addXP(res.score >= 80 ? 3 : 2, 'shadow');
-      if (isNew && LUI.modeDone(L, 'shadow') && ES.prog(L.id).shadow.n === Math.ceil(units.length / 2)) {
-        ES.toast('🗣️ 跟讀已完成一半以上的句子，這個模式打勾了！', 'ok');
+      if (cap.audioUrl) {
+        if (lastRec && lastRec !== cap.audioUrl) { try { URL.revokeObjectURL(lastRec); } catch (e) { /* ignore */ } }
+        lastRec = cap.audioUrl;
       }
-      renderList();
+      if (cap.text) {
+        const res = ES.score(u.text, cap.alts.length ? cap.alts : [cap.text]);
+        res.key = u.key;
+        lastRes = res;
+        const { isNew } = recordUnit(L, 'shadow', u.key, res.score);
+        ES.addXP(res.score >= 80 ? 3 : 2, 'shadow');
+        if (isNew && LUI.modeDone(L, 'shadow') && ES.prog(L.id).shadow.n === Math.ceil(units.length / 2)) {
+          ES.toast('🗣️ 跟讀已完成一半以上的句子，這個模式打勾了！', 'ok');
+        }
+        renderList();
+        renderCard();
+        if (cap.switchedToPureRec) {
+          ES.$('#shLive', card).innerHTML = '<span class="muted">💡 偵測到此裝置語音辨識會獨佔麥克風，已自動切換為穩定錄音模式；再按一次「🎤 開始跟讀」即可錄下聲音回放對照。</span>';
+        } else if (lastRec) {
+          ES.$('#shLive', card).innerHTML = '<span class="ok-txt">✅ 已同步錄音！可按「🔈 聽我的錄音」與原音比對。</span>';
+        }
+        LUI.refreshHero(L);
+        return res;
+      }
+      if (cap.audioUrl) {
+        const prevBest = best()[u.key];
+        const { isNew } = recordUnit(L, 'shadow', u.key, prevBest != null ? prevBest : 85);
+        ES.addXP(2, 'shadow');
+        if (isNew && LUI.modeDone(L, 'shadow') && ES.prog(L.id).shadow.n === Math.ceil(units.length / 2)) {
+          ES.toast('🗣️ 跟讀已完成一半以上的句子，這個模式打勾了！', 'ok');
+        }
+        renderList();
+        renderCard();
+        ES.$('#shLive', card).innerHTML = '<span class="ok-txt">✅ 錄音完成！可按「🔈 聽我的錄音」與「▶ 聽原音」反覆比對發音。</span>';
+        LUI.refreshHero(L);
+        if (!autoOn) ES.playUrl(cap.audioUrl);
+        return { score: prevBest != null ? prevBest : 85, recordedOnly: true };
+      }
       renderCard();
-      LUI.refreshHero(L);
-      return res;
-    }
-    /** 🎙️ 只錄音：不經語音辨識，任何支援 MediaRecorder 的瀏覽器（含手機）都能錄下自己的聲音再回放比較。 */
-    async function doRecOnly() {
-      if (recOnlyOn) { ES.rec.cancelRecordOnly(); return; }
-      ES.tts.stop();
-      ES.asr.abort();
-      const u = units[idx];
-      const btn = ES.$('[data-sh="rec"]', card);
-      const live = ES.$('#shLive', card);
-      recSilentHint = false;
-      recOnlyOn = true;
-      if (btn) { btn.classList.add('rec'); btn.textContent = '⏹ 停止錄音'; }
-      if (live) live.textContent = '🎙️ 錄音中…請唸出這一句（說完會自動停）';
-      const url = await ES.rec.recordOnly({
-        maxMs: Math.max(12000, 6000 + u.text.length * 350),
-        onLevel: (lv) => { if (live && recOnlyOn) live.textContent = `🎙️ 錄音中 ${'▮'.repeat(Math.min(12, Math.round(lv * 24)))}`; },
-      });
-      recOnlyOn = false;
-      if (units[idx] !== u) return;
-      if (url) {
-        if (lastRec && lastRec !== url) { try { URL.revokeObjectURL(lastRec); } catch (e) { /* ignore */ } }
-        lastRec = url;
-        renderCard();
-        ES.$('#shLive', card).innerHTML = '<span class="ok-txt">✅ 錄好了！按「🔈 聽我的錄音」和原音比較。</span>';
-        ES.playUrl(url);
-      } else {
-        const info = ES.rec.last;
-        renderCard();
-        ES.$('#shLive', card).innerHTML = `<span class="bad-txt">${info && info.silent ? '沒有錄到聲音：請確認麥克風沒有被靜音、靠近一點再說一次。' : '無法錄音：請允許這個網站使用麥克風（網址列左邊的 🔒 圖示）。'}</span>`;
-      }
+      ES.$('#shLive', card).innerHTML = `<span class="bad-txt">${esc(cap.msg || '沒有錄到聲音：請確認麥克風沒有被靜音、靠近一點再說一次。')}</span>`;
+      return null;
     }
     async function autoRun() {
       autoOn = true;
@@ -18987,8 +19176,7 @@ ES.WORDS.push(
       if (!b) return;
       const a = b.dataset.sh;
       const u = units[idx];
-      if (a === 'listen' || a === 'slow') { ES.asr.abort(); speakUnit(L, u, a === 'slow', b); } else if (a === 'mic') doMic();
-      else if (a === 'rec') doRecOnly();
+      if (a === 'listen' || a === 'slow') { ES.abortCaptureSpeech(); speakUnit(L, u, a === 'slow', b); } else if (a === 'mic') doMic();
       else if (a === 'mine') ES.playUrl(lastRec);
       else if (a === 'prev') go(idx - 1);
       else if (a === 'next') go(idx + 1);
@@ -19001,9 +19189,9 @@ ES.WORDS.push(
     ES.$('#shHide', pane).onchange = (e) => { opt.hide = e.target.checked; renderCard(); };
     ES.$('#shAuto', pane).onchange = (e) => {
       if (e.target.checked) autoRun();
-      else { autoOn = false; ES.tts.stop(); ES.asr.abort(); }
+      else { autoOn = false; ES.tts.stop(); ES.abortCaptureSpeech(); }
     };
-    ES.onCleanup(() => { autoOn = false; ES.rec.release(); });
+    ES.onCleanup(() => { autoOn = false; ES.abortCaptureSpeech(); revokeRec(); });
     renderList();
     renderCard();
   };
@@ -19014,6 +19202,7 @@ ES.WORDS.push(
   LUI.modes.role = (pane, L) => {
     const keys = Object.keys(L.speakers || {}).filter((k) => L.lines.some((ln) => ln.s === k));
     const asrOk = ES.asr.status().ok;
+    const micOk = asrOk || (ES.rec.supported && window.isSecureContext);
     if (keys.length < 2) {
       pane.innerHTML = `<div class="card empty"><div class="empty-ic">🎙️</div><h3>這篇是獨白</h3>
         <p class="muted">獨白沒有對手可以扮演，請用「跟讀」一句一句練習整段內容。</p>
@@ -19039,14 +19228,13 @@ ES.WORDS.push(
     };
     const stopActive = () => {
       ES.tts.stop();
-      ES.asr.abort();
+      ES.abortCaptureSpeech();
       recIdx = -1;
     };
     const stopAll = () => {
       autoRunning = false;
       autoStep = -1;
       stopActive();
-      ES.rec.release();
       revokeAllUrls();
     };
     ES.onCleanup(stopAll);
@@ -19186,7 +19374,7 @@ ES.WORDS.push(
             </div>
             <div class="rp-row-acts">
               ${mine ? `
-                ${asrOk ? `
+                ${micOk ? `
                   <button type="button" class="btn primary rp-mic-btn ${isRec ? 'recording' : ''}" data-rmic="${i}">
                     ${isRec ? '⏹ 說完了' : sc != null ? '🎙️ 再說一次' : '🎙️ 按一下開始說英語'}
                   </button>
@@ -19234,8 +19422,8 @@ ES.WORDS.push(
     }
 
     async function toggleMic(i) {
-      if (recIdx === i && ES.asr.listening) {
-        ES.asr.stop();
+      if (recIdx === i && ES.isCapturing()) {
+        ES.stopCaptureSpeech();
         return;
       }
       stopActive();
@@ -19243,39 +19431,64 @@ ES.WORDS.push(
       draw();
       const ln = L.lines[i];
       const words = (ln.en.match(/\S+/g) || []).length;
-      const recStarted = await ES.rec.start();
-      const r = await ES.asr.listen({
+      let hasInterim = false;
+      const cap = await ES.captureSpeech({
         continuous: true,
-        maxMs: Math.max(30000, 12000 + words * 1200),
-        silenceMs: 3800,
+        maxMs: Math.max(15000, 10000 + words * 1100),
+        silenceMs: 3200,
+        vadSilenceMs: 1800,
         onInterim: (t) => {
+          hasInterim = true;
           const live = ES.$(`[data-rlive="${i}"]`, pane);
           if (live) live.textContent = `🎙️ ${t}`;
         },
+        onLevel: (lv, pureVad) => {
+          if (!pureVad && hasInterim) return;
+          const live = ES.$(`[data-rlive="${i}"]`, pane);
+          if (live) {
+            const bars = '▮'.repeat(Math.min(10, Math.max(1, Math.round(lv * 22))));
+            live.textContent = `🎙️ 錄音中 ${bars}（說完自動停，或點右側「⏹ 說完了」）`;
+          }
+        },
       });
-      const recUrl = recStarted ? await ES.rec.stop() : null;
-      if (recUrl) {
-        if (recUrls[i]) try { URL.revokeObjectURL(recUrls[i]); } catch (e) { /* ignore */ }
-        recUrls[i] = recUrl;
-      }
-      if (!document.body.contains(pane)) return;
-      if (recIdx === i) recIdx = -1;
-      if (!r.text) {
-        draw();
-        const live = ES.$(`[data-rlive="${i}"]`, pane);
-        if (live) live.textContent = `⚠️ ${r.msg || '沒有聽到聲音，請再按一次右側按鈕'}`;
+      if (cap.aborted || !document.body.contains(pane)) {
+        if (cap.audioUrl) { try { URL.revokeObjectURL(cap.audioUrl); } catch (e) { /* ignore */ } }
         return;
       }
-      const res = ES.score(ln.en, r.alts && r.alts.length ? r.alts : [r.text]);
-      scoredRes[i] = res;
-      scores[i] = res.score;
-      revealed[i] = true;
-      commitProgressIfReady(false);
-      draw();
-      if (autoRunning && autoStep === i) {
-        await ES.sleep(700);
-        if (autoRunning && autoStep === i) advanceAuto(i + 1);
+      if (cap.audioUrl) {
+        if (recUrls[i] && recUrls[i] !== cap.audioUrl) { try { URL.revokeObjectURL(recUrls[i]); } catch (e) { /* ignore */ } }
+        recUrls[i] = cap.audioUrl;
       }
+      if (recIdx === i) recIdx = -1;
+      if (cap.text) {
+        const res = ES.score(ln.en, cap.alts && cap.alts.length ? cap.alts : [cap.text]);
+        scoredRes[i] = res;
+        scores[i] = res.score;
+        revealed[i] = true;
+        commitProgressIfReady(false);
+        draw();
+        if (autoRunning && autoStep === i) {
+          await ES.sleep(700);
+          if (autoRunning && autoStep === i) advanceAuto(i + 1);
+        }
+        return;
+      }
+      if (cap.audioUrl) {
+        scores[i] = scores[i] ?? 85;
+        revealed[i] = true;
+        commitProgressIfReady(false);
+        draw();
+        const live = ES.$(`[data-rlive="${i}"]`, pane);
+        if (live) live.textContent = '✅ 已錄下發音！可點右側「🔈 聽錄音」回放對照';
+        if (autoRunning && autoStep === i) {
+          await ES.sleep(700);
+          if (autoRunning && autoStep === i) advanceAuto(i + 1);
+        }
+        return;
+      }
+      draw();
+      const live = ES.$(`[data-rlive="${i}"]`, pane);
+      if (live) live.textContent = `⚠️ ${cap.msg || '沒有錄到聲音，請再按一次右側按鈕'}`;
     }
 
     const swapFn = () => {
@@ -21475,8 +21688,19 @@ ES.WORDS.push(
   'use strict';
   const ES = (window.ES = window.ES || {});
   ES.RELEASES_DATA = {
-  "current_version": "3.4.0",
+  "current_version": "3.4.1",
   "releases": [
+    {
+      "version": "3.4.1",
+      "date": "2026-11-09",
+      "bump": "patch",
+      "title": "整合單一「開始跟讀」智慧錄音與評分引擎",
+      "highlights": [
+        "移除跟讀頁多餘的「🎙️ 只錄音」按鈕，統一整合為單一顆「🎤 開始跟讀」智慧按鈕：支援語音辨識時同步評分與錄音，若語音辨識無法連線或獨佔麥克風則自動無縫轉為純錄音回放，確保 100% 錄得到音。",
+        "修復錄音結束時尾音緩衝刷新（requestData）與麥克風軌道即時釋放，並同步升級角色扮演模式的錄音備援機制。"
+      ],
+      "files_count": 3
+    },
     {
       "version": "3.4.0",
       "date": "2026-11-09",
