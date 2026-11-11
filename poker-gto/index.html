@@ -497,12 +497,14 @@ kbd {
 }
 .hand.lg { font-size: 1.15em; padding: 2px 10px; }
 
-.pcards { display: inline-flex; align-items: center; gap: 4px; vertical-align: middle; }
+.pcards { display: inline-flex; align-items: center; gap: 4px; vertical-align: middle; flex-wrap: wrap; max-width: 100%; }
 .pcard {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
   width: 34px;
   height: 46px;
   border-radius: 7px;
@@ -513,6 +515,7 @@ kbd {
   line-height: 1.05;
   user-select: none;
 }
+.pcard > .pc-r, .pcard > .pc-s { color: inherit; min-width: 0; flex: 0 0 auto; }
 .pcard.mini {
   flex-direction: row;
   width: auto;
@@ -1145,7 +1148,7 @@ kbd {
   transition: transform 0.15s, border-color 0.15s;
 }
 .quick-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #93c5fd; }
-.quick-card span { font-size: 28px; }
+.quick-card > span { font-size: 28px; }
 .quick-card b { font-size: 15.5px; }
 .quick-card small { color: var(--muted); font-size: 13px; }
 .home-two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -1574,7 +1577,7 @@ ol.steps.mini > li > b:first-child { display: inline; }
   font: inherit;
   transition: border-color 0.15s, background 0.15s;
 }
-.pk-cat span { grid-row: span 2; font-size: 23px; align-self: center; }
+.pk-cat > span { grid-row: span 2; font-size: 23px; align-self: center; }
 .pk-cat b { font-size: 14.5px; }
 .pk-cat small { color: var(--muted); font-size: 12px; line-height: 1.4; }
 .pk-cat:hover { border-color: #93c5fd; }
@@ -1628,7 +1631,7 @@ ol.steps.mini > li > b:first-child { display: inline; }
 .hub-rec:hover { transform: translateY(-2px); }
 .hub-rec small { opacity: 0.8; font-weight: 750; }
 .hub-rec b { font-size: 21px; }
-.hub-rec span { opacity: 0.9; font-size: 13.5px; }
+.hub-rec > span { opacity: 0.9; font-size: 13.5px; }
 .hub-rec em { font-style: normal; font-weight: 800; margin-top: 6px; }
 .hub-sec { margin-bottom: 26px; }
 .hub-sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -1679,10 +1682,11 @@ ol.steps.mini > li > b:first-child { display: inline; }
 .dr-hand .lbl, .sd-p .lbl { margin: 0; }
 .dr-board .pcards, .sd-board .pcards { gap: 6px; }
 .dr-results { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
-.dr-res { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; }
+.dr-res { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; max-width: 100%; }
 .dr-res.win { border-color: #86efac; background: #f0fdf4; }
-.dr-res b { min-width: 72px; }
-.dr-res span { color: var(--text-2); font-size: 13.5px; flex: 1; min-width: 160px; }
+.dr-res > b { min-width: 72px; }
+.dr-res > span:not(.pcards) { color: var(--text-2); font-size: 13.5px; flex: 1 1 140px; min-width: 0; }
+.dr-res > .pcards { flex: 0 0 auto; max-width: 100%; }
 .dr-outs { display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
 .dr-outs-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #fff; border: 1px solid #86efac; border-radius: 10px; padding: 8px 10px; font-size: 13.5px; }
 .dr-outs-row.dirty { border-color: #fca5a5; }
@@ -1873,7 +1877,7 @@ ol.steps.mini > li > b:first-child { display: inline; }
 .pi-title b { display: block; font-size: 17px; }
 .pi-title small { color: var(--muted); }
 .pi-stats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-.pi-stats span { background: var(--surface-sub); border-radius: 8px; padding: 3px 10px; font-size: 13px; }
+.pi-stats > span { background: var(--surface-sub); border-radius: 8px; padding: 3px 10px; font-size: 13px; }
 .pos-info p { color: var(--text-2); font-size: 14px; margin: 6px 0; }
 .pos-info .callout { margin: 10px 0; }
 .tiers-grid { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 16px; align-items: start; }
@@ -1908,7 +1912,7 @@ ol.steps.mini > li > b:first-child { display: inline; }
 .dc-outs { margin-left: auto; font-weight: 900; font-size: 20px; color: var(--primary); }
 .dc-outs small { font-size: 11px; color: var(--muted); font-weight: 700; }
 .dc-cards { display: flex; gap: 10px; flex-wrap: wrap; }
-.dc-cards span { display: flex; flex-direction: column; gap: 3px; }
+.dc-cards > span { display: flex; flex-direction: column; gap: 3px; }
 .dc-cards small { color: var(--muted); font-size: 11px; }
 .draw-card p { margin: 0; font-size: 13px; color: var(--text-2); line-height: 1.6; }
 .dc-pct { display: flex; gap: 10px; font-size: 12.5px; color: var(--muted); margin-top: auto; }
@@ -1921,7 +1925,7 @@ ol.steps.mini > li > b:first-child { display: inline; }
 .pcs-item:hover { border-color: #93c5fd; transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .pcs-head { display: flex; align-items: baseline; gap: 6px; }
 .pcs-head b { font-size: 16px; }
-.pcs-head span { color: var(--muted); font-size: 12.5px; }
+.pcs-head > span { color: var(--muted); font-size: 12.5px; }
 .pcs-head em { margin-left: auto; font-style: normal; font-weight: 800; color: var(--act-raise); font-size: 13px; }
 .pcs-item small { color: var(--muted); font-size: 12px; }
 .pcs-item .rgrid { max-width: none; }
@@ -1993,6 +1997,7 @@ ol.steps.mini > li > b:first-child { display: inline; }
   .rk-prob { display: none; }
   .g-grid, .tip-grid, .res-grid, .mode-grid, .plan-days { grid-template-columns: 1fr; }
   .mcq-card { padding: 18px 16px; }
+  .dr-board .pcard.lg, .dr-hand .pcard.lg { width: 42px; height: 58px; font-size: 16px; }
   .sp-row { grid-template-columns: 100px 1fr 54px; }
   .lk-rows > div { grid-template-columns: 1fr; gap: 2px; }
   .mt-wrap { margin: 18px auto 28px; }
@@ -19458,8 +19463,18 @@ GTO.EN_LABELS = {
   'use strict';
   const GTO = (window.GTO = window.GTO || {});
   GTO.RELEASES_DATA = {
-  "current_version": "2.4.0",
+  "current_version": "2.4.1",
   "releases": [
+    {
+      "version": "2.4.1",
+      "date": "2026-11-10",
+      "bump": "patch",
+      "title": "更新視覺樣式（共 1 個檔案）",
+      "highlights": [
+        "[視覺樣式] 更新 static/styles.css：全站排版、牌桌與元件 CSS 樣式（+15 / -10 行）"
+      ],
+      "files_count": 1
+    },
     {
       "version": "2.4.0",
       "date": "2026-11-09",
