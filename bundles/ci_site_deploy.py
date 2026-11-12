@@ -33,7 +33,8 @@ from typing import Any
 TZ_TW = dt.timezone(dt.timedelta(hours=8))
 
 ARENAS: dict[str, dict[str, str]] = {
-    'tw-stock-insight': {'db': 'stock.db', 'kind': 'stock'},
+    'tw-stock-insight': {'db': 'stock.db', 'kind': 'stock', 'seed': 'seed-stock.json.xz'},
+    'us-stock-insight': {'db': 'stock.db', 'kind': 'stock', 'seed': 'seed-us-stock.json.xz'},
     'nba-betting-iq': {'db': 'nba_betting.db', 'kind': 'sports'},
     'epl-odds-iq': {'db': 'epl_betting.sqlite3', 'kind': 'sports'},
     'f1-odds-iq': {'db': 'f1_betting.sqlite3', 'kind': 'sports'},
@@ -132,10 +133,10 @@ def _data_freshness(arena: str, data_dir: str) -> str:
   return _sports_freshness(data_dir, info['db'])
 
 
-def restore_stock_seed(bundles_dir: str, dst_db: str) -> bool:
-  """Rebuilds `stock.db` from compact columnar `seed-stock.json.xz` (or `seed-stock.db.xz`)."""
-  json_xz = os.path.join(bundles_dir, 'seed-stock.json.xz')
-  db_xz = os.path.join(bundles_dir, 'seed-stock.db.xz')
+def restore_stock_seed(bundles_dir: str, dst_db: str, seed_name: str = 'seed-stock.json.xz') -> bool:
+  """Rebuilds `stock.db` from compact columnar `seed-*.json.xz` (or `seed-stock.db.xz`)."""
+  json_xz = os.path.join(bundles_dir, seed_name)
+  db_xz = os.path.join(bundles_dir, seed_name.replace('.json.xz', '.db.xz'))
   os.makedirs(os.path.dirname(dst_db), exist_ok=True)
   if os.path.isfile(json_xz):
     t0 = dt.datetime.now(TZ_TW)
@@ -153,7 +154,25 @@ def restore_stock_seed(bundles_dir: str, dst_db: str) -> bool:
         con.execute(sql)
     dates = payload.get('dates') or []
     daily_rows = []
-    if payload.get('v') == 2 and payload.get('daily2'):
+    if payload.get('v') == 2 and payload.get('daily7'):
+      for code, cols in (payload.get('daily7') or {}).items():
+        ddis, dcs, dos, dhs, dls, vols = cols
+        di = -1
+        cc = 0
+        for k in range(len(ddis)):
+          di += ddis[k]
+          dc = dcs[k]
+          cc += dc
+          oc = cc + dos[k]
+          hc = cc + dhs[k]
+          lc = cc + dls[k]
+          daily_rows.append((
+              code, dates[di], round(oc / 100.0, 2), round(hc / 100.0, 2),
+              round(lc / 100.0, 2), round(cc / 100.0, 2), float(vols[k]),
+          ))
+      if daily_rows:
+        con.executemany('INSERT OR REPLACE INTO daily VALUES (?,?,?,?,?,?,?)', daily_rows)
+    elif payload.get('v') == 2 and payload.get('daily2'):
       for code, cols in (payload.get('daily2') or {}).items():
         ddis, dcs, dos, dhs, dls, vols, vals, dchgs = cols
         di = -1
@@ -171,12 +190,14 @@ def restore_stock_seed(bundles_dir: str, dst_db: str) -> bool:
               round(lc / 100.0, 2), round(cc / 100.0, 2),
               float(vols[k]), float(vals[k]) * 1000.0, 0, round(chgc / 100.0, 2),
           ))
+      if daily_rows:
+        con.executemany('INSERT OR REPLACE INTO daily VALUES (?,?,?,?,?,?,?,?,?,?)', daily_rows)
     else:
       for code, items in (payload.get('daily') or {}).items():
         for di, o, h, l, c, vol, val_k, chg in items:
           daily_rows.append((code, dates[di], o, h, l, c, float(vol), float(val_k) * 1000.0, 0, chg))
-    if daily_rows:
-      con.executemany('INSERT OR REPLACE INTO daily VALUES (?,?,?,?,?,?,?,?,?,?)', daily_rows)
+      if daily_rows:
+        con.executemany('INSERT OR REPLACE INTO daily VALUES (?,?,?,?,?,?,?,?,?,?)', daily_rows)
     i_dates = payload.get('i_dates') or []
     inst_rows = []
     if payload.get('v') == 2 and payload.get('inst2'):
@@ -206,7 +227,7 @@ def restore_stock_seed(bundles_dir: str, dst_db: str) -> bool:
     con.close()
     os.replace(tmp_db, dst_db)
     sec = (dt.datetime.now(TZ_TW) - t0).total_seconds()
-    print(f'[deploy] seeded stock.db from seed-stock.json.xz ({len(daily_rows):,} daily rows in {sec:.1f}s)')
+    print(f'[deploy] seeded stock.db from {seed_name} ({len(daily_rows):,} daily rows in {sec:.1f}s)')
     return True
   if os.path.isfile(db_xz):
     with lzma.open(db_xz, 'rb') as src, open(dst_db, 'wb') as out:
@@ -295,6 +316,12 @@ def _due_arenas(now_tw: dt.datetime, cache_dir: str = '') -> list[str]:
     stock_last = _stock_max_date(stock_db) if stock_db else ''
     if mins >= 435 or stock_last < now_tw.strftime('%Y-%m-%d'):
       due.append('tw-stock-insight')
+  if wd <= 5:
+    us_db = os.path.join(cache_dir, 'us-stock-insight', 'data', 'stock.db') if cache_dir else ''
+    us_last = _stock_max_date(us_db) if us_db else ''
+    expected_us = (now_tw - dt.timedelta(days=1)).strftime('%Y-%m-%d') if mins < 720 else now_tw.strftime('%Y-%m-%d')
+    if wd < 5 or mins < 720 or us_last < expected_us:
+      due.append('us-stock-insight')
   cin_json = os.path.join(cache_dir, 'cinema', 'data', 'now_playing.json') if cache_dir else ''
   cin_wk = str(_load_json(cin_json).get('weekKey') or '') if cin_json else ''
   cur_wk = now_tw.strftime('%G-W%V')
@@ -372,8 +399,8 @@ def main() -> int:
         _unpack_arena(tar_path, w_arena)
         if not _valid_db(c_db) or (b_fresh and b_fresh >= c_fresh):
           _copy_data_dir(os.path.join(w_arena, 'data'), c_data)
-          if arena == 'tw-stock-insight' and (not _valid_db(c_db) or (b_fresh and b_fresh > c_fresh)):
-            restore_stock_seed(bundles_dir, c_db)
+          if info.get('seed') and (not _valid_db(c_db) or (b_fresh and b_fresh > c_fresh)):
+            restore_stock_seed(bundles_dir, c_db, info['seed'])
 
       site_html = os.path.join(out_arena, 'index.html')
       if os.path.isfile(site_html):
@@ -437,8 +464,8 @@ def main() -> int:
     os.makedirs(w_data, exist_ok=True)
     if _valid_db(c_db):
       _copy_data_dir(c_data, w_data)
-    elif arena == 'tw-stock-insight':
-      restore_stock_seed(bundles_dir, os.path.join(w_data, info['db']))
+    elif info.get('seed'):
+      restore_stock_seed(bundles_dir, os.path.join(w_data, info['db']), info['seed'])
 
     eff_mode = _effective_mode(arena, sched_mode)
     out_arena = os.path.join(site_dir, arena)
