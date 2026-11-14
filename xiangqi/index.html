@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="referrer" content="no-referrer" /><title>🐘 象棋學院 · AI 對弈、殘局題庫與象棋課程</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><meta name="description" content="象棋學院（Xiangqi Academy）：免安裝的象棋棋盤，內建完整規則引擎，支援四種難度的 AI 對弈與提示、100 題殘局題庫（含古譜）、象棋知識課程、同機雙人對弈、悔棋、中文棋譜記錄、棋譜回放與匯入，以及七種棋子的走法速查。" /><style>
+<html lang="zh-Hant"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>🐘 象棋學院 · 線上對弈、AI 對弈、殘局題庫與象棋課程</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><meta name="description" content="象棋學院（Xiangqi Academy）：免安裝的象棋棋盤，內建完整規則引擎，支援免註冊的線上對弈（計時、悔棋請求、觀戰）、四種難度的 AI 對弈與提示、100 題殘局題庫（含古譜）、象棋知識課程、同機雙人對弈、悔棋、中文棋譜記錄、棋譜回放與匯入，以及七種棋子的走法速查。" /><style>
 /* ♟️ 象棋學院 — 淺色、乾淨、以棋盤為主角的版面 */
 :root {
   --bg: #f8f6f1;
@@ -294,6 +294,50 @@ button.mv:hover { background: #ece7db; }
 .term-list dd { margin: 0; color: #374151; }
 .demo-board .xq-board { cursor: default; }
 
+/* ---------- 線上對弈 ---------- */
+body[data-view='online'] .xq-board-wrap { width: min(100%, calc((100vh - 190px) * 0.908), 640px); }
+.on-name { display: grid; gap: 3px; font-size: 12px; color: var(--muted); flex: none; }
+.on-name input, .on-form input[type='text'], .on-form select, .on-invite input {
+  font: inherit; font-size: 15px; color: var(--text); padding: 7px 10px; border: 1px solid var(--line);
+  border-radius: 10px; background: #fff; min-width: 0;
+}
+.on-name input { width: 150px; font-weight: 600; }
+.on-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.on-two h2 { margin-bottom: 10px; }
+.on-form { display: grid; gap: 10px; }
+.on-form > label:not(.pz-check) { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+#onCode { text-transform: uppercase; letter-spacing: .2em; font-weight: 700; }
+.on-room-row { gap: 8px; }
+.on-room-row .btn { text-decoration: none; color: var(--text); flex: none; }
+.on-room-row .btn-primary { color: #fff; }
+.on-bar {
+  width: min(100%, 640px); display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px; min-height: 42px;
+}
+.on-dot { width: 14px; height: 14px; border-radius: 50%; flex: none; background: var(--black); }
+.on-dot.is-red { background: var(--red); }
+.on-who { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.on-who.is-turn { color: var(--accent); }
+.on-conn { font-size: 12px; padding: 0 8px; border-radius: 999px; flex: none; }
+.on-conn.is-on { background: #dcfce7; color: #166534; }
+.on-conn.is-off { background: #fee2e2; color: #991b1b; }
+.on-clock {
+  margin-left: auto; font: 700 20px/1.2 ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums; padding: 2px 10px; border-radius: 8px; background: #f3f0e8; color: var(--muted);
+}
+.on-clock.is-run { background: #1f2937; color: #fff; }
+.on-clock.is-run.is-low { background: var(--red); }
+.on-invite { display: flex; gap: 8px; margin-top: 6px; }
+.on-invite input { flex: 1; font-size: 13px; }
+.on-offer {
+  margin-top: 10px; padding: 8px 10px; border-radius: 10px; background: #f6f3ec; font-size: 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+}
+.on-offer.is-ask { background: var(--accent-soft); box-shadow: inset 0 0 0 1px #f59e0b; }
+.on-offer-btns { display: inline-flex; gap: 6px; }
+.on-next { text-decoration: none; display: inline-block; margin-top: 8px; white-space: normal; }
+#onStatus .muted { margin-top: 4px; }
+
 @media (max-width: 880px) {
   .xq-stage { grid-template-columns: minmax(0, 1fr); }
   .xq-board-wrap, body[data-view='replay'] .xq-board-wrap { width: min(100%, 560px); }
@@ -301,7 +345,11 @@ button.mv:hover { background: #ece7db; }
   .header-inner { padding: 6px 10px; gap: 6px; }
   .main-nav { margin-left: 0; width: 100%; }
   .nav-tab { flex: 1; text-align: center; padding: 6px 4px; }
-  .nav-tab { font-size: 13px; }
+  .nav-tab { font-size: 12.5px; white-space: nowrap; }
+  .on-two { grid-template-columns: minmax(0, 1fr); }
+  body[data-view='online'] .xq-board-wrap { width: min(100%, 560px); }
+  .on-bar { width: min(100%, 560px); }
+  .on-name input { width: 110px; }
   .pz-head { align-items: flex-start; }
   .demo-card { grid-template-columns: minmax(0, 1fr); }
   .pz-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -324,6 +372,7 @@ button.mv:hover { background: #ece7db; }
       <button id="versionBadgeBtn" class="ver-pill" type="button" title="查看版本更新紀錄"><span id="verText">v1.0.0</span></button>
       <nav class="main-nav" aria-label="主導覽列">
         <a href="#/play" data-nav="play" class="nav-tab active">♟️ 對弈</a>
+        <a href="#/online" data-nav="online" class="nav-tab">🌐 線上</a>
         <a href="#/puzzle" data-nav="puzzle" class="nav-tab">🧩 殘局</a>
         <a href="#/learn" data-nav="learn" class="nav-tab">📚 課程</a>
         <a href="#/replay" data-nav="replay" class="nav-tab">📜 棋譜</a>
@@ -2362,8 +2411,20 @@ window.__STATIC_SINGLE_FILE__ = true;
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.XIANGQI_RELEASES = {
-  "current_version": "1.0.0",
+  "current_version": "1.1.0",
   "releases": [
+    {
+      "version": "1.1.0",
+      "date": "2026-11-15 00:38",
+      "title": "🌐 象棋學院 v1.1.0：線上對弈開放",
+      "changes": [
+        "🌐 線上對弈：不用註冊，建立房間後把邀請連結傳給朋友，對方打開就能開始下；也可以用 6 碼房號進入",
+        "⏱️ 四種計時方式（不計時、5 分＋3 秒、10 分＋5 秒、20 分＋10 秒），時間用完自動判負",
+        "🤝 悔棋與和棋請求：對方同意才成立；對手離線滿 1 分鐘可以宣告獲勝",
+        "👀 觀戰：公開房間會列在大廳，已開始的對局可以直接進去看",
+        "💾 線上對局結束後自動存進「我的棋譜」，可以再來一局（換邊）"
+      ]
+    },
     {
       "version": "1.0.0",
       "date": "2026-11-14 01:00",
@@ -2381,7 +2442,7 @@ window.XIANGQI_RELEASES = {
       ]
     }
   ],
-  "last_fingerprint": "f3f4833a876b21ca"
+  "last_fingerprint": "00a5e5d40304a9bb"
 };
 
 
@@ -4939,6 +5000,957 @@ window.XQ_PUZZLES = [
 })();
 
 
+// === js/firebase_config.js ===
+// 象棋學院線上對弈的 Firebase 專案設定。
+// 這組設定本來就是公開資訊（任何網頁前端都看得到）；資料靠資料庫安全規則
+// （firebase/database.rules.json）與 API 金鑰的網域限制保護，不是靠隱藏這個檔案。
+window.XQ_FIREBASE = {
+  apiKey: 'AIzaSyAlW8UxhNRpWVhRE9uE7FRqmDm9vgOpnMY',
+  authDomain: 'chinese-chess-918f2.firebaseapp.com',
+  databaseURL: 'https://chinese-chess-918f2-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'chinese-chess-918f2',
+  storageBucket: 'chinese-chess-918f2.firebasestorage.app',
+  messagingSenderId: '214386375340',
+  appId: '1:214386375340:web:d3670062071e1d87ea7d09',
+};
+
+
+// === js/online_core.js ===
+// ============================================================================
+// ♟️ 象棋學院 — 線上對弈的房間狀態邏輯（純運算，無 DOM、無網路）
+//
+// 房間的對局狀態 g 存在資料庫的 xq/rooms/<房號>/g，所有修改都透過 transaction 執行下面的
+// 「動作函式」：fn(目前狀態, 參數) → 新狀態；回傳 undefined 表示拒絕（transaction 中止）。
+// 瀏覽器（online.js）與 Node 測試（tools/check_engine.js）共用同一份程式。
+//
+// g = {
+//   v: 1, host: uid, pub: 是否列在大廳, created: 時間戳, status: 'waiting' | 'playing' | 'over',
+//   red: { uid, name }, black: { uid, name },        // 還沒人坐的位子不存在
+//   tc: { base: 秒, inc: 每步加秒 },                  // base = 0 表示不計時
+//   moves: 'h2e2 h9g7 …', n: 已走步數,
+//   clock: { red: 剩餘毫秒, black: 剩餘毫秒, at: 目前這一步開始計時的伺服器時間 },
+//   offer: { kind: 'undo' | 'draw', by: 'red' | 'black', n },   // 等待對方回覆的請求
+//   result: { w: 'red' | 'black' | 'draw', why },    // 對局結束才有
+//   next: 再戰的新房號,
+// }
+// ============================================================================
+
+(function (root, factory) {
+  'use strict';
+  var E = typeof module === 'object' && module.exports ? require('./engine.js') : root.XQEngine;
+  var api = factory(E);
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.XQOnlineCore = api;
+})(typeof self !== 'undefined' ? self : this, function (E) {
+  'use strict';
+
+  var ID_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // 去掉容易看錯的 I、L、O、0、1
+  var ID_LEN = 6;
+  var ABANDON_MS = 60000; // 對手離線超過這段時間才可以宣告獲勝
+  var TIME_CONTROLS = [
+    { base: 0, inc: 0, label: '不計時' },
+    { base: 300, inc: 3, label: '5 分鐘＋每步 3 秒' },
+    { base: 600, inc: 5, label: '10 分鐘＋每步 5 秒' },
+    { base: 1200, inc: 10, label: '20 分鐘＋每步 10 秒' },
+  ];
+
+  function randomId(rng) {
+    rng = rng || Math.random;
+    var s = '';
+    for (var i = 0; i < ID_LEN; i++) s += ID_CHARS[(rng() * ID_CHARS.length) | 0];
+    return s;
+  }
+  function normalizeId(text) {
+    var s = String(text || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    return s.length === ID_LEN ? s : '';
+  }
+  function cleanName(name) {
+    var s = String(name == null ? '' : name).replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 12);
+    return s || '棋友';
+  }
+
+  function other(side) { return side === 'red' ? 'black' : 'red'; }
+  function turnOf(g) { return g.n % 2 === 0 ? 'red' : 'black'; }
+  function movesOf(g) { return g.moves ? g.moves.split(' ') : []; }
+  function sideOfUid(g, uid) {
+    if (!g || !uid) return null;
+    if (g.red && g.red.uid === uid) return 'red';
+    if (g.black && g.black.uid === uid) return 'black';
+    return null;
+  }
+  function copy(g) { return JSON.parse(JSON.stringify(g)); }
+
+  /** 由狀態重建對局；資料不一致或含不合法走法時回傳 null（收到別人寫入的狀態都要先過這一關）。 */
+  function gameOf(g) {
+    try {
+      if (!g || typeof g.moves !== 'string') return null;
+      var list = movesOf(g);
+      if (list.length !== g.n) return null;
+      return E.Game.fromMoves(E.START_FEN, list);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /** side 目前剩餘的毫秒數（不計時的房間回傳 null）。 */
+  function remaining(g, side, now) {
+    if (!g.tc || !g.tc.base || !g.clock) return null;
+    var ms = g.clock[side];
+    if (g.status === 'playing' && turnOf(g) === side && g.clock.at) ms -= Math.max(0, now - g.clock.at);
+    return ms;
+  }
+
+  function finish(g, w, why) {
+    g.status = 'over';
+    g.result = { w: w, why: why };
+    delete g.offer;
+    return g;
+  }
+
+  // ------------------------------------------------------------------ 動作
+  /** 建立房間。o：{ uid, name, side: 'red' | 'black', tc: { base, inc }, pub, ts（伺服器時間戳記號） }。 */
+  function createRoom(o) {
+    var base = Math.max(0, +o.tc.base || 0);
+    var g = {
+      v: 1, host: o.uid, pub: !!o.pub, created: o.ts, status: 'waiting',
+      tc: { base: base, inc: Math.max(0, +o.tc.inc || 0) },
+      moves: '', n: 0,
+      clock: { red: base * 1000, black: base * 1000, at: 0 },
+    };
+    g[o.side === 'black' ? 'black' : 'red'] = { uid: o.uid, name: cleanName(o.name) };
+    return g;
+  }
+
+  /** 坐進空位，對局開始。o：{ uid, name, ts }。 */
+  function join(cur, o) {
+    if (!cur || cur.status !== 'waiting' || sideOfUid(cur, o.uid)) return undefined;
+    var side = !cur.red ? 'red' : (!cur.black ? 'black' : null);
+    if (!side) return undefined;
+    var g = copy(cur);
+    g[side] = { uid: o.uid, name: cleanName(o.name) };
+    g.status = 'playing';
+    g.started = o.ts;
+    g.clock.at = o.ts;
+    return g;
+  }
+
+  /** 走一步。o：{ uid, move: 'h2e2', now: 估計的伺服器時間, ts }。 */
+  function move(cur, o) {
+    if (!cur || cur.status !== 'playing') return undefined;
+    var side = sideOfUid(cur, o.uid);
+    if (!side || side !== turnOf(cur)) return undefined;
+    var game = gameOf(cur);
+    if (!game) return undefined;
+    var g = copy(cur);
+    if (g.tc.base) {
+      var left = remaining(g, side, o.now);
+      if (left <= 0) {
+        g.clock[side] = 0;
+        return finish(g, other(side), 'timeout');
+      }
+      g.clock[side] = Math.round(left + g.tc.inc * 1000);
+    }
+    if (!game.play(E.strToMove(o.move))) return undefined;
+    g.moves = g.moves ? g.moves + ' ' + o.move : o.move;
+    g.n = cur.n + 1;
+    g.clock.at = o.ts;
+    delete g.offer; // 走了棋，之前的悔棋或提和請求自動作廢
+    var res = game.result();
+    if (res) finish(g, res.winner === null ? 'draw' : (res.winner === E.RED ? 'red' : 'black'), res.reason);
+    return g;
+  }
+
+  function resign(cur, o) {
+    var side = sideOfUid(cur, o.uid);
+    if (!cur || cur.status !== 'playing' || !side) return undefined;
+    return finish(copy(cur), other(side), 'resign');
+  }
+
+  /** 提出悔棋或和棋請求。o：{ uid, kind: 'undo' | 'draw' }。 */
+  function offer(cur, o) {
+    var side = sideOfUid(cur, o.uid);
+    if (!cur || cur.status !== 'playing' || !side || cur.offer) return undefined;
+    if (o.kind !== 'undo' && o.kind !== 'draw') return undefined;
+    // 悔棋要退回到「請求者自己上一步之前」：輪到自己時退兩步，否則退一步。
+    if (o.kind === 'undo' && cur.n < (turnOf(cur) === side ? 2 : 1)) return undefined;
+    var g = copy(cur);
+    g.offer = { kind: o.kind, by: side, n: cur.n };
+    return g;
+  }
+
+  /** 回覆對方的請求。o：{ uid, ok, ts }。 */
+  function answer(cur, o) {
+    var side = sideOfUid(cur, o.uid);
+    if (!cur || cur.status !== 'playing' || !side || !cur.offer || cur.offer.by === side) return undefined;
+    var g = copy(cur);
+    var req = g.offer;
+    delete g.offer;
+    if (!o.ok) return g;
+    if (req.kind === 'draw') return finish(g, 'draw', 'agreed');
+    var back = turnOf(cur) === req.by ? 2 : 1;
+    if (cur.n < back) return g;
+    g.moves = movesOf(cur).slice(0, cur.n - back).join(' ');
+    g.n = cur.n - back;
+    g.clock.at = o.ts; // 重新起算這一步的時間；已經用掉的時間不退還
+    return g;
+  }
+
+  function cancelOffer(cur, o) {
+    var side = sideOfUid(cur, o.uid);
+    if (!cur || !cur.offer || cur.offer.by !== side) return undefined;
+    var g = copy(cur);
+    delete g.offer;
+    return g;
+  }
+
+  /** 輪走方的時間用完時，任何一位棋手都可以呼叫這個動作結束對局。o：{ uid, now }。 */
+  function flag(cur, o) {
+    if (!cur || cur.status !== 'playing' || !cur.tc.base || !sideOfUid(cur, o.uid)) return undefined;
+    var side = turnOf(cur);
+    if (remaining(cur, side, o.now) > 0) return undefined;
+    var g = copy(cur);
+    g.clock[side] = 0;
+    return finish(g, other(side), 'timeout');
+  }
+
+  /** 對手離線太久，宣告獲勝（是否離線夠久由呼叫端依 presence 判斷）。 */
+  function claim(cur, o) {
+    var side = sideOfUid(cur, o.uid);
+    if (!cur || cur.status !== 'playing' || !side) return undefined;
+    return finish(copy(cur), side, 'abandon');
+  }
+
+  /** 對局結束後記下再戰的新房號，讓對手看到邀請。 */
+  function setNext(cur, o) {
+    if (!cur || cur.status !== 'over' || cur.next || !sideOfUid(cur, o.uid) || !normalizeId(o.rid)) return undefined;
+    var g = copy(cur);
+    g.next = o.rid;
+    return g;
+  }
+
+  var WHY_TEXT = {
+    checkmate: '絕殺', stalemate: '困斃', perpetual: '長將判負', repetition: '重複局面和棋',
+    nocapture: '六十回合未吃子和棋', resign: '認輸', agreed: '雙方議和', timeout: '超時', abandon: '對手離線',
+  };
+  function resultText(result) {
+    if (!result) return '';
+    var why = WHY_TEXT[result.why] || result.why;
+    if (result.w === 'draw') return '和棋（' + why + '）';
+    return (result.w === 'red' ? '紅勝' : '黑勝') + '（' + why + '）';
+  }
+
+  function formatClock(ms) {
+    if (ms == null) return '';
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    var m = (s / 60) | 0;
+    s %= 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  return {
+    ID_LEN: ID_LEN, ABANDON_MS: ABANDON_MS, TIME_CONTROLS: TIME_CONTROLS,
+    randomId: randomId, normalizeId: normalizeId, cleanName: cleanName,
+    other: other, turnOf: turnOf, movesOf: movesOf, sideOfUid: sideOfUid, gameOf: gameOf, remaining: remaining,
+    createRoom: createRoom, join: join, move: move, resign: resign, offer: offer, answer: answer,
+    cancelOffer: cancelOffer, flag: flag, claim: claim, setNext: setNext,
+    resultText: resultText, formatClock: formatClock,
+  };
+});
+
+
+// === js/online.js ===
+// ============================================================================
+// ♟️ 象棋學院 — 線上對弈（#/online 大廳、#/online/<房號> 房間）
+//
+// 後端只有 Firebase Realtime Database＋匿名登入；SDK 在第一次進入線上頁時才從 CDN 載入，
+// 其他頁面完全離線可用。房間狀態的所有規則都在 online_core.js，這個檔案只負責畫面與連線。
+// 資料路徑：xq/rooms/<房號>/g（對局）、xq/rooms/<房號>/p/<uid>（在線狀態）、xq/lobby/<房號>（大廳）。
+// 測試時可以先設定 window.XQ_ONLINE_BACKEND 換成假的後端。
+// ============================================================================
+
+(function () {
+  'use strict';
+  var E = window.XQEngine;
+  var NT = window.XQNotation;
+  var Core = window.XQOnlineCore;
+  var App = null;
+  var KEY = 'xq.online.v1';
+  var ROOT = 'xq';
+  var SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+  var SDK_FILES = ['firebase-app-compat.js', 'firebase-auth-compat.js', 'firebase-database-compat.js'];
+  var LOBBY_MAX_AGE = 6 * 3600 * 1000; // 大廳不顯示超過 6 小時的房間（多半是沒清掉的殘留）
+
+  function esc(s) { return App.esc(s); }
+  function gPath(rid) { return ROOT + '/rooms/' + rid + '/g'; }
+  function pPath(rid) { return ROOT + '/rooms/' + rid + '/p'; }
+  function lobbyPath(rid) { return ROOT + '/lobby/' + rid; }
+  function sideLabel(side) { return side === 'red' ? '紅方' : '黑方'; }
+
+  // ------------------------------------------------------------------ Firebase 後端
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error('無法載入連線元件（' + src.split('/').pop() + '），請檢查網路')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function firebaseBackend(config) {
+    var db = null;
+    var offset = 0;
+    var fb = null;
+    return {
+      init: function () {
+        var chain = Promise.resolve();
+        SDK_FILES.forEach(function (f) { chain = chain.then(function () { return loadScript(SDK + f); }); });
+        return chain.then(function () {
+          fb = window.firebase;
+          if (!fb.apps.length) fb.initializeApp(config);
+          db = fb.database();
+          db.ref('.info/serverTimeOffset').on('value', function (s) { offset = s.val() || 0; });
+          return new Promise(function (resolve, reject) {
+            var stop = fb.auth().onAuthStateChanged(function (user) {
+              if (user) { stop(); resolve(user.uid); }
+            });
+            fb.auth().signInAnonymously().catch(reject);
+          });
+        });
+      },
+      now: function () { return Date.now() + offset; },
+      ts: function () { return fb.database.ServerValue.TIMESTAMP; },
+      watch: function (path, cb) {
+        var ref = db.ref(path);
+        var h = ref.on('value', function (s) { cb(s.val()); }, function (err) { cb(null, err); });
+        return function () { ref.off('value', h); };
+      },
+      // 呼叫前該路徑一定已經有 watch 在聽，本機快取就是最新狀態；快取是 null 代表房間不存在，直接中止。
+      tx: function (path, fn) {
+        return db.ref(path).transaction(function (cur) {
+          return cur === null ? undefined : fn(cur);
+        }, undefined, false).then(function (r) {
+          return { committed: r.committed, val: r.snapshot ? r.snapshot.val() : null };
+        });
+      },
+      set: function (path, val) { return db.ref(path).set(val); },
+      remove: function (path) { return db.ref(path).remove(); },
+      /**
+       * 在線狀態：連上線時寫入 onVal()，斷線時由伺服器改成 offVal（null = 刪除）。
+       * 回傳的函式用來主動離開。
+       */
+      presence: function (path, onVal, offVal) {
+        var ref = db.ref(path);
+        var conn = db.ref('.info/connected');
+        var h = conn.on('value', function (s) {
+          if (s.val() !== true) return;
+          // 先寫入、再登記斷線動作：大廳的規則只允許房主刪除「已經存在」的項目，
+          // 順序反過來的話，斷線動作會因為項目還不存在而被拒絕。
+          ref.set(onVal()).then(function () {
+            var od = ref.onDisconnect();
+            return offVal === null ? od.remove() : od.set(offVal);
+          }).catch(function () {});
+        });
+        return function () {
+          conn.off('value', h);
+          ref.onDisconnect().cancel();
+          return (offVal === null ? ref.remove() : ref.set(offVal)).catch(function () {});
+        };
+      },
+    };
+  }
+
+  // ------------------------------------------------------------------ 狀態
+  var S = {
+    token: 0, backendP: null, backend: null, uid: '',
+    rid: '', g: null, game: null, role: null, flip: false, sel: -1, board: null, busy: false, animate: false,
+    pres: {}, stops: [], timer: 0, presStop: null, lobbyStop: null, lobbyEntry: null, lobbyKey: '',
+    flagN: -1, cancelling: false, warned: false, awayHtml: '', lobby: {},
+  };
+
+  function prefs() {
+    var p = App.load(KEY, null);
+    if (!p || typeof p !== 'object') p = {};
+    if (!p.name) {
+      p.name = '棋友' + (100 + ((Math.random() * 900) | 0));
+      App.save(KEY, p);
+    }
+    return p;
+  }
+  function myName() { return Core.cleanName(prefs().name); }
+  function saveName(name) {
+    var p = prefs();
+    p.name = Core.cleanName(name);
+    App.save(KEY, p);
+  }
+
+  function ensureBackend() {
+    if (!S.backendP) {
+      var b = window.XQ_ONLINE_BACKEND || firebaseBackend(window.XQ_FIREBASE);
+      S.backendP = b.init().then(function (uid) {
+        S.backend = b;
+        S.uid = uid;
+        return b;
+      });
+      S.backendP.catch(function () { S.backendP = null; });
+    }
+    return S.backendP;
+  }
+
+  function stop() {
+    S.token++;
+    S.stops.forEach(function (f) { try { f(); } catch (_) {} });
+    S.stops = [];
+    if (S.timer) { clearInterval(S.timer); S.timer = 0; }
+    if (S.presStop) { S.presStop(); S.presStop = null; }
+    if (S.lobbyStop) { S.lobbyStop(); S.lobbyStop = null; }
+    S.lobbyKey = '';
+    S.rid = '';
+    S.g = null;
+    S.game = null;
+    S.role = null;
+    S.board = null;
+    S.busy = false;
+    S.sel = -1;
+    S.pres = {};
+    S.flagN = -1;
+    S.warned = false;
+    S.awayHtml = '';
+  }
+
+  function errText(err) {
+    var code = err && err.code ? String(err.code) : '';
+    if (code.indexOf('operation-not-allowed') >= 0) return '這個 Firebase 專案還沒有啟用匿名登入。';
+    if (code.toUpperCase().indexOf('PERMISSION_DENIED') >= 0) return '資料庫拒絕存取（安全規則尚未設定，或沒有權限）。';
+    return (err && err.message) || String(err || '未知的錯誤');
+  }
+
+  function message(html) {
+    App.main.innerHTML = '<div class="study-wrap"><section class="card">' + html + '</section></div>';
+  }
+
+  // ------------------------------------------------------------------ 大廳
+  function tcLabel(tc) {
+    if (!tc || !tc.base) return '不計時';
+    return Math.round(tc.base / 60) + ' 分＋' + (tc.inc || 0) + ' 秒';
+  }
+
+  function renderLobby() {
+    App.main.innerHTML =
+      '<div class="study-wrap on-lobby">' +
+        '<section class="card pz-head"><div><h1>線上對弈</h1>' +
+          '<p class="muted">建立房間後把邀請連結傳給朋友，對方打開就能開始下。不需要註冊帳號；棋局結束後會自動存進「我的棋譜」。</p></div>' +
+          '<label class="on-name">暱稱<input id="onName" type="text" maxlength="12" autocomplete="off" value="' + esc(myName()) + '" /></label>' +
+        '</section>' +
+        '<div class="on-two">' +
+          '<section class="card"><h2>建立房間</h2><div class="on-form">' +
+            '<label>我方<select id="onSide"><option value="rand">隨機</option><option value="red">執紅（先走）</option><option value="black">執黑（後走）</option></select></label>' +
+            '<label>計時<select id="onTc">' + Core.TIME_CONTROLS.map(function (t, i) {
+              return '<option value="' + i + '"' + (i === 2 ? ' selected' : '') + '>' + esc(t.label) + '</option>';
+            }).join('') + '</select></label>' +
+            '<label class="pz-check"><input type="checkbox" id="onPublic" checked /> 顯示在大廳，讓其他人加入或觀戰</label>' +
+            '<button type="button" class="btn btn-primary" data-oact="create">建立房間</button>' +
+          '</div></section>' +
+          '<section class="card"><h2>用房號加入或觀戰</h2><div class="on-form">' +
+            '<label>房號<input id="onCode" type="text" maxlength="8" autocomplete="off" autocapitalize="characters" placeholder="6 碼，例如 K7M2QX" /></label>' +
+            '<button type="button" class="btn" data-oact="join">進入房間</button>' +
+            '<p class="muted">房間還在等人時會直接入座；已經開始的對局則是觀戰。</p>' +
+          '</div></section>' +
+        '</div>' +
+        '<section class="card"><div class="card-head"><h2>大廳</h2><span class="count-pill" id="onLobbyCount">0</span></div>' +
+          '<div id="onLobby"><p class="muted">讀取中…</p></div></section>' +
+      '</div>';
+    S.stops.push(S.backend.watch(ROOT + '/lobby', function (val, err) {
+      if (err) {
+        var box = document.getElementById('onLobby');
+        if (box) box.innerHTML = '<p class="muted">無法讀取大廳：' + esc(errText(err)) + '</p>';
+        return;
+      }
+      S.lobby = val || {};
+      drawLobby();
+    }));
+  }
+
+  function drawLobby() {
+    var box = document.getElementById('onLobby');
+    if (!box) return;
+    var now = S.backend.now();
+    var rows = Object.keys(S.lobby).map(function (rid) {
+      var e = S.lobby[rid] || {};
+      return { rid: rid, e: e };
+    }).filter(function (x) {
+      return Core.normalizeId(x.rid) && x.e.at && now - x.e.at < LOBBY_MAX_AGE;
+    }).sort(function (a, b) { return (a.e.st === 'waiting' ? 0 : 1) - (b.e.st === 'waiting' ? 0 : 1) || b.e.at - a.e.at; });
+    document.getElementById('onLobbyCount').textContent = rows.length;
+    if (!rows.length) {
+      box.innerHTML = '<p class="muted">目前沒有公開的房間。建立一個房間，或把邀請連結直接傳給朋友。</p>';
+      return;
+    }
+    box.innerHTML = '<ul class="rec-list">' + rows.map(function (x) {
+      var e = x.e;
+      var waiting = e.st === 'waiting';
+      var who = waiting
+        ? Core.cleanName(e.red || e.black) + ' 等待對手（' + (e.red ? '缺黑方' : '缺紅方') + '）'
+        : Core.cleanName(e.red) + '（紅） vs ' + Core.cleanName(e.black) + '（黑）';
+      return '<li class="rec-item on-room-row"><a href="#/online/' + esc(x.rid) + '"><strong>' + esc(who) + '</strong>' +
+        '<small>房號 ' + esc(x.rid) + '・' + esc(tcLabel(e.tc)) + '</small></a>' +
+        '<a class="btn' + (waiting ? ' btn-primary' : '') + '" href="#/online/' + esc(x.rid) + '">' + (waiting ? '加入' : '觀戰') + '</a></li>';
+    }).join('') + '</ul>';
+  }
+
+  function createRoom(opts) {
+    var rid = Core.randomId();
+    var g = Core.createRoom({
+      uid: S.uid, name: myName(), side: opts.side, tc: opts.tc, pub: opts.pub, ts: S.backend.ts(),
+    });
+    return S.backend.set(gPath(rid), g).then(function () { return rid; });
+  }
+
+  // ------------------------------------------------------------------ 房間
+  function enterRoom(rid) {
+    S.rid = rid;
+    message('<p class="muted">正在進入房間 ' + esc(rid) + '…</p>');
+    var token = S.token;
+    S.stops.push(S.backend.watch(gPath(rid), function (val, err) {
+      if (token !== S.token) return;
+      if (err) {
+        message('<h2>無法進入房間</h2><p class="muted">' + esc(errText(err)) + '</p><p><a class="link-btn" href="#/online">← 回大廳</a></p>');
+        return;
+      }
+      if (!val) {
+        if (S.g) App.toast('房間已經關閉');
+        message('<h2>找不到房間 ' + esc(rid) + '</h2><p class="muted">房號可能打錯了，或房間已經被關閉。</p><p><a class="link-btn" href="#/online">← 回大廳</a></p>');
+        S.g = null;
+        return;
+      }
+      onRoom(val);
+    }));
+    S.stops.push(S.backend.watch(pPath(rid), function (val) {
+      if (token !== S.token) return;
+      S.pres = val || {};
+      refreshRoom();
+    }));
+    S.timer = setInterval(tick, 250);
+  }
+
+  function startPresence() {
+    if (S.presStop) S.presStop();
+    var role = S.role;
+    var name = role === 'watch' ? myName() : S.g[role].name;
+    var ts = S.backend.ts();
+    S.presStop = S.backend.presence(
+      pPath(S.rid) + '/' + S.uid,
+      function () { return { name: name, role: role, on: true }; },
+      role === 'watch' ? null : { name: name, role: role, on: false, off: ts }
+    );
+  }
+
+  function syncLobby() {
+    var g = S.g;
+    if (!g.pub || g.host !== S.uid) return;
+    if (g.status === 'over') {
+      if (S.lobbyStop) { S.lobbyStop(); S.lobbyStop = null; }
+      return;
+    }
+    var entry = {
+      host: S.uid, st: g.status, red: g.red ? g.red.name : '', black: g.black ? g.black.name : '',
+      tc: g.tc, at: S.backend.ts(),
+    };
+    var key = entry.st + '|' + entry.red + '|' + entry.black;
+    S.lobbyEntry = entry;
+    if (!S.lobbyStop) {
+      S.lobbyStop = S.backend.presence(lobbyPath(S.rid), function () { return S.lobbyEntry; }, null);
+    } else if (key !== S.lobbyKey) {
+      S.backend.set(lobbyPath(S.rid), entry).catch(function () {});
+    }
+    S.lobbyKey = key;
+  }
+
+  function saveFinished(g) {
+    var gm = Core.gameOf(g);
+    if (!gm || !gm.history.length) return;
+    var loser = g.result.w === 'red' ? E.BLACK : E.RED;
+    if (g.result.why === 'resign') gm.resign(loser);
+    else if (g.result.why === 'agreed') gm.agreeDraw();
+    var title = '線上：' + g.red.name + '（紅） vs ' + g.black.name + '（黑）';
+    if (g.result.why === 'timeout' || g.result.why === 'abandon') title += ' ' + Core.resultText(g.result);
+    App.upsertSaved(null, title, gm);
+  }
+
+  function onRoom(val) {
+    var game = Core.gameOf(val);
+    if (!game) {
+      if (!S.warned) App.toast('收到不合規則的對局資料，已忽略');
+      S.warned = true;
+      return;
+    }
+    var prev = S.g;
+    S.g = val;
+    S.game = game;
+    var role = Core.sideOfUid(val, S.uid) || 'watch';
+    var player = role !== 'watch';
+
+    if (!prev || role !== S.role) {
+      var first = !prev;
+      S.role = role;
+      S.flip = role === 'black';
+      buildRoom();
+      startPresence();
+      if (first && !player && val.status === 'waiting') {
+        // 打開邀請連結 = 入座。
+        S.backend.tx(gPath(S.rid), function (cur) {
+          return Core.join(cur, { uid: S.uid, name: myName(), ts: S.backend.ts() });
+        }).then(function (r) {
+          if (!r.committed) App.toast('位子已經有人了，改為觀戰');
+        }, function (err) { App.toast('入座失敗：' + errText(err)); });
+      } else if (!first && player) {
+        App.toast('已入座，你執' + (role === 'red' ? '紅（先走）' : '黑（後走）'));
+      }
+    }
+    if (prev) {
+      S.animate = val.n === prev.n + 1;
+      if (val.n !== prev.n) S.sel = -1;
+      if (prev.status === 'waiting' && val.status === 'playing' && prev.host === S.uid) App.toast('對手已加入，對局開始');
+      if (player && val.status === 'playing') {
+        var mine = prev.offer && prev.offer.by === role;
+        if (mine && !val.offer && val.n === prev.n && !S.cancelling) {
+          App.toast('對方拒絕了你的' + (prev.offer.kind === 'undo' ? '悔棋' : '和棋') + '請求');
+        } else if (prev.offer && prev.offer.kind === 'undo' && val.n < prev.n) {
+          App.toast('悔棋成立');
+        } else if (val.offer && val.offer.by !== role && !prev.offer) {
+          App.toast('對方請求' + (val.offer.kind === 'undo' ? '悔棋' : '和棋'));
+        }
+      }
+      S.cancelling = false;
+      if (prev.status !== 'over' && val.status === 'over') {
+        App.toast(Core.resultText(val.result));
+        if (player) {
+          saveFinished(val);
+          App.campusAct();
+        }
+      }
+    }
+    syncLobby();
+    refreshRoom();
+  }
+
+  function inviteLink() { return location.href.split('#')[0] + '#/online/' + S.rid; }
+
+  function buildRoom() {
+    App.main.innerHTML =
+      '<div class="xq-stage">' +
+        '<div class="xq-board-col">' +
+          '<div class="on-bar" id="onTop"></div>' +
+          '<div class="xq-board-wrap" id="onBoard"></div>' +
+          '<div class="on-bar" id="onBottom"></div>' +
+        '</div>' +
+        '<aside class="xq-side">' +
+          '<section class="card">' +
+            '<div class="card-head"><h2>房間 ' + esc(S.rid) + '</h2><span class="tag-pill" id="onRole"></span></div>' +
+            '<div id="onStatus"></div><div id="onOffer"></div><div id="onAway"></div>' +
+          '</section>' +
+          '<section class="card"><div class="btn-grid" id="onActions"></div></section>' +
+          '<section class="card">' +
+            '<div class="card-head"><h2>棋譜</h2><span class="muted" id="onWatch"></span></div>' +
+            '<div class="mv-scroll" id="onMoves"></div>' +
+          '</section>' +
+          '<div class="pz-nav"><a class="btn" href="#/online">← 大廳</a></div>' +
+        '</aside>' +
+      '</div>';
+    S.board = window.XQBoard.create(document.getElementById('onBoard'), { onSquare: onSquare });
+    S.animate = false;
+    S.awayHtml = '';
+  }
+
+  function presenceOf(side) {
+    var seat = S.g[side];
+    if (!seat) return null;
+    var p = S.pres[seat.uid];
+    return { online: !!(p && p.on), off: p && !p.on ? p.off : 0, known: !!p };
+  }
+
+  function barHtml(side) {
+    var g = S.g;
+    var seat = g[side];
+    var p = presenceOf(side);
+    var turn = g.status === 'playing' && Core.turnOf(g) === side;
+    var name = seat ? esc(seat.name) + (seat.uid === S.uid ? '（你）' : '') : '等待對手加入…';
+    return '<span class="on-dot ' + (side === 'red' ? 'is-red' : 'is-black') + '"></span>' +
+      '<span class="on-who' + (turn ? ' is-turn' : '') + '">' + name + '</span>' +
+      (seat ? '<span class="on-conn ' + (p.online ? 'is-on' : 'is-off') + '">' + (p.online ? '在線' : '離線') + '</span>' : '') +
+      (g.tc.base ? '<span class="on-clock' + (turn ? ' is-run' : '') + '" id="onClock-' + side + '"></span>' : '');
+  }
+
+  function refreshRoom() {
+    var g = S.g;
+    if (!g || !S.board || !document.getElementById('onStatus')) return;
+    var game = S.game;
+    var role = S.role;
+    var player = role !== 'watch';
+    var turn = Core.turnOf(g);
+    var targets = S.sel >= 0 ? game.legalMovesFrom(S.sel).map(function (m) { return m % 100; }) : [];
+    S.board.render({
+      board: game.pos.board, flipped: S.flip, faceToFace: false, selected: S.sel, targets: targets,
+      last: game.lastMove(), check: App.checkSquare(game.pos), animate: S.animate, hint: -1,
+    });
+    S.animate = false;
+
+    document.getElementById('onTop').innerHTML = barHtml(S.flip ? 'red' : 'black');
+    document.getElementById('onBottom').innerHTML = barHtml(S.flip ? 'black' : 'red');
+    document.getElementById('onRole').textContent = player ? '你執' + (role === 'red' ? '紅' : '黑') : '觀戰中';
+
+    var html;
+    if (g.status === 'waiting') {
+      html = '<div class="status-turn"><span class="turn-dot"></span>等待對手加入</div>' +
+        '<p class="muted">把邀請連結傳給朋友，對方打開就會入座：</p>' +
+        '<div class="on-invite"><input type="text" readonly id="onLink" value="' + esc(inviteLink()) + '" />' +
+        '<button type="button" class="btn btn-primary" data-oact="copy">複製</button></div>';
+    } else if (g.status === 'over') {
+      var verdict = '';
+      if (player && g.result.w !== 'draw') verdict = g.result.w === role ? '・你贏了！' : '・你輸了';
+      html = '<div class="status-result">' + esc(Core.resultText(g.result) + verdict) + '</div>' +
+        '<p class="muted">共 ' + g.n + ' 步。' + (player ? '這一局已存入「我的棋譜」。' : '') + '</p>' +
+        (g.next ? '<p><a class="btn btn-primary on-next" href="#/online/' + esc(g.next) + '">再戰的新房間已開好，點此進入 →</a></p>' : '');
+    } else {
+      var label = player ? (turn === role ? '輪到你走' : '等待對手走棋') : '輪到' + sideLabel(turn) + '走';
+      html = '<div class="status-turn ' + (turn === 'red' ? 'is-red' : 'is-black') + '"><span class="turn-dot"></span>' + label +
+        (game.inCheck() ? '<span class="badge-check">將軍！</span>' : '') + '</div>' +
+        '<p class="muted">第 ' + (Math.floor(g.n / 2) + 1) + ' 回合・' + esc(tcLabel(g.tc)) + '</p>';
+    }
+    document.getElementById('onStatus').innerHTML = html;
+
+    var offer = '';
+    if (g.offer && g.status === 'playing') {
+      var what = g.offer.kind === 'undo' ? '悔棋' : '和棋';
+      if (player && g.offer.by === role) {
+        offer = '<div class="on-offer">已送出' + what + '請求，等待對方回覆。' +
+          '<button type="button" class="link-btn" data-oact="cancel-offer">取消請求</button></div>';
+      } else if (player) {
+        offer = '<div class="on-offer is-ask"><strong>對方請求' + what + '</strong>' +
+          '<span class="on-offer-btns"><button type="button" class="btn btn-primary" data-oact="accept">同意</button>' +
+          '<button type="button" class="btn" data-oact="decline">拒絕</button></span></div>';
+      } else {
+        offer = '<div class="on-offer">' + sideLabel(g.offer.by) + '請求' + what + '，等待對方回覆。</div>';
+      }
+    }
+    document.getElementById('onOffer').innerHTML = offer;
+
+    var btn = function (act, text, dis, cls) {
+      return '<button type="button" class="btn' + (cls || '') + '" data-oact="' + act + '"' + (dis ? ' disabled' : '') + '>' + text + '</button>';
+    };
+    var acts = '';
+    if (player && g.status === 'playing') {
+      var canUndo = !g.offer && g.n >= (turn === role ? 2 : 1);
+      acts += btn('undo', '↩️ 請求悔棋', !canUndo) + btn('draw', '🤝 提和', !!g.offer) + btn('resign', '🏳️ 認輸', false, ' btn-danger');
+    } else if (player && g.status === 'waiting') {
+      acts += btn('cancel-room', '✖️ 關閉房間', false, ' btn-danger');
+    } else if (player && g.status === 'over' && !g.next) {
+      acts += btn('rematch', '🔁 再來一局（換邊）', false, ' btn-primary');
+    }
+    acts += btn('flip', '🔃 翻轉棋盤') + (g.status !== 'waiting' ? btn('copy', '🔗 複製房間連結') : '');
+    document.getElementById('onActions').innerHTML = acts;
+
+    var box = document.getElementById('onMoves');
+    box.innerHTML = App.moveListHtml(game, g.n, false);
+    box.scrollTop = box.scrollHeight;
+    var watchers = Object.keys(S.pres).filter(function (u) { return S.pres[u] && S.pres[u].role === 'watch'; }).length;
+    document.getElementById('onWatch').textContent = watchers ? '👀 ' + watchers + ' 人觀戰' : '';
+    tick();
+  }
+
+  /** 每 250 毫秒更新時鐘與離線提示；時間用完時由棋手這一端送出超時判定。 */
+  function tick() {
+    var g = S.g;
+    if (!g || !S.backend || !document.getElementById('onStatus')) return;
+    var now = S.backend.now();
+    var player = S.role !== 'watch';
+    if (g.tc.base) {
+      ['red', 'black'].forEach(function (side) {
+        var el = document.getElementById('onClock-' + side);
+        if (!el) return;
+        var ms = Core.remaining(g, side, now);
+        var text = Core.formatClock(ms);
+        if (el.textContent !== text) el.textContent = text;
+        el.classList.toggle('is-low', ms < 30000);
+      });
+      var turn = Core.turnOf(g);
+      if (player && g.status === 'playing' && S.flagN !== g.n && Core.remaining(g, turn, now) <= 0) {
+        S.flagN = g.n;
+        S.backend.tx(gPath(S.rid), function (cur) { return Core.flag(cur, { uid: S.uid, now: S.backend.now() }); })
+          .catch(function () {});
+      }
+    }
+    var away = '';
+    if (player && g.status === 'playing') {
+      var p = presenceOf(Core.other(S.role));
+      if (p && p.known && !p.online && p.off) {
+        var gone = Math.max(0, now - p.off);
+        away = gone >= Core.ABANDON_MS
+          ? '<div class="on-offer is-ask"><strong>對手已離線超過 1 分鐘</strong><span class="on-offer-btns">' +
+            '<button type="button" class="btn btn-primary" data-oact="claim">宣告獲勝</button></span></div>'
+          : '<div class="on-offer">對手離線中，' + Math.ceil((Core.ABANDON_MS - gone) / 1000) + ' 秒後可以宣告獲勝。</div>';
+      }
+    }
+    if (away !== S.awayHtml) {
+      S.awayHtml = away;
+      document.getElementById('onAway').innerHTML = away;
+    }
+  }
+
+  function roomTx(fn, failText) {
+    return S.backend.tx(gPath(S.rid), fn).then(function (r) {
+      if (!r.committed && failText) App.toast(failText);
+      return r;
+    }, function (err) {
+      App.toast('連線有問題：' + errText(err));
+      return { committed: false };
+    });
+  }
+
+  function onSquare(sq) {
+    var g = S.g;
+    if (!g || S.busy || S.role === 'watch' || g.status !== 'playing' || Core.turnOf(g) !== S.role) return;
+    var game = S.game;
+    if (S.sel >= 0) {
+      var m = S.sel * 100 + sq;
+      if (game.legalMoves().indexOf(m) >= 0) {
+        S.sel = -1;
+        S.busy = true;
+        refreshRoom();
+        roomTx(function (cur) {
+          return Core.move(cur, { uid: S.uid, move: E.moveToStr(m), now: S.backend.now(), ts: S.backend.ts() });
+        }, '這一步沒有送出，請再走一次').then(function () { S.busy = false; });
+        return;
+      }
+    }
+    var p = game.pos.board[sq];
+    var mine = p && E.sideOf(p) === (S.role === 'red' ? E.RED : E.BLACK);
+    S.sel = mine && S.sel !== sq ? sq : -1;
+    refreshRoom();
+  }
+
+  function copyLink() {
+    var text = inviteLink();
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (_) {}
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).catch(fallback);
+    else fallback();
+    App.toast('已複製連結');
+  }
+
+  function onAction(act) {
+    var g = S.g;
+    var uid = S.uid;
+    if (act === 'retry') { window.XQOnline.render(S.lastParts || []); return; }
+    if (act === 'create' || act === 'join') {
+      var nameEl = document.getElementById('onName');
+      if (nameEl) saveName(nameEl.value);
+      if (act === 'join') {
+        var rid = Core.normalizeId(document.getElementById('onCode').value);
+        if (!rid) { App.toast('房號是 6 碼的英文與數字'); return; }
+        location.hash = '#/online/' + rid;
+        return;
+      }
+      var side = document.getElementById('onSide').value;
+      if (side === 'rand') side = Math.random() < 0.5 ? 'red' : 'black';
+      var tc = Core.TIME_CONTROLS[+document.getElementById('onTc').value] || Core.TIME_CONTROLS[0];
+      createRoom({ side: side, tc: tc, pub: document.getElementById('onPublic').checked }).then(function (newRid) {
+        location.hash = '#/online/' + newRid;
+      }, function (err) { App.toast('建立房間失敗：' + errText(err)); });
+      return;
+    }
+    if (!g) return;
+    if (act === 'copy') copyLink();
+    else if (act === 'flip') { S.flip = !S.flip; refreshRoom(); }
+    else if (act === 'undo' || act === 'draw') {
+      roomTx(function (cur) { return Core.offer(cur, { uid: uid, kind: act }); }, '現在不能送出請求');
+    } else if (act === 'cancel-offer') {
+      S.cancelling = true;
+      roomTx(function (cur) { return Core.cancelOffer(cur, { uid: uid }); });
+    } else if (act === 'accept' || act === 'decline') {
+      roomTx(function (cur) { return Core.answer(cur, { uid: uid, ok: act === 'accept', ts: S.backend.ts() }); });
+    } else if (act === 'resign') {
+      if (!window.confirm('確定要認輸嗎？')) return;
+      roomTx(function (cur) { return Core.resign(cur, { uid: uid }); });
+    } else if (act === 'claim') {
+      var p = presenceOf(Core.other(S.role));
+      if (!p || p.online || !p.off || S.backend.now() - p.off < Core.ABANDON_MS) { App.toast('對手已經回來了'); return; }
+      roomTx(function (cur) { return Core.claim(cur, { uid: uid }); });
+    } else if (act === 'cancel-room') {
+      if (g.status !== 'waiting' || g.host !== uid) return;
+      S.backend.remove(gPath(S.rid)).then(function () { location.hash = '#/online'; }, function (err) {
+        App.toast('關閉失敗：' + errText(err));
+      });
+    } else if (act === 'rematch') {
+      if (g.status !== 'over' || g.next || S.role === 'watch') return;
+      var oldRid = S.rid;
+      createRoom({ side: Core.other(S.role), tc: g.tc, pub: false }).then(function (newRid) {
+        return S.backend.tx(gPath(oldRid), function (cur) { return Core.setNext(cur, { uid: uid, rid: newRid }); })
+          .then(function (r) {
+            // 對手搶先開了新房間：改進對手那一間。
+            location.hash = '#/online/' + (r.committed || !r.val || !r.val.next ? newRid : r.val.next);
+          });
+      }).catch(function (err) { App.toast('開新房間失敗：' + errText(err)); });
+    }
+  }
+
+  // ------------------------------------------------------------------ 對外介面
+  function init() {
+    App = window.XQApp;
+    App.main.addEventListener('click', function (ev) {
+      var t = ev.target.closest('[data-oact]');
+      if (!t || t.disabled) return;
+      onAction(t.getAttribute('data-oact'));
+    });
+    App.main.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && !ev.isComposing && ev.target.id === 'onCode') onAction('join');
+    });
+    App.main.addEventListener('change', function (ev) {
+      if (ev.target.id === 'onName') { saveName(ev.target.value); ev.target.value = myName(); }
+    });
+    App.main.addEventListener('focusin', function (ev) {
+      if (ev.target.id === 'onLink') ev.target.select();
+    });
+  }
+
+  window.XQOnline = {
+    handles: function (view) { return view === 'online'; },
+    render: function (parts) {
+      if (!App) init();
+      stop();
+      S.lastParts = parts;
+      if (!window.XQ_FIREBASE && !window.XQ_ONLINE_BACKEND) {
+        message('<h2>線上對弈尚未開放</h2><p class="muted">這個版本沒有設定連線資訊。</p>');
+        return;
+      }
+      message('<p class="muted">連線中…</p>');
+      var token = S.token;
+      ensureBackend().then(function () {
+        if (token !== S.token) return;
+        var rid = parts[0] ? Core.normalizeId(parts[0]) : '';
+        if (parts[0] && !rid) App.toast('房號格式不對，已回到大廳');
+        if (rid) enterRoom(rid);
+        else renderLobby();
+      }, function (err) {
+        if (token !== S.token) return;
+        message('<h2>無法連線</h2><p class="muted">' + esc(errText(err)) + '</p>' +
+          '<p><button type="button" class="btn btn-primary" data-oact="retry">重試</button></p>');
+      });
+      window.scrollTo(0, 0);
+    },
+    stop: stop,
+  };
+})();
+
+
 // === js/app.js ===
 // ============================================================================
 // ♟️ 象棋學院 — 頁面與互動（對弈、棋譜回放、走法速查）
@@ -5617,7 +6629,7 @@ window.XQ_PUZZLES = [
         '<section class="card">' +
           '<h2>學院規劃</h2>' +
           '<ul class="plain-list">' +
-            '<li>🌐 線上對弈、計時與觀戰（籌備中）</li>' +
+            '<li>更多古譜殘局與課程內容會陸續補充。</li>' +
           '</ul>' +
         '</section>' +
       '</div>';
@@ -5640,11 +6652,13 @@ window.XQ_PUZZLES = [
     // 離開對弈頁時停止 AI 思考；回來時 renderPlay 會再請 AI 接手。
     stopThinking();
     if (window.XQStudy) window.XQStudy.stop();
+    if (window.XQOnline) window.XQOnline.stop();
     var parts = (location.hash || '#/play').replace(/^#\/?/, '').split('/');
     var view = parts[0] || 'play';
     if (view === 'replay') renderReplay(parts[1] ? decodeURIComponent(parts[1]) : '');
     else if (view === 'rules') renderRules();
     else if (window.XQStudy && window.XQStudy.handles(view)) window.XQStudy.render(view, parts.slice(1).map(decodeURIComponent));
+    else if (window.XQOnline && window.XQOnline.handles(view)) window.XQOnline.render(parts.slice(1).map(decodeURIComponent));
     else { view = 'play'; renderPlay(); }
     document.querySelectorAll('[data-nav]').forEach(function (a) {
       a.classList.toggle('active', a.getAttribute('data-nav') === view);
@@ -5722,6 +6736,7 @@ window.XQ_PUZZLES = [
   window.XQApp = {
     main: main, esc: esc, load: load, save: save, toast: toast, prefs: prefs,
     campusAct: campusAct, moveListHtml: moveListHtml, checkSquare: checkSquare, sideName: sideName,
+    upsertSaved: upsertSaved,
   };
 
   function init() {
