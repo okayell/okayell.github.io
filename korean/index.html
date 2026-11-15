@@ -156,7 +156,7 @@ ruby rt {
   .top-nav { display: none; }
   .mobile-nav {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
-    display: grid; grid-template-columns: repeat(10, minmax(0, 1fr));
+    display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
     background: rgba(255, 255, 255, 0.98);
     border-top: 1px solid var(--border);
     padding: 4px 2px calc(4px + env(safe-area-inset-bottom));
@@ -950,9 +950,33 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
   .lesson-shell.rail-mob-open .lesson-rail { transform: translateX(0); }
   .lesson-shell.rail-mob-open .rail-backdrop { display: block; position: fixed; inset: 0; z-index: 115; background: rgba(15, 23, 42, 0.45); }
 }
-/* 手機底部導覽共 10 格：極窄螢幕（≤380px）縮小標籤字級，避免「今日學習」被裁切 */
-@media (max-width: 380px) {
-  .mnav-link small { font-size: 9px; letter-spacing: -0.2px; }
+
+/* =========================================================================
+ * 導覽整併：上方只留群組（今日／聽讀／單字／進度／回饋…），群組內的頁面改用頁面上方的子分頁列切換
+ * ========================================================================= */
+.sub-nav { max-width: 1120px; margin: 0 auto; padding: 16px 20px 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.sub-nav[hidden] { display: none; }
+.sub-nav:not([hidden]) + .app-main { padding-top: 14px; }
+.sub-link { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: 999px; border: 1px solid var(--border); background: #fff;
+  color: var(--text-2); font-weight: 650; font-size: 14px; line-height: 1.3; text-decoration: none !important; white-space: nowrap; touch-action: manipulation;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s; }
+.sub-link:hover { border-color: var(--primary); color: var(--primary); }
+.sub-link.active, .sub-link.active:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+.sub-link .nav-badge { position: static; }
+.sub-link.active .nav-badge { background: #fff; color: var(--primary); }
+@media (min-width: 1061px) {
+  .nav-link .nav-t { display: inline; }
+  .nav-link { padding: 8px 13px; gap: 6px; font-size: 14.5px; }
+}
+@media (min-width: 1061px) and (max-width: 1160px) {
+  .nav-link { padding: 8px 8px; gap: 4px; font-size: 13.5px; }
+}
+@media (max-width: 1060px) {
+  .sub-nav { padding: 10px 12px 0; gap: 6px; }
+  .sub-nav:not([hidden]) + .app-main { padding-top: 12px; }
+  .sub-link { flex: 1 1 0; min-width: 0; justify-content: center; padding: 8px 6px; font-size: 13.5px; }
+  .mnav-link { font-size: 20px; }
+  .mnav-link small { font-size: 11.5px; }
 }
 
 </style>
@@ -969,7 +993,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
           <small>四十音 → A1–C2・聽力閱讀</small>
         </span>
       </a>
-      <button type="button" class="ver-badge" id="verBadgeBtn" title="版本資訊、更新日誌與離線匯出">v2.8.0</button>
+      <button type="button" class="ver-badge" id="verBadgeBtn" title="版本資訊、更新日誌與離線匯出">v2.9.0</button>
     </div>
     <nav class="top-nav" id="topNav" aria-label="主要功能"></nav>
     <div class="header-stats" id="headerStats"></div>
@@ -29420,8 +29444,20 @@ KO.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; KO.LESSONS.push(l); })
   'use strict';
   const KO = (window.KO = window.KO || {});
   KO.RELEASES_DATA = {
-  "current_version": "2.8.0",
+  "current_version": "2.9.0",
   "releases": [
+    {
+      "version": "2.9.0",
+      "date": "2026-11-15",
+      "bump": "minor",
+      "title": "🧭 導覽整併：上方分頁收成群組，子分頁切換",
+      "highlights": [
+        "上方分頁從 10 個整併成 6 個：今日、四十音、聽讀、單字、進度、回饋，手機底部導覽也同步變寬好按",
+        "「聽讀」內用子分頁切換課程庫、故事、道地口語；「單字」內切換單字庫、單字本、複習，到期複習的數字移到「單字」上",
+        "點群組會回到上次看的子分頁；原本的網址與書籤都照常可用"
+      ],
+      "files_count": 2
+    },
     {
       "version": "2.8.0",
       "date": "2026-11-15",
@@ -40713,18 +40749,24 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
   'use strict';
   const KO = (window.KO = window.KO || {});
 
+  // 導覽群組：[群組 key, 圖示, 標籤, 子分頁 [[路由, 圖示, 標籤], …]]。
+  // 沒有子分頁的群組 key 就是路由；有子分頁的群組點下去會回到上次看的子分頁，原本的 #/路由 全部不變。
   const NAV = [
-    ['home', '🏠', '今日學習'],
-    ['hangul', '한', '四十音'],
-    ['library', '📚', '課程庫'],
-    ['stories', '📖', '故事'],
-    ['casual', '🎧', '口語'],
-    ['words', '🔤', '單字庫'],
-    ['vocab', '⭐', '單字本'],
-    ['review', '🔁', '複習'],
-    ['progress', '📊', '進度'],
-    ['feedback', '💬', '回饋'],
+    ['home', '🏠', '今日', []],
+    ['hangul', '한', '四十音', []],
+    ['listen', '🎧', '聽讀', [['library', '📚', '課程庫'], ['stories', '📖', '故事'], ['casual', '🗣️', '道地口語']]],
+    ['wordhub', '🔤', '單字', [['words', '🔤', '單字庫'], ['vocab', '⭐', '單字本'], ['review', '🔁', '複習']]],
+    ['progress', '📊', '進度', []],
+    ['feedback', '💬', '回饋', []],
   ];
+  const GROUP_OF = {};
+  NAV.forEach(([g, , , subs]) => { GROUP_OF[g] = g; subs.forEach(([k]) => { GROUP_OF[k] = g; }); });
+  const BADGE_GROUP = GROUP_OF.review;
+  const LAST_SUB_KEY = 'ko.nav.lastSub.v1';
+  let lastSub = {};
+  try { lastSub = JSON.parse(localStorage.getItem(LAST_SUB_KEY) || '{}') || {}; } catch { lastSub = {}; }
+  const groupRoute = ([g, , , subs]) => (subs.length ? (subs.some((s) => s[0] === lastSub[g]) ? lastSub[g] : subs[0][0]) : g);
+  let subNavEl = null;
 
   let routeCleanups = [];
   KO.onCleanup = function (fn) {
@@ -40740,23 +40782,49 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
   }
 
   let _lastNavKey = '';
-  function renderNav(active) {
+  // 子分頁列對齊頁面內容：有些頁面（道地口語）內容比 main 窄且置中，跟著第一個區塊的寬度走
+  function alignSubNav(main) {
+    if (!subNavEl || subNavEl.hidden) return;
+    const first = main.firstElementChild;
+    const w = first ? first.getBoundingClientRect().width : 0;
+    const cs = getComputedStyle(subNavEl);
+    const pad = cs.boxSizing === 'border-box' ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 0;
+    subNavEl.style.maxWidth = w > 200 ? `${Math.ceil(w + pad)}px` : getComputedStyle(main).maxWidth;
+  }
+  // route：目前路由名稱；detail：是否在內頁（課文、故事、對話、今日新單字…），內頁不顯示子分頁列
+  function renderNav(route, detail) {
+    const name = route === 'lesson' ? 'library' : route;
+    const g = GROUP_OF[name] || '';
+    const grp = NAV.find((n) => n[0] === g);
+    const subs = grp ? grp[3] : [];
+    if (subs.length && lastSub[g] !== name) {
+      lastSub[g] = name;
+      try { localStorage.setItem(LAST_SUB_KEY, JSON.stringify(lastSub)); } catch {}
+    }
     const due = KO.dueVocab().length;
     const hDue = KO.hangulStats ? KO.hangulStats('all').due : 0;
     const totalDue = due + hDue;
-    const navKey = `${active}|${totalDue}`;
+    const show = subs.length > 0 && route === name && !detail;
+    const navKey = `${name}|${show}|${totalDue}`;
     if (navKey === _lastNavKey) return;
     _lastNavKey = navKey;
+    const badge = totalDue > 0 ? `<span class="nav-badge">${totalDue > 99 ? '99+' : totalDue}</span>` : '';
+    const tip = (label, s) => (s.length ? `${label}：${s.map((x) => x[2]).join('・')}` : label);
     const top = document.getElementById('topNav');
     const mob = document.getElementById('mobileNav');
-    top.innerHTML = NAV.map(([k, ic, label]) => {
-      const badge = k === 'review' && totalDue > 0 ? `<span class="nav-badge">${totalDue}</span>` : '';
-      return `<a href="#/${k}" class="nav-link ${active === k ? 'active' : ''}"><span class="nav-ic">${ic}</span><span class="nav-t">${label}</span>${badge}</a>`;
-    }).join('');
-    mob.innerHTML = NAV.map(([k, ic, label]) => {
-      const badge = k === 'review' && totalDue > 0 ? `<span class="nav-badge">${totalDue}</span>` : '';
-      return `<a href="#/${k}" class="mnav-link ${active === k ? 'active' : ''}"><span class="nav-ic">${ic}</span><small>${label}</small>${badge}</a>`;
-    }).join('');
+    top.innerHTML = NAV.map((n) => `<a href="#/${groupRoute(n)}" class="nav-link ${g === n[0] ? 'active' : ''}" title="${tip(n[2], n[3])}"><span class="nav-ic">${n[1]}</span><span class="nav-t">${n[2]}</span>${n[0] === BADGE_GROUP ? badge : ''}</a>`).join('');
+    mob.innerHTML = NAV.map((n) => `<a href="#/${groupRoute(n)}" class="mnav-link ${g === n[0] ? 'active' : ''}" aria-label="${tip(n[2], n[3])}"><span class="nav-ic">${n[1]}</span><small>${n[2]}</small>${n[0] === BADGE_GROUP ? badge : ''}</a>`).join('');
+    const main = document.getElementById('app');
+    if (!subNavEl) {
+      subNavEl = document.createElement('nav');
+      subNavEl.className = 'sub-nav';
+      subNavEl.id = 'subNav';
+      subNavEl.setAttribute('aria-label', '子分頁');
+      main.parentNode.insertBefore(subNavEl, main);
+    }
+    subNavEl.hidden = !show;
+    if (!show) { subNavEl.innerHTML = ''; return; }
+    subNavEl.innerHTML = subs.map(([k, ic, t]) => `<a class="sub-link${k === name ? ' active' : ''}" href="#/${k}"${k === name ? ' aria-current="page"' : ''}><span class="sub-ic">${ic}</span><span>${t}</span>${k === 'review' ? badge : ''}</a>`).join('');
   }
 
   let _lastHeaderKey = '';
@@ -40795,12 +40863,13 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
     const segs = pathPart.split('/').filter(Boolean);
     const name = segs[0] || 'home';
     KO.routeName = name;
+    KO.routeDetail = segs.length > 1;
 
     const main = document.getElementById('app');
     main.onclick = null;
     main.onchange = null;
     main.className = 'app-main page-' + name;
-    renderNav(name === 'lesson' ? 'library' : name);
+    renderNav(name, KO.routeDetail);
     KO.renderHeaderStats();
 
     if (name === 'home') KO.renderHome(main);
@@ -40815,6 +40884,7 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
     else if (name === 'progress') KO.renderProgress(main);
     else if (name === 'feedback') KO.renderFeedback(main);
     else KO.renderHome(main);
+    alignSubNav(main);
 
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
@@ -40837,9 +40907,10 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
         if (r.ok) {
           const remote = await r.json();
           KO.mergeState(remote);
-          renderNav(KO.routeName === 'lesson' ? 'library' : KO.routeName);
+          renderNav(KO.routeName, KO.routeDetail);
           KO.renderHeaderStats();
           if (KO.routeName === 'home') KO.renderHome(document.getElementById('app'));
+          alignSubNav(document.getElementById('app'));
         }
       } catch {}
     }

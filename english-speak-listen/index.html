@@ -831,6 +831,33 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
   .nav-link { padding: 8px 8px; }
 }
 
+/* =========================================================================
+ * 導覽整併：上方只留群組（今日／聽讀／單字／進度／回饋…），群組內的頁面改用頁面上方的子分頁列切換
+ * ========================================================================= */
+.sub-nav { max-width: 1200px; margin: 0 auto; padding: 14px 20px 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.sub-nav[hidden] { display: none; }
+.sub-nav:not([hidden]) + .app-main { padding-top: 14px; }
+.sub-link { display: inline-flex; align-items: center; gap: 6px; padding: 7px 15px; border-radius: 999px; border: 1px solid var(--border); background: #fff;
+  color: var(--text-2); font-weight: 650; font-size: 14px; line-height: 1.3; text-decoration: none !important; white-space: nowrap; touch-action: manipulation;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s; }
+.sub-link:hover { border-color: var(--primary); color: var(--primary); }
+.sub-link.active, .sub-link.active:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+.sub-link .nav-badge { position: static; }
+@media (min-width: 761px) {
+  .nav-link .nav-t { display: inline; }
+  .nav-link { padding: 8px 13px; gap: 6px; font-size: 14.5px; }
+}
+@media (min-width: 761px) and (max-width: 980px) {
+  .nav-link { padding: 8px 8px; gap: 4px; font-size: 13.5px; }
+}
+@media (max-width: 760px) {
+  .sub-nav { padding: 10px 12px 0; gap: 6px; }
+  .sub-nav:not([hidden]) + .app-main { padding-top: 12px; }
+  .sub-link { flex: 1 1 0; min-width: 0; justify-content: center; padding: 8px 6px; font-size: 13.5px; }
+  .mnav-link { font-size: 20px; }
+  .mnav-link small { font-size: 11.5px; }
+}
+
 </style>
 </head>
 <body>
@@ -842,7 +869,7 @@ input:disabled, textarea:disabled { background: var(--surface-2); color: var(--t
           <span class="brand-logo">🎓</span>
           <span class="brand-txt"><b>英語學院</b><small>聽・讀・單字 一次學齊</small></span>
         </a>
-        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes 與未發布檔案修改檢測">v3.8.0</button>
+        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes 與未發布檔案修改檢測">v3.9.0</button>
       </div>
       <nav class="main-nav" id="mainNav" aria-label="主要導覽"></nav>
       <div class="header-right" id="headerStats"></div>
@@ -20436,8 +20463,20 @@ ES.WORDS.push(
   'use strict';
   const ES = (window.ES = window.ES || {});
   ES.RELEASES_DATA = {
-  "current_version": "3.8.0",
+  "current_version": "3.9.0",
   "releases": [
+    {
+      "version": "3.9.0",
+      "date": "2026-11-15",
+      "bump": "minor",
+      "title": "🧭 導覽整併：上方分頁收成群組，子分頁切換",
+      "highlights": [
+        "上方分頁從 9 個整併成 5 個：今日、聽讀、單字、進度、意見回饋，手機底部導覽也同步變寬好按",
+        "「聽讀」內用子分頁切換文章、故事、道地口語；「單字」內切換單字學習、單字本、複習，到期複習的紅點移到「單字」上",
+        "點群組會回到上次看的子分頁；原本的網址與書籤都照常可用"
+      ],
+      "files_count": 2
+    },
     {
       "version": "3.8.0",
       "date": "2026-11-15",
@@ -38241,24 +38280,78 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
 (function () {
   'use strict';
   const ES = window.ES;
-  // [路由, 圖示, 桌機標籤, 手機標籤]
+  // 導覽群組：[群組 key, 圖示, 桌機標籤, 手機標籤, 子分頁 [[路由, 圖示, 標籤], …]]。
+  // 沒有子分頁的群組 key 就是路由；有子分頁的群組點下去會回到上次看的子分頁，原本的 #/路由 全部不變。
   const NAV = [
-    ['home', '🏠', '今日', '今日'], ['library', '📚', '文章', '文章'], ['stories', '📖', '故事', '故事'], ['casual', '🎧', '道地口語', '口語'], ['words', '🔤', '單字學習', '學單字'], ['vocab', '📒', '單字本', '單字本'],
-    ['review', '🧠', '複習', '複習'], ['progress', '📈', '進度', '進度'], ['feedback', '💬', '意見回饋', '回饋'],
+    ['home', '🏠', '今日', '今日', []],
+    ['listen', '🎧', '聽讀', '聽讀', [['library', '📚', '文章'], ['stories', '📖', '故事'], ['casual', '🗣️', '道地口語']]],
+    ['wordhub', '🔤', '單字', '單字', [['words', '🔤', '單字學習'], ['vocab', '📒', '單字本'], ['review', '🧠', '複習']]],
+    ['progress', '📈', '進度', '進度', []],
+    ['feedback', '💬', '意見回饋', '回饋', []],
   ];
   const ROUTE_NAV = { lesson: 'library' };
+  const GROUP_OF = {};
+  NAV.forEach(([g, , , , subs]) => { GROUP_OF[g] = g; subs.forEach(([k]) => { GROUP_OF[k] = g; }); });
+  const BADGE_GROUP = GROUP_OF.review;
+  const LAST_SUB_KEY = 'es.nav.lastSub.v1';
+  let lastSub = {};
+  try { lastSub = JSON.parse(localStorage.getItem(LAST_SUB_KEY) || '{}') || {}; } catch (e) { lastSub = {}; }
+  const groupRoute = ([g, , , , subs]) => (subs.length ? (subs.some((s) => s[0] === lastSub[g]) ? lastSub[g] : subs[0][0]) : g);
+  const dueText = (n) => (n > 99 ? '99+' : String(n));
 
+  let navLinks = [];
+  let subNavEl = null;
   function renderNav() {
-    const links = NAV.map(([k, ic, t]) => `<a class="nav-link" data-nav="${k}" href="#/${k}" title="${t}"><span class="nav-ic">${ic}</span><span class="nav-t">${t}</span>
-      ${k === 'review' ? '<i class="nav-badge" id="dueBadge" hidden></i>' : ''}</a>`).join('');
-    ES.$('#mainNav').innerHTML = links;
-    ES.$('#mobileNav').innerHTML = NAV.map(([k, ic, t, m]) => `<a class="mnav-link" data-nav="${k}" href="#/${k}" aria-label="${t}"><span>${ic}</span><small>${m}</small>
-      ${k === 'review' ? '<i class="nav-badge" id="dueBadgeM" hidden></i>' : ''}</a>`).join('');
+    const icon = (k, ic) => ic;
+    const tip = (t, subs) => (subs.length ? `${t}：${subs.map((s) => s[2]).join('・')}` : t);
+    ES.$('#mainNav').innerHTML = NAV.map((n) => `<a class="nav-link" data-nav="${n[0]}" href="#/${groupRoute(n)}" title="${tip(n[2], n[4])}"><span class="nav-ic">${icon(n[0], n[1])}</span><span class="nav-t">${n[2]}</span>
+      ${n[0] === BADGE_GROUP ? '<i class="nav-badge" id="dueBadge" hidden></i>' : ''}</a>`).join('');
+    ES.$('#mobileNav').innerHTML = NAV.map((n) => `<a class="mnav-link" data-nav="${n[0]}" href="#/${groupRoute(n)}" aria-label="${tip(n[2], n[4])}"><span>${icon(n[0], n[1])}</span><small>${n[3]}</small>
+      ${n[0] === BADGE_GROUP ? '<i class="nav-badge" id="dueBadgeM" hidden></i>' : ''}</a>`).join('');
+    navLinks = ES.$$('[data-nav]');
+    if (!subNavEl) {
+      const main = ES.$('#appMain');
+      subNavEl = document.createElement('nav');
+      subNavEl.className = 'sub-nav';
+      subNavEl.id = 'subNav';
+      subNavEl.setAttribute('aria-label', '子分頁');
+      subNavEl.hidden = true;
+      main.parentNode.insertBefore(subNavEl, main);
+    }
   }
-  function setActive(name) {
-    const key = ROUTE_NAV[name] || name;
-    ES.$$('[data-nav]').forEach((a) => a.classList.toggle('active', a.dataset.nav === key));
+  // 子分頁列對齊頁面內容：有些頁面（道地口語）內容比 main 窄且置中，跟著第一個區塊的寬度走
+  function alignSubNav(main) {
+    if (!subNavEl || subNavEl.hidden) return;
+    const first = main.firstElementChild;
+    const w = first ? first.getBoundingClientRect().width : 0;
+    const cs = getComputedStyle(subNavEl);
+    const pad = cs.boxSizing === 'border-box' ? parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) : 0;
+    subNavEl.style.maxWidth = w > 200 ? `${Math.ceil(w + pad)}px` : getComputedStyle(main).maxWidth;
   }
+  function setActive(r) {
+    const name = ROUTE_NAV[r.name] || r.name;
+    const g = GROUP_OF[name] || '';
+    const grp = NAV.find((n) => n[0] === g);
+    const subs = grp ? grp[4] : [];
+    if (subs.length && lastSub[g] !== name) {
+      lastSub[g] = name;
+      try { localStorage.setItem(LAST_SUB_KEY, JSON.stringify(lastSub)); } catch (e) { /* ignore */ }
+    }
+    for (let i = 0; i < navLinks.length; i++) {
+      const a = navLinks[i];
+      a.classList.toggle('active', a.dataset.nav === g);
+      if (a.dataset.nav === g && subs.length) a.setAttribute('href', `#/${name}`);
+    }
+    // 子分頁列只在群組的列表頁顯示；課文、故事、對話、今日新字等內頁把空間留給內容
+    const show = subs.length > 0 && r.name === name && !(r.params && r.params.length);
+    subNavEl.hidden = !show;
+    if (!show) { subNavEl.innerHTML = ''; return; }
+    const due = dueCount();
+    subNavEl.innerHTML = subs.map(([k, ic, t]) => `<a class="sub-link${k === name ? ' active' : ''}" href="#/${k}"${k === name ? ' aria-current="page"' : ''}><span class="sub-ic">${ic}</span><span>${t}</span>
+      ${k === 'review' ? `<i class="nav-badge" id="dueBadgeS"${due ? '' : ' hidden'}>${dueText(due)}</i>` : ''}</a>`).join('');
+    alignSubNav(ES.$('#appMain'));
+  }
+  const dueCount = () => ES.vocab.due().length;
   let lastHdrSig = '';
   let lastDue = -1;
   function renderHeader() {
@@ -38278,14 +38371,14 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
           <span>${min}<small>/${goalMin}′</small></span></a>
         <a class="hs-chip" href="#/progress#settings" title="設定">⚙️</a>`;
     }
-    const due = ES.vocab.due().length;
+    const due = dueCount();
     if (due !== lastDue) {
       lastDue = due;
-      ['#dueBadge', '#dueBadgeM'].forEach((id) => {
+      ['#dueBadge', '#dueBadgeM', '#dueBadgeS'].forEach((id) => {
         const b = ES.$(id);
         if (!b) return;
         b.hidden = !due;
-        b.textContent = due > 99 ? '99+' : due;
+        b.textContent = dueText(due);
       });
     }
   }
@@ -38297,8 +38390,8 @@ window.CASUAL_DATA = (window.CASUAL_DATA || []).concat([
     renderHeader();
     if (!location.hash) location.replace('#/home');
     ES.renderRoute();
-    ES.on('route', (r) => setActive(r.name));
-    setActive(ES.curRoute ? ES.curRoute.name : 'home');
+    ES.on('route', setActive);
+    setActive(ES.curRoute || { name: 'home', params: [] });
     ES.on('xp', renderHeaderSoon);
     ES.on('state', renderHeaderSoon);
     ES.on('tick', renderHeaderSoon);
