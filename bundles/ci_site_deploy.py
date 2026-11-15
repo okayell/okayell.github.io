@@ -40,6 +40,7 @@ ARENAS: dict[str, dict[str, str]] = {
     'f1-odds-iq': {'db': 'f1_betting.sqlite3', 'kind': 'sports'},
     'tw-basketball': {'db': 'tw_basketball.db', 'kind': 'sports'},
     'cinema': {'db': 'now_playing.json', 'kind': 'cinema'},
+    'crypto': {'db': 'prices.json', 'kind': 'cinema'},  # JSON snapshot with `updatedAt`, same flow as cinema
 }
 
 
@@ -310,7 +311,8 @@ def _due_arenas(now_tw: dt.datetime, cache_dir: str = '') -> list[str]:
   """
   mins = now_tw.hour * 60 + now_tw.minute
   wd = now_tw.weekday()  # 0=Mon .. 6=Sun
-  due: list[str] = ['nba-betting-iq', 'epl-odds-iq', 'f1-odds-iq', 'tw-basketball']
+  # crypto trades 24/7 and its refresh takes ~10s, so it rides along on every scheduled run too
+  due: list[str] = ['nba-betting-iq', 'epl-odds-iq', 'f1-odds-iq', 'tw-basketball', 'crypto']
   if wd < 5:
     stock_db = os.path.join(cache_dir, 'tw-stock-insight', 'data', 'stock.db') if cache_dir else ''
     stock_last = _stock_max_date(stock_db) if stock_db else ''
