@@ -996,7 +996,7 @@ textarea.fb-input { min-height: 130px; resize: vertical; }
           <span class="brand-logo">あ</span>
           <span class="brand-txt"><b>日語學院</b><small>五十音 → A1–C2・聽力與閱讀</small></span>
         </a>
-        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes">v2.9.0</button>
+        <button type="button" class="ver-badge" id="verBadgeBtn" title="點擊查看 Release Notes">v2.10.0</button>
       </div>
       <nav class="main-nav" id="mainNav" aria-label="主要導覽"></nav>
       <div class="header-right" id="headerStats"></div>
@@ -15404,6 +15404,12 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
     return JA.tts.speak(safe, { gender: 'F', rate: slow ? 0.6 : 0.85, btn });
   };
 
+  /**
+   * 例字／例句要送給 TTS 的文字。單一詞用「讀音（假名）」：單獨的漢字常有多種讀法（魚＝さかな／うお、空＝そら／から），
+   * 只給漢字時引擎可能挑到別的讀音，跟畫面上的振假名對不上。含空白的句子維持漢字表層，讓助詞「は／へ」照上下文正確唸成 wa／e。
+   */
+  const exSay = (m) => (/\s/.test(String(m || '').trim()) ? jp.surface(m) : jp.reading(m));
+
   // ---------------------------------------------------------------------------
   // #/kana 主頁
   // ---------------------------------------------------------------------------
@@ -15449,7 +15455,7 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
   function notesHtml() {
     return `<div class="knotes">${(K().notes || []).map((n) => `<section class="card knote">
       <h3>${esc(n.title)}</h3><p>${esc(n.body)}</p>
-      <div class="knote-ex">${(n.ex || []).map((x) => `<button type="button" class="kn-ex" data-say="${esc(jp.surface(x.ja))}">
+      <div class="knote-ex">${(n.ex || []).map((x) => `<button type="button" class="kn-ex" data-say="${esc(exSay(x.ja))}">
         <span class="ja-txt">${JA.ruby(x.ja)}</span><small>${esc(jp.romaji(x.ja))}</small><em>${esc(x.zh)}</em><i>🔊</i></button>`).join('')}</div>
     </section>`).join('')}</div>`;
   }
@@ -15469,7 +15475,7 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
       <div class="kd-acts"><button type="button" class="btn primary" data-kd="say">🔊 發音</button>
         <button type="button" class="btn" data-kd="slow">🐢 慢速</button></div>
       ${inf.src ? `<div class="kd-row"><span class="kd-lbl">字源</span><span>由漢字「<b class="kd-src">${esc(inf.src)}</b>」的${it.script === 'h' ? '草書' : '一部分'}演變而來</span></div>` : ''}
-      ${inf.ex ? `<div class="kd-row kd-exrow"><span class="kd-lbl">例字</span><button type="button" class="kd-ex" data-say="${esc(jp.surface(inf.ex))}">
+      ${inf.ex ? `<div class="kd-row kd-exrow"><span class="kd-lbl">例字</span><button type="button" class="kd-ex" data-say="${esc(exSay(inf.ex))}">
         <span class="ja-txt">${JA.ruby(inf.ex)}</span><small>${esc(jp.romaji(inf.ex))}</small><em>${esc(inf.zh || '')}</em><i>🔊</i></button></div>` : ''}
       ${inf.note ? `<div class="kd-note">💡 ${esc(inf.note)}</div>` : ''}
       <div class="kd-row"><span class="kd-lbl">熟練度</span><span><span class="chip ${LV[lv][1]}">${LV[lv][0]}</span>
@@ -15581,7 +15587,7 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
         <div class="kr-ro">${esc(c.r)}</div>
         <div class="kr-acts"><button type="button" class="btn primary" data-kr="say">🔊 再聽一次</button><button type="button" class="btn" data-kr="slow">🐢 慢速</button></div>
         ${inf.src ? `<div class="kr-src">字源：漢字「<b>${esc(inf.src)}</b>」→ <b>${esc(c.ch)}</b></div>` : ''}
-        ${inf.ex ? `<button type="button" class="kd-ex big" data-say="${esc(jp.surface(inf.ex))}"><span class="ja-txt">${JA.ruby(inf.ex)}</span>
+        ${inf.ex ? `<button type="button" class="kd-ex big" data-say="${esc(exSay(inf.ex))}"><span class="ja-txt">${JA.ruby(inf.ex)}</span>
           <small>${esc(jp.romaji(inf.ex))}</small><em>${esc(inf.zh || '')}</em><i>🔊</i></button>` : ''}
         ${inf.note ? `<div class="kd-note">💡 ${esc(inf.note)}</div>` : ''}
         <p class="muted small">跟著大聲唸 2–3 次，再按「下一個」。</p>
@@ -15735,7 +15741,8 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
       const inf = kana.info(it.ch);
       return `<div class="${ok ? 'ok-txt' : 'bad-txt'}">${ok ? '✅ 答對了！' : '❌ 答錯了'}</div>
         <div class="rv-ans"><button type="button" class="icon-btn sm" data-kq-say>🔊</button><b class="kq-ans-ch">${esc(it.ch)}</b><span>${esc(it.r)}</span>
-        ${inf.ex ? `<span class="muted">例：<span class="ja-txt">${JA.ruby(inf.ex)}</span> ${esc(inf.zh || '')}</span>` : ''}</div>${extra || ''}`;
+        ${inf.ex ? `<span class="muted">例：</span><button type="button" class="kd-ex" data-say="${esc(exSay(inf.ex))}" title="點一下聽例字發音">
+          <span class="ja-txt">${JA.ruby(inf.ex)}</span><em>${esc(inf.zh || '')}</em><i>🔊</i></button>` : ''}</div>${extra || ''}`;
     }
     function finishOne(ok) {
       answered = true;
@@ -18349,8 +18356,18 @@ JA.CUSTOM_LESSONS.forEach(function (l) { l.custom = true; JA.LESSONS.push(l); })
   'use strict';
   const JA = (window.JA = window.JA || {});
   JA.RELEASES_DATA = {
-  "current_version": "2.9.0",
+  "current_version": "2.10.0",
   "releases": [
+    {
+      "version": "2.10.0",
+      "date": "2026-11-15",
+      "bump": "minor",
+      "title": "更新五十音（共 1 個檔案）",
+      "highlights": [
+        "[五十音] 更新 static/js/kana.js：あ 五十音圖（清音 46・濁音 20・半濁音 5・拗音 33）、逐行學習與 3 種假名測驗（+11 / -4 行）"
+      ],
+      "files_count": 1
+    },
     {
       "version": "2.9.0",
       "date": "2026-11-15",
