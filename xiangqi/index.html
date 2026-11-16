@@ -338,6 +338,10 @@ body[data-view='online'] .xq-board-wrap { width: min(100%, calc((100vh - 190px) 
 .on-next { text-decoration: none; display: inline-block; margin-top: 8px; white-space: normal; }
 #onStatus .muted { margin-top: 4px; }
 
+.on-privacy summary { cursor: pointer; font-weight: 700; font-size: 15px; }
+.on-privacy .plain-list { font-size: 14px; color: #374151; margin-bottom: 4px; }
+.on-privacy[open] summary { margin-bottom: 6px; }
+
 /* ---------- 我的戰績 ---------- */
 #rpLists { display: grid; gap: 12px; }
 .opp-stat { grid-column: 1 / -1; }
@@ -483,6 +487,7 @@ window.__STATIC_SINGLE_FILE__ = true;
     tamagotchi: { port: '8919', mount: true, path: 'tamagotchi/', name: '塔麻可吉博物館', icon: '🥚' },
     'cloud-devops': { port: '8919', mount: true, path: 'cloud-devops/', name: '雲端與系統維運學院', icon: '☁️' },
     xiangqi: { port: '8919', mount: true, path: 'xiangqi/', name: '象棋學院', icon: '🐘' },
+    chess: { port: '8919', mount: true, path: 'chess/', name: '西洋棋學院', icon: '♟️' },
     crypto: { port: '8919', mount: true, path: 'crypto/', name: '區塊鏈學院', icon: '🪙' }
   };
   var ACADEMY_CRESTS = {"english": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-english\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e3a8a\"/><stop offset=\"100%\" stop-color=\"#1d4ed8\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-english)\"/><path d=\"M8 8 L56 56 M56 8 L8 56\" stroke=\"#ffffff\" stroke-width=\"5\" opacity=\".22\"/><path d=\"M32 6 V58 M6 32 H58\" stroke=\"#ef4444\" stroke-width=\"4\" opacity=\".32\"/><rect x=\"11\" y=\"13\" width=\"42\" height=\"31\" rx=\"9\" fill=\"#ffffff\" stroke=\"#bfdbfe\" stroke-width=\"1.5\"/><path d=\"M22 43 L18 52 L30 43 Z\" fill=\"#ffffff\"/><text x=\"32\" y=\"35\" text-anchor=\"middle\" font-family=\"Arial,Helvetica,sans-serif\" font-size=\"19\" font-weight=\"900\" fill=\"#1e3a8a\" letter-spacing=\".5\">EN</text><rect x=\"39\" y=\"10\" width=\"16\" height=\"10\" rx=\"5\" fill=\"#ef4444\"/><circle cx=\"44\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"47\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"50\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%231d4ed8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M8 8 L56 56 M56 8 L8 56' stroke='%23ffffff' stroke-width='5' opacity='.22'/%3E%3Cpath d='M32 6 V58 M6 32 H58' stroke='%23ef4444' stroke-width='4' opacity='.32'/%3E%3Crect x='11' y='13' width='42' height='31' rx='9' fill='%23ffffff' stroke='%23bfdbfe' stroke-width='1.5'/%3E%3Cpath d='M22 43 L18 52 L30 43 Z' fill='%23ffffff'/%3E%3Ctext x='32' y='35' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='19' font-weight='900' fill='%231e3a8a' letter-spacing='.5'%3EEN%3C/text%3E%3Crect x='39' y='10' width='16' height='10' rx='5' fill='%23ef4444'/%3E%3Ccircle cx='44' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='47' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='50' cy='15' r='1.4' fill='%23fff'/%3E%3C/svg%3E"}, "japanese": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-japanese\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#fff1f2\"/><stop offset=\"100%\" stop-color=\"#ffe4e6\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-japanese)\" stroke=\"#fda4af\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"31\" r=\"15\" fill=\"#e11d48\" opacity=\".18\"/><path d=\"M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z\" fill=\"#dc2626\"/><rect x=\"15\" y=\"29\" width=\"34\" height=\"4.5\" rx=\"2\" fill=\"#dc2626\"/><rect x=\"29.5\" y=\"22\" width=\"5\" height=\"11\" fill=\"#b91c1c\"/><path d=\"M20 24 L18 52 M44 24 L46 52\" stroke=\"#dc2626\" stroke-width=\"5.2\" stroke-linecap=\"round\"/><circle cx=\"49\" cy=\"14\" r=\"4\" fill=\"#fb7185\"/><circle cx=\"49\" cy=\"14\" r=\"1.5\" fill=\"#fef08a\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fff1f2'/%3E%3Cstop offset='100%25' stop-color='%23ffe4e6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)' stroke='%23fda4af' stroke-width='2'/%3E%3Ccircle cx='32' cy='31' r='15' fill='%23e11d48' opacity='.18'/%3E%3Cpath d='M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z' fill='%23dc2626'/%3E%3Crect x='15' y='29' width='34' height='4.5' rx='2' fill='%23dc2626'/%3E%3Crect x='29.5' y='22' width='5' height='11' fill='%23b91c1c'/%3E%3Cpath d='M20 24 L18 52 M44 24 L46 52' stroke='%23dc2626' stroke-width='5.2' stroke-linecap='round'/%3E%3Ccircle cx='49' cy='14' r='4' fill='%23fb7185'/%3E%3Ccircle cx='49' cy='14' r='1.5' fill='%23fef08a'/%3E%3C/svg%3E"}, "korean": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-korean\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e1b4b\"/><stop offset=\"100%\" stop-color=\"#312e81\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-korean)\"/><circle cx=\"32\" cy=\"32\" r=\"19\" fill=\"#ffffff\" opacity=\".12\"/><circle cx=\"32\" cy=\"32\" r=\"16\" fill=\"#2563eb\"/><path d=\"M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z\" fill=\"#e11d48\"/><circle cx=\"24\" cy=\"32\" r=\"8\" fill=\"#e11d48\"/><circle cx=\"40\" cy=\"32\" r=\"8\" fill=\"#2563eb\"/><rect x=\"11\" y=\"11\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 16 12)\"/><rect x=\"42\" y=\"49\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 47 50)\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e1b4b'/%3E%3Cstop offset='100%25' stop-color='%23312e81'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23ffffff' opacity='.12'/%3E%3Ccircle cx='32' cy='32' r='16' fill='%232563eb'/%3E%3Cpath d='M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z' fill='%23e11d48'/%3E%3Ccircle cx='24' cy='32' r='8' fill='%23e11d48'/%3E%3Ccircle cx='40' cy='32' r='8' fill='%232563eb'/%3E%3Crect x='11' y='11' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 16 12)'/%3E%3Crect x='42' y='49' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 47 50)'/%3E%3C/svg%3E"}, "finance": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-finance\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#022c22\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-finance)\"/><path d=\"M12 24 L32 11 L52 24 Z\" fill=\"#fbbf24\"/><rect x=\"14\" y=\"24\" width=\"36\" height=\"3.5\" rx=\"1.5\" fill=\"#fde68a\"/><rect x=\"17\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"26.5\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"36\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"45\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"12\" y=\"48\" width=\"40\" height=\"5\" rx=\"2\" fill=\"#fbbf24\"/><path d=\"M15 44 L27 35 L35 39 L50 23\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M42 23 H50 V31\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%23022c22'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 24 L32 11 L52 24 Z' fill='%23fbbf24'/%3E%3Crect x='14' y='24' width='36' height='3.5' rx='1.5' fill='%23fde68a'/%3E%3Crect x='17' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='26.5' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='36' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='45' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='12' y='48' width='40' height='5' rx='2' fill='%23fbbf24'/%3E%3Cpath d='M15 44 L27 35 L35 39 L50 23' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M42 23 H50 V31' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "addiction-cm": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-addictioncm\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#10b981\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-addictioncm)\"/><path d=\"M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z\" fill=\"#ffffff\"/><rect x=\"29\" y=\"21\" width=\"6\" height=\"18\" rx=\"2\" fill=\"#059669\"/><rect x=\"23\" y=\"27\" width=\"18\" height=\"6\" rx=\"2\" fill=\"#059669\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2310b981'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z' fill='%23ffffff'/%3E%3Crect x='29' y='21' width='6' height='18' rx='2' fill='%23059669'/%3E%3Crect x='23' y='27' width='18' height='6' rx='2' fill='%23059669'/%3E%3C/svg%3E"}, "health-care": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-healthcare\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0d9488\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-healthcare)\"/><circle cx=\"32\" cy=\"28\" r=\"17\" fill=\"#ffffff\"/><rect x=\"28.5\" y=\"17\" width=\"7\" height=\"22\" rx=\"2\" fill=\"#e11d48\"/><rect x=\"21\" y=\"24.5\" width=\"22\" height=\"7\" rx=\"2\" fill=\"#e11d48\"/><path d=\"M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53\" fill=\"none\" stroke=\"#99f6e4\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230d9488'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='28' r='17' fill='%23ffffff'/%3E%3Crect x='28.5' y='17' width='7' height='22' rx='2' fill='%23e11d48'/%3E%3Crect x='21' y='24.5' width='22' height='7' rx='2' fill='%23e11d48'/%3E%3Cpath d='M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53' fill='none' stroke='%2399f6e4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "coding": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-coding\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e3a8a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-coding)\"/><rect x=\"8\" y=\"11\" width=\"48\" height=\"42\" rx=\"9\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"15\" cy=\"17.5\" r=\"2.2\" fill=\"#fb7185\"/><circle cx=\"22\" cy=\"17.5\" r=\"2.2\" fill=\"#fbbf24\"/><circle cx=\"29\" cy=\"17.5\" r=\"2.2\" fill=\"#34d399\"/><path d=\"M16 29 L26 36 L16 43\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"4.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><line x1=\"31\" y1=\"43\" x2=\"47\" y2=\"43\" stroke=\"#fbbf24\" stroke-width=\"4.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e3a8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='8' y='11' width='48' height='42' rx='9' fill='%231e293b' stroke='%2338bdf8' stroke-width='2'/%3E%3Ccircle cx='15' cy='17.5' r='2.2' fill='%23fb7185'/%3E%3Ccircle cx='22' cy='17.5' r='2.2' fill='%23fbbf24'/%3E%3Ccircle cx='29' cy='17.5' r='2.2' fill='%2334d399'/%3E%3Cpath d='M16 29 L26 36 L16 43' fill='none' stroke='%2338bdf8' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='31' y1='43' x2='47' y2='43' stroke='%23fbbf24' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "smart-iot": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-smartiot\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0891b2\"/><stop offset=\"100%\" stop-color=\"#0f766e\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-smartiot)\"/><path d=\"M12 33 L32 16 L52 33\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"4.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M18 30 V50 H46 V30\" fill=\"#ecfeff\" opacity=\".95\"/><path d=\"M23 36 A13 13 0 0 1 41 36\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M26.5 41 A7.5 7.5 0 0 1 37.5 41\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><circle cx=\"32\" cy=\"45.5\" r=\"3\" fill=\"#f59e0b\"/><circle cx=\"32\" cy=\"11\" r=\"2.5\" fill=\"#fde047\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230891b2'/%3E%3Cstop offset='100%25' stop-color='%230f766e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 33 L32 16 L52 33' fill='none' stroke='%23ffffff' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 30 V50 H46 V30' fill='%23ecfeff' opacity='.95'/%3E%3Cpath d='M23 36 A13 13 0 0 1 41 36' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Cpath d='M26.5 41 A7.5 7.5 0 0 1 37.5 41' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='45.5' r='3' fill='%23f59e0b'/%3E%3Ccircle cx='32' cy='11' r='2.5' fill='%23fde047'/%3E%3C/svg%3E"}, "music": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-music\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#6d28d9\"/><stop offset=\"100%\" stop-color=\"#be185d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-music)\"/><path d=\"M25 43 V18 L47 13 V39\" fill=\"none\" stroke=\"#fde68a\" stroke-width=\"4.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M25 25 L47 20\" stroke=\"#fbbf24\" stroke-width=\"4.2\"/><ellipse cx=\"20\" cy=\"45\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 20 45)\" fill=\"#fef3c7\"/><ellipse cx=\"42\" cy=\"41\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 42 41)\" fill=\"#fef3c7\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236d28d9'/%3E%3Cstop offset='100%25' stop-color='%23be185d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M25 43 V18 L47 13 V39' fill='none' stroke='%23fde68a' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M25 25 L47 20' stroke='%23fbbf24' stroke-width='4.2'/%3E%3Cellipse cx='20' cy='45' rx='7.5' ry='5.5' transform='rotate(-18 20 45)' fill='%23fef3c7'/%3E%3Cellipse cx='42' cy='41' rx='7.5' ry='5.5' transform='rotate(-18 42 41)' fill='%23fef3c7'/%3E%3C/svg%3E"}, "trivia": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-trivia\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#f59e0b\"/><stop offset=\"100%\" stop-color=\"#d97706\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-trivia)\"/><path d=\"M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16\" stroke=\"#fef9c3\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z\" fill=\"#ffffff\"/><path d=\"M28 33 L32 26 L36 33\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"26\" y=\"46\" width=\"12\" height=\"4\" rx=\"2\" fill=\"#1e293b\"/><rect x=\"28\" y=\"51.5\" width=\"8\" height=\"3.5\" rx=\"1.7\" fill=\"#334155\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16' stroke='%23fef9c3' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z' fill='%23ffffff'/%3E%3Cpath d='M28 33 L32 26 L36 33' fill='none' stroke='%23f59e0b' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='26' y='46' width='12' height='4' rx='2' fill='%231e293b'/%3E%3Crect x='28' y='51.5' width='8' height='3.5' rx='1.7' fill='%23334155'/%3E%3C/svg%3E"}, "fitness": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-fitness\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ea580c\"/><stop offset=\"100%\" stop-color=\"#991b1b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-fitness)\"/><g transform=\"rotate(-28 32 32)\"><rect x=\"16\" y=\"29\" width=\"32\" height=\"6\" rx=\"2.5\" fill=\"#e2e8f0\"/><rect x=\"11\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"6\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/><rect x=\"46\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"53\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ea580c'/%3E%3Cstop offset='100%25' stop-color='%23991b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-28 32 32)'%3E%3Crect x='16' y='29' width='32' height='6' rx='2.5' fill='%23e2e8f0'/%3E%3Crect x='11' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='6' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3Crect x='46' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='53' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3C/g%3E%3C/svg%3E"}, "poker": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-poker\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-poker)\"/><circle cx=\"32\" cy=\"32\" r=\"23\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3\" stroke-dasharray=\"6 4\"/><path d=\"M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z\" fill=\"#ffffff\"/><path d=\"M30 41 L26 51 H38 L34 41 Z\" fill=\"#ffffff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%230f172a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%23fbbf24' stroke-width='3' stroke-dasharray='6 4'/%3E%3Cpath d='M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z' fill='%23ffffff'/%3E%3Cpath d='M30 41 L26 51 H38 L34 41 Z' fill='%23ffffff'/%3E%3C/svg%3E"}, "stock": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-stock\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e293b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-stock)\"/><line x1=\"16\" y1=\"24\" x2=\"16\" y2=\"50\" stroke=\"#22c55e\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"12\" y=\"30\" width=\"8\" height=\"14\" rx=\"2\" fill=\"#22c55e\"/><line x1=\"32\" y1=\"18\" x2=\"32\" y2=\"46\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"28\" y=\"23\" width=\"8\" height=\"16\" rx=\"2\" fill=\"#ef4444\"/><line x1=\"48\" y1=\"11\" x2=\"48\" y2=\"39\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"44\" y=\"15\" width=\"8\" height=\"18\" rx=\"2\" fill=\"#ef4444\"/><path d=\"M11 47 Q28 42 53 16\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e293b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cline x1='16' y1='24' x2='16' y2='50' stroke='%2322c55e' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='12' y='30' width='8' height='14' rx='2' fill='%2322c55e'/%3E%3Cline x1='32' y1='18' x2='32' y2='46' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='28' y='23' width='8' height='16' rx='2' fill='%23ef4444'/%3E%3Cline x1='48' y1='11' x2='48' y2='39' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='44' y='15' width='8' height='18' rx='2' fill='%23ef4444'/%3E%3Cpath d='M11 47 Q28 42 53 16' fill='none' stroke='%23fbbf24' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "nba": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><radialGradient id=\"cn-g-nba\" cx=\"35%\" cy=\"30%\" r=\"70%\"><stop offset=\"0%\" stop-color=\"#fb923c\"/><stop offset=\"100%\" stop-color=\"#c2410c\"/></radialGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#1e293b\"/><circle cx=\"32\" cy=\"32\" r=\"22\" fill=\"url(#cn-g-nba)\" stroke=\"#fed7aa\" stroke-width=\"1.6\"/><path d=\"M10 32 H54 M32 10 V54\" stroke=\"#1e293b\" stroke-width=\"2.8\"/><path d=\"M16 16 Q30 32 16 48 M48 16 Q34 32 48 48\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2.8\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='35%25' cy='30%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%23fb923c'/%3E%3Cstop offset='100%25' stop-color='%23c2410c'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='%231e293b'/%3E%3Ccircle cx='32' cy='32' r='22' fill='url(%23g)' stroke='%23fed7aa' stroke-width='1.6'/%3E%3Cpath d='M10 32 H54 M32 10 V54' stroke='%231e293b' stroke-width='2.8'/%3E%3Cpath d='M16 16 Q30 32 16 48 M48 16 Q34 32 48 48' fill='none' stroke='%231e293b' stroke-width='2.8'/%3E%3C/svg%3E"}, "epl": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-epl\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#3b0764\"/><stop offset=\"100%\" stop-color=\"#6d28d9\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-epl)\"/><circle cx=\"32\" cy=\"34\" r=\"19\" fill=\"#ffffff\"/><polygon points=\"32,25 40,31 37,40 27,40 24,31\" fill=\"#1e1b4b\"/><path d=\"M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28\" stroke=\"#1e1b4b\" stroke-width=\"2.5\"/><path d=\"M23 12 L27 7 L32 11 L37 7 L41 12 Z\" fill=\"#fbbf24\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233b0764'/%3E%3Cstop offset='100%25' stop-color='%236d28d9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='34' r='19' fill='%23ffffff'/%3E%3Cpolygon points='32,25 40,31 37,40 27,40 24,31' fill='%231e1b4b'/%3E%3Cpath d='M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28' stroke='%231e1b4b' stroke-width='2.5'/%3E%3Cpath d='M23 12 L27 7 L32 11 L37 7 L41 12 Z' fill='%23fbbf24'/%3E%3C/svg%3E"}, "f1": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-f1\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#dc2626\"/><stop offset=\"100%\" stop-color=\"#7f1d1d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-f1)\"/><g transform=\"rotate(-24 32 33)\"><rect x=\"11\" y=\"21\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"11\" y=\"38\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"43\" y=\"22\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><rect x=\"43\" y=\"37.5\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><path d=\"M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z\" fill=\"#ffffff\"/><ellipse cx=\"31\" cy=\"32\" rx=\"6\" ry=\"3.4\" fill=\"#0f172a\"/><circle cx=\"32\" cy=\"32\" r=\"2.2\" fill=\"#fde047\"/><rect x=\"7\" y=\"24\" width=\"3.5\" height=\"16\" rx=\"1\" fill=\"#fde047\"/><rect x=\"52\" y=\"25\" width=\"3\" height=\"14\" rx=\"1\" fill=\"#ffffff\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23dc2626'/%3E%3Cstop offset='100%25' stop-color='%237f1d1d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-24 32 33)'%3E%3Crect x='11' y='21' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='11' y='38' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='43' y='22' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Crect x='43' y='37.5' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Cpath d='M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z' fill='%23ffffff'/%3E%3Cellipse cx='31' cy='32' rx='6' ry='3.4' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='2.2' fill='%23fde047'/%3E%3Crect x='7' y='24' width='3.5' height='16' rx='1' fill='%23fde047'/%3E%3Crect x='52' y='25' width='3' height='14' rx='1' fill='%23ffffff'/%3E%3C/g%3E%3C/svg%3E"}};
@@ -521,6 +526,10 @@ window.__STATIC_SINGLE_FILE__ = true;
   ACADEMY_CRESTS.xiangqi = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-xiangqi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b45309"/><stop offset="100%" stop-color="#7c2d12"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-xiangqi)"/><circle cx="32" cy="32" r="21" fill="#fef3c7"/><circle cx="32" cy="32" r="16.5" fill="none" stroke="#b91c1c" stroke-width="2.5"/><path d="M32 21v22M24 26h16M24 32h16M25 38h14" stroke="#b91c1c" stroke-width="3" stroke-linecap="round"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS.chess = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-chess" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-chess)"/><circle cx="32" cy="19" r="8.5" fill="#ffffff"/><path d="M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z" fill="#ffffff"/><rect x="13" y="46" width="38" height="8" rx="3" fill="#ffffff"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='19' r='8.5' fill='%23ffffff'/%3E%3Cpath d='M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z' fill='%23ffffff'/%3E%3Crect x='13' y='46' width='38' height='8' rx='3' fill='%23ffffff'/%3E%3C/svg%3E"
   };
   ACADEMY_CRESTS.crypto = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-crypto" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-crypto)"/><circle cx="32" cy="32" r="22" fill="#fffbeb" opacity=".16"/><circle cx="32" cy="32" r="18.5" fill="none" stroke="#fffbeb" stroke-width="2.4"/><rect x="16.5" y="26" width="19" height="12" rx="6" fill="none" stroke="#ffffff" stroke-width="4.2"/><rect x="28.5" y="26" width="19" height="12" rx="6" fill="none" stroke="#fde68a" stroke-width="4.2"/></svg>',
@@ -608,6 +617,9 @@ window.__STATIC_SINGLE_FILE__ = true;
     acad_xq_1: { icon: '🐘', name: '楚河漢界初登場', tier: 't1', pts: 8, title: '🐘 象棋見習棋士' },
     acad_xq_2: { icon: '♟️', name: '當頭炮開局', tier: 't2', pts: 20, title: '♟️ 象棋業餘棋士' },
     acad_xq_3: { icon: '🏆', name: '運籌帷幄', tier: 't4', pts: 35, title: '🏆 楚河漢界棋王' },
+    acad_ch_1: { icon: '♟️', name: '六十四格初登場', tier: 't1', pts: 8, title: '♟️ 西洋棋見習棋士' },
+    acad_ch_2: { icon: '⚔️', name: '騎士捉雙', tier: 't2', pts: 20, title: '⚔️ 西洋棋戰術手' },
+    acad_ch_3: { icon: '👑', name: '逆轉大師', tier: 't4', pts: 35, title: '👑 六十四格逆轉大師' },
     acad_cry_1: { icon: '🪙', name: '創世區塊', tier: 't1', pts: 8, title: '🪙 鏈上新鮮人' },
     acad_cry_2: { icon: '⛓️', name: '鏈上學徒', tier: 't2', pts: 20, title: '⛓️ 區塊鏈學徒' },
     acad_cry_3: { icon: '🛡️', name: '私鑰守護者', tier: 't4', pts: 35, title: '🛡️ 私鑰守護者' },
@@ -683,6 +695,7 @@ window.__STATIC_SINGLE_FILE__ = true;
     'ai-agent': ['acad_ai_1', 'acad_ai_2', 'acad_ai_3'],
     'cloud-devops': ['acad_cld_1', 'acad_cld_2', 'acad_cld_3'],
     xiangqi: ['acad_xq_1', 'acad_xq_2', 'acad_xq_3'],
+    chess: ['acad_ch_1', 'acad_ch_2', 'acad_ch_3'],
     crypto: ['acad_cry_1', 'acad_cry_2', 'acad_cry_3'],
     poker: ['acad_pkr_1', 'acad_pkr_2', 'acad_pkr_3'],
     nba: ['acad_nba_1', 'acad_nba_2', 'acad_nba_3'],
@@ -2449,8 +2462,19 @@ window.__STATIC_SINGLE_FILE__ = true;
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.XIANGQI_RELEASES = {
-  "current_version": "1.4.0",
+  "current_version": "1.5.0",
   "releases": [
+    {
+      "version": "1.5.0",
+      "date": "2026-11-16 11:33",
+      "title": "🔒 隱私說明與舊房間自動清除",
+      "changes": [
+        "🔒 線上大廳新增「隱私說明與資料保存」：清楚列出線上對弈會上傳哪些資料（暱稱、棋步、計時、在線狀態與匿名連線代碼）、誰看得到，以及哪些資料只存在自己的裝置",
+        "🧹 舊房間自動清除：對局結束滿 7 天、等不到對手滿 1 天，或下到一半超過 14 天沒有人走棋的房間，會在其中一位棋手下次進入大廳時從伺服器刪除",
+        "💾 清除前會先把還沒記到的對局結果補進「我的戰績」；已存進「我的棋譜」的對局不受影響",
+        "♟️ 校園新開幕的西洋棋學院可以從「🏫 校園」直接前往"
+      ]
+    },
     {
       "version": "1.4.0",
       "date": "2026-11-16 00:23",
@@ -2511,7 +2535,7 @@ window.XIANGQI_RELEASES = {
       ]
     }
   ],
-  "last_fingerprint": "9397daab3797c58f"
+  "last_fingerprint": "0d3d3a58fdbe3541"
 };
 
 
@@ -5601,6 +5625,20 @@ window.XQ_FIREBASE = {
     return g;
   }
 
+  // 舊房間的保存期限：超過就可以從伺服器刪除（由棋手這一端在進大廳時執行）。
+  var PURGE_AFTER = { over: 7 * 86400000, waiting: 86400000, playing: 14 * 86400000 };
+
+  /**
+   * 這個房間是不是已經過期、可以刪除了？回傳 'over'（結束超過 7 天）、'waiting'（等不到對手超過 1 天）、
+   * 'playing'（下到一半、超過 14 天沒有人走棋），還沒過期回傳 null。now：估計的伺服器時間。
+   */
+  function purgeReason(g, now) {
+    if (!g || typeof g !== 'object' || !PURGE_AFTER[g.status]) return null;
+    var last = Math.max(+g.created || 0, +g.started || 0, (g.clock && +g.clock.at) || 0);
+    if (!last) return null; // 沒有任何時間紀錄的房間不亂刪
+    return now - last > PURGE_AFTER[g.status] ? g.status : null;
+  }
+
   var WHY_TEXT = {
     checkmate: '絕殺', stalemate: '困斃', perpetual: '長將判負', repetition: '重複局面和棋',
     nocapture: '六十回合未吃子和棋', resign: '認輸', agreed: '雙方議和', timeout: '超時', abandon: '對手離線', capture: '吃掉主帥',
@@ -5627,6 +5665,7 @@ window.XQ_FIREBASE = {
     other: other, turnOf: turnOf, movesOf: movesOf, sideOfUid: sideOfUid, gameOf: gameOf, remaining: remaining,
     createRoom: createRoom, join: join, move: move, resign: resign, offer: offer, answer: answer,
     cancelOffer: cancelOffer, flag: flag, claim: claim, setNext: setNext,
+    PURGE_AFTER: PURGE_AFTER, purgeReason: purgeReason,
     whyText: whyText, resultText: resultText, formatClock: formatClock,
   };
 });
@@ -5839,9 +5878,11 @@ window.XQ_FIREBASE = {
         '<section class="card"><div class="card-head"><h2>大廳</h2><span class="count-pill" id="onLobbyCount">0</span></div>' +
           '<div id="onLobby"><p class="muted">讀取中…</p></div></section>' +
         '<div id="onStats"></div>' +
+        privacyHtml() +
       '</div>';
     drawStats();
     sweepPending();
+    sweepOldRooms();
     S.stops.push(S.backend.watch(ROOT + '/lobby', function (val, err) {
       if (err) {
         var box = document.getElementById('onLobby');
@@ -5878,6 +5919,19 @@ window.XQ_FIREBASE = {
         '<small>房號 ' + esc(x.rid) + '・' + esc(tcLabel(e.tc)) + '</small></a>' +
         '<a class="btn' + (waiting ? ' btn-primary' : '') + '" href="#/online/' + esc(x.rid) + '">' + (waiting ? '加入' : '觀戰') + '</a></li>';
     }).join('') + '</ul>';
+  }
+
+  function privacyHtml() {
+    return '<details class="card on-privacy"><summary>🔒 隱私說明與資料保存</summary>' +
+      '<ul class="plain-list">' +
+        '<li><strong>不用註冊，也不收集個人資料</strong>：不需要帳號、Email 或電話。系統只會替這個瀏覽器產生一組匿名的連線代碼，用來分辨棋手。</li>' +
+        '<li><strong>線上對弈時會上傳的資料</strong>：你填的暱稱、每一步棋、計時、是否在線，以及上面那組匿名連線代碼。這些資料存放在 Google Firebase 雲端資料庫，只用來同步棋局。</li>' +
+        '<li><strong>誰看得到</strong>：勾選「顯示在大廳」的房間，任何進到大廳的人都能看到暱稱並進來觀戰；沒勾選的房間不會列出來，但知道房號或邀請連結的人仍然可以進入。暱稱請不要使用真實姓名。</li>' +
+        '<li><strong>只存在這台裝置的資料</strong>：棋譜、戰績、題庫與課程進度都存在這個瀏覽器裡，不會上傳；清除瀏覽資料就會消失。</li>' +
+        '<li><strong>舊房間會自動清除</strong>：對局結束滿 7 天、等不到對手滿 1 天，或下到一半超過 14 天沒有人走棋的房間，會在其中一位棋手下次進入大廳時從伺服器刪除（含棋步與暱稱）。結束的對局早已存進雙方各自的「我的棋譜」，不受影響。</li>' +
+      '</ul>' +
+      '<p class="muted" id="onPurgeMsg"></p>' +
+      '</details>';
   }
 
   function drawStats() {
@@ -5930,12 +5984,101 @@ window.XQ_FIREBASE = {
     });
   }
 
+  // ------------------------------------------------------------------ 清除舊房間
+  // 伺服器沒有排程可以定期清資料，所以由棋手這一端負責：記下自己坐過的房間，
+  // 之後每次進大廳抽查幾間，過期的（規則見 Core.purgeReason）就把對局、在線狀態與大廳項目刪掉。
+  var SWEEP_PER_VISIT = 10;            // 每次進大廳最多檢查幾間
+  var SWEEP_RECHECK_MS = 12 * 3600000; // 同一間房間隔多久再檢查
+  var SWEEP_MAX = 400;                 // 本機最多記幾間
+
+  /** 記下我入座過的房間（建立、加入時呼叫）。 */
+  function rememberRoom(rid) {
+    var p = prefs();
+    if (!p.rooms || typeof p.rooms !== 'object') p.rooms = {};
+    if (p.rooms[rid] !== undefined) return;
+    p.rooms[rid] = 0; // 0 = 還沒檢查過
+    var ids = Object.keys(p.rooms);
+    if (ids.length > SWEEP_MAX) ids.slice(0, ids.length - SWEEP_MAX).forEach(function (k) { delete p.rooms[k]; });
+    App.save(KEY, p);
+  }
+
+  function forgetRoom(rid) {
+    var p = prefs();
+    if (p.rooms && p.rooms[rid] !== undefined) { delete p.rooms[rid]; App.save(KEY, p); }
+  }
+
+  /** 把一間過期的房間從伺服器刪掉。只有坐在這間房間的棋手有權限刪除對局。 */
+  function purgeRoom(rid, g) {
+    var b = S.backend;
+    var quiet = function () {};
+    if (g.host === S.uid) b.remove(lobbyPath(rid)).catch(quiet);
+    // 在線狀態一筆一筆刪：自己的一定刪得掉，對手的要等對局刪除後才有權限，所以排在後面。
+    return b.remove(gPath(rid)).then(function () {
+      readOnce(pPath(rid), function (val) {
+        Object.keys(val || {}).forEach(function (uid) { b.remove(pPath(rid) + '/' + uid).catch(quiet); });
+      });
+      return true;
+    }, function () { return false; });
+  }
+
+  function sweepOldRooms() {
+    var p = prefs();
+    var st = App.statsLoad();
+    // 改版前坐過的房間沒有另外記錄：從戰績裡已經記過與還在追蹤的房號補進來。
+    var known = (p.rooms && typeof p.rooms === 'object') ? p.rooms : (p.rooms = {});
+    var added = false;
+    st.rids.concat(Object.keys(st.pending)).forEach(function (rid) {
+      if (known[rid] === undefined && !(p.swept && p.swept[rid])) { known[rid] = 0; added = true; }
+    });
+    if (added) App.save(KEY, p);
+    var nowLocal = Date.now();
+    var todo = Object.keys(known).filter(function (rid) {
+      return Core.normalizeId(rid) === rid && nowLocal - known[rid] > SWEEP_RECHECK_MS;
+    }).sort(function (a, c) { return known[a] - known[c]; }).slice(0, SWEEP_PER_VISIT);
+    var token = S.token;
+    var purged = 0;
+    function done(rid, gone) {
+      var cur = prefs();
+      if (!cur.rooms) cur.rooms = {};
+      if (gone) {
+        delete cur.rooms[rid];
+        // 記下已經處理過的房號，才不會又從戰績裡補回來重查。
+        if (!cur.swept || typeof cur.swept !== 'object') cur.swept = {};
+        cur.swept[rid] = 1;
+        var ks = Object.keys(cur.swept);
+        if (ks.length > 800) ks.slice(0, ks.length - 800).forEach(function (k) { delete cur.swept[k]; });
+      } else {
+        cur.rooms[rid] = Date.now();
+      }
+      App.save(KEY, cur);
+    }
+    todo.forEach(function (rid) {
+      readOnce(gPath(rid), function (val, err) {
+        if (token !== S.token || err) return;
+        if (!val) { done(rid, true); return; }             // 已經被對手或自己清掉了
+        if (!Core.sideOfUid(val, S.uid)) { done(rid, true); return; } // 連線身分換過，沒有權限刪
+        if (!Core.purgeReason(val, S.backend.now())) { done(rid, false); return; }
+        // 還沒記進戰績的結果先補記，再刪除。
+        if (val.status === 'over') recordFinished(rid, val, Core.sideOfUid(val, S.uid));
+        purgeRoom(rid, val).then(function (ok) {
+          done(rid, ok);
+          if (!ok) return;
+          purged++;
+          var cur = App.statsLoad();
+          if (Stats.dropPending(cur, rid)) App.statsSave(cur);
+          var msg = document.getElementById('onPurgeMsg');
+          if (msg) msg.textContent = '這次已自動清除 ' + purged + ' 間過期的舊房間。';
+        });
+      });
+    });
+  }
+
   function createRoom(opts) {
     var rid = Core.randomId();
     var g = Core.createRoom({
       uid: S.uid, name: myName(), side: opts.side, tc: opts.tc, pub: opts.pub, ts: S.backend.ts(),
     });
-    return S.backend.set(gPath(rid), g).then(function () { return rid; });
+    return S.backend.set(gPath(rid), g).then(function () { rememberRoom(rid); return rid; });
   }
 
   // ------------------------------------------------------------------ 房間
@@ -6029,6 +6172,7 @@ window.XQ_FIREBASE = {
   function trackRoom(val) {
     if (S.tracked || val.status !== 'playing') return;
     S.tracked = true;
+    rememberRoom(S.rid);
     var st = App.statsLoad();
     if (Stats.addPending(st, S.rid, Date.now())) App.statsSave(st);
   }
@@ -6351,7 +6495,8 @@ window.XQ_FIREBASE = {
       roomTx(function (cur) { return Core.claim(cur, { uid: uid }); });
     } else if (act === 'cancel-room') {
       if (g.status !== 'waiting' || g.host !== uid) return;
-      S.backend.remove(gPath(S.rid)).then(function () { location.hash = '#/online'; }, function (err) {
+      var closing = S.rid;
+      S.backend.remove(gPath(closing)).then(function () { forgetRoom(closing); location.hash = '#/online'; }, function (err) {
         App.toast('關閉失敗：' + errText(err));
       });
     } else if (act === 'rematch') {
