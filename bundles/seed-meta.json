@@ -1,39 +1,43 @@
 {
   "tw-stock-insight": {
-    "freshness": "2026-11-17|2026-11-17T16:11:47+08:00",
-    "bytes": 1152384
+    "freshness": "2026-11-17|2026-11-17T21:31:48+08:00",
+    "bytes": 1157935
   },
   "us-stock-insight": {
     "freshness": "2026-11-16|2026-11-17T08:10:59+08:00",
-    "bytes": 561521
+    "bytes": 562575
   },
   "nba-betting-iq": {
-    "freshness": "2026-11-17T14:15:53+08:00",
-    "bytes": 2083582
+    "freshness": "2026-11-17T23:02:29+08:00",
+    "bytes": 2086524
   },
   "epl-odds-iq": {
-    "freshness": "2026-11-17T12:30:27+08:00",
-    "bytes": 739975
+    "freshness": "2026-11-17T23:02:41+08:00",
+    "bytes": 744058
   },
   "f1-odds-iq": {
-    "freshness": "2026-11-17T12:30:57+08:00",
-    "bytes": 401141
+    "freshness": "2026-11-17T23:03:06+08:00",
+    "bytes": 402624
   },
   "tw-basketball": {
-    "freshness": "2026-11-17T12:30:59+08:00",
-    "bytes": 509147
+    "freshness": "2026-11-17T23:03:38+08:00",
+    "bytes": 509172
   },
   "cinema": {
     "freshness": "2026-11-16 00:17",
     "bytes": 921273
   },
+  "series": {
+    "freshness": "2026-11-17 23:11",
+    "bytes": 1174694
+  },
   "crypto": {
-    "freshness": "2026-11-17 17:29:38",
-    "bytes": 391760
+    "freshness": "2026-11-17 23:12:36",
+    "bytes": 391669
   },
   "futures": {
-    "freshness": "2026-11-17 17:29:40",
-    "bytes": 250778
+    "freshness": "2026-11-17 23:12:39",
+    "bytes": 250962
   },
   "_stock_seed": {
     "v": 2,

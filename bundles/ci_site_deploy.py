@@ -40,6 +40,7 @@ ARENAS: dict[str, dict[str, str]] = {
     'f1-odds-iq': {'db': 'f1_betting.sqlite3', 'kind': 'sports'},
     'tw-basketball': {'db': 'tw_basketball.db', 'kind': 'sports'},
     'cinema': {'db': 'now_playing.json', 'kind': 'cinema'},
+    'series': {'db': 'now_streaming.json', 'kind': 'cinema'},
     'crypto': {'db': 'prices.json', 'kind': 'cinema'},  # JSON snapshot with `updatedAt`, same flow as cinema
     'futures': {'db': 'prices.json', 'kind': 'cinema'},
 }
@@ -330,6 +331,10 @@ def _due_arenas(now_tw: dt.datetime, cache_dir: str = '') -> list[str]:
   cur_wk = now_tw.strftime('%G-W%V')
   if wd == 0 or not cin_wk or cin_wk < cur_wk:
     due.append('cinema')
+  ser_json = os.path.join(cache_dir, 'series', 'data', 'now_streaming.json') if cache_dir else ''
+  ser_wk = str(_load_json(ser_json).get('weekKey') or '') if ser_json else ''
+  if wd == 0 or not ser_wk or ser_wk < cur_wk:
+    due.append('series')
   return due
 
 
