@@ -459,7 +459,7 @@ window.__STATIC_SINGLE_FILE__ = true;
   var PUBLIC_CAMPUS = 'https://okayell.github.io/';
   var LOCAL_CAMPUS_PORT = '8919';
   var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8929', '8928', '8931', '8930', '8933', '8932', '8935', '8934', '8937', '8936', '8939', '8938', '8941', '8940', '8899', '8898',
-    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954'];
+    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954', '8962'];
   var TOOL_MAP = {
     english: { port: '8919', mount: true, path: 'english-speak-listen/', name: '英語學院', icon: '🇬🇧' },
     japanese: { port: '8919', mount: true, path: 'japanese/', name: '日語學院', icon: '🇯🇵' },
@@ -473,6 +473,7 @@ window.__STATIC_SINGLE_FILE__ = true;
     cooking: { port: '8919', mount: true, path: 'cooking/', name: '烹飪學院', icon: '🍳' },
     trivia: { port: '8919', mount: true, path: 'trivia/', name: '冷知識學院', icon: '💡' },
     'home-repair': { port: '8919', mount: true, path: 'home-repair/', name: '居家水電修繕學院', icon: '🔧' },
+    'real-estate': { port: '8919', mount: true, path: 'real-estate/', name: '房地產學院', icon: '🏘️' },
     fitness: { port: '8919', mount: true, path: 'fitness/', name: '健身學院', icon: '💪' },
     stock: { port: '8919', mount: true, path: 'tw-stock-insight/', name: '台股戰情室', icon: '📈' },
     'us-stock': { port: '8919', mount: true, path: 'us-stock-insight/', name: '美股戰情室', icon: '🗽' },
@@ -518,6 +519,10 @@ window.__STATIC_SINGLE_FILE__ = true;
   ACADEMY_CRESTS.tamagotchi = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-tama" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="#b45309"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#cn-g-tama)"/><path d="M32 9C45 9 51 30 51 40C51 51 43 57 32 57C21 57 13 51 13 40C13 30 19 9 32 9Z" fill="#fdf2f8" stroke="#831843" stroke-width="2.5"/><rect x="21" y="25" width="22" height="16" rx="3" fill="#bef264" stroke="#365314" stroke-width="2"/><rect x="29" y="29" width="6" height="6" fill="#365314"/><circle cx="24" cy="48" r="2.6" fill="#db2777"/><circle cx="32" cy="50" r="2.6" fill="#db2777"/><circle cx="40" cy="48" r="2.6" fill="#db2777"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f472b6'/%3E%3Cstop offset='100%25' stop-color='%23b45309'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M32 9C45 9 51 30 51 40C51 51 43 57 32 57C21 57 13 51 13 40C13 30 19 9 32 9Z' fill='%23fdf2f8' stroke='%23831843' stroke-width='2.5'/%3E%3Crect x='21' y='25' width='22' height='16' rx='3' fill='%23bef264' stroke='%23365314' stroke-width='2'/%3E%3Crect x='29' y='29' width='6' height='6' fill='%23365314'/%3E%3Ccircle cx='24' cy='48' r='2.6' fill='%23db2777'/%3E%3Ccircle cx='32' cy='50' r='2.6' fill='%23db2777'/%3E%3Ccircle cx='40' cy='48' r='2.6' fill='%23db2777'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS['real-estate'] = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-re" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#312e81"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-re)"/><path d="M8 26 L32 8 L56 26 L52 26 L52 54 L12 54 L12 26 Z" fill="#ffffff" opacity=".92"/><path d="M32 8 L8 26 H15 L32 13 L49 26 H56 Z" fill="#d97706"/><rect x="20" y="32" width="10" height="12" rx="2" fill="#312e81"/><rect x="34" y="32" width="10" height="12" rx="2" fill="#312e81"/><circle cx="46" cy="44" r="4" fill="#f59e0b" stroke="#78350f" stroke-width="1.5"/><path d="M46 48 V56 M44 52 H48 M44 55 H48" stroke="#78350f" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23312e81'/%3E%3Cstop offset='100%25' stop-color='%234f46e5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M8 26 L32 8 L56 26 L52 26 L52 54 L12 54 L12 26 Z' fill='%23ffffff' opacity='.92'/%3E%3Cpath d='M32 8 L8 26 H15 L32 13 L49 26 H56 Z' fill='%23d97706'/%3E%3Crect x='20' y='32' width='10' height='12' rx='2' fill='%23312e81'/%3E%3Crect x='34' y='32' width='10' height='12' rx='2' fill='%23312e81'/%3E%3Ccircle cx='46' cy='44' r='4' fill='%23f59e0b' stroke='%2378350f' stroke-width='1.5'/%3E%3Cpath d='M46 48 V56 M44 52 H48 M44 55 H48' stroke='%2378350f' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"
   };
   ACADEMY_CRESTS['cloud-devops'] = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-cld" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-cld)"/><path d="M22 42 h20 a8 8 0 0 0 1.5 -15.8 A11 11 0 0 0 24 21 a8 8 0 0 0 -4.5 14 A6 6 0 0 0 22 42 Z" fill="#ffffff"/><circle cx="28" cy="32" r="3.2" fill="#f59e0b"/><circle cx="36" cy="32" r="3.2" fill="#2563eb"/><path d="M20 49 h24" stroke="#38bdf8" stroke-width="3.2" stroke-linecap="round"/></svg>',
@@ -599,6 +604,9 @@ window.__STATIC_SINGLE_FILE__ = true;
     acad_hr_1: { icon: '🔧', name: '水電修繕學徒', tier: 't1', pts: 8, title: '🔧 居家水電學徒' },
     acad_hr_2: { icon: '⚡', name: '全能修繕達人', tier: 't2', pts: 20, title: '⚡ 居家修繕達人' },
     acad_hr_3: { icon: '🧰', name: '甲種水電與全屋修繕顧問', tier: 't4', pts: 35, title: '🧰 全屋修繕首席技師' },
+    acad_re_1: { icon: '🏘️', name: '房產看屋入門', tier: 't1', pts: 8, title: '🏘️ 房產看屋學員' },
+    acad_re_2: { icon: '📑', name: '產權契約達人', tier: 't2', pts: 20, title: '📑 產權排雷法商' },
+    acad_re_3: { icon: '🏛️', name: '購屋稅貸大師', tier: 't4', pts: 35, title: '🏛️ 不動產智囊團' },
     acad_fit_1: { icon: '💪', name: '鐵館初登場', tier: 't1', pts: 8, title: '💪 健身房新秀' },
     acad_fit_2: { icon: '🏋️', name: '肌力解剖達人', tier: 't2', pts: 20, title: '🏋️ 鋼鐵肌力王' },
     acad_fit_3: { icon: '🏆', name: '運動科學首席教練', tier: 't4', pts: 35, title: '🏆 運動科學總教練' },
@@ -689,6 +697,7 @@ window.__STATIC_SINGLE_FILE__ = true;
     cooking: ['acad_cook_1', 'acad_cook_2', 'acad_cook_3'],
     trivia: ['acad_trv_1', 'acad_trv_2', 'acad_trv_3'],
     'home-repair': ['acad_hr_1', 'acad_hr_2', 'acad_hr_3'],
+    'real-estate': ['acad_re_1', 'acad_re_2', 'acad_re_3'],
     fitness: ['acad_fit_1', 'acad_fit_2', 'acad_fit_3'],
     coding: ['acad_py_1', 'acad_py_2', 'acad_py_3'],
     'smart-iot': ['acad_iot_1', 'acad_iot_2', 'acad_iot_3'],
@@ -2462,8 +2471,16 @@ window.__STATIC_SINGLE_FILE__ = true;
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.XIANGQI_RELEASES = {
-  "current_version": "1.5.0",
+  "current_version": "1.6.0",
   "releases": [
+    {
+      "version": "1.6.0",
+      "date": "2026-11-17 11:16",
+      "title": "象棋學院 v1.6.0 更新",
+      "changes": [
+        "棋盤、規則引擎與棋譜功能更新"
+      ]
+    },
     {
       "version": "1.5.0",
       "date": "2026-11-16 11:33",
@@ -2535,7 +2552,7 @@ window.XIANGQI_RELEASES = {
       ]
     }
   ],
-  "last_fingerprint": "0d3d3a58fdbe3541"
+  "last_fingerprint": "a41f39453986eb56"
 };
 
 
