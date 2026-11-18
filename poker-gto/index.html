@@ -1410,6 +1410,17 @@ kbd {
 .lesson-body { font-size: 15.5px; line-height: 1.88; color: #1e293b; }
 .lesson-body h3 { font-size: 20.5px; margin: 36px 0 12px; scroll-margin-top: 84px; display: flex; align-items: center; gap: 10px; line-height: 1.4; letter-spacing: -0.01em; }
 .lesson-body h3::before { content: ''; flex-shrink: 0; width: 5px; height: 22px; background: var(--c, var(--primary)); border-radius: 3px; }
+.lesson-body h3.sec-target-highlight {
+  animation: secHighlightPulse 2.8s ease-out forwards;
+  border-left: 5px solid #f59e0b;
+  padding-left: 12px;
+  border-radius: 4px;
+}
+@keyframes secHighlightPulse {
+  0% { background: rgba(245, 158, 11, 0.35); }
+  40% { background: rgba(245, 158, 11, 0.18); }
+  100% { background: transparent; }
+}
 .lesson-body h4 { font-size: 16px; margin: 22px 0 8px; }
 .lesson-body p { margin: 10px 0; }
 .lesson-body ul, .lesson-body ol { padding-left: 22px; }
@@ -3396,48 +3407,174 @@ select.inp { max-width: 100%; min-width: 0; text-overflow: ellipsis; }
   gap: 4px;
 }
 
-/* 推薦補課指引 */
+/* 🗺️ 本手牌涵蓋觀念 ＆ 課程章節總覽 */
+.hand-concepts-card {
+  margin-bottom: 16px;
+  padding: 16px 18px;
+  border-left: 4px solid var(--primary, #2563eb);
+}
+.hco-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+.hco-head h4 {
+  margin: 0;
+  font-size: 15.5px;
+  font-weight: 800;
+  color: var(--text, #0f172a);
+}
+.hco-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.concept-item {
+  background: #f8fafc;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ci-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.concept-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #3b82f6;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+.concept-spot {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  flex: 1;
+}
+.ci-chapter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e8f0;
+}
+.ci-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* 推薦補課指引（三層章節小節定位） */
 .dd-lessons-section {
   border-top: 1px solid #f1f5f9;
   padding-top: 12px;
 }
+.dd-lessons-section > h5 {
+  margin: 0 0 10px;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0f172a;
+}
 .coach-lessons-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   margin-top: 8px;
 }
 .coach-lesson-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 8px 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 12px 14px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 10px;
   text-decoration: none !important;
   color: inherit;
   transition: all 0.15s;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .coach-lesson-card:hover {
   background: #f1f5f9;
   border-color: #3b82f6;
-  transform: translateX(2px);
 }
-.clc-txt {
+.clc-top {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
 }
-.clc-title {
-  font-size: 13px;
+.clc-tier-badge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  min-width: 0;
+  max-width: 100%;
+  word-break: break-word;
+}
+.clc-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 6px;
   font-weight: 700;
-  color: #1e293b;
+  line-height: 1.3;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  word-break: break-word;
 }
-.clc-why {
+.clc-badge-pill.stage {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+.clc-badge-pill.lesson {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.clc-badge-pill.sec {
+  background: #fef3c7;
+  color: #b45309;
+}
+.clc-badge-sep {
+  color: var(--muted, #94a3b8);
+  font-weight: 800;
   font-size: 11px;
-  color: #64748b;
+}
+.clc-why-note {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.45;
+  word-break: break-word;
+}
+.clc-foot-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 /* 決策時間軸導覽列 */
@@ -3645,6 +3782,17 @@ select.inp { max-width: 100%; min-width: 0; text-overflow: ellipsis; }
 
 /* 390px 手機防超框微調 */
 @media (max-width: 480px) {
+  .concept-item, .coach-lesson-card {
+    padding: 8px 10px !important;
+  }
+  .clc-badge-pill {
+    font-size: 11px !important;
+    padding: 1px 5px !important;
+  }
+  .ci-actions, .clc-foot-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
   .modal-onb, .modal-card, .player-note-modal, .arena-summary-modal, .modal-box {
     max-width: 95vw !important;
     width: 95vw !important;
@@ -21603,6 +21751,7 @@ GTO.EN_LABELS = {
     '.badge-grid', '.eq-bar-wrap', '.drill-head', '.filter-bar', '.session-scoreboard', '.kbd-hint', '.hub-top',
     '.hub-sec-head', '.qp-meta', '.pd-head', '.pw-head',
     '.arena-table', '.arena-topbar', '.arena-action-bar', '.replay-topbar', '.replay-sidebar', '.rv-head', '.dd-math-tiles', '.dd-compare-row',
+    '.clc-tier-badge', '.clc-badge-pill', '.concept-badge', '.hco-head',
   ].join(', ');
   // 互動元件與練習圖像區：只標說明文字
   const EN_ZONES = [
@@ -24672,7 +24821,7 @@ GTO.EN_LABELS = {
   // ===========================================================================
   // 課程頁
   // ===========================================================================
-  function renderLesson(root, id) {
+  function renderLesson(root, id, query) {
     const l = ui.getLesson(id);
     if (!l) { renderLearnMap(root); return; }
     const st = ui.STAGE_MAP[l.stage] || ui.STAGES[0];
@@ -24766,6 +24915,32 @@ GTO.EN_LABELS = {
     ui.hydrate(body, { terms: { limit: 20, minImp: 2 } });
     const kpEl = root.querySelector('.keypoints');
     if (kpEl) ui.hydrate(kpEl);
+
+    // 小小節指定跳轉與高光定位（#/learn/<id>?sec=sec-N）
+    if (query && query.sec) {
+      const target = body.querySelector('#' + query.sec);
+      if (target) {
+        body.querySelectorAll('.sec-target-highlight').forEach((el) => el.classList.remove('sec-target-highlight'));
+        target.classList.add('sec-target-highlight');
+        jumpTimer = setTimeout(() => {
+          if (target && document.body.contains(target)) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 50);
+        const matchingLink = toc.querySelector('a[data-sec="' + query.sec + '"]');
+        if (matchingLink) {
+          toc.querySelectorAll('a').forEach((a) => a.classList.remove('on'));
+          matchingLink.classList.add('on');
+        }
+        if (tocInline && !tocInline.hidden) {
+          const matchingInline = tocInline.querySelector('a[data-sec="' + query.sec + '"]');
+          if (matchingInline) {
+            tocInline.querySelectorAll('a').forEach((a) => a.classList.remove('on'));
+            matchingInline.classList.add('on');
+          }
+        }
+      }
+    }
 
     // 小測驗
     if (qs.length) renderLessonQuiz(root.querySelector('#lessonQuiz'), l, qs);
@@ -24909,7 +25084,7 @@ GTO.EN_LABELS = {
   function renderLearnPage(root, sub, query) {
     teardownLearn();
     root.__planBound = false;
-    if (sub) renderLesson(root, sub);
+    if (sub) renderLesson(root, sub, query);
     else if (query && query.view === 'plan' && (GTO.STUDY_PLAN || []).length) renderStudyPlan(root);
     else {
       renderLearnMap(root);
@@ -27435,6 +27610,513 @@ self.onmessage = function (e) {
     return Math.min(15, outs);
   }
 
+  // ===========================================================================
+  // 54 課章節小節索引器與對照解析
+  // ===========================================================================
+  const STAGE_META_FALLBACK = {
+    beginner: { no: 0, title: '新手村', icon: '🐣' },
+    basics: { no: 1, title: '基礎功', icon: '🧱' },
+    gto: { no: 2, title: 'GTO 核心', icon: '♟️' },
+    preflop: { no: 3, title: '翻前系統', icon: '🃏' },
+    postflop: { no: 4, title: '翻後系統', icon: '🎯' },
+    advanced: { no: 5, title: '實戰進階', icon: '🚀' },
+  };
+
+  const PART_TO_STAGE_FALLBACK = {
+    '〇、新手村': 'beginner',
+    '一、基礎篇': 'basics',
+    '二、GTO 核心觀念': 'gto',
+    '三、翻前策略': 'preflop',
+    '四、翻後策略': 'postflop',
+    '五、實戰與進階': 'advanced',
+  };
+
+  const LESSON_ORDER_FALLBACK = [
+    'welcome', 'hand-rankings', 'hand-flow', 'betting-actions', 'reading-board', 'starting-hands-101',
+    'beginner-strategy', 'beginner-mistakes', 'etiquette',
+    'rules', 'positions', 'hands-combos', 'poker-math', 'outs-odds',
+    'gto-intro', 'mdf-alpha', 'value-bluff', 'range-thinking', 'equity-realization', 'fold-equity', 'blockers',
+    'preflop-rfi', 'preflop-vs-open', 'blind-defense', 'preflop-3bet', 'squeeze-coldcall', 'preflop-vs-3bet',
+    'preflop-4bet', 'limped-pots',
+    'board-texture', 'cbet', 'postflop-bet-types', 'bet-sizing', 'spr', 'defense-postflop', 'oop-play',
+    'draws-play', 'hand-reading', '3bet-pots', 'turn-river', 'river-decisions',
+    'exploit', 'player-types', 'multiway', 'live-tells', 'mental-game', 'bankroll-mindset', 'game-formats',
+    'mtt-basics', 'icm-pushfold', 'solver-basics', 'game-selection', 'hand-review', 'study-plan',
+  ];
+
+  let _lessonIndexCache = null;
+
+  /**
+   * 初始化 54 課完整章節與 <h3> 小節快取
+   */
+  function initLessonIndexCache() {
+    if (_lessonIndexCache) return _lessonIndexCache;
+    const theoryList = GTO.THEORY || [];
+    const stageMap = (GTO.ui && GTO.ui.STAGE_MAP) || STAGE_META_FALLBACK;
+    const stageOrder = (GTO.ui && GTO.ui.LESSON_ORDER) || LESSON_ORDER_FALLBACK;
+
+    const byStage = {};
+    Object.keys(STAGE_META_FALLBACK).forEach((sid) => { byStage[sid] = []; });
+
+    theoryList.forEach((l) => {
+      const sid = l.stage || PART_TO_STAGE_FALLBACK[l.part] || 'advanced';
+      if (!byStage[sid]) byStage[sid] = [];
+      byStage[sid].push(l);
+    });
+
+    Object.keys(byStage).forEach((sid) => {
+      byStage[sid].sort((a, b) => {
+        const ia = stageOrder.indexOf(a.id);
+        const ib = stageOrder.indexOf(b.id);
+        return (ia >= 0 ? ia : 999) - (ib >= 0 ? ib : 999);
+      });
+    });
+
+    _lessonIndexCache = {};
+    Object.keys(byStage).forEach((sid) => {
+      const list = byStage[sid];
+      list.forEach((l, idx) => {
+        const stageInfo = stageMap[sid] || STAGE_META_FALLBACK[sid] || { no: 0, title: '撲克課程', icon: '📘' };
+        const sections = [];
+        const re = /<h3[^>]*>([\s\S]*?)<\/h3>/gi;
+        let m;
+        let secIdx = 1;
+        while ((m = re.exec(l.html || '')) !== null) {
+          const rawTitle = m[1].replace(/<[^>]+>/g, '').trim().replace(/^\s*\d+[.、]\s*/, '');
+          sections.push({
+            secId: 'sec-' + secIdx,
+            secNo: secIdx,
+            secTitle: rawTitle || ('第 ' + secIdx + ' 節'),
+          });
+          secIdx++;
+        }
+        if (!sections.length) {
+          sections.push({ secId: 'sec-1', secNo: 1, secTitle: l.title });
+        }
+
+        _lessonIndexCache[l.id] = {
+          id: l.id,
+          icon: l.icon || '📘',
+          title: l.title,
+          stage: sid,
+          stageNo: stageInfo.no !== undefined ? stageInfo.no : 0,
+          stageTitle: stageInfo.title || sid,
+          stageIcon: stageInfo.icon || '📘',
+          lessonNo: idx + 1,
+          sections,
+          minutes: l.minutes || 5,
+          tldr: l.tldr || l.summary || '',
+        };
+      });
+    });
+
+    return _lessonIndexCache;
+  }
+
+  /**
+   * 精準解析課程指定章節小節（三層定位）
+   * @param {string} lessonId 54 課之一的 ID
+   * @param {string|RegExp|number} keywordRegexOrIdx 關鍵字正則、字串、或小節序號 (1-based)
+   * @param {Object} opts { role, conceptTag, whyHere }
+   */
+  function resolveLessonChapter(lessonId, keywordRegexOrIdx, opts) {
+    opts = opts || {};
+    const cache = initLessonIndexCache();
+    const info = cache[lessonId] || (GTO.THEORY || []).find((l) => l.id === lessonId);
+    if (!info) return null;
+
+    const sections = info.sections || [{ secId: 'sec-1', secNo: 1, secTitle: info.title }];
+    let pickedSec = sections[0];
+
+    if (typeof keywordRegexOrIdx === 'number') {
+      const idx = Math.max(1, Math.min(sections.length, keywordRegexOrIdx));
+      pickedSec = sections[idx - 1] || sections[0];
+    } else if (typeof keywordRegexOrIdx === 'string' && keywordRegexOrIdx.startsWith('sec-')) {
+      pickedSec = sections.find((s) => s.secId === keywordRegexOrIdx) || sections[0];
+    } else if (keywordRegexOrIdx) {
+      const pat = typeof keywordRegexOrIdx === 'string' ? new RegExp(keywordRegexOrIdx, 'i') : keywordRegexOrIdx;
+      const found = sections.find((s) => pat.test(s.secTitle));
+      if (found) pickedSec = found;
+    }
+
+    const secId = pickedSec.secId || 'sec-1';
+    return {
+      id: info.id,
+      icon: info.icon || '📘',
+      title: info.title,
+      stage: info.stage,
+      stageNo: info.stageNo !== undefined ? info.stageNo : 0,
+      stageTitle: info.stageTitle || '撲克系統',
+      stageIcon: info.stageIcon || '📘',
+      lessonNo: info.lessonNo || 1,
+      secId,
+      secNo: pickedSec.secNo || 1,
+      secTitle: pickedSec.secTitle,
+      href: '#/learn/' + info.id + '?sec=' + secId,
+      quizHref: '#/quiz/theory?topic=' + info.id,
+      role: opts.role || 'applied',
+      conceptTag: opts.conceptTag || '',
+      whyHere: opts.whyHere || info.tldr || '',
+      tldr: info.tldr || '',
+      minutes: info.minutes || 5,
+    };
+  }
+
+  /**
+   * 當玩家做出正確標準行動（best / good）時，挑選 2～3 個本步實際運用的章節
+   */
+  function getAppliedLessonsForDecision(ctx) {
+    const list = [];
+    const street = ctx.street || 'preflop';
+    const heroPos = ctx.heroPos || 'BTN';
+
+    if (street === 'preflop') {
+      if (ctx.isUnopened) {
+        list.push({
+          id: 'preflop-rfi',
+          kw: /範圍|尺度|一覽表/i,
+          why: '在 ' + heroPos + ' 位置遵守標準 RFI 開池加注/棄牌頻率。',
+          conceptTag: '開池加注策略',
+        });
+        list.push({
+          id: 'positions',
+          kw: /位置|優勢/i,
+          why: '充分利用 ' + heroPos + ' 的位置特性，控制入池手牌品質。',
+          conceptTag: '位置優勢',
+        });
+        list.push({
+          id: 'starting-hands-101',
+          kw: /起手牌|評級/i,
+          why: '嚴格篩選起手牌，杜絕邊緣負期望值手牌入池。',
+          conceptTag: '起手牌篩選',
+        });
+      } else if (ctx.limpersCount >= 1) {
+        list.push({
+          id: 'limped-pots',
+          kw: /隔離加注|尺度/i,
+          why: '面對前位溜入進行標準隔離加注，奪取翻前主動權與死錢。',
+          conceptTag: '隔離加注',
+        });
+        list.push({
+          id: 'positions',
+          kw: /位置|優勢/i,
+          why: '在後位隔離可建立翻後絕對的位置優勢。',
+          conceptTag: '位置優勢',
+        });
+        list.push({
+          id: 'squeeze-coldcall',
+          kw: /壓榨|冷跟/i,
+          why: '隔離加注施壓多方，避免多人混戰稀釋手牌勝率。',
+          conceptTag: '壓榨加注',
+        });
+      } else if (ctx.pfrCount === 1) {
+        list.push({
+          id: 'preflop-vs-open',
+          kw: /面對開池|防守/i,
+          why: '面對開池加注，根據自身位置與對手範圍制定標準應對。',
+          conceptTag: '面對開池',
+        });
+        if (['SB', 'BB'].includes(heroPos)) {
+          list.push({
+            id: 'blind-defense',
+            kw: /防守|大盲/i,
+            why: '大盲位依底池賠率計算防守門檻，守衛盲注資產。',
+            conceptTag: '盲注防守',
+          });
+        } else {
+          list.push({
+            id: 'preflop-3bet',
+            kw: /3-Bet|頻率/i,
+            why: '維持足夠的 3-Bet 施壓頻率奪取翻前主動權。',
+            conceptTag: '3-Bet 施壓',
+          });
+        }
+        list.push({
+          id: 'positions',
+          kw: /位置|優勢/i,
+          why: '評估翻後是否有位置，決定跟注或加注策略。',
+          conceptTag: '位置優勢',
+        });
+      } else {
+        list.push({
+          id: 'preflop-vs-3bet',
+          kw: /3-Bet|防守/i,
+          why: '面對 3-Bet 依 MDF 防守門檻與手牌可玩性做出正確抉擇。',
+          conceptTag: '面對 3-Bet',
+        });
+        list.push({
+          id: 'preflop-4bet',
+          kw: /4-Bet|價值/i,
+          why: '用強牌價值 4-Bet 或精準阻擋牌進行平衡詐唬。',
+          conceptTag: '4-Bet 策略',
+        });
+        list.push({
+          id: 'mdf-alpha',
+          kw: /MDF|最低防守/i,
+          why: '計算最低防守頻率（MDF），防止對手無成本 3-Bet 剝削。',
+          conceptTag: '最低防守頻率',
+        });
+      }
+    } else if (street === 'flop') {
+      list.push({
+        id: 'board-texture',
+        kw: /質地|乾燥|潮濕/i,
+        why: '翻牌圈質地（' + (ctx.tex === 'dry' ? '乾燥彩虹面' : ctx.tex === 'wet' ? '潮濕動態面' : '牌面質地') + '）深刻影響雙方範圍優勢與下注策略。',
+        conceptTag: '牌面質地',
+      });
+      list.push({
+        id: 'cbet',
+        kw: /C-Bet|頻率|IP/i,
+        why: '翻牌圈持續下注或過牌控池精確對齊範圍優勢。',
+        conceptTag: '持續下注',
+      });
+      if (ctx.outs >= 4) {
+        list.push({
+          id: 'draws-play',
+          kw: /聽牌|出牌/i,
+          why: '聽牌依據出牌數（Outs）與隱含賠率進行正確跟注或半詐唬。',
+          conceptTag: '聽牌處理',
+        });
+      } else {
+        list.push({
+          id: 'bet-sizing',
+          kw: /尺度|幾何/i,
+          why: '下注尺度符合底池比例（1/3 小注控池施壓或大注防守）。',
+          conceptTag: '下注尺度',
+        });
+      }
+    } else {
+      list.push({
+        id: 'turn-river',
+        kw: /轉牌|河牌/i,
+        why: '轉牌與河牌圈隨著牌面延伸重新評估雙方範圍強弱。',
+        conceptTag: '轉牌與河牌',
+      });
+      list.push({
+        id: 'river-decisions',
+        kw: /價值|詐唬|抓詐/i,
+        why: '河牌極化下注、薄價值提取或冷靜抓詐。',
+        conceptTag: '河牌決策',
+      });
+      if (ctx.villain === 'station') {
+        list.push({
+          id: 'exploit',
+          kw: /剝削|跟注站/i,
+          why: '針對跟注站性格特點調整價值下注與過牌決策。',
+          conceptTag: '對手剝削',
+        });
+      } else {
+        list.push({
+          id: 'poker-math',
+          kw: /賠率|勝率/i,
+          why: '嚴格比對底池賠率與當前勝率/聽牌實現率。',
+          conceptTag: '底池賠率',
+        });
+      }
+    }
+    return list;
+  }
+
+  /**
+   * 整手牌涵蓋觀念與課程章節總覽
+   * @param {Object} handRecord 完整手牌紀錄
+   * @returns {Array} 3～6 個核心觀念，每個帶有 { badge, spotText, chapter }
+   */
+  function analyzeHandConcepts(handRecord) {
+    if (!handRecord) return [];
+    const concepts = [];
+    const seenLessons = new Set();
+
+    function addConcept(badge, spotText, lessonId, keywordRegexOrIdx, whyHere) {
+      if (seenLessons.has(lessonId)) return;
+      const ch = resolveLessonChapter(lessonId, keywordRegexOrIdx, { role: 'applied', whyHere, conceptTag: badge });
+      if (ch) {
+        seenLessons.add(lessonId);
+        concepts.push({ badge, spotText, chapter: ch });
+      }
+    }
+
+    const heroPos = (handRecord.positions && handRecord.positions[0]) || 'BTN';
+    const board = handRecord.board || [];
+    const actions = handRecord.actions || [];
+    const seatPersonas = handRecord.seatPersonas || [];
+    const winners = handRecord.winners || [];
+    const pots = handRecord.pots || [];
+
+    // 1. 翻前結構 (Preflop Structure)
+    let hasLimp = false;
+    let preflopRaises = 0;
+    actions.forEach((a) => {
+      if (a.street === 'preflop') {
+        if (a.action === 'call' && a.amount <= 1.0) hasLimp = true;
+        if (a.action === 'raise' || (a.action === 'bet' && a.amount > 1.0)) preflopRaises++;
+      }
+    });
+
+    if (hasLimp) {
+      addConcept(
+        '翻前結構',
+        '牌局翻前出現平跟入池（Limp），底池進入溜入底池動態。',
+        'limped-pots',
+        /隔離加注|尺度|誰會溜入/i,
+        '面對溜入者應以 3bb + 1bb/limper 積極隔離加注奪取翻後主動權。'
+      );
+    } else if (preflopRaises >= 2) {
+      addConcept(
+        '翻前結構',
+        '翻前出現 3-Bet 加注對抗，底池膨脹且 SPR 顯著下降。',
+        'preflop-3bet',
+        /3-Bet|頻率|冷跟/i,
+        '3-Bet 能夠奪取主動權並有效壓縮後位對手的進入空間。'
+      );
+    } else {
+      addConcept(
+        '翻前結構',
+        '翻前標準開池加注（RFI）動態，位置（' + heroPos + '）直接決定防守與入池邊界。',
+        'preflop-rfi',
+        /範圍|尺度|表/i,
+        '嚴格遵守位置 RFI 範圍，保持翻前加注或棄牌的進攻頻率。'
+      );
+    }
+
+    // 2. 位置意識 (Positions)
+    addConcept(
+      '位置優勢',
+      'Hero 本手牌坐於 ' + heroPos + ' 位，' + (['BTN', 'CO'].includes(heroPos) ? '擁有後位絕對進攻主動性' : '在沒有位置優勢下需更謹慎控池') + '。',
+      'positions',
+      /位置|優勢/i,
+      '位置是德州撲克最大利潤來源，後位能獲取對手完整行動情報後再做決策。'
+    );
+
+    // 3. 牌面質地與翻後架構 (Board Texture)
+    if (board && board.length >= 3) {
+      const flop = board.slice(0, 3);
+      let tex = 'dry';
+      if (GTO.flopTexture) {
+        tex = GTO.flopTexture(flop);
+      }
+      const boardStr = board.join(' ');
+      const texDesc = tex === 'dry' ? '乾燥彩虹高張面' : tex === 'wet' ? '潮濕雙色動態面' : tex === 'paired' ? '公對配對面' : '單色同花面';
+      addConcept(
+        '牌面質地',
+        '公共牌發出 ' + boardStr + '（' + texDesc + '），深刻影響雙方範圍領先分布。',
+        'board-texture',
+        /質地|乾燥|潮濕|動態/i,
+        '翻牌圈質地直接決定持續下注（C-Bet）的頻率與尺度規劃。'
+      );
+
+      const hasCbet = actions.some((a) => a.street === 'flop' && (a.action === 'bet' || a.action === 'raise'));
+      if (hasCbet) {
+        addConcept(
+          '翻後進攻',
+          '翻牌圈發動持續下注（C-Bet），利用範圍優勢向防守方施壓。',
+          'cbet',
+          /C-Bet|頻率|IP/i,
+          '在乾燥面以 1/3 底池高頻小注，在潮濕面以大注保護價值範圍。'
+        );
+      }
+    }
+
+    // 4. 多人底池 / SPR / 籌碼承諾
+    const flopActionSeats = new Set();
+    actions.forEach((a) => {
+      if (a.street === 'flop') flopActionSeats.add(a.seat);
+    });
+    const isMultiway = flopActionSeats.size >= 3;
+    const isAllin = actions.some((a) => a.allin || a.isAllin) || pots.length > 1;
+
+    if (isMultiway) {
+      addConcept(
+        '多人底池',
+        '翻牌圈有 ' + flopActionSeats.size + ' 位玩家同時入池，多人底池防守強度顯著提高。',
+        'multiway',
+        /多人|質變|收緊/i,
+        '多人底池至少一位對手命中強牌的機率大增，純空氣詐唬應大幅降低。'
+      );
+    } else if (isAllin) {
+      addConcept(
+        '撲克數學',
+        '底池出現 All-in 邊池與極低 SPR，進入籌碼承諾與打光結算。',
+        'spr',
+        /SPR|承諾|閾值/i,
+        '低 SPR（< 3）時強頂對已實質套池，不應過牌控池或中途棄牌。'
+      );
+    }
+
+    // 5. 對手性格與剝削 (Villain Exploit)
+    const inPotPersonas = [];
+    seatPersonas.forEach((p, sIdx) => {
+      if (sIdx !== 0 && p && p !== 'hero') inPotPersonas.push(p);
+    });
+    if (inPotPersonas.includes('station')) {
+      addConcept(
+        '對手剝削',
+        '同桌參與者包含「🐟 跟注站新手」，翻後成牌黏著極難棄牌。',
+        'player-types',
+        /跟注站|魚/i,
+        '面對跟注站應最大化薄價值下注，徹底放棄純空氣詐唬。'
+      );
+    } else if (inPotPersonas.includes('maniac')) {
+      addConcept(
+        '對手剝削',
+        '同桌參與者包含「🔥 激進瘋子」，經常以超池大注與加注進行範圍施壓。',
+        'player-types',
+        /瘋子|激進/i,
+        '面對瘋子應適度拓寬抓詐（Bluff Catcher）範圍，並避免對其反向詐唬。'
+      );
+    } else if (inPotPersonas.includes('rock')) {
+      addConcept(
+        '對手剝削',
+        '同桌參與者包含「🪨 緊弱岩石」，轉牌與河牌主動下注範圍極強。',
+        'player-types',
+        /岩石|緊弱/i,
+        '面對緊弱岩石的大注應極度過度棄牌，翻前則頻繁偷取其盲注。'
+      );
+    }
+
+    // 6. 馬腳判讀 (Timing Tells)
+    const hasTell = actions.some((a) => a.timingTell && (a.timingTell.includes('⚡') || a.timingTell.includes('⏳') || a.timingTell.includes('fast') || a.timingTell.includes('tank')));
+    if (hasTell) {
+      addConcept(
+        '馬腳判讀',
+        '對手在關鍵決策出現思考時間馬腳（秒跟／長考），透露手牌真實傾向。',
+        'live-tells',
+        /思考時間|秒跟|長考/i,
+        '線上與即時對局中，快速過牌/跟注往往代表弱聽牌或中弱對子。'
+      );
+    }
+
+    // 7. 攤牌牌型與比牌 (Showdown & Hand Rankings)
+    if (winners && winners.length && winners[0].handDesc && winners[0].handDesc !== '對手全數棄牌獲勝') {
+      addConcept(
+        '攤牌牌型',
+        '最終進入攤牌結算，贏家以「' + winners[0].handDesc + '」贏得底池。',
+        'hand-rankings',
+        /牌型大小|等級/i,
+        '熟悉十三種牌型大小等級與絕對牌力在不同公共牌面的相對價值。'
+      );
+    } else if (concepts.length < 3) {
+      addConcept(
+        '撲克數學',
+        '德州撲克所有行動皆以底池賠率（Pot Odds）與預期勝率（Equity）為決策核心。',
+        'poker-math',
+        /賠率|公式|二四法則/i,
+        '隨時計算付出成本與總底池比例，唯有正期望值（+EV）能長遠獲利。'
+      );
+    }
+    if (concepts.length < 3) {
+      addConcept(
+        '起手牌篩選',
+        '起手牌強度決定後續多條街的可玩性（Playability）與實現率。',
+        'starting-hands-101',
+        /起手牌|評級/i,
+        '優質起手牌能避免命中第二大對子等受壓制慘劇。'
+      );
+    }
+
+    return concepts.slice(0, 6);
+  }
+
   /**
    * 雙軌教練核心評估函式
    * @param {Object} snap 決策快照
@@ -27681,21 +28363,42 @@ self.onmessage = function (e) {
       };
     }
 
-    // 若有對應 Leak，關聯到真實 54 課教材
+    // 關聯到真實 54 課教材（支援三層章節小節定位）
     const matchedLessons = [];
     if (leak && Array.isArray(leak.lessons)) {
-      const theoryList = GTO.THEORY || [];
       leak.lessons.forEach((lid) => {
-        const found = theoryList.find((l) => l.id === lid);
-        if (found) {
-          matchedLessons.push({
-            id: found.id,
-            title: found.title,
-            stage: found.stage,
-            minutes: found.minutes,
-            tldr: found.tldr || found.summary || '',
-          });
-        }
+        const ch = resolveLessonChapter(lid, null, {
+          role: 'fix',
+          whyHere: leak.desc || leak.title,
+          conceptTag: leak.title,
+        });
+        if (ch) matchedLessons.push(ch);
+      });
+    } else {
+      // leak == null: best 或 good，絕對不可留空！
+      const appliedList = getAppliedLessonsForDecision({
+        street,
+        heroPos,
+        heroAction,
+        heroAmount,
+        pot,
+        toCall,
+        spr,
+        outs,
+        tex: GTO.flopTexture && board && board.length >= 3 ? GTO.flopTexture(board.slice(0, 3)) : 'dry',
+        villain,
+        pfrCount: snap.preflopRaiseCount !== undefined ? snap.preflopRaiseCount : (toCall > 0 ? 1 : 0),
+        limpersCount: snap.limpersCount || 0,
+        isUnopened: street === 'preflop' && (snap.preflopRaiseCount === 0 || snap.preflopRaiseCount === undefined) && (toCall <= 0 || (snap.currentBet <= 1.0 && heroPos !== 'BB')),
+        gradeLabel,
+      });
+      appliedList.forEach((it) => {
+        const ch = resolveLessonChapter(it.id, it.kw, {
+          role: 'applied',
+          whyHere: it.why,
+          conceptTag: it.conceptTag || gradeLabel,
+        });
+        if (ch) matchedLessons.push(ch);
       });
     }
 
@@ -27767,6 +28470,11 @@ self.onmessage = function (e) {
 
   GTO.CoachEngine = {
     LEAK_DEFINITIONS,
+    STAGE_META_FALLBACK,
+    PART_TO_STAGE_FALLBACK,
+    initLessonIndexCache,
+    resolveLessonChapter,
+    analyzeHandConcepts,
     analyzeDecision,
     recordArenaHandSummary,
     estimateOuts,
@@ -28898,7 +29606,42 @@ self.onmessage = function (e) {
         localStorage.setItem(HANDS_KEY, JSON.stringify(list));
       } catch (_) {}
     }
+    list.forEach((h) => ensureHandAnalysis(h));
     return list;
+  }
+
+  /**
+   * 自動升級與補齊既有牌局的章節對應與整手牌觀念總覽（Backfill）
+   */
+  function ensureHandAnalysis(hand) {
+    if (!hand) return;
+    if (GTO.CoachEngine && GTO.CoachEngine.analyzeHandConcepts) {
+      if (!hand._concepts || !hand._concepts.length) {
+        hand._concepts = GTO.CoachEngine.analyzeHandConcepts(hand);
+      }
+    }
+    const decisions = hand.heroDecisions || [];
+    decisions.forEach((dec) => {
+      const an = dec.analysis;
+      const needsBackfill = !an || !an.lessons || !an.lessons.length || !an.lessons[0].secTitle;
+      if (needsBackfill && GTO.CoachEngine && GTO.CoachEngine.analyzeDecision) {
+        const snap = dec.snap || {
+          street: dec.street,
+          pot: dec.pot || 1.5,
+          toCall: dec.toCall || 0,
+          heroStack: dec.heroStack || 100,
+          effectiveStack: dec.effectiveStack || 100,
+          heroCards: dec.heroCards || (hand.holeCards ? hand.holeCards[0] : []),
+          heroPosition: dec.heroPosition || (hand.positions ? hand.positions[0] : 'BTN'),
+          heroAction: dec.heroAction,
+          heroAmount: dec.heroAmount || 0,
+          board: dec.board || hand.board || [],
+          villainPersona: dec.villainPersona || (hand.seatPersonas ? hand.seatPersonas[1] : 'mixed'),
+          villainHands: dec.villainHands || 10,
+        };
+        dec.analysis = GTO.CoachEngine.analyzeDecision(snap);
+      }
+    });
   }
 
   function generateDemoHands() {
@@ -28944,32 +29687,118 @@ self.onmessage = function (e) {
             heroPosition: 'BTN',
             heroCards: ['Ah', '9d'],
             board: [],
-            analysis: {
-              grade: 'blunder',
-              gradeLabel: '❌ 嚴重失誤',
-              evLossBb: 2.5,
+            snap: {
+              street: 'preflop',
               heroAction: 'call',
-              recommendedAction: 'raise',
-              recommendedAmount: 4.0,
-              leakCode: 'unisolated_limper',
-              leakTitle: '面對溜入未進行隔離加注',
-              potOddsPct: 28.5,
-              mdfPct: 71.4,
-              spr: 24.0,
-              outs: 0,
-              equityPct: 45,
-              matchedScenarioId: 'rfi_btn',
-              gtoAdvice: { action: '隔離加注至 4.0bb', size: '4.0bb', reason: '前位 CO 溜入，BTN 拿 A9o 具有巨大位置優勢，必須隔離加注收下死錢。' },
-              exploitAdvice: { action: '隔離加注至 4.0bb', villainTendency: 'CO 喜歡平跟弱牌看翻牌', reason: '平跟只會讓盲注便宜看翻牌，自廢武功。' },
-              lessons: [
-                { id: 'limped-pots', title: '面對溜入（Limp）：隔離加注與溜入底池', tldr: '遇溜入必隔離，奪取主動權與死錢。' },
-                { id: 'preflop-rfi', title: '開池加注（RFI）策略與尺度', tldr: '堅持加注或棄牌，拒絕溜入。' },
-              ],
+              heroAmount: 1.0,
+              pot: 2.5,
+              toCall: 1.0,
+              heroPosition: 'BTN',
+              heroCards: ['Ah', '9d'],
+              limpersCount: 1,
+              villainPersona: 'station',
             },
           },
         ],
         winners: [{ seat: 1, name: '阿哲', amount: 16.0, handDesc: '暗三條（777）' }],
         netProfit: { 0: -7.0, 1: +9.0, 2: -1.0, 3: 0, 4: 0, 5: -1.0 },
+      },
+      {
+        handId: 'demo-hand-02',
+        handNumber: 2,
+        timestamp: Date.now() - 180000,
+        dealerSeat: 0,
+        hasMistake: false,
+        starred: true,
+        startingStacks: [100.0, 98.0, 102.0, 100.0, 95.0, 105.0],
+        seatNames: ['你 (Hero)', '阿哲', '信義區散步', 'Kevin_TW', '夜貓阿翔', 'Mia_88'],
+        seatPersonas: ['human', 'station', 'maniac', 'nit', 'shark', 'gto'],
+        holeCards: [['As', 'Ks'], ['Kc', 'Jd'], ['8c', '7c'], ['2s', '2h'], ['Qd', 'Ts'], ['5h', '5d']],
+        positions: { 0: 'BTN', 1: 'SB', 2: 'BB', 3: 'UTG', 4: 'HJ', 5: 'CO' },
+        board: ['Kd', '7s', '2c', '4h', '9s'],
+        actions: [
+          { street: 'preflop', seat: 3, position: 'UTG', action: 'fold', amount: 0, name: 'Kevin_TW' },
+          { street: 'preflop', seat: 4, position: 'HJ', action: 'fold', amount: 0, name: '夜貓阿翔' },
+          { street: 'preflop', seat: 5, position: 'CO', action: 'fold', amount: 0, name: 'Mia_88' },
+          { street: 'preflop', seat: 0, position: 'BTN', isHero: true, action: 'raise', amount: 2.5, name: '你 (Hero)' },
+          { street: 'preflop', seat: 1, position: 'SB', action: 'fold', amount: 0, name: '阿哲' },
+          { street: 'preflop', seat: 2, position: 'BB', action: 'call', amount: 1.5, name: '信義區散步' },
+          { street: 'flop', seat: 2, position: 'BB', action: 'check', amount: 0, name: '信義區散步' },
+          { street: 'flop', seat: 0, position: 'BTN', isHero: true, action: 'bet', amount: 1.8, name: '你 (Hero)' },
+          { street: 'flop', seat: 2, position: 'BB', action: 'call', amount: 1.8, name: '信義區散步' },
+          { street: 'turn', seat: 2, position: 'BB', action: 'check', amount: 0, name: '信義區散步' },
+          { street: 'turn', seat: 0, position: 'BTN', isHero: true, action: 'bet', amount: 5.5, name: '你 (Hero)' },
+          { street: 'turn', seat: 2, position: 'BB', action: 'call', amount: 5.5, name: '信義區散步' },
+          { street: 'river', seat: 2, position: 'BB', action: 'check', amount: 0, name: '信義區散步' },
+          { street: 'river', seat: 0, position: 'BTN', isHero: true, action: 'bet', amount: 12.0, name: '你 (Hero)' },
+          { street: 'river', seat: 2, position: 'BB', action: 'call', amount: 12.0, name: '信義區散步' },
+        ],
+        heroDecisions: [
+          {
+            street: 'preflop',
+            heroAction: 'raise',
+            heroAmount: 2.5,
+            pot: 1.5,
+            toCall: 0,
+            heroPosition: 'BTN',
+            heroCards: ['As', 'Ks'],
+            board: [],
+            snap: {
+              street: 'preflop',
+              heroAction: 'raise',
+              heroAmount: 2.5,
+              pot: 1.5,
+              toCall: 0,
+              heroPosition: 'BTN',
+              heroCards: ['As', 'Ks'],
+              isUnopened: true,
+              preflopRaiseCount: 0,
+            },
+          },
+          {
+            street: 'flop',
+            heroAction: 'bet',
+            heroAmount: 1.8,
+            pot: 5.5,
+            toCall: 0,
+            heroPosition: 'BTN',
+            heroCards: ['As', 'Ks'],
+            board: ['Kd', '7s', '2c'],
+            snap: {
+              street: 'flop',
+              heroAction: 'bet',
+              heroAmount: 1.8,
+              pot: 5.5,
+              toCall: 0,
+              heroPosition: 'BTN',
+              heroCards: ['As', 'Ks'],
+              board: ['Kd', '7s', '2c'],
+            },
+          },
+          {
+            street: 'river',
+            heroAction: 'bet',
+            heroAmount: 12.0,
+            pot: 20.1,
+            toCall: 0,
+            heroPosition: 'BTN',
+            heroCards: ['As', 'Ks'],
+            board: ['Kd', '7s', '2c', '4h', '9s'],
+            snap: {
+              street: 'river',
+              heroAction: 'bet',
+              heroAmount: 12.0,
+              pot: 20.1,
+              toCall: 0,
+              heroPosition: 'BTN',
+              heroCards: ['As', 'Ks'],
+              board: ['Kd', '7s', '2c', '4h', '9s'],
+              villainPersona: 'station',
+            },
+          },
+        ],
+        winners: [{ seat: 0, name: '你 (Hero)', amount: 44.1, handDesc: '一對 K（頂對頂踢腳 AK）' }],
+        netProfit: { 0: +22.3, 1: -0.5, 2: -21.8, 3: 0, 4: 0, 5: 0 },
       },
     ];
   }
@@ -29462,42 +30291,81 @@ self.onmessage = function (e) {
   function renderCoachAnalysisBox() {
     const box = document.getElementById('replayCoachBox');
     if (!box || !activeHand) return;
+    ensureHandAnalysis(activeHand);
 
-    const decisions = activeHand.heroDecisions || [];
-    if (!decisions.length) {
-      box.innerHTML = '<div class="empty">本手牌中未記錄到 Hero 的主動決策點（例如 Hero 未進池或首輪棄牌）。</div>';
-      return;
-    }
-
-    box.innerHTML =
-      '<div class="coach-decisions-timeline">' +
-        '<h4>🧠 雙軌教練覆盤解析（Hero 決策時間軸）</h4>' +
-        '<div class="cd-chips">' +
-          decisions.map((d, i) => {
-            const an = d.analysis || {};
-            const gradeCls = an.grade === 'best' || an.grade === 'good' ? 'green' : 'red';
-            return '<button type="button" class="btn-xs cd-chip ' + gradeCls + '" data-dec-idx="' + i + '">' +
-              '決策 ' + (i + 1) + ' (' + d.street + ') · ' + (an.gradeLabel || '標準') +
-            '</button>';
-          }).join('') +
+    const concepts = activeHand._concepts || [];
+    const conceptsHtml =
+      '<div class="hand-concepts-card card">' +
+        '<div class="hco-head">' +
+          '<h4>🗺️ 本手牌涵蓋觀念 ＆ 課程章節總覽</h4>' +
+          '<span class="muted small">本手牌涉及之翻前／翻後／數學／剝削實戰重點，點擊直達課內指定小節</span>' +
         '</div>' +
-        '<div class="cd-card-body" id="cdCardBody"></div>' +
+        '<div class="hco-grid">' +
+          (concepts.length ? concepts.map((c) => {
+            const ch = c.chapter || {};
+            return '<div class="concept-item">' +
+              '<div class="ci-top">' +
+                '<span class="concept-badge">' + GTO.esc(c.badge) + '</span>' +
+                '<span class="concept-spot">' + GTO.esc(c.spotText) + '</span>' +
+              '</div>' +
+              '<div class="ci-chapter">' +
+                '<div class="clc-tier-badge">' +
+                  '<span class="clc-badge-pill stage">STAGE ' + (ch.stageNo !== undefined ? ch.stageNo : '') + ' · ' + (ch.stageIcon || '📘') + ' ' + (ch.stageTitle || '課程') + '</span>' +
+                  '<span class="clc-badge-sep">›</span>' +
+                  '<span class="clc-badge-pill lesson">第 ' + (ch.lessonNo || 1) + ' 課 · ' + GTO.esc(ch.title || '') + '</span>' +
+                  '<span class="clc-badge-sep">›</span>' +
+                  '<span class="clc-badge-pill sec">📑 §' + (ch.secNo || 1) + ' ' + GTO.esc(ch.secTitle || '') + '</span>' +
+                '</div>' +
+                '<div class="ci-actions">' +
+                  '<a class="btn-xs primary" href="' + (ch.href || '#/learn/' + ch.id) + '">📖 直達此章節 →</a>' +
+                  (ch.quizHref ? '<a class="btn-xs" href="' + ch.quizHref + '">🎯 課後題</a>' : '') +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('') : '<div class="empty">本手牌觀念分析中...</div>') +
+        '</div>' +
       '</div>';
 
-    box.querySelectorAll('.cd-chip').forEach((chip) => {
-      chip.addEventListener('click', () => {
-        box.querySelectorAll('.cd-chip').forEach((x) => x.classList.remove('active'));
-        chip.classList.add('active');
-        const idx = parseInt(chip.getAttribute('data-dec-idx'), 10);
-        renderDecisionCard(decisions[idx], idx);
-      });
-    });
+    const decisions = activeHand.heroDecisions || [];
+    let timelineHtml = '';
 
-    // 預設展開第 1 個決策（若有失誤則優先展開第 1 個失誤）
-    const firstMistakeIdx = decisions.findIndex((d) => d.analysis && (d.analysis.grade === 'mistake' || d.analysis.grade === 'blunder'));
-    const pickIdx = firstMistakeIdx >= 0 ? firstMistakeIdx : 0;
-    const chips = box.querySelectorAll('.cd-chip');
-    if (chips[pickIdx]) chips[pickIdx].click();
+    if (!decisions.length) {
+      timelineHtml = '<div class="card empty"><p>本手牌無 Hero 主動決策點（例如 Hero 翻前棄牌觀戰）。你可藉由上方觀念總覽檢視本手牌的戰術與理論要點！</p></div>';
+    } else {
+      timelineHtml =
+        '<div class="coach-decisions-timeline card">' +
+          '<h4>🧠 雙軌教練逐步決策解析（Hero 決策時間軸）</h4>' +
+          '<div class="cd-chips">' +
+            decisions.map((d, i) => {
+              const an = d.analysis || {};
+              const gradeCls = an.grade === 'best' || an.grade === 'good' ? 'green' : 'red';
+              return '<button type="button" class="btn-xs cd-chip ' + gradeCls + '" data-dec-idx="' + i + '">' +
+                '決策 ' + (i + 1) + ' (' + d.street + ') · ' + (an.gradeLabel || '標準') +
+              '</button>';
+            }).join('') +
+          '</div>' +
+          '<div class="cd-card-body" id="cdCardBody"></div>' +
+        '</div>';
+    }
+
+    box.innerHTML = conceptsHtml + timelineHtml;
+
+    if (decisions.length) {
+      box.querySelectorAll('.cd-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          box.querySelectorAll('.cd-chip').forEach((x) => x.classList.remove('active'));
+          chip.classList.add('active');
+          const idx = parseInt(chip.getAttribute('data-dec-idx'), 10);
+          renderDecisionCard(decisions[idx], idx);
+        });
+      });
+
+      // 預設展開第 1 個決策（若有失誤則優先展開第 1 個失誤）
+      const firstMistakeIdx = decisions.findIndex((d) => d.analysis && (d.analysis.grade === 'mistake' || d.analysis.grade === 'blunder'));
+      const pickIdx = firstMistakeIdx >= 0 ? firstMistakeIdx : 0;
+      const chips = box.querySelectorAll('.cd-chip');
+      if (chips[pickIdx]) chips[pickIdx].click();
+    }
   }
 
   function renderDecisionCard(dec, decIdx) {
@@ -29505,14 +30373,27 @@ self.onmessage = function (e) {
     if (!body || !dec) return;
     const an = dec.analysis || {};
 
+    const isMistake = an.grade === 'mistake' || an.grade === 'blunder' || an.grade === 'inaccuracy';
+    const lessonsSectionTitle = isMistake
+      ? '🔧 失誤對應補強章節（看懂這一步為什麼錯、該怎麼改）'
+      : '✨ 本步運用到的課程觀念與章節（點擊直達課內對應小節）';
+
     const lessonCardsHtml = (an.lessons || []).map((l) =>
       '<div class="coach-lesson-card">' +
-        '<span class="clc-icon">📖</span>' +
-        '<div class="clc-txt">' +
-          '<div class="clc-title"><b>' + GTO.esc(l.title) + '</b></div>' +
-          '<p class="clc-why muted small">' + GTO.esc(l.tldr || '') + '</p>' +
+        '<div class="clc-top">' +
+          '<div class="clc-tier-badge">' +
+            '<span class="clc-badge-pill stage">STAGE ' + (l.stageNo !== undefined ? l.stageNo : '') + ' · ' + (l.stageIcon || '📘') + ' ' + (l.stageTitle || '課程') + '</span>' +
+            '<span class="clc-badge-sep">›</span>' +
+            '<span class="clc-badge-pill lesson">第 ' + (l.lessonNo || 1) + ' 課 · ' + GTO.esc(l.title) + '</span>' +
+            '<span class="clc-badge-sep">›</span>' +
+            '<span class="clc-badge-pill sec">📑 §' + (l.secNo || 1) + ' ' + GTO.esc(l.secTitle || '重要小節') + '</span>' +
+          '</div>' +
         '</div>' +
-        '<a href="#/learn/' + l.id + '" class="btn-xs primary clc-btn">前往精讀此課 →</a>' +
+        '<p class="clc-why-note">' + GTO.esc(l.whyHere || l.tldr || '') + '</p>' +
+        '<div class="clc-foot-actions">' +
+          '<a href="' + (l.href || ('#/learn/' + l.id)) + '" class="btn-xs primary clc-btn">📖 直達此章節 →</a>' +
+          (l.quizHref ? '<a href="' + l.quizHref + '" class="btn-xs clc-btn">🎯 課後題</a>' : '') +
+        '</div>' +
       '</div>'
     ).join('');
 
@@ -29573,7 +30454,7 @@ self.onmessage = function (e) {
         // 推薦關聯教材
         (lessonCardsHtml ?
           '<div class="dd-lessons-section">' +
-            '<h5>📚 觀念補課指引（點擊直達 54 課對應章節）</h5>' +
+            '<h5>' + lessonsSectionTitle + '</h5>' +
             '<div class="coach-lessons-list">' + lessonCardsHtml + '</div>' +
           '</div>' : '') +
       '</div>';
@@ -29594,6 +30475,7 @@ self.onmessage = function (e) {
   /** 一鍵複製文字記譜 */
   function copyHandNotation(hand) {
     if (!hand) return;
+    ensureHandAnalysis(hand);
     const lines = [];
     lines.push('=== GTO 撲克學院 · 第 #' + hand.handNumber + ' 手覆盤牌譜 ===');
     lines.push('時間：' + new Date(hand.timestamp).toLocaleString());
@@ -29623,7 +30505,20 @@ self.onmessage = function (e) {
           lines.push('  [實戰剝削] ' + an.exploitAdvice.action + '：' + an.exploitAdvice.reason);
         }
         if (an.lessons && an.lessons.length > 0) {
-          lines.push('  [推薦複習] ' + an.lessons.map((l) => l.title + ' (#' + l.id + ')').join('、'));
+          lines.push('  [對應章節] ' + an.lessons.map((l) =>
+            (l.stageTitle ? l.stageTitle + ' › ' : '') + '第 ' + (l.lessonNo || 1) + ' 課 ' + l.title + (l.secTitle ? ' › §' + (l.secNo || 1) + ' ' + l.secTitle : '')
+          ).join(' | '));
+        }
+      });
+    }
+
+    if (hand._concepts && hand._concepts.length > 0) {
+      lines.push('');
+      lines.push('--- 本手牌涵蓋觀念 ＆ 課程章節總覽 ---');
+      hand._concepts.forEach((c) => {
+        lines.push('• [' + c.badge + '] ' + c.spotText);
+        if (c.chapter) {
+          lines.push('  對應：' + c.chapter.stageTitle + ' › 第 ' + c.chapter.lessonNo + ' 課 ' + c.chapter.title + ' › §' + c.chapter.secNo + ' ' + c.chapter.secTitle);
         }
       });
     }
@@ -30596,7 +31491,8 @@ self.onmessage = function (e) {
     }
     const keepRangeScroll = prevPage === 'ranges' && page === 'ranges';
     prevPage = page;
-    if (!keepRangeScroll) window.scrollTo({ top: 0, behavior: 'instant' });
+    const skipScrollTop = keepRangeScroll || (page === 'learn' && query && query.sec);
+    if (!skipScrollTop) window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
   window.addEventListener('hashchange', route);
