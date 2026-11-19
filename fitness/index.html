@@ -1506,7 +1506,7 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
   var PUBLIC_CAMPUS = 'https://okayell.github.io/';
   var LOCAL_CAMPUS_PORT = '8919';
   var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8929', '8928', '8931', '8930', '8933', '8932', '8935', '8934', '8937', '8936', '8939', '8938', '8941', '8940', '8899', '8898',
-    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954', '8962'];
+    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954', '8962', '8964', '8966'];
   var TOOL_MAP = {
     english: { port: '8919', mount: true, path: 'english-speak-listen/', name: '英語學院', icon: '🇬🇧' },
     japanese: { port: '8919', mount: true, path: 'japanese/', name: '日語學院', icon: '🇯🇵' },
@@ -1536,12 +1536,22 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     'cloud-devops': { port: '8919', mount: true, path: 'cloud-devops/', name: '雲端與系統維運學院', icon: '☁️' },
     xiangqi: { port: '8919', mount: true, path: 'xiangqi/', name: '象棋學院', icon: '🐘' },
     chess: { port: '8919', mount: true, path: 'chess/', name: '西洋棋學院', icon: '♟️' },
-    crypto: { port: '8919', mount: true, path: 'crypto/', name: '區塊鏈學院', icon: '🪙' }
+    crypto: { port: '8919', mount: true, path: 'crypto/', name: '區塊鏈學院', icon: '🪙' },
+    futures: { port: '8919', mount: true, path: 'futures/', name: '期貨學院', icon: '🛢️' },
+    series: { port: '8919', mount: true, path: 'series/', name: '串流與影集學院', icon: '📺' }
   };
   var ACADEMY_CRESTS = {"english": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-english\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e3a8a\"/><stop offset=\"100%\" stop-color=\"#1d4ed8\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-english)\"/><path d=\"M8 8 L56 56 M56 8 L8 56\" stroke=\"#ffffff\" stroke-width=\"5\" opacity=\".22\"/><path d=\"M32 6 V58 M6 32 H58\" stroke=\"#ef4444\" stroke-width=\"4\" opacity=\".32\"/><rect x=\"11\" y=\"13\" width=\"42\" height=\"31\" rx=\"9\" fill=\"#ffffff\" stroke=\"#bfdbfe\" stroke-width=\"1.5\"/><path d=\"M22 43 L18 52 L30 43 Z\" fill=\"#ffffff\"/><text x=\"32\" y=\"35\" text-anchor=\"middle\" font-family=\"Arial,Helvetica,sans-serif\" font-size=\"19\" font-weight=\"900\" fill=\"#1e3a8a\" letter-spacing=\".5\">EN</text><rect x=\"39\" y=\"10\" width=\"16\" height=\"10\" rx=\"5\" fill=\"#ef4444\"/><circle cx=\"44\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"47\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"50\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%231d4ed8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M8 8 L56 56 M56 8 L8 56' stroke='%23ffffff' stroke-width='5' opacity='.22'/%3E%3Cpath d='M32 6 V58 M6 32 H58' stroke='%23ef4444' stroke-width='4' opacity='.32'/%3E%3Crect x='11' y='13' width='42' height='31' rx='9' fill='%23ffffff' stroke='%23bfdbfe' stroke-width='1.5'/%3E%3Cpath d='M22 43 L18 52 L30 43 Z' fill='%23ffffff'/%3E%3Ctext x='32' y='35' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='19' font-weight='900' fill='%231e3a8a' letter-spacing='.5'%3EEN%3C/text%3E%3Crect x='39' y='10' width='16' height='10' rx='5' fill='%23ef4444'/%3E%3Ccircle cx='44' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='47' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='50' cy='15' r='1.4' fill='%23fff'/%3E%3C/svg%3E"}, "japanese": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-japanese\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#fff1f2\"/><stop offset=\"100%\" stop-color=\"#ffe4e6\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-japanese)\" stroke=\"#fda4af\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"31\" r=\"15\" fill=\"#e11d48\" opacity=\".18\"/><path d=\"M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z\" fill=\"#dc2626\"/><rect x=\"15\" y=\"29\" width=\"34\" height=\"4.5\" rx=\"2\" fill=\"#dc2626\"/><rect x=\"29.5\" y=\"22\" width=\"5\" height=\"11\" fill=\"#b91c1c\"/><path d=\"M20 24 L18 52 M44 24 L46 52\" stroke=\"#dc2626\" stroke-width=\"5.2\" stroke-linecap=\"round\"/><circle cx=\"49\" cy=\"14\" r=\"4\" fill=\"#fb7185\"/><circle cx=\"49\" cy=\"14\" r=\"1.5\" fill=\"#fef08a\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fff1f2'/%3E%3Cstop offset='100%25' stop-color='%23ffe4e6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)' stroke='%23fda4af' stroke-width='2'/%3E%3Ccircle cx='32' cy='31' r='15' fill='%23e11d48' opacity='.18'/%3E%3Cpath d='M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z' fill='%23dc2626'/%3E%3Crect x='15' y='29' width='34' height='4.5' rx='2' fill='%23dc2626'/%3E%3Crect x='29.5' y='22' width='5' height='11' fill='%23b91c1c'/%3E%3Cpath d='M20 24 L18 52 M44 24 L46 52' stroke='%23dc2626' stroke-width='5.2' stroke-linecap='round'/%3E%3Ccircle cx='49' cy='14' r='4' fill='%23fb7185'/%3E%3Ccircle cx='49' cy='14' r='1.5' fill='%23fef08a'/%3E%3C/svg%3E"}, "korean": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-korean\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e1b4b\"/><stop offset=\"100%\" stop-color=\"#312e81\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-korean)\"/><circle cx=\"32\" cy=\"32\" r=\"19\" fill=\"#ffffff\" opacity=\".12\"/><circle cx=\"32\" cy=\"32\" r=\"16\" fill=\"#2563eb\"/><path d=\"M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z\" fill=\"#e11d48\"/><circle cx=\"24\" cy=\"32\" r=\"8\" fill=\"#e11d48\"/><circle cx=\"40\" cy=\"32\" r=\"8\" fill=\"#2563eb\"/><rect x=\"11\" y=\"11\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 16 12)\"/><rect x=\"42\" y=\"49\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 47 50)\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e1b4b'/%3E%3Cstop offset='100%25' stop-color='%23312e81'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23ffffff' opacity='.12'/%3E%3Ccircle cx='32' cy='32' r='16' fill='%232563eb'/%3E%3Cpath d='M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z' fill='%23e11d48'/%3E%3Ccircle cx='24' cy='32' r='8' fill='%23e11d48'/%3E%3Ccircle cx='40' cy='32' r='8' fill='%232563eb'/%3E%3Crect x='11' y='11' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 16 12)'/%3E%3Crect x='42' y='49' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 47 50)'/%3E%3C/svg%3E"}, "finance": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-finance\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#022c22\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-finance)\"/><path d=\"M12 24 L32 11 L52 24 Z\" fill=\"#fbbf24\"/><rect x=\"14\" y=\"24\" width=\"36\" height=\"3.5\" rx=\"1.5\" fill=\"#fde68a\"/><rect x=\"17\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"26.5\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"36\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"45\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"12\" y=\"48\" width=\"40\" height=\"5\" rx=\"2\" fill=\"#fbbf24\"/><path d=\"M15 44 L27 35 L35 39 L50 23\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M42 23 H50 V31\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%23022c22'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 24 L32 11 L52 24 Z' fill='%23fbbf24'/%3E%3Crect x='14' y='24' width='36' height='3.5' rx='1.5' fill='%23fde68a'/%3E%3Crect x='17' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='26.5' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='36' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='45' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='12' y='48' width='40' height='5' rx='2' fill='%23fbbf24'/%3E%3Cpath d='M15 44 L27 35 L35 39 L50 23' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M42 23 H50 V31' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "addiction-cm": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-addictioncm\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#10b981\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-addictioncm)\"/><path d=\"M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z\" fill=\"#ffffff\"/><rect x=\"29\" y=\"21\" width=\"6\" height=\"18\" rx=\"2\" fill=\"#059669\"/><rect x=\"23\" y=\"27\" width=\"18\" height=\"6\" rx=\"2\" fill=\"#059669\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2310b981'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z' fill='%23ffffff'/%3E%3Crect x='29' y='21' width='6' height='18' rx='2' fill='%23059669'/%3E%3Crect x='23' y='27' width='18' height='6' rx='2' fill='%23059669'/%3E%3C/svg%3E"}, "health-care": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-healthcare\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0d9488\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-healthcare)\"/><circle cx=\"32\" cy=\"28\" r=\"17\" fill=\"#ffffff\"/><rect x=\"28.5\" y=\"17\" width=\"7\" height=\"22\" rx=\"2\" fill=\"#e11d48\"/><rect x=\"21\" y=\"24.5\" width=\"22\" height=\"7\" rx=\"2\" fill=\"#e11d48\"/><path d=\"M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53\" fill=\"none\" stroke=\"#99f6e4\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230d9488'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='28' r='17' fill='%23ffffff'/%3E%3Crect x='28.5' y='17' width='7' height='22' rx='2' fill='%23e11d48'/%3E%3Crect x='21' y='24.5' width='22' height='7' rx='2' fill='%23e11d48'/%3E%3Cpath d='M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53' fill='none' stroke='%2399f6e4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "coding": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-coding\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e3a8a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-coding)\"/><rect x=\"8\" y=\"11\" width=\"48\" height=\"42\" rx=\"9\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"15\" cy=\"17.5\" r=\"2.2\" fill=\"#fb7185\"/><circle cx=\"22\" cy=\"17.5\" r=\"2.2\" fill=\"#fbbf24\"/><circle cx=\"29\" cy=\"17.5\" r=\"2.2\" fill=\"#34d399\"/><path d=\"M16 29 L26 36 L16 43\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"4.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><line x1=\"31\" y1=\"43\" x2=\"47\" y2=\"43\" stroke=\"#fbbf24\" stroke-width=\"4.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e3a8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='8' y='11' width='48' height='42' rx='9' fill='%231e293b' stroke='%2338bdf8' stroke-width='2'/%3E%3Ccircle cx='15' cy='17.5' r='2.2' fill='%23fb7185'/%3E%3Ccircle cx='22' cy='17.5' r='2.2' fill='%23fbbf24'/%3E%3Ccircle cx='29' cy='17.5' r='2.2' fill='%2334d399'/%3E%3Cpath d='M16 29 L26 36 L16 43' fill='none' stroke='%2338bdf8' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='31' y1='43' x2='47' y2='43' stroke='%23fbbf24' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "smart-iot": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-smartiot\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0891b2\"/><stop offset=\"100%\" stop-color=\"#0f766e\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-smartiot)\"/><path d=\"M12 33 L32 16 L52 33\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"4.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M18 30 V50 H46 V30\" fill=\"#ecfeff\" opacity=\".95\"/><path d=\"M23 36 A13 13 0 0 1 41 36\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M26.5 41 A7.5 7.5 0 0 1 37.5 41\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><circle cx=\"32\" cy=\"45.5\" r=\"3\" fill=\"#f59e0b\"/><circle cx=\"32\" cy=\"11\" r=\"2.5\" fill=\"#fde047\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230891b2'/%3E%3Cstop offset='100%25' stop-color='%230f766e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 33 L32 16 L52 33' fill='none' stroke='%23ffffff' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 30 V50 H46 V30' fill='%23ecfeff' opacity='.95'/%3E%3Cpath d='M23 36 A13 13 0 0 1 41 36' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Cpath d='M26.5 41 A7.5 7.5 0 0 1 37.5 41' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='45.5' r='3' fill='%23f59e0b'/%3E%3Ccircle cx='32' cy='11' r='2.5' fill='%23fde047'/%3E%3C/svg%3E"}, "music": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-music\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#6d28d9\"/><stop offset=\"100%\" stop-color=\"#be185d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-music)\"/><path d=\"M25 43 V18 L47 13 V39\" fill=\"none\" stroke=\"#fde68a\" stroke-width=\"4.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M25 25 L47 20\" stroke=\"#fbbf24\" stroke-width=\"4.2\"/><ellipse cx=\"20\" cy=\"45\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 20 45)\" fill=\"#fef3c7\"/><ellipse cx=\"42\" cy=\"41\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 42 41)\" fill=\"#fef3c7\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236d28d9'/%3E%3Cstop offset='100%25' stop-color='%23be185d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M25 43 V18 L47 13 V39' fill='none' stroke='%23fde68a' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M25 25 L47 20' stroke='%23fbbf24' stroke-width='4.2'/%3E%3Cellipse cx='20' cy='45' rx='7.5' ry='5.5' transform='rotate(-18 20 45)' fill='%23fef3c7'/%3E%3Cellipse cx='42' cy='41' rx='7.5' ry='5.5' transform='rotate(-18 42 41)' fill='%23fef3c7'/%3E%3C/svg%3E"}, "trivia": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-trivia\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#f59e0b\"/><stop offset=\"100%\" stop-color=\"#d97706\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-trivia)\"/><path d=\"M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16\" stroke=\"#fef9c3\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z\" fill=\"#ffffff\"/><path d=\"M28 33 L32 26 L36 33\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"26\" y=\"46\" width=\"12\" height=\"4\" rx=\"2\" fill=\"#1e293b\"/><rect x=\"28\" y=\"51.5\" width=\"8\" height=\"3.5\" rx=\"1.7\" fill=\"#334155\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16' stroke='%23fef9c3' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z' fill='%23ffffff'/%3E%3Cpath d='M28 33 L32 26 L36 33' fill='none' stroke='%23f59e0b' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='26' y='46' width='12' height='4' rx='2' fill='%231e293b'/%3E%3Crect x='28' y='51.5' width='8' height='3.5' rx='1.7' fill='%23334155'/%3E%3C/svg%3E"}, "fitness": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-fitness\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ea580c\"/><stop offset=\"100%\" stop-color=\"#991b1b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-fitness)\"/><g transform=\"rotate(-28 32 32)\"><rect x=\"16\" y=\"29\" width=\"32\" height=\"6\" rx=\"2.5\" fill=\"#e2e8f0\"/><rect x=\"11\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"6\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/><rect x=\"46\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"53\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ea580c'/%3E%3Cstop offset='100%25' stop-color='%23991b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-28 32 32)'%3E%3Crect x='16' y='29' width='32' height='6' rx='2.5' fill='%23e2e8f0'/%3E%3Crect x='11' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='6' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3Crect x='46' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='53' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3C/g%3E%3C/svg%3E"}, "poker": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-poker\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-poker)\"/><circle cx=\"32\" cy=\"32\" r=\"23\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3\" stroke-dasharray=\"6 4\"/><path d=\"M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z\" fill=\"#ffffff\"/><path d=\"M30 41 L26 51 H38 L34 41 Z\" fill=\"#ffffff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%230f172a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%23fbbf24' stroke-width='3' stroke-dasharray='6 4'/%3E%3Cpath d='M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z' fill='%23ffffff'/%3E%3Cpath d='M30 41 L26 51 H38 L34 41 Z' fill='%23ffffff'/%3E%3C/svg%3E"}, "stock": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-stock\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e293b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-stock)\"/><line x1=\"16\" y1=\"24\" x2=\"16\" y2=\"50\" stroke=\"#22c55e\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"12\" y=\"30\" width=\"8\" height=\"14\" rx=\"2\" fill=\"#22c55e\"/><line x1=\"32\" y1=\"18\" x2=\"32\" y2=\"46\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"28\" y=\"23\" width=\"8\" height=\"16\" rx=\"2\" fill=\"#ef4444\"/><line x1=\"48\" y1=\"11\" x2=\"48\" y2=\"39\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"44\" y=\"15\" width=\"8\" height=\"18\" rx=\"2\" fill=\"#ef4444\"/><path d=\"M11 47 Q28 42 53 16\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e293b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cline x1='16' y1='24' x2='16' y2='50' stroke='%2322c55e' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='12' y='30' width='8' height='14' rx='2' fill='%2322c55e'/%3E%3Cline x1='32' y1='18' x2='32' y2='46' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='28' y='23' width='8' height='16' rx='2' fill='%23ef4444'/%3E%3Cline x1='48' y1='11' x2='48' y2='39' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='44' y='15' width='8' height='18' rx='2' fill='%23ef4444'/%3E%3Cpath d='M11 47 Q28 42 53 16' fill='none' stroke='%23fbbf24' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "nba": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><radialGradient id=\"cn-g-nba\" cx=\"35%\" cy=\"30%\" r=\"70%\"><stop offset=\"0%\" stop-color=\"#fb923c\"/><stop offset=\"100%\" stop-color=\"#c2410c\"/></radialGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#1e293b\"/><circle cx=\"32\" cy=\"32\" r=\"22\" fill=\"url(#cn-g-nba)\" stroke=\"#fed7aa\" stroke-width=\"1.6\"/><path d=\"M10 32 H54 M32 10 V54\" stroke=\"#1e293b\" stroke-width=\"2.8\"/><path d=\"M16 16 Q30 32 16 48 M48 16 Q34 32 48 48\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2.8\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='35%25' cy='30%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%23fb923c'/%3E%3Cstop offset='100%25' stop-color='%23c2410c'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='%231e293b'/%3E%3Ccircle cx='32' cy='32' r='22' fill='url(%23g)' stroke='%23fed7aa' stroke-width='1.6'/%3E%3Cpath d='M10 32 H54 M32 10 V54' stroke='%231e293b' stroke-width='2.8'/%3E%3Cpath d='M16 16 Q30 32 16 48 M48 16 Q34 32 48 48' fill='none' stroke='%231e293b' stroke-width='2.8'/%3E%3C/svg%3E"}, "epl": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-epl\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#3b0764\"/><stop offset=\"100%\" stop-color=\"#6d28d9\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-epl)\"/><circle cx=\"32\" cy=\"34\" r=\"19\" fill=\"#ffffff\"/><polygon points=\"32,25 40,31 37,40 27,40 24,31\" fill=\"#1e1b4b\"/><path d=\"M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28\" stroke=\"#1e1b4b\" stroke-width=\"2.5\"/><path d=\"M23 12 L27 7 L32 11 L37 7 L41 12 Z\" fill=\"#fbbf24\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233b0764'/%3E%3Cstop offset='100%25' stop-color='%236d28d9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='34' r='19' fill='%23ffffff'/%3E%3Cpolygon points='32,25 40,31 37,40 27,40 24,31' fill='%231e1b4b'/%3E%3Cpath d='M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28' stroke='%231e1b4b' stroke-width='2.5'/%3E%3Cpath d='M23 12 L27 7 L32 11 L37 7 L41 12 Z' fill='%23fbbf24'/%3E%3C/svg%3E"}, "f1": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-f1\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#dc2626\"/><stop offset=\"100%\" stop-color=\"#7f1d1d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-f1)\"/><g transform=\"rotate(-24 32 33)\"><rect x=\"11\" y=\"21\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"11\" y=\"38\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"43\" y=\"22\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><rect x=\"43\" y=\"37.5\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><path d=\"M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z\" fill=\"#ffffff\"/><ellipse cx=\"31\" cy=\"32\" rx=\"6\" ry=\"3.4\" fill=\"#0f172a\"/><circle cx=\"32\" cy=\"32\" r=\"2.2\" fill=\"#fde047\"/><rect x=\"7\" y=\"24\" width=\"3.5\" height=\"16\" rx=\"1\" fill=\"#fde047\"/><rect x=\"52\" y=\"25\" width=\"3\" height=\"14\" rx=\"1\" fill=\"#ffffff\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23dc2626'/%3E%3Cstop offset='100%25' stop-color='%237f1d1d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-24 32 33)'%3E%3Crect x='11' y='21' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='11' y='38' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='43' y='22' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Crect x='43' y='37.5' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Cpath d='M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z' fill='%23ffffff'/%3E%3Cellipse cx='31' cy='32' rx='6' ry='3.4' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='2.2' fill='%23fde047'/%3E%3Crect x='7' y='24' width='3.5' height='16' rx='1' fill='%23fde047'/%3E%3Crect x='52' y='25' width='3' height='14' rx='1' fill='%23ffffff'/%3E%3C/g%3E%3C/svg%3E"}};
   ACADEMY_CRESTS.twbasket = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-twb" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#dc2626"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-twb)"/><rect x="12" y="13" width="40" height="24" rx="4" fill="#ffffff" opacity=".95"/><rect x="23" y="21" width="18" height="12" fill="none" stroke="#dc2626" stroke-width="2.6"/><line x1="18" y1="36" x2="46" y2="36" stroke="#ea580c" stroke-width="4" stroke-linecap="round"/><path d="M22 36 L25 50 M32 36 V51 M42 36 L39 50 M23 43 H41" stroke="#fde68a" stroke-width="2.2" stroke-linecap="round"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%23dc2626'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='12' y='13' width='40' height='24' rx='4' fill='%23ffffff' opacity='.95'/%3E%3Crect x='23' y='21' width='18' height='12' fill='none' stroke='%23dc2626' stroke-width='2.6'/%3E%3Cline x1='18' y1='36' x2='46' y2='36' stroke='%23ea580c' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M22 36 L25 50 M32 36 V51 M42 36 L39 50 M23 43 H41' stroke='%23fde68a' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS.series = {
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-series\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0284c7\"/><stop offset=\"100%\" stop-color=\"#0c4a6e\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-series)\"/><path d=\"M24 11 L32 20 L40 11\" fill=\"none\" stroke=\"#bae6fd\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"10\" y=\"20\" width=\"44\" height=\"29\" rx=\"6\" fill=\"#f0f9ff\"/><rect x=\"14\" y=\"24\" width=\"28\" height=\"21\" rx=\"3\" fill=\"#0f172a\"/><polygon points=\"24,29 24,40 34,34.5\" fill=\"#38bdf8\"/><circle cx=\"48\" cy=\"29\" r=\"2.2\" fill=\"#0284c7\"/><circle cx=\"48\" cy=\"36\" r=\"2.2\" fill=\"#f59e0b\"/><path d=\"M20 53 L44 53\" stroke=\"#bae6fd\" stroke-width=\"2.6\" stroke-linecap=\"round\"/></svg>",
+      "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230284c7'/%3E%3Cstop offset='100%25' stop-color='%230c4a6e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M24 11 L32 20 L40 11' fill='none' stroke='%23bae6fd' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='10' y='20' width='44' height='29' rx='6' fill='%23f0f9ff'/%3E%3Crect x='14' y='24' width='28' height='21' rx='3' fill='%230f172a'/%3E%3Cpolygon points='24,29 24,40 34,34.5' fill='%2338bdf8'/%3E%3Ccircle cx='48' cy='29' r='2.2' fill='%230284c7'/%3E%3Ccircle cx='48' cy='36' r='2.2' fill='%23f59e0b'/%3E%3Cpath d='M20 53 L44 53' stroke='%23bae6fd' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS.futures = {
+      "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-futures\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#b45309\"/><stop offset=\"100%\" stop-color=\"#78350f\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-futures)\"/><ellipse cx=\"26\" cy=\"20\" rx=\"10\" ry=\"4\" fill=\"#334155\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/><path d=\"M16 20 V42 C16 45 36 45 36 42 V20\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/><ellipse cx=\"26\" cy=\"31\" rx=\"10\" ry=\"3.5\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"1\"/><ellipse cx=\"26\" cy=\"42\" rx=\"10\" ry=\"4\" fill=\"#334155\" stroke=\"#f59e0b\" stroke-width=\"1.5\"/><path d=\"M26 25 C28 27 28 30 26 32 C24 30 24 27 26 25 Z\" fill=\"#f59e0b\"/><polygon points=\"34,44 48,36 56,40 42,48\" fill=\"#fde68a\" stroke=\"#d97706\" stroke-width=\"1\"/><polygon points=\"34,44 42,48 42,54 34,50\" fill=\"#f59e0b\" stroke=\"#d97706\" stroke-width=\"1\"/><polygon points=\"42,48 56,40 56,46 42,54\" fill=\"#d97706\" stroke=\"#b45309\" stroke-width=\"1\"/></svg>",
+      "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%2378350f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cellipse cx='26' cy='20' rx='10' ry='4' fill='%23334155' stroke='%23f59e0b' stroke-width='1.5'/%3E%3Cpath d='M16 20 V42 C16 45 36 45 36 42 V20' fill='%231e293b' stroke='%23f59e0b' stroke-width='1.5'/%3E%3Cellipse cx='26' cy='31' rx='10' ry='3.5' fill='none' stroke='%23f59e0b' stroke-width='1'/%3E%3Cellipse cx='26' cy='42' rx='10' ry='4' fill='%23334155' stroke='%23f59e0b' stroke-width='1.5'/%3E%3Cpath d='M26 25 C28 27 28 30 26 32 C24 30 24 27 26 25 Z' fill='%23f59e0b'/%3E%3Cpolygon points='34,44 48,36 56,40 42,48' fill='%23fde68a' stroke='%23d97706' stroke-width='1'/%3E%3Cpolygon points='34,44 42,48 42,54 34,50' fill='%23f59e0b' stroke='%23d97706' stroke-width='1'/%3E%3Cpolygon points='42,48 56,40 56,46 42,54' fill='%23d97706' stroke='%23b45309' stroke-width='1'/%3E%3C/svg%3E"
   };
   ACADEMY_CRESTS.cooking = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-cook" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ea580c"/><stop offset="100%" stop-color="#b91c1c"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-cook)"/><path d="M18 30c-5 0-8-4-8-8s4-8 9-7c1-5 6-8 13-8s12 3 13 8c5-1 9 3 9 7s-3 8-8 8z" fill="#fff7ed"/><rect x="19" y="29" width="26" height="12" rx="2" fill="#fff7ed"/><path d="M12 47h40" stroke="#fde68a" stroke-width="5" stroke-linecap="round"/></svg>',
@@ -1614,104 +1624,198 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
 
   /* ------------------------------------------------------------ 🏅 各學院專屬成就與學習時數定義 */
   var ACAD_ACH = {
-    acad_en_1: { icon: '🇬🇧', name: '英語開口說', tier: 't1', pts: 8, title: '🇬🇧 英語留學生' },
+    acad_en_1: { icon: '🇬🇧', name: '英語開口聽讀', tier: 't1', pts: 8, title: '🇬🇧 英語留學生' },
     acad_en_2: { icon: '🎙️', name: '英語實戰達人', tier: 't2', pts: 20, title: '🎙️ 雙語溝通王' },
-    acad_en_3: { icon: '🗣️', name: '英語母語級演說家', tier: 't4', pts: 35, title: '🗣️ 英語流利演說家' },
+    acad_en_3: { icon: '🗣️', name: '英語流利進修生', tier: 't3', pts: 40, title: '🗣️ 英語流利演說家' },
+    acad_en_4: { icon: '🎧', name: '道地口語語感王', tier: 't4', pts: 65, title: '🎧 英語道地語感王' },
+    acad_en_5: { icon: '📖', name: '英語長篇閱讀博學家', tier: 't5', pts: 120, title: '📖 英語長篇閱讀家' },
+    acad_en_6: { icon: '👑', name: '英語母語級傳說院士', tier: 't6', pts: 220, title: '👑 英語首席榮譽院士' },
     acad_jp_1: { icon: '🇯🇵', name: '五十音初心者', tier: 't1', pts: 8, title: '🇯🇵 日語研修生' },
     acad_jp_2: { icon: '⛩️', name: '日語會話達人', tier: 't2', pts: 20, title: '⛩️ 東京自由行達人' },
-    acad_jp_3: { icon: '🏯', name: '日檢 N1 語感制霸', tier: 't4', pts: 35, title: '🏯 日語商務達人' },
+    acad_jp_3: { icon: '🏯', name: '日檢語感進修生', tier: 't3', pts: 40, title: '🏯 日語商務達人' },
+    acad_jp_4: { icon: '🌸', name: '道地日語口語達人', tier: 't4', pts: 65, title: '🌸 日語口語通' },
+    acad_jp_5: { icon: '📜', name: '日檢 N1 讀解博學家', tier: 't5', pts: 120, title: '📜 日檢讀解博學家' },
+    acad_jp_6: { icon: '👑', name: '日語殿堂傳說宗師', tier: 't6', pts: 220, title: '👑 日語殿堂傳說宗師' },
     acad_kr_1: { icon: '🇰🇷', name: '四十音初心者', tier: 't1', pts: 8, title: '🇰🇷 韓語語學堂新生' },
     acad_kr_2: { icon: '🎎', name: '韓語會話達人', tier: 't2', pts: 20, title: '🎎 首爾自由行達人' },
-    acad_kr_3: { icon: '🎤', name: '韓流語感自由行', tier: 't4', pts: 35, title: '🎤 韓語會話特派員' },
+    acad_kr_3: { icon: '🎤', name: '韓流語感自由行', tier: 't3', pts: 40, title: '🎤 韓語會話特派員' },
+    acad_kr_4: { icon: '🌟', name: 'TOPIK 中高級進修生', tier: 't4', pts: 65, title: '🌟 韓語進階特派員' },
+    acad_kr_5: { icon: '📚', name: '韓語文化讀解博學家', tier: 't5', pts: 120, title: '📚 韓語讀解博學家' },
+    acad_kr_6: { icon: '👑', name: '韓語語學堂傳說院長', tier: 't6', pts: 220, title: '👑 韓語語學堂總院長' },
     acad_fin_1: { icon: '🏛️', name: '財經必修課', tier: 't1', pts: 8, title: '🏛️ 財經研究員' },
     acad_fin_2: { icon: '📊', name: '華爾街特訓生', tier: 't2', pts: 20, title: '📊 華爾街分析師' },
-    acad_fin_3: { icon: '🏦', name: '華爾街宏觀策略師', tier: 't4', pts: 35, title: '🏦 宏觀資產配置家' },
+    acad_fin_3: { icon: '🏦', name: '華爾街宏觀策略師', tier: 't3', pts: 40, title: '🏦 宏觀資產配置家' },
+    acad_fin_4: { icon: '📈', name: '四分院全修研究員', tier: 't4', pts: 65, title: '📈 四分院資深研究員' },
+    acad_fin_5: { icon: '💎', name: '財報估值與週期專家', tier: 't5', pts: 120, title: '💎 價值與週期精算師' },
+    acad_fin_6: { icon: '👑', name: '全球總經傳說首席學者', tier: 't6', pts: 220, title: '👑 總體經濟傳說院士' },
     acad_stk_1: { icon: '📈', name: '台股觀測員', tier: 't1', pts: 8, title: '📈 台股觀察家' },
     acad_stk_2: { icon: '🕯️', name: 'K 線選股達人', tier: 't2', pts: 20, title: '🕯️ 台股波段領航員' },
-    acad_stk_3: { icon: '📊', name: '台股多因子操盤手', tier: 't4', pts: 35, title: '📊 台股量化投資長' },
+    acad_stk_3: { icon: '📊', name: '台股多因子操盤手', tier: 't3', pts: 40, title: '📊 台股量化投資長' },
+    acad_stk_4: { icon: '🔍', name: '產業供應鏈解碼師', tier: 't4', pts: 65, title: '🔍 台股產業解碼師' },
+    acad_stk_5: { icon: '🏛️', name: '台股量化回測專家', tier: 't5', pts: 120, title: '🏛️ 台股量化模型專家' },
+    acad_stk_6: { icon: '👑', name: '台股傳說首席策略長', tier: 't6', pts: 220, title: '👑 台股傳說首席策略長' },
     acad_uss_1: { icon: '🗽', name: '華爾街敲鐘報到', tier: 't1', pts: 8, title: '🗽 華爾街見習交易員' },
     acad_uss_2: { icon: '🐂', name: '美股七巨頭獵手', tier: 't2', pts: 20, title: '🐂 華爾街量化分析師' },
-    acad_uss_3: { icon: '🏛️', name: '華爾街跨海操盤總監', tier: 't4', pts: 35, title: '🏛️ 華爾街首席投資長' },
+    acad_uss_3: { icon: '🏛️', name: '華爾街跨海操盤總監', tier: 't3', pts: 40, title: '🏛️ 華爾街首席投資長' },
+    acad_uss_4: { icon: '🌐', name: '跨時區 ADR 領航員', tier: 't4', pts: 65, title: '🌐 美股跨海研究總監' },
+    acad_uss_5: { icon: '💎', name: '美股五因子模型專家', tier: 't5', pts: 120, title: '💎 美股五因子模型師' },
+    acad_uss_6: { icon: '👑', name: '華爾街傳說宏觀巨擘', tier: 't6', pts: 220, title: '👑 華爾街傳說巨擘' },
     acad_cm_1: { icon: '💚', name: '暖心陪伴者', tier: 't1', pts: 8, title: '💚 暖心實習個管師' },
     acad_cm_2: { icon: '🩺', name: '資深個管專家', tier: 't2', pts: 20, title: '🩺 專業藥癮個管師' },
-    acad_cm_3: { icon: '🕊️', name: '成癮復原督導專家', tier: 't4', pts: 35, title: '🕊️ 資深臨床個管督導' },
+    acad_cm_3: { icon: '🕊️', name: '成癮復原督導專家', tier: 't3', pts: 40, title: '🕊️ 資深臨床個管督導' },
+    acad_cm_4: { icon: '📋', name: 'SOAP 紀錄與轉介達人', tier: 't4', pts: 65, title: '📋 臨床評估轉介專家' },
+    acad_cm_5: { icon: '💎', name: '全人復原輔導博學家', tier: 't5', pts: 120, title: '💎 成癮防治首席顧問' },
+    acad_cm_6: { icon: '👑', name: '藥癮防治傳說總督導', tier: 't6', pts: 220, title: '👑 臨床個管傳說總督導' },
     acad_hc_1: { icon: '🩺', name: '保健室見習生', tier: 't1', pts: 8, title: '🩺 校園保健守護員' },
     acad_hc_2: { icon: '🚑', name: '急救守護達人', tier: 't2', pts: 20, title: '🚑 急救黃金救援王' },
-    acad_hc_3: { icon: '🏥', name: '全人健康照護顧問', tier: 't4', pts: 35, title: '🏥 全人健康總顧問' },
+    acad_hc_3: { icon: '🏥', name: '全人健康照護顧問', tier: 't3', pts: 40, title: '🏥 全人健康總顧問' },
+    acad_hc_4: { icon: '💊', name: '安全用藥與交互雷達師', tier: 't4', pts: 65, title: '💊 家庭醫藥守護師' },
+    acad_hc_5: { icon: '💎', name: '急重症檢傷防線專家', tier: 't5', pts: 120, title: '💎 醫療衛教首席專家' },
+    acad_hc_6: { icon: '👑', name: '保健醫學傳說守護院長', tier: 't6', pts: 220, title: '👑 醫療保健傳說院長' },
     acad_mus_1: { icon: '🎵', name: '樂理初體驗', tier: 't1', pts: 8, title: '🎵 樂理練習生' },
     acad_mus_2: { icon: '🎹', name: '絕對音感大師', tier: 't2', pts: 20, title: '🎹 校園鋼琴家' },
-    acad_mus_3: { icon: '🎻', name: '皇家樂團交響指揮', tier: 't4', pts: 35, title: '🎻 皇家樂團首席指揮' },
+    acad_mus_3: { icon: '🎻', name: '皇家樂團交響指揮', tier: 't3', pts: 40, title: '🎻 皇家樂團首席指揮' },
+    acad_mus_4: { icon: '🎼', name: '古典名曲與和聲鑑賞家', tier: 't4', pts: 65, title: '🎼 交響和聲鑑賞家' },
+    acad_mus_5: { icon: '💎', name: '跨時代音樂史博學者', tier: 't5', pts: 120, title: '💎 皇家音樂院院士' },
+    acad_mus_6: { icon: '👑', name: '愛樂殿堂傳說大音樂家', tier: 't6', pts: 220, title: '👑 愛樂殿堂傳說宗師' },
     acad_cook_1: { icon: '🍳', name: '廚房初試啼聲', tier: 't1', pts: 8, title: '🍳 見習小當家' },
     acad_cook_2: { icon: '👨‍🍳', name: '世界料理主廚', tier: 't2', pts: 20, title: '👨‍🍳 特級行政主廚' },
-    acad_cook_3: { icon: '🍾', name: '米其林三星行政主廚', tier: 't4', pts: 35, title: '🍾 米其林三星主廚' },
+    acad_cook_3: { icon: '🍾', name: '米其林三星行政主廚', tier: 't3', pts: 40, title: '🍾 米其林三星主廚' },
+    acad_cook_4: { icon: '🔪', name: '刀工火候科學料理家', tier: 't4', pts: 65, title: '🔪 料理科學主廚' },
+    acad_cook_5: { icon: '💎', name: '三十一國風味美食博學家', tier: 't5', pts: 120, title: '💎 環球美食評論宗師' },
+    acad_cook_6: { icon: '👑', name: '食神殿堂傳說總料理長', tier: 't6', pts: 220, title: '👑 傳說御膳總料理長' },
     acad_trv_1: { icon: '💡', name: '冷知識好奇寶寶', tier: 't1', pts: 8, title: '💡 冷知識蒐集家' },
     acad_trv_2: { icon: '🎰', name: '冷知識轉蛋王', tier: 't2', pts: 20, title: '🧠 行走百科全書' },
-    acad_trv_3: { icon: '🦉', name: '跨領域百科博學者', tier: 't4', pts: 35, title: '🦉 皇家百科博學者' },
-    acad_trv_sub: { icon: '📮', name: '冷知識專欄作家', tier: 't3', pts: 35, title: '📮 冷知識專欄作家' },
+    acad_trv_3: { icon: '🦉', name: '跨領域百科博學者', tier: 't3', pts: 40, title: '🦉 皇家百科博學者' },
+    acad_trv_4: { icon: '🔎', name: '流言終結考據達人', tier: 't4', pts: 65, title: '🔎 真相考據偵探' },
+    acad_trv_5: { icon: '💎', name: '十八領域萬事通博士', tier: 't5', pts: 120, title: '💎 萬事通博物博士' },
+    acad_trv_6: { icon: '👑', name: '全知圖書館傳說大賢者', tier: 't6', pts: 220, title: '👑 全知圖書館大賢者' },
     acad_hr_1: { icon: '🔧', name: '水電修繕學徒', tier: 't1', pts: 8, title: '🔧 居家水電學徒' },
     acad_hr_2: { icon: '⚡', name: '全能修繕達人', tier: 't2', pts: 20, title: '⚡ 居家修繕達人' },
-    acad_hr_3: { icon: '🧰', name: '甲種水電與全屋修繕顧問', tier: 't4', pts: 35, title: '🧰 全屋修繕首席技師' },
+    acad_hr_3: { icon: '🧰', name: '甲種水電與全屋修繕顧問', tier: 't3', pts: 40, title: '🧰 全屋修繕首席技師' },
+    acad_hr_4: { icon: '🔌', name: '驗電防漏安全總工程師', tier: 't4', pts: 65, title: '🔌 驗電安全主任技師' },
+    acad_hr_5: { icon: '💎', name: '台灣居家修繕百科宗師', tier: 't5', pts: 120, title: '💎 全屋修繕技術總監' },
+    acad_hr_6: { icon: '👑', name: '匠人殿堂傳說國寶技師', tier: 't6', pts: 220, title: '👑 傳說國寶級總技師' },
     acad_re_1: { icon: '🏘️', name: '房產看屋入門', tier: 't1', pts: 8, title: '🏘️ 房產看屋學員' },
     acad_re_2: { icon: '📑', name: '產權契約達人', tier: 't2', pts: 20, title: '📑 產權排雷法商' },
-    acad_re_3: { icon: '🏛️', name: '購屋稅貸大師', tier: 't4', pts: 35, title: '🏛️ 不動產智囊團' },
+    acad_re_3: { icon: '🏛️', name: '購屋稅貸大師', tier: 't3', pts: 40, title: '🏛️ 不動產智囊團' },
+    acad_re_4: { icon: '🏠', name: '驗屋避雷與謄本精算師', tier: 't4', pts: 65, title: '🏠 驗屋排雷首席顧問' },
+    acad_re_5: { icon: '💎', name: '不動產法規稅務博學家', tier: 't5', pts: 120, title: '💎 不動產法稅首席專家' },
+    acad_re_6: { icon: '👑', name: '安居置產傳說總顧問', tier: 't6', pts: 220, title: '👑 不動產傳說總顧問' },
     acad_fit_1: { icon: '💪', name: '鐵館初登場', tier: 't1', pts: 8, title: '💪 健身房新秀' },
     acad_fit_2: { icon: '🏋️', name: '肌力解剖達人', tier: 't2', pts: 20, title: '🏋️ 鋼鐵肌力王' },
-    acad_fit_3: { icon: '🏆', name: '運動科學首席教練', tier: 't4', pts: 35, title: '🏆 運動科學總教練' },
+    acad_fit_3: { icon: '🏆', name: '運動科學首席教練', tier: 't3', pts: 40, title: '🏆 運動科學總教練' },
+    acad_fit_4: { icon: '🔥', name: '1RM 與營養熱量精算師', tier: 't4', pts: 65, title: '🔥 體能週期化教練' },
+    acad_fit_5: { icon: '💎', name: '生物力學與肌肥大專家', tier: 't5', pts: 120, title: '💎 運動生物力學博士' },
+    acad_fit_6: { icon: '👑', name: '奧林匹亞傳說體能宗師', tier: 't6', pts: 220, title: '👑 傳說級運動科學宗師' },
     acad_py_1: { icon: '🐍', name: 'Python 初探', tier: 't1', pts: 8, title: '🐍 Python 見習工程師' },
     acad_py_2: { icon: '🤖', name: 'Python 自動化大師', tier: 't2', pts: 20, title: '🤖 Python 自動化架構師' },
-    acad_py_3: { icon: '🚀', name: '首席測試與全端架構師', tier: 't4', pts: 40, title: '🚀 首席測試架構師' },
+    acad_py_3: { icon: '🚀', name: '首席測試與全端架構師', tier: 't3', pts: 40, title: '🚀 首席測試架構師' },
+    acad_py_4: { icon: '💻', name: '四翼語言跨界工程師', tier: 't4', pts: 65, title: '💻 四語言全端工程師' },
+    acad_py_5: { icon: '💎', name: '系統底層與高併發專家', tier: 't5', pts: 120, title: '💎 核心系統首席工程師' },
+    acad_py_6: { icon: '👑', name: '圖靈殿堂傳說軟體宗師', tier: 't6', pts: 220, title: '👑 圖靈殿堂傳說架構師' },
     acad_iot_1: { icon: '🏡', name: '智慧家庭初探', tier: 't1', pts: 8, title: '🏡 智慧家庭設計師' },
     acad_iot_2: { icon: '📡', name: 'Matter 物聯網達人', tier: 't2', pts: 20, title: '📡 全屋自動化架構師' },
-    acad_iot_3: { icon: '🌐', name: 'Matter 跨生態系宗師', tier: 't4', pts: 35, title: '🌐 智慧家庭首席架構師' },
+    acad_iot_3: { icon: '🌐', name: 'Matter 跨生態系宗師', tier: 't3', pts: 40, title: '🌐 智慧家庭首席架構師' },
+    acad_iot_4: { icon: '🔧', name: 'Thread 網狀網路調校師', tier: 't4', pts: 65, title: '🔧 物聯網協定調校師' },
+    acad_iot_5: { icon: '💎', name: '全屋感測與邊緣運算專家', tier: 't5', pts: 120, title: '💎 智慧建築首席設計師' },
+    acad_iot_6: { icon: '👑', name: '萬物互聯傳說總工程師', tier: 't6', pts: 220, title: '👑 萬物互聯傳說宗師' },
     acad_ai_1: { icon: '🤖', name: 'Agent 工程初探', tier: 't1', pts: 8, title: '🤖 Prompt 見習工程師' },
     acad_ai_2: { icon: '🧠', name: 'Context 工程達人', tier: 't2', pts: 20, title: '🧠 Context 工程師' },
-    acad_ai_3: { icon: '🐝', name: '自主代理架構宗師', tier: 't4', pts: 35, title: '🐝 多代理系統首席架構師' },
+    acad_ai_3: { icon: '🐝', name: '自主代理架構宗師', tier: 't3', pts: 40, title: '🐝 多代理系統首席架構師' },
+    acad_ai_4: { icon: '🛠️', name: 'MCP 與工具編排實戰家', tier: 't4', pts: 65, title: '🛠️ Agent 工具鏈設計師' },
+    acad_ai_5: { icon: '💎', name: '長文本與評估防線專家', tier: 't5', pts: 120, title: '💎 AI 系統評估首席專家' },
+    acad_ai_6: { icon: '👑', name: '智慧代理傳說總架構師', tier: 't6', pts: 220, title: '👑 傳說級 AI 總架構師' },
     acad_cld_1: { icon: '☁️', name: '雙雲見習報到', tier: 't1', pts: 8, title: '☁️ 雙雲見習工程師' },
     acad_cld_2: { icon: '🔐', name: '零信任網管達人', tier: 't2', pts: 20, title: '🔐 雙雲維運工程師' },
-    acad_cld_3: { icon: '🏛️', name: '雙雲首席架構師', tier: 't4', pts: 35, title: '🏛️ AWS/GCP 雲端架構師' },
+    acad_cld_3: { icon: '🏛️', name: '雙雲首席架構師', tier: 't3', pts: 40, title: '🏛️ AWS/GCP 雲端架構師' },
+    acad_cld_4: { icon: '🐳', name: 'Linux 容器與 K8s 艦長', tier: 't4', pts: 65, title: '🐳 雲原生容器艦長' },
+    acad_cld_5: { icon: '💎', name: 'SRE 高可用災難復原專家', tier: 't5', pts: 120, title: '💎 首席 SRE 可靠度工程師' },
+    acad_cld_6: { icon: '👑', name: '雲端原生傳說總指揮官', tier: 't6', pts: 220, title: '👑 雲端原生傳說總指揮' },
     acad_xq_1: { icon: '🐘', name: '楚河漢界初登場', tier: 't1', pts: 8, title: '🐘 象棋見習棋士' },
     acad_xq_2: { icon: '♟️', name: '當頭炮開局', tier: 't2', pts: 20, title: '♟️ 象棋業餘棋士' },
-    acad_xq_3: { icon: '🏆', name: '運籌帷幄', tier: 't4', pts: 35, title: '🏆 楚河漢界棋王' },
+    acad_xq_3: { icon: '🏆', name: '運籌帷幄', tier: 't3', pts: 40, title: '🏆 楚河漢界棋王' },
+    acad_xq_4: { icon: '📜', name: '古譜殘局破陣高手', tier: 't4', pts: 65, title: '📜 橘中秘殘局高手' },
+    acad_xq_5: { icon: '💎', name: '車馬炮聯攻特級大師', tier: 't5', pts: 120, title: '💎 象棋特級大師' },
+    acad_xq_6: { icon: '👑', name: '楚河漢界傳說九段國手', tier: 't6', pts: 220, title: '👑 楚河傳說九段國手' },
     acad_ch_1: { icon: '♟️', name: '六十四格初登場', tier: 't1', pts: 8, title: '♟️ 西洋棋見習棋士' },
     acad_ch_2: { icon: '⚔️', name: '騎士捉雙', tier: 't2', pts: 20, title: '⚔️ 西洋棋戰術手' },
-    acad_ch_3: { icon: '👑', name: '逆轉大師', tier: 't4', pts: 35, title: '👑 六十四格逆轉大師' },
+    acad_ch_3: { icon: '👑', name: '逆轉大師', tier: 't3', pts: 40, title: '👑 六十四格逆轉大師' },
+    acad_ch_4: { icon: '🏰', name: '開局定式與棄子專家', tier: 't4', pts: 65, title: '🏰 皇家開局戰術師' },
+    acad_ch_5: { icon: '💎', name: '國際棋聯特級宗師', tier: 't5', pts: 120, title: '💎 西洋棋特級宗師' },
+    acad_ch_6: { icon: '🌌', name: '六十四格傳說世界棋王', tier: 't6', pts: 220, title: '🌌 六十四格傳說棋王' },
     acad_cry_1: { icon: '🪙', name: '創世區塊', tier: 't1', pts: 8, title: '🪙 鏈上新鮮人' },
     acad_cry_2: { icon: '⛓️', name: '鏈上學徒', tier: 't2', pts: 20, title: '⛓️ 區塊鏈學徒' },
-    acad_cry_3: { icon: '🛡️', name: '私鑰守護者', tier: 't4', pts: 35, title: '🛡️ 私鑰守護者' },
-    acad_tama_1: { icon: '🥚', name: '塔麻可吉博物館初訪', tier: 't1', pts: 8, title: '🥚 電子雞見習飼育員' },
-    acad_tama_2: { icon: '🐣', name: '電子雞育成達人', tier: 't2', pts: 20, title: '🐣 電子雞育成達人' },
-    acad_tama_3: { icon: '👑', name: '塔麻可吉名譽館長', tier: 't4', pts: 35, title: '👑 塔麻可吉名譽館長' },
+    acad_cry_3: { icon: '🛡️', name: '私鑰守護者', tier: 't3', pts: 40, title: '🛡️ 私鑰守護者' },
+    acad_cry_4: { icon: '🔐', name: '共識機制與錢包資安師', tier: 't4', pts: 65, title: '🔐 鏈上資安審計師' },
+    acad_cry_5: { icon: '💎', name: '密碼學與分散帳本專家', tier: 't5', pts: 120, title: '💎 分散式帳本首席學者' },
+    acad_cry_6: { icon: '👑', name: '中本聰殿堂傳說架構師', tier: 't6', pts: 220, title: '👑 鏈上生態傳說宗師' },
+    acad_fut_1: { icon: '🛢️', name: '合約入門', tier: 't1', pts: 8, title: '🛢️ 原物料學徒' },
+    acad_fut_2: { icon: '🛡️', name: '期現避險', tier: 't2', pts: 25, title: '🛡️ 避險策略家' },
+    acad_fut_3: { icon: '🏆', name: '期貨大師', tier: 't3', pts: 45, title: '🏆 期貨風控大師' },
+    acad_fut_4: { icon: '⚖️', name: '保證金風控與轉倉達人', tier: 't4', pts: 65, title: '⚖️ 跨期價差精算師' },
+    acad_fut_5: { icon: '💎', name: '全球大宗商品宏觀專家', tier: 't5', pts: 120, title: '💎 原物料宏觀風控長' },
+    acad_fut_6: { icon: '👑', name: '芝加哥殿堂傳說風控總監', tier: 't6', pts: 220, title: '👑 全球期貨傳說風控長' },
+    acad_ser_1: { icon: '📺', name: '追劇新手報到', tier: 't1', pts: 8, title: '📺 追劇見習生' },
+    acad_ser_2: { icon: '🍿', name: '分季導讀達人', tier: 't2', pts: 20, title: '🍿 無雷選片達人' },
+    acad_ser_3: { icon: '🏆', name: '完食護照收藏家', tier: 't3', pts: 40, title: '🏆 追劇護照收藏家' },
+    acad_ser_4: { icon: '🎬', name: '三幕劇與敘事結構達人', tier: 't4', pts: 65, title: '🎬 影集敘事解構師' },
+    acad_ser_5: { icon: '💎', name: '七大平台跨年代選片專家', tier: 't5', pts: 120, title: '💎 國際影集策展總監' },
+    acad_ser_6: { icon: '👑', name: '艾美獎殿堂傳說劇評宗師', tier: 't6', pts: 220, title: '👑 串流影史傳說總評審' },
     acad_pkr_1: { icon: '♠️', name: '賽局理論入門', tier: 't1', pts: 8, title: '♠️ 賽局策略研修生' },
     acad_pkr_2: { icon: '👑', name: 'GTO 決策大師', tier: 't2', pts: 20, title: '👑 GTO 決策大師' },
-    acad_pkr_3: { icon: '🃏', name: 'GTO 混合策略傳奇', tier: 't4', pts: 35, title: '🃏 高額桌 GTO 傳奇' },
+    acad_pkr_3: { icon: '🃏', name: 'GTO 混合策略傳奇', tier: 't3', pts: 40, title: '🃏 高額桌 GTO 傳奇' },
+    acad_pkr_4: { icon: '🧮', name: '底池權益與範圍精算師', tier: 't4', pts: 65, title: '🧮 賽局均衡精算師' },
+    acad_pkr_5: { icon: '💎', name: '納許均衡不剝削博學家', tier: 't5', pts: 120, title: '💎 納許賽局理論博士' },
+    acad_pkr_6: { icon: '🌌', name: '賽局聖殿傳說策略宗師', tier: 't6', pts: 220, title: '🌌 賽局理論傳說大宗師' },
     acad_nba_1: { icon: '🏀', name: 'NBA 數據球探', tier: 't1', pts: 8, title: '🏀 NBA 數據球探' },
     acad_nba_2: { icon: '🔥', name: '籃球數據分析師', tier: 't2', pts: 20, title: '🔥 籃壇數據精算師' },
-    acad_nba_3: { icon: '🏀', name: 'NBA 冠軍球隊數據總管', tier: 't4', pts: 35, title: '🏀 冠軍球隊數據總管' },
-    acad_epl_1: { icon: '⚽', name: '英超戰術觀察員', tier: 't1', pts: 8, title: '⚽ 英超觀察員' },
-    acad_epl_2: { icon: '🦁', name: '英超戰術分析師', tier: 't2', pts: 20, title: '🦁 英超戰術大師' },
-    acad_epl_3: { icon: '⚽', name: '英超豪門戰術總教練', tier: 't4', pts: 35, title: '⚽ 英超戰術分析總監' },
-    acad_f1_1: { icon: '🏎️', name: 'F1 維修區工程師', tier: 't1', pts: 8, title: '🏎️ 賽道策略師' },
-    acad_f1_2: { icon: '🏁', name: '桿位策略總監', tier: 't2', pts: 20, title: '🏁 桿位策略總監' },
-    acad_f1_3: { icon: '🏎️', name: 'F1 圍場首席策略長', tier: 't4', pts: 35, title: '🏎️ 圍場首席賽事策略長' },
-    acad_bb_1: { icon: '⚾', name: 'MLB 數據紀錄員', tier: 't1', pts: 8, title: '⚾ MLB 數據觀察員' },
-    acad_bb_2: { icon: '⚾', name: 'MLB 球探分析師', tier: 't2', pts: 20, title: '⚾ 大聯盟球探分析師' },
-    acad_bb_3: { icon: '⚾', name: 'MLB 大聯盟魔球總管', tier: 't4', pts: 35, title: '⚾ 大聯盟魔球數據總管' },
+    acad_nba_3: { icon: '🏀', name: 'NBA 冠軍球隊數據總管', tier: 't3', pts: 40, title: '🏀 冠軍球隊數據總管' },
+    acad_nba_4: { icon: '📊', name: '百回合攻防效率解碼師', tier: 't4', pts: 65, title: '📊 NBA 進階數據主任' },
+    acad_nba_5: { icon: '💎', name: '北美職籃量化模型專家', tier: 't5', pts: 120, title: '💎 職籃量化科學專家' },
+    acad_nba_6: { icon: '👑', name: '籃球名人堂傳說總經理', tier: 't6', pts: 220, title: '👑 籃壇名人堂傳說總管' },
     acad_twb_1: { icon: '⛹️', name: '台籃球探報到', tier: 't1', pts: 8, title: '⛹️ 台籃觀察員' },
     acad_twb_2: { icon: '🏀', name: '台籃數據分析師', tier: 't2', pts: 20, title: '🏀 台籃數據精算師' },
-    acad_twb_3: { icon: '🏆', name: '台灣職籃戰術總管', tier: 't4', pts: 35, title: '🏆 台灣職籃冠軍總管' },
+    acad_twb_3: { icon: '🏆', name: '台灣職籃戰術總管', tier: 't3', pts: 40, title: '🏆 台灣職籃冠軍總管' },
+    acad_twb_4: { icon: '📋', name: '雙聯盟洋將本土配置師', tier: 't4', pts: 65, title: '📋 台籃雙聯盟首席球探' },
+    acad_twb_5: { icon: '💎', name: '台灣籃壇走勢回測專家', tier: 't5', pts: 120, title: '💎 台籃數據模型總監' },
+    acad_twb_6: { icon: '👑', name: '台灣職籃傳說總決策長', tier: 't6', pts: 220, title: '👑 台籃傳說首席總管' },
+    acad_epl_1: { icon: '⚽', name: '英超戰術觀察員', tier: 't1', pts: 8, title: '⚽ 英超觀察員' },
+    acad_epl_2: { icon: '🦁', name: '英超戰術分析師', tier: 't2', pts: 20, title: '🦁 英超戰術大師' },
+    acad_epl_3: { icon: '⚽', name: '英超豪門戰術總教練', tier: 't3', pts: 40, title: '⚽ 英超戰術分析總監' },
+    acad_epl_4: { icon: '🛡️', name: '預期進球與逼搶結構師', tier: 't4', pts: 65, title: '🛡️ 英倫足球數據主任' },
+    acad_epl_5: { icon: '💎', name: '英格蘭頂級聯賽精算家', tier: 't5', pts: 120, title: '💎 歐洲足壇量化專家' },
+    acad_epl_6: { icon: '👑', name: '溫布利殿堂傳說戰術宗師', tier: 't6', pts: 220, title: '👑 英超傳說榮譽領隊' },
+    acad_f1_1: { icon: '🏎️', name: 'F1 維修區工程師', tier: 't1', pts: 8, title: '🏎️ 賽道策略師' },
+    acad_f1_2: { icon: '🏁', name: '桿位策略總監', tier: 't2', pts: 20, title: '🏁 桿位策略總監' },
+    acad_f1_3: { icon: '🏎️', name: 'F1 圍場首席策略長', tier: 't3', pts: 40, title: '🏎️ 圍場首席賽事策略長' },
+    acad_f1_4: { icon: '⏱️', name: '排位圈速與空氣力學師', tier: 't4', pts: 65, title: '⏱️ 賽道遙測首席工程師' },
+    acad_f1_5: { icon: '💎', name: '大獎賽全賽季模擬專家', tier: 't5', pts: 120, title: '💎 世界冠軍車隊策略長' },
+    acad_f1_6: { icon: '👑', name: '銀石殿堂傳說車隊領隊', tier: 't6', pts: 220, title: '👑 圍場傳說榮譽總領隊' },
+    acad_tama_1: { icon: '🥚', name: '塔麻可吉博物館初訪', tier: 't1', pts: 8, title: '🥚 電子雞見習飼育員' },
+    acad_tama_2: { icon: '🐣', name: '電子雞育成達人', tier: 't2', pts: 20, title: '🐣 電子雞育成達人' },
+    acad_tama_3: { icon: '👑', name: '塔麻可吉名譽館長', tier: 't3', pts: 40, title: '👑 塔麻可吉名譽館長' },
+    acad_tama_4: { icon: '🕰️', name: '掌上像素年代考古家', tier: 't4', pts: 65, title: '🕰️ 平成電子寵考古家' },
+    acad_tama_5: { icon: '💎', name: '全世代機型圖鑑博學者', tier: 't5', pts: 120, title: '💎 掌機文化首席研究員' },
+    acad_tama_6: { icon: '🌌', name: '像素次元傳說創世館長', tier: 't6', pts: 220, title: '🌌 塔麻可吉傳說總館長' },
     acad_cin_1: { icon: '🎬', name: '影癡首映入場', tier: 't1', pts: 8, title: '🎬 校園影評新秀' },
     acad_cin_2: { icon: '🍿', name: '跨年代選片達人', tier: 't2', pts: 20, title: '🍿 世界影展策展人' },
-    acad_cin_3: { icon: '🏆', name: '金棕櫚影史宗師', tier: 't4', pts: 35, title: '🏆 金棕櫚首席影評人' },
+    acad_cin_3: { icon: '🏆', name: '金棕櫚影史宗師', tier: 't3', pts: 40, title: '🏆 金棕櫚首席影評人' },
+    acad_cin_4: { icon: '🎞️', name: '蒙太奇與鏡頭美學家', tier: 't4', pts: 65, title: '🎞️ 電影美學研究員' },
+    acad_cin_5: { icon: '💎', name: '跨世紀世界影史博學者', tier: 't5', pts: 120, title: '💎 世界影展終身評審' },
+    acad_cin_6: { icon: '👑', name: '坎城殿堂傳說電影大師', tier: 't6', pts: 220, title: '👑 影史殿堂傳說大宗師' },
     acad_cin_watchlist5: { icon: '📋', name: '私人片單策展師（5 部）', tier: 't2', pts: 18, title: '📋 週末片單策展師' },
     acad_cin_watched10: { icon: '🎟️', name: '十部閱片影迷護照（10 部）', tier: 't3', pts: 30, title: '🎟️ 黃金貴賓廳常客' },
     acad_cin_critic: { icon: '🖋️', name: '金馬影評專欄作家', tier: 't3', pts: 30, title: '🖋️ 金馬特約影評人' },
     acad_cin_quiz: { icon: '🎥', name: '場面調度美學優等生', tier: 't3', pts: 35, title: '🎥 鏡頭語言解碼師' },
     acad_cin_world6: { icon: '🌍', name: '六大影壇環球評審', tier: 't4', pts: 55, title: '🌍 世界六大影壇評審長' },
     acad_cin_watched30: { icon: '📽️', name: '三十片級傳奇影癡（30 部）', tier: 't5', pts: 90, title: '📽️ 傳奇膠卷收藏家' },
-    wacky_midnight_movie: { icon: '🌙', name: '午夜場包場影癡', tier: 't3', pts: 25, title: '🌙 午夜場包場VIP' },
+    acad_trv_sub: { icon: '📮', name: '冷知識專欄作家', tier: 't3', pts: 35, title: '📮 冷知識專欄作家' },
     acad_deep20: { icon: '🎓', name: '單科精修筆記王', tier: 't4', pts: 55, title: '🎓 首席模範生' },
     acad_acts50: { icon: '📚', name: '百煉成鋼大學霸', tier: 't5', pts: 100, title: '📚 百煉成鋼大學霸' },
     acad_acts100: { icon: '🔥', name: '千錘百鍊實作王（100 次）', tier: 't5', pts: 130, title: '🔥 千錘百鍊實作王' },
+    acad_acts250: { icon: '⚡', name: '學海無涯實作宗師（250 次）', tier: 't6', pts: 210, title: '⚡ 學海無涯實作宗師' },
+    acad_acts500: { icon: '🌟', name: '萬卷實作神話學霸（500 次）', tier: 't7', pts: 360, title: '🌟 萬卷實作神話大學霸' },
     time_3m: { icon: '🌱', name: '初來乍到（3 分鐘）', tier: 't1', pts: 8, title: '🌱 初心學員' },
     time_5m: { icon: '⏱️', name: '專注五分鐘（5 分鐘）', tier: 't1', pts: 10, title: '⏱️ 五分鐘專注達人' },
     time_10m: { icon: '⏳', name: '專注一刻（10 分鐘）', tier: 't2', pts: 15, title: '⏳ 專注學習者' },
@@ -1723,44 +1827,53 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     time_600m: { icon: '🌌', name: '十小時神話大學士（10 小時）', tier: 't7', pts: 320, title: '🌌 開心學園十小時傳奇大學士' },
     time_acad10m: { icon: '🔬', name: '單科深造（同院 10 分鐘）', tier: 't2', pts: 18, title: '🔬 專科研究員' },
     time_acad30m: { icon: '🪑', name: '把學院板凳坐穿（同院 30 分鐘）', tier: 't4', pts: 50, title: '🪑 院長室特聘助教' },
-    night_owl: { icon: '🦉', name: '深夜暗光鳥', tier: 't3', pts: 25, title: '🦉 深夜暗光鳥' },
-    early_bird: { icon: '🌅', name: '晨光早鳥王', tier: 't3', pts: 25, title: '🌅 晨光早鳥王' },
-    wacky_lunch: { icon: '🍱', name: '便當配K線', tier: 't1', pts: 10, title: '🍱 午休也在捲' },
     streak_3d: { icon: '📅', name: '三日連學', tier: 't3', pts: 35, title: '📅 持之以恆獎' },
     streak_7d: { icon: '🏅', name: '七日全勤榮譽生', tier: 't5', pts: 100, title: '🏅 七日全勤模範生' },
     streak_14d: { icon: '🔥', name: '雙週連學毅力王', tier: 't5', pts: 130, title: '🔥 雙週不輟學習家' },
     streak_30d: { icon: '👑', name: '三十日終身學習傳奇', tier: 't6', pts: 220, title: '👑 月度全勤榮譽學長' },
+    fountain_wish: { icon: '⛲', name: '許願池初心者', tier: 't1', pts: 8, title: '⛲ 許願池守護者' },
+    wacky_wish3: { icon: '💌', name: '學園許願池榮譽委員', tier: 't3', pts: 30, title: '💌 校園建言榮譽委員' },
+    night_owl: { icon: '🦉', name: '深夜暗光鳥', tier: 't3', pts: 25, title: '🦉 深夜暗光鳥' },
+    wacky_midnight_movie: { icon: '🌙', name: '午夜場包場影癡', tier: 't3', pts: 25, title: '🌙 午夜場包場VIP' },
+    wacky_night_snack: { icon: '🍜', name: '深夜食堂越看越餓', tier: 't2', pts: 18, title: '🍜 宵夜意志力大師' },
+    early_bird: { icon: '🌅', name: '晨光早鳥王', tier: 't3', pts: 25, title: '🌅 晨光早鳥王' },
+    wacky_lunch: { icon: '🍱', name: '便當配K線', tier: 't1', pts: 10, title: '🍱 午休也在捲' },
+    sec_tea_time: { icon: '☕', name: '三點一刻下午茶', tier: 't1', pts: 10, title: '☕ 午後偷閒讀書人' },
+    sec_weekend_vibe: { icon: '🛋️', name: '週末不放假偷偷捲', tier: 't2', pts: 18, title: '🛋️ 週末自習室學霸' },
+    sec_lucky_min: { icon: '🍀', name: '對稱時刻的幸運星', tier: 't2', pts: 20, title: '🍀 雙數時刻幸運星' },
+    sec_one_acad_1h: { icon: '🧘', name: '閉關一小時破壁宗師', tier: 't6', pts: 220, title: '🧘 破壁閉關大宗師' },
   };
   var TOOL_ACH_MAP = {
-    english: ['acad_en_1', 'acad_en_2', 'acad_en_3'],
-    japanese: ['acad_jp_1', 'acad_jp_2', 'acad_jp_3'],
-    korean: ['acad_kr_1', 'acad_kr_2', 'acad_kr_3'],
-    finance: ['acad_fin_1', 'acad_fin_2', 'acad_fin_3'],
-    stock: ['acad_stk_1', 'acad_stk_2', 'acad_stk_3'],
-    'us-stock': ['acad_uss_1', 'acad_uss_2', 'acad_uss_3'],
-    'addiction-cm': ['acad_cm_1', 'acad_cm_2', 'acad_cm_3'],
-    'health-care': ['acad_hc_1', 'acad_hc_2', 'acad_hc_3'],
-    music: ['acad_mus_1', 'acad_mus_2', 'acad_mus_3'],
-    cooking: ['acad_cook_1', 'acad_cook_2', 'acad_cook_3'],
-    trivia: ['acad_trv_1', 'acad_trv_2', 'acad_trv_3'],
-    'home-repair': ['acad_hr_1', 'acad_hr_2', 'acad_hr_3'],
-    'real-estate': ['acad_re_1', 'acad_re_2', 'acad_re_3'],
-    fitness: ['acad_fit_1', 'acad_fit_2', 'acad_fit_3'],
-    coding: ['acad_py_1', 'acad_py_2', 'acad_py_3'],
-    'smart-iot': ['acad_iot_1', 'acad_iot_2', 'acad_iot_3'],
-    'ai-agent': ['acad_ai_1', 'acad_ai_2', 'acad_ai_3'],
-    'cloud-devops': ['acad_cld_1', 'acad_cld_2', 'acad_cld_3'],
-    xiangqi: ['acad_xq_1', 'acad_xq_2', 'acad_xq_3'],
-    chess: ['acad_ch_1', 'acad_ch_2', 'acad_ch_3'],
-    crypto: ['acad_cry_1', 'acad_cry_2', 'acad_cry_3'],
-    poker: ['acad_pkr_1', 'acad_pkr_2', 'acad_pkr_3'],
-    nba: ['acad_nba_1', 'acad_nba_2', 'acad_nba_3'],
-    epl: ['acad_epl_1', 'acad_epl_2', 'acad_epl_3'],
-    f1: ['acad_f1_1', 'acad_f1_2', 'acad_f1_3'],
-    baseball: ['acad_bb_1', 'acad_bb_2', 'acad_bb_3'],
-    twbasket: ['acad_twb_1', 'acad_twb_2', 'acad_twb_3'],
-    cinema: ['acad_cin_1', 'acad_cin_2', 'acad_cin_3'],
-    tamagotchi: ['acad_tama_1', 'acad_tama_2', 'acad_tama_3'],
+    english: ['acad_en_1', 'acad_en_2', 'acad_en_3', 'acad_en_4', 'acad_en_5', 'acad_en_6'],
+    japanese: ['acad_jp_1', 'acad_jp_2', 'acad_jp_3', 'acad_jp_4', 'acad_jp_5', 'acad_jp_6'],
+    korean: ['acad_kr_1', 'acad_kr_2', 'acad_kr_3', 'acad_kr_4', 'acad_kr_5', 'acad_kr_6'],
+    finance: ['acad_fin_1', 'acad_fin_2', 'acad_fin_3', 'acad_fin_4', 'acad_fin_5', 'acad_fin_6'],
+    stock: ['acad_stk_1', 'acad_stk_2', 'acad_stk_3', 'acad_stk_4', 'acad_stk_5', 'acad_stk_6'],
+    'us-stock': ['acad_uss_1', 'acad_uss_2', 'acad_uss_3', 'acad_uss_4', 'acad_uss_5', 'acad_uss_6'],
+    'addiction-cm': ['acad_cm_1', 'acad_cm_2', 'acad_cm_3', 'acad_cm_4', 'acad_cm_5', 'acad_cm_6'],
+    'health-care': ['acad_hc_1', 'acad_hc_2', 'acad_hc_3', 'acad_hc_4', 'acad_hc_5', 'acad_hc_6'],
+    music: ['acad_mus_1', 'acad_mus_2', 'acad_mus_3', 'acad_mus_4', 'acad_mus_5', 'acad_mus_6'],
+    cooking: ['acad_cook_1', 'acad_cook_2', 'acad_cook_3', 'acad_cook_4', 'acad_cook_5', 'acad_cook_6'],
+    trivia: ['acad_trv_1', 'acad_trv_2', 'acad_trv_3', 'acad_trv_4', 'acad_trv_5', 'acad_trv_6'],
+    'home-repair': ['acad_hr_1', 'acad_hr_2', 'acad_hr_3', 'acad_hr_4', 'acad_hr_5', 'acad_hr_6'],
+    'real-estate': ['acad_re_1', 'acad_re_2', 'acad_re_3', 'acad_re_4', 'acad_re_5', 'acad_re_6'],
+    fitness: ['acad_fit_1', 'acad_fit_2', 'acad_fit_3', 'acad_fit_4', 'acad_fit_5', 'acad_fit_6'],
+    coding: ['acad_py_1', 'acad_py_2', 'acad_py_3', 'acad_py_4', 'acad_py_5', 'acad_py_6'],
+    'smart-iot': ['acad_iot_1', 'acad_iot_2', 'acad_iot_3', 'acad_iot_4', 'acad_iot_5', 'acad_iot_6'],
+    'ai-agent': ['acad_ai_1', 'acad_ai_2', 'acad_ai_3', 'acad_ai_4', 'acad_ai_5', 'acad_ai_6'],
+    'cloud-devops': ['acad_cld_1', 'acad_cld_2', 'acad_cld_3', 'acad_cld_4', 'acad_cld_5', 'acad_cld_6'],
+    xiangqi: ['acad_xq_1', 'acad_xq_2', 'acad_xq_3', 'acad_xq_4', 'acad_xq_5', 'acad_xq_6'],
+    chess: ['acad_ch_1', 'acad_ch_2', 'acad_ch_3', 'acad_ch_4', 'acad_ch_5', 'acad_ch_6'],
+    crypto: ['acad_cry_1', 'acad_cry_2', 'acad_cry_3', 'acad_cry_4', 'acad_cry_5', 'acad_cry_6'],
+    futures: ['acad_fut_1', 'acad_fut_2', 'acad_fut_3', 'acad_fut_4', 'acad_fut_5', 'acad_fut_6'],
+    series: ['acad_ser_1', 'acad_ser_2', 'acad_ser_3', 'acad_ser_4', 'acad_ser_5', 'acad_ser_6'],
+    poker: ['acad_pkr_1', 'acad_pkr_2', 'acad_pkr_3', 'acad_pkr_4', 'acad_pkr_5', 'acad_pkr_6'],
+    nba: ['acad_nba_1', 'acad_nba_2', 'acad_nba_3', 'acad_nba_4', 'acad_nba_5', 'acad_nba_6'],
+    twbasket: ['acad_twb_1', 'acad_twb_2', 'acad_twb_3', 'acad_twb_4', 'acad_twb_5', 'acad_twb_6'],
+    epl: ['acad_epl_1', 'acad_epl_2', 'acad_epl_3', 'acad_epl_4', 'acad_epl_5', 'acad_epl_6'],
+    f1: ['acad_f1_1', 'acad_f1_2', 'acad_f1_3', 'acad_f1_4', 'acad_f1_5', 'acad_f1_6'],
+    tamagotchi: ['acad_tama_1', 'acad_tama_2', 'acad_tama_3', 'acad_tama_4', 'acad_tama_5', 'acad_tama_6'],
+    cinema: ['acad_cin_1', 'acad_cin_2', 'acad_cin_3', 'acad_cin_4', 'acad_cin_5', 'acad_cin_6'],
   };
 
   function setCookieBoth(name, val) {
@@ -1801,24 +1914,51 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
 
   function isPlainObj(v) { return !!(v && typeof v === 'object' && !Array.isArray(v)); }
 
+  var ALL_FB_KEYS = [
+    'okayell.campus.feedback.v1', 'okayell.campus.fbqueue.v1',
+    'es.feedback.v1', 'ja.feedback.v1', 'ko.feedback.v1', 'fin.feedback.v1',
+    'acm.feedback.v1', 'hc.feedback.v1', 'trv.feedback.v1', 'gto.feedback.v1',
+    'nba.feedback.v1', 'epl.feedback.v1', 'f1.feedback.v1', 'twb.feedback.v1',
+    'twstock.feedback.v1', 'us.feedback.v1'
+  ];
+
+  function scanSavedFeedbackCount() {
+    var total = 0;
+    for (var i = 0; i < ALL_FB_KEYS.length; i++) {
+      try {
+        var raw = window.localStorage.getItem(ALL_FB_KEYS[i]);
+        if (!raw) continue;
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) total += parsed.length;
+        else if (parsed && typeof parsed === 'object' && Array.isArray(parsed.items)) total += parsed.items.length;
+      } catch (e) { /* ignore */ }
+    }
+    return total;
+  }
+
   function mergeDailyRecord(a, b, tDay) {
     var da = isPlainObj(a) && (a.date === tDay || a.day === tDay) ? a : null;
     var db = isPlainObj(b) && (b.date === tDay || b.day === tDay) ? b : null;
     if (!da && !db) {
       return {
-        date: tDay, day: tDay, checkin: 0, visit: 0, study: 0, studySec: 0, sport: 0, eco: 0,
-        claimed: {}, bonusClaimed: false, fullClaimed: false
+        date: tDay, day: tDay, checkin: 0, visit: 0, acts: 0, visitedIds: {},
+        study: 0, studySec: 0, sport: 0, eco: 0,
+        claimed: {}, bonusClaimed: false, fullClaimed: false, allClearClaimed: false
       };
     }
     var srcA = da || {}, srcB = db || {};
     var claimed = Object.assign({}, isPlainObj(srcA.claimed) ? srcA.claimed : {}, isPlainObj(srcB.claimed) ? srcB.claimed : {});
+    var visitedIds = Object.assign({}, isPlainObj(srcA.visitedIds) ? srcA.visitedIds : {}, isPlainObj(srcB.visitedIds) ? srcB.visitedIds : {});
     var studyVal = Math.max(+srcA.study || 0, +srcA.studySec || 0, +srcB.study || 0, +srcB.studySec || 0);
     var bonus = !!(srcA.bonusClaimed || srcA.fullClaimed || srcB.bonusClaimed || srcB.fullClaimed);
-    var out = Object.assign({}, srcA, srcB, {
+    var allClear = !!(srcA.allClearClaimed || srcB.allClearClaimed);
+    return Object.assign({}, srcA, srcB, {
       date: tDay,
       day: tDay,
       checkin: Math.max(+srcA.checkin || 0, +srcB.checkin || 0),
-      visit: Math.max(+srcA.visit || 0, +srcB.visit || 0),
+      visit: Math.max(+srcA.visit || 0, +srcB.visit || 0, Object.keys(visitedIds).length),
+      acts: Math.max(+srcA.acts || 0, +srcB.acts || 0),
+      visitedIds: visitedIds,
       study: studyVal,
       studySec: studyVal,
       sport: Math.max(+srcA.sport || 0, +srcB.sport || 0),
@@ -1826,8 +1966,8 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
       claimed: claimed,
       bonusClaimed: bonus,
       fullClaimed: bonus,
+      allClearClaimed: allClear,
     });
-    return out;
   }
 
   function loadFunState() {
@@ -1865,6 +2005,9 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
       studySec: Math.max(+ls.studySec || 0, +ck.sec || 0),
       dailyPts: Math.max(+ls.dailyPts || 0, +ck.dpts || 0),
       dailyFullDays: Math.max(+ls.dailyFullDays || 0, +ck.dfull || 0),
+      dailyAllClearDays: +ls.dailyAllClearDays || 0,
+      feedbackCount: Math.max(+ls.feedbackCount || 0, +ck.fbc || 0, scanSavedFeedbackCount()),
+      fountainCoins: +ls.fountainCoins || 0,
       triviaSubmitted: !!(ls.triviaSubmitted || badges.acad_trv_sub),
       daily: daily,
     };
@@ -1894,6 +2037,8 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
       st.studySec = Math.max(+latest.studySec || 0, +st.studySec || 0);
       st.dailyPts = Math.max(+latest.dailyPts || 0, +st.dailyPts || 0);
       st.dailyFullDays = Math.max(+latest.dailyFullDays || 0, +st.dailyFullDays || 0);
+      st.dailyAllClearDays = Math.max(+latest.dailyAllClearDays || 0, +st.dailyAllClearDays || 0);
+      st.feedbackCount = Math.max(+latest.feedbackCount || 0, +st.feedbackCount || 0);
 
       var merged = Object.assign({}, st.raw || {}, latest, {
         ach: mergedAch,
@@ -1903,6 +2048,8 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
         studySec: st.studySec,
         dailyPts: st.dailyPts,
         dailyFullDays: st.dailyFullDays,
+        dailyAllClearDays: st.dailyAllClearDays,
+        feedbackCount: st.feedbackCount,
         triviaSubmitted: !!(latest.triviaSubmitted || st.triviaSubmitted),
         daily: mergedDaily,
       });
@@ -1919,12 +2066,19 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
         days: dayKeys,
         dpts: +st.dailyPts || 0,
         dfull: +st.dailyFullDays || 0,
+        fbc: +st.feedbackCount || 0,
         dl: st.daily || null,
       });
       var enc = encodeURIComponent(JSON.stringify(min));
-      if (enc.length > 3600) {
+      if (enc.length > 3500) {
         delete min.pkmn;
         delete min.cars;
+        enc = encodeURIComponent(JSON.stringify(min));
+      }
+      if (enc.length > 3700) {
+        min.ach = (min.ach || []).slice(-80);
+        delete min.asec;
+        delete min.aact;
         enc = encodeURIComponent(JSON.stringify(min));
       }
       if (enc.length <= 3900) {
@@ -1959,34 +2113,67 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     return true;
   }
 
+  var NAV_DAILY_SPECS = [
+    { id: 'checkin', goal: 1, pts: 5, icon: '📅', name: '每日校園簽到' },
+    { id: 'visit', goal: 1, pts: 5, icon: '📚', name: '每日初探學院' },
+    { id: 'eco', goal: 1, pts: 5, icon: '🌿', name: '每日校園散步互動' },
+    { id: 'sport', goal: 1, pts: 5, icon: '🎣', name: '每日池畔垂釣紓壓' },
+    { id: 'study', goal: 300, pts: 10, icon: '⏱️', name: '每日專注學習 5 分鐘' },
+    { id: 'acts10', goal: 10, pts: 10, icon: '✍️', name: '每日課堂練習 10 次' },
+    { id: 'visit3', goal: 3, pts: 12, icon: '🧭', name: '每日跨領域三院巡禮' },
+    { id: 'study15', goal: 900, pts: 13, icon: '📖', name: '每日沉浸進修 15 分鐘' },
+    { id: 'acts30', goal: 30, pts: 20, icon: '🧠', name: '每日實戰特訓 30 次' },
+    { id: 'study30', goal: 1800, pts: 22, icon: '🔥', name: '每日黃金半小時學霸' },
+    { id: 'visit5', goal: 5, pts: 23, icon: '🌐', name: '每日博學五院通才' },
+    { id: 'study45', goal: 2700, pts: 30, icon: '👑', name: '每日大師苦讀 45 分鐘' }
+  ];
+
   function evaluateDailyInAcademy(st) {
-    if (!st || !st.daily) return;
+    if (!st) return;
+    var tDay = todayStr();
+    st.daily = mergeDailyRecord(null, st.daily, tDay);
     var d = st.daily;
     d.claimed = isPlainObj(d.claimed) ? d.claimed : {};
-    var changed = false;
-    var toastItem = null;
-    if ((+d.visit || 0) >= 1 && !d.claimed.visit) {
-      d.claimed.visit = Date.now();
-      st.dailyPts = (+st.dailyPts || 0) + 5;
-      changed = true;
-    }
+    d.visitedIds = isPlainObj(d.visitedIds) ? d.visitedIds : {};
     var sSec = Math.max(+d.study || 0, +d.studySec || 0);
     d.study = sSec;
     d.studySec = sSec;
-    if (sSec >= 300 && !d.claimed.study) {
-      d.claimed.study = Date.now();
-      st.dailyPts = (+st.dailyPts || 0) + 6;
-      changed = true;
-      toastItem = { icon: '⏱️', name: '每日任務達成：每日專注 5 分鐘', pts: 6, title: '' };
-    }
-    var allFive = !!(d.claimed.checkin && d.claimed.visit && d.claimed.study && d.claimed.sport && d.claimed.eco);
-    if (allFive && !d.bonusClaimed) {
+    var vCnt = Math.max(+d.visit || 0, Object.keys(d.visitedIds).length);
+    d.visit = vCnt;
+    var aCnt = Math.max(+d.acts || 0, 0);
+
+    var changed = false;
+    var toastItem = null;
+    NAV_DAILY_SPECS.forEach(function (sp) {
+      var val = 0;
+      if (sp.id === 'study' || sp.id === 'study15' || sp.id === 'study30' || sp.id === 'study45') val = sSec;
+      else if (sp.id === 'visit' || sp.id === 'visit3' || sp.id === 'visit5') val = vCnt;
+      else if (sp.id === 'acts10' || sp.id === 'acts30') val = aCnt;
+      else val = +d[sp.id] || 0;
+      if (val >= sp.goal && !d.claimed[sp.id]) {
+        d.claimed[sp.id] = Date.now();
+        st.dailyPts = (+st.dailyPts || 0) + sp.pts;
+        changed = true;
+        if (sp.id !== 'visit') {
+          toastItem = { icon: sp.icon, name: '每日任務達成：' + sp.name, pts: sp.pts, title: '' };
+        }
+      }
+    });
+    var doneCnt = NAV_DAILY_SPECS.filter(function (sp) { return !!d.claimed[sp.id]; }).length;
+    if (doneCnt >= 5 && !d.bonusClaimed) {
       d.bonusClaimed = true;
       d.fullClaimed = true;
-      st.dailyPts = (+st.dailyPts || 0) + 5;
+      st.dailyPts = (+st.dailyPts || 0) + 10;
       st.dailyFullDays = (+st.dailyFullDays || 0) + 1;
       changed = true;
-      toastItem = { icon: '🎁', name: '今日 5 項每日任務全勤達成！', pts: 5, title: '' };
+      toastItem = { icon: '🎁', name: '今日達成 5 項每日任務達標獎！', pts: 10, title: '' };
+    }
+    if (doneCnt >= NAV_DAILY_SPECS.length && !d.allClearClaimed) {
+      d.allClearClaimed = true;
+      st.dailyPts = (+st.dailyPts || 0) + 20;
+      st.dailyAllClearDays = (+st.dailyAllClearDays || 0) + 1;
+      changed = true;
+      toastItem = { icon: '🏆', name: '今日 12 項每日任務全制霸大賞！', pts: 20, title: '' };
     }
     if (changed) {
       saveFunState(st);
@@ -2032,18 +2219,24 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
 
   function checkAcademyProgress(st, toolId) {
     evaluateDailyInAcademy(st);
-    var trio = TOOL_ACH_MAP[toolId];
+    var stages = TOOL_ACH_MAP[toolId];
     var acts = +(st.academyActs[toolId] || 0);
     var aSec = +(st.academySec[toolId] || 0);
-    if (trio) {
-      if (acts >= 1 || aSec >= 5) unlockInAcademy(st, trio[0]);
-      if (acts >= 5 || aSec >= 300) unlockInAcademy(st, trio[1]);
-      if (trio[2] && (acts >= 15 || aSec >= 900)) unlockInAcademy(st, trio[2]);
+    if (stages) {
+      if (stages[0] && (acts >= 1 || aSec >= 5)) unlockInAcademy(st, stages[0]);
+      if (stages[1] && (acts >= 5 || aSec >= 900)) unlockInAcademy(st, stages[1]);
+      if (stages[2] && (acts >= 15 || aSec >= 1800)) unlockInAcademy(st, stages[2]);
+      if (stages[3] && (acts >= 35 || aSec >= 3600)) unlockInAcademy(st, stages[3]);
+      if (stages[4] && (acts >= 60 && aSec >= 5400)) unlockInAcademy(st, stages[4]);
+      if (stages[5] && (acts >= 120 && aSec >= 7200)) unlockInAcademy(st, stages[5]);
     }
+    if (acts >= 100 && aSec >= 3600) unlockInAcademy(st, 'sec_one_acad_1h');
     if (acts >= 20 || aSec >= 1200) unlockInAcademy(st, 'acad_deep20');
     var totalActs = Object.keys(st.academyActs || {}).reduce(function (s, k) { return s + (+st.academyActs[k] || 0); }, 0);
     if (totalActs >= 50) unlockInAcademy(st, 'acad_acts50');
     if (totalActs >= 100) unlockInAcademy(st, 'acad_acts100');
+    if (totalActs >= 250) unlockInAcademy(st, 'acad_acts250');
+    if (totalActs >= 500) unlockInAcademy(st, 'acad_acts500');
     if (aSec >= 600) unlockInAcademy(st, 'time_acad10m');
     if (aSec >= 1800) unlockInAcademy(st, 'time_acad30m');
     if (st.studySec >= 180) unlockInAcademy(st, 'time_3m');
@@ -2056,19 +2249,40 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     if (st.studySec >= 21600) unlockInAcademy(st, 'time_360m');
     if (st.studySec >= 36000) unlockInAcademy(st, 'time_600m');
     if (st.triviaSubmitted) unlockInAcademy(st, 'acad_trv_sub');
-    var now = new Date(), hr = now.getHours(), mn = now.getMinutes();
+    var wishSum = (+st.feedbackCount || 0) + (+st.fountainCoins || 0);
+    if (wishSum >= 1) unlockInAcademy(st, 'fountain_wish');
+    if (wishSum >= 3) unlockInAcademy(st, 'wacky_wish3');
+    var now = new Date(), hr = now.getHours(), mn = now.getMinutes(), dow = now.getDay();
     if (toolId === 'cinema') {
       checkCinemaSpecificProgress(st);
       if (hr >= 22 || hr < 4) unlockInAcademy(st, 'wacky_midnight_movie');
     }
+    if (toolId === 'cooking' && (hr >= 21 || hr < 2)) unlockInAcademy(st, 'wacky_night_snack');
     if (hr >= 0 && hr < 5) unlockInAcademy(st, 'night_owl');
     if (hr >= 5 && hr < 8) unlockInAcademy(st, 'early_bird');
     if ((hr === 11 && mn >= 30) || hr === 12 || (hr === 13 && mn <= 30)) unlockInAcademy(st, 'wacky_lunch');
+    if (hr === 15 || (hr === 16 && mn <= 30)) unlockInAcademy(st, 'sec_tea_time');
+    if (dow === 0 || dow === 6) unlockInAcademy(st, 'sec_weekend_vibe');
+    if (mn === 0 || mn === 11 || mn === 22 || mn === 33 || mn === 44 || mn === 55) unlockInAcademy(st, 'sec_lucky_min');
     var dayCnt = Object.keys(st.days || {}).length;
     if (dayCnt >= 3) unlockInAcademy(st, 'streak_3d');
     if (dayCnt >= 7) unlockInAcademy(st, 'streak_7d');
     if (dayCnt >= 14) unlockInAcademy(st, 'streak_14d');
     if (dayCnt >= 30) unlockInAcademy(st, 'streak_30d');
+  }
+
+  function recordFeedbackInAcademy() {
+    try {
+      var st = loadFunState();
+      st.feedbackCount = Math.max(+st.feedbackCount || 0, scanSavedFeedbackCount()) + 1;
+      if (st.daily) st.daily.eco = (+st.daily.eco || 0) + 1;
+      saveFunState(st);
+      unlockInAcademy(st, 'fountain_wish');
+      if ((+st.feedbackCount || 0) + (+st.fountainCoins || 0) >= 3) {
+        unlockInAcademy(st, 'wacky_wish3');
+      }
+      evaluateDailyInAcademy(st);
+    } catch (e) { /* ignore */ }
   }
 
   function localOrigin(loc, port) {
@@ -2383,7 +2597,7 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
         (Array.isArray(stu.badges) ? stu.badges : []).forEach(function (b) { if (b) mergedBadges[b] = 1; });
         (Array.isArray(ckStu.badges) ? ckStu.badges : []).forEach(function (b) { if (b) mergedBadges[b] = 1; });
         Object.keys(funSt.badges || {}).forEach(function (b) { if (b) mergedBadges[b] = 1; });
-        stu.badges = Object.keys(mergedBadges).slice(0, 200);
+        stu.badges = Object.keys(mergedBadges).slice(0, 1000);
       } catch (e) { /* ignore */ }
       var minBadgeScore = 0;
       (stu.badges || []).forEach(function (bid) {
@@ -2886,11 +3100,7 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
   function formatAvatarLabel(av) {
     if (!av) return '';
     var s = String(av);
-    if (s.indexOf('pkmn:') === 0) {
-      var pid = parseInt(s.slice(5), 10);
-      var pk = pid && window.CAMPUS_POKEDEX_GEN1 && window.CAMPUS_POKEDEX_GEN1.BY_ID && window.CAMPUS_POKEDEX_GEN1.BY_ID[pid];
-      return pk && pk.name ? ('🦋 ' + pk.name) : ('🦋#' + (pid || ''));
-    }
+    if (s.indexOf('pkmn:') === 0) return '🌿';
     return s;
   }
 
@@ -2941,6 +3151,7 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
         var urlStr = typeof input === 'string' ? input : (input && input.url ? String(input.url) : '');
         var method = (init && init.method ? String(init.method) : (input && input.method ? String(input.method) : 'GET')).toUpperCase();
         if (method === 'POST' && /(^|\/)api\/feedback(\?|$)/i.test(urlStr) && init && typeof init.body === 'string') {
+          recordFeedbackInAcademy();
           var parsed = JSON.parse(init.body);
           if (parsed && typeof parsed === 'object' && !parsed.reporter) {
             var rep = getReporterInfo();
@@ -3111,6 +3322,7 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
   function fbKey(o) { return [o.tool, o.kindLabel, o.title, o.description].join('\u0001'); }
 
   function sendStaticFeedback(opts, extra) {
+    recordFeedbackInAcademy();
     var o = normalizeFeedback(opts, extra);
     var rep = getReporterInfo();
     o._rep = rep;
@@ -3204,17 +3416,25 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     if (!toolId || !TOOL_MAP[toolId]) return;
     var st = loadFunState();
     st.academyActs[toolId] = (st.academyActs[toolId] || 0) + 1;
-    if (st.daily) st.daily.visit = (+st.daily.visit || 0) + 1;
+    if (st.daily) {
+      st.daily.visitedIds = isPlainObj(st.daily.visitedIds) ? st.daily.visitedIds : {};
+      st.daily.visitedIds[toolId] = 1;
+      st.daily.visit = Math.max(+st.daily.visit || 0, Object.keys(st.daily.visitedIds).length);
+      st.daily.acts = (+st.daily.acts || 0) + 1;
+    }
     saveFunState(st);
     setTimeout(function () { checkAcademyProgress(st, toolId); }, 600);
 
-    // 每 5 秒累計該學院與全校學習時數（含今日學習任務秒數，同步寫入 study 與 studySec）
+    // 每 5 秒累計該學院與全校學習時數（含今日學習任務秒數與跨午夜自動重置）
     setInterval(function () {
       if (document.hidden) return;
       var cur = loadFunState();
       cur.studySec = (cur.studySec || 0) + 5;
       cur.academySec[toolId] = (cur.academySec[toolId] || 0) + 5;
       if (cur.daily) {
+        cur.daily.visitedIds = isPlainObj(cur.daily.visitedIds) ? cur.daily.visitedIds : {};
+        cur.daily.visitedIds[toolId] = 1;
+        cur.daily.visit = Math.max(+cur.daily.visit || 0, Object.keys(cur.daily.visitedIds).length);
         var nextDailySec = Math.max(+cur.daily.study || 0, +cur.daily.studySec || 0) + 5;
         cur.daily.studySec = nextDailySec;
         cur.daily.study = nextDailySec;
@@ -3232,6 +3452,7 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
       if (!pendingActs && !pendingTrivia) return;
       var cur = loadFunState();
       cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (cur.daily) cur.daily.acts = (+cur.daily.acts || 0) + pendingActs;
       if (pendingTrivia) cur.triviaSubmitted = true;
       pendingActs = 0;
       pendingTrivia = false;
@@ -3481,8 +3702,16 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     if (!target || !TOOL_MAP[target]) return;
     var st = loadFunState();
     st.academyActs[target] = (+st.academyActs[target] || 0) + 1;
+    if (st.daily) st.daily.acts = (+st.daily.acts || 0) + 1;
     saveFunState(st);
     checkAcademyProgress(st, target);
+  }
+
+  function openFeedbackPublic(tool, payload) {
+    if (typeof payload === 'string') {
+      return sendStaticFeedback(tool, { title: '意見回饋', description: payload });
+    }
+    return sendStaticFeedback(tool, payload || {});
   }
 
   function unlockAchPublic(achId) {
@@ -3507,6 +3736,8 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
     detectDeviceInfo: detectDeviceInfo,
     deliveryLinks: deliveryLinks,
     sendStaticFeedback: sendStaticFeedback,
+    openFeedback: openFeedbackPublic,
+    recordFeedback: recordFeedbackInAcademy,
     flushFeedbackQueue: flushFeedbackQueue,
     fallbackHtml: fallbackHtml
   };
@@ -3518,9 +3749,17 @@ window.FITNESS_ASSETS = {"img/banners/hero_studio.webp":"data:image/webp;base64,
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.FITNESS_RELEASES = {
-  "current_version": "1.10.0",
-  "last_fingerprint": "77fe9d68e453c11b",
+  "current_version": "1.11.0",
+  "last_fingerprint": "70d9b9601edfa16a",
   "releases": [
+    {
+      "version": "1.11.0",
+      "date": "2026-11-19 15:21",
+      "title": "健身學院 v1.11.0 內容與體驗更新",
+      "changes": [
+        "優化健身器材圖解、肌肉解剖圖鑑與安全指南體驗"
+      ]
+    },
     {
       "version": "1.10.0",
       "date": "2026-11-17 11:16",

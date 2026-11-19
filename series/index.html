@@ -826,110 +826,198 @@ textarea.ser-input { resize: vertical; }
 
   /* ------------------------------------------------------------ 🏅 各學院專屬成就與學習時數定義 */
   var ACAD_ACH = {
-    acad_en_1: { icon: '🇬🇧', name: '英語開口說', tier: 't1', pts: 8, title: '🇬🇧 英語留學生' },
+    acad_en_1: { icon: '🇬🇧', name: '英語開口聽讀', tier: 't1', pts: 8, title: '🇬🇧 英語留學生' },
     acad_en_2: { icon: '🎙️', name: '英語實戰達人', tier: 't2', pts: 20, title: '🎙️ 雙語溝通王' },
-    acad_en_3: { icon: '🗣️', name: '英語母語級演說家', tier: 't4', pts: 35, title: '🗣️ 英語流利演說家' },
+    acad_en_3: { icon: '🗣️', name: '英語流利進修生', tier: 't3', pts: 40, title: '🗣️ 英語流利演說家' },
+    acad_en_4: { icon: '🎧', name: '道地口語語感王', tier: 't4', pts: 65, title: '🎧 英語道地語感王' },
+    acad_en_5: { icon: '📖', name: '英語長篇閱讀博學家', tier: 't5', pts: 120, title: '📖 英語長篇閱讀家' },
+    acad_en_6: { icon: '👑', name: '英語母語級傳說院士', tier: 't6', pts: 220, title: '👑 英語首席榮譽院士' },
     acad_jp_1: { icon: '🇯🇵', name: '五十音初心者', tier: 't1', pts: 8, title: '🇯🇵 日語研修生' },
     acad_jp_2: { icon: '⛩️', name: '日語會話達人', tier: 't2', pts: 20, title: '⛩️ 東京自由行達人' },
-    acad_jp_3: { icon: '🏯', name: '日檢 N1 語感制霸', tier: 't4', pts: 35, title: '🏯 日語商務達人' },
+    acad_jp_3: { icon: '🏯', name: '日檢語感進修生', tier: 't3', pts: 40, title: '🏯 日語商務達人' },
+    acad_jp_4: { icon: '🌸', name: '道地日語口語達人', tier: 't4', pts: 65, title: '🌸 日語口語通' },
+    acad_jp_5: { icon: '📜', name: '日檢 N1 讀解博學家', tier: 't5', pts: 120, title: '📜 日檢讀解博學家' },
+    acad_jp_6: { icon: '👑', name: '日語殿堂傳說宗師', tier: 't6', pts: 220, title: '👑 日語殿堂傳說宗師' },
     acad_kr_1: { icon: '🇰🇷', name: '四十音初心者', tier: 't1', pts: 8, title: '🇰🇷 韓語語學堂新生' },
     acad_kr_2: { icon: '🎎', name: '韓語會話達人', tier: 't2', pts: 20, title: '🎎 首爾自由行達人' },
-    acad_kr_3: { icon: '🎤', name: '韓流語感自由行', tier: 't4', pts: 35, title: '🎤 韓語會話特派員' },
+    acad_kr_3: { icon: '🎤', name: '韓流語感自由行', tier: 't3', pts: 40, title: '🎤 韓語會話特派員' },
+    acad_kr_4: { icon: '🌟', name: 'TOPIK 中高級進修生', tier: 't4', pts: 65, title: '🌟 韓語進階特派員' },
+    acad_kr_5: { icon: '📚', name: '韓語文化讀解博學家', tier: 't5', pts: 120, title: '📚 韓語讀解博學家' },
+    acad_kr_6: { icon: '👑', name: '韓語語學堂傳說院長', tier: 't6', pts: 220, title: '👑 韓語語學堂總院長' },
     acad_fin_1: { icon: '🏛️', name: '財經必修課', tier: 't1', pts: 8, title: '🏛️ 財經研究員' },
     acad_fin_2: { icon: '📊', name: '華爾街特訓生', tier: 't2', pts: 20, title: '📊 華爾街分析師' },
-    acad_fin_3: { icon: '🏦', name: '華爾街宏觀策略師', tier: 't4', pts: 35, title: '🏦 宏觀資產配置家' },
+    acad_fin_3: { icon: '🏦', name: '華爾街宏觀策略師', tier: 't3', pts: 40, title: '🏦 宏觀資產配置家' },
+    acad_fin_4: { icon: '📈', name: '四分院全修研究員', tier: 't4', pts: 65, title: '📈 四分院資深研究員' },
+    acad_fin_5: { icon: '💎', name: '財報估值與週期專家', tier: 't5', pts: 120, title: '💎 價值與週期精算師' },
+    acad_fin_6: { icon: '👑', name: '全球總經傳說首席學者', tier: 't6', pts: 220, title: '👑 總體經濟傳說院士' },
     acad_stk_1: { icon: '📈', name: '台股觀測員', tier: 't1', pts: 8, title: '📈 台股觀察家' },
     acad_stk_2: { icon: '🕯️', name: 'K 線選股達人', tier: 't2', pts: 20, title: '🕯️ 台股波段領航員' },
-    acad_stk_3: { icon: '📊', name: '台股多因子操盤手', tier: 't4', pts: 35, title: '📊 台股量化投資長' },
+    acad_stk_3: { icon: '📊', name: '台股多因子操盤手', tier: 't3', pts: 40, title: '📊 台股量化投資長' },
+    acad_stk_4: { icon: '🔍', name: '產業供應鏈解碼師', tier: 't4', pts: 65, title: '🔍 台股產業解碼師' },
+    acad_stk_5: { icon: '🏛️', name: '台股量化回測專家', tier: 't5', pts: 120, title: '🏛️ 台股量化模型專家' },
+    acad_stk_6: { icon: '👑', name: '台股傳說首席策略長', tier: 't6', pts: 220, title: '👑 台股傳說首席策略長' },
     acad_uss_1: { icon: '🗽', name: '華爾街敲鐘報到', tier: 't1', pts: 8, title: '🗽 華爾街見習交易員' },
     acad_uss_2: { icon: '🐂', name: '美股七巨頭獵手', tier: 't2', pts: 20, title: '🐂 華爾街量化分析師' },
-    acad_uss_3: { icon: '🏛️', name: '華爾街跨海操盤總監', tier: 't4', pts: 35, title: '🏛️ 華爾街首席投資長' },
+    acad_uss_3: { icon: '🏛️', name: '華爾街跨海操盤總監', tier: 't3', pts: 40, title: '🏛️ 華爾街首席投資長' },
+    acad_uss_4: { icon: '🌐', name: '跨時區 ADR 領航員', tier: 't4', pts: 65, title: '🌐 美股跨海研究總監' },
+    acad_uss_5: { icon: '💎', name: '美股五因子模型專家', tier: 't5', pts: 120, title: '💎 美股五因子模型師' },
+    acad_uss_6: { icon: '👑', name: '華爾街傳說宏觀巨擘', tier: 't6', pts: 220, title: '👑 華爾街傳說巨擘' },
     acad_cm_1: { icon: '💚', name: '暖心陪伴者', tier: 't1', pts: 8, title: '💚 暖心實習個管師' },
     acad_cm_2: { icon: '🩺', name: '資深個管專家', tier: 't2', pts: 20, title: '🩺 專業藥癮個管師' },
-    acad_cm_3: { icon: '🕊️', name: '成癮復原督導專家', tier: 't4', pts: 35, title: '🕊️ 資深臨床個管督導' },
+    acad_cm_3: { icon: '🕊️', name: '成癮復原督導專家', tier: 't3', pts: 40, title: '🕊️ 資深臨床個管督導' },
+    acad_cm_4: { icon: '📋', name: 'SOAP 紀錄與轉介達人', tier: 't4', pts: 65, title: '📋 臨床評估轉介專家' },
+    acad_cm_5: { icon: '💎', name: '全人復原輔導博學家', tier: 't5', pts: 120, title: '💎 成癮防治首席顧問' },
+    acad_cm_6: { icon: '👑', name: '藥癮防治傳說總督導', tier: 't6', pts: 220, title: '👑 臨床個管傳說總督導' },
     acad_hc_1: { icon: '🩺', name: '保健室見習生', tier: 't1', pts: 8, title: '🩺 校園保健守護員' },
     acad_hc_2: { icon: '🚑', name: '急救守護達人', tier: 't2', pts: 20, title: '🚑 急救黃金救援王' },
-    acad_hc_3: { icon: '🏥', name: '全人健康照護顧問', tier: 't4', pts: 35, title: '🏥 全人健康總顧問' },
+    acad_hc_3: { icon: '🏥', name: '全人健康照護顧問', tier: 't3', pts: 40, title: '🏥 全人健康總顧問' },
+    acad_hc_4: { icon: '💊', name: '安全用藥與交互雷達師', tier: 't4', pts: 65, title: '💊 家庭醫藥守護師' },
+    acad_hc_5: { icon: '💎', name: '急重症檢傷防線專家', tier: 't5', pts: 120, title: '💎 醫療衛教首席專家' },
+    acad_hc_6: { icon: '👑', name: '保健醫學傳說守護院長', tier: 't6', pts: 220, title: '👑 醫療保健傳說院長' },
     acad_mus_1: { icon: '🎵', name: '樂理初體驗', tier: 't1', pts: 8, title: '🎵 樂理練習生' },
     acad_mus_2: { icon: '🎹', name: '絕對音感大師', tier: 't2', pts: 20, title: '🎹 校園鋼琴家' },
-    acad_mus_3: { icon: '🎻', name: '皇家樂團交響指揮', tier: 't4', pts: 35, title: '🎻 皇家樂團首席指揮' },
+    acad_mus_3: { icon: '🎻', name: '皇家樂團交響指揮', tier: 't3', pts: 40, title: '🎻 皇家樂團首席指揮' },
+    acad_mus_4: { icon: '🎼', name: '古典名曲與和聲鑑賞家', tier: 't4', pts: 65, title: '🎼 交響和聲鑑賞家' },
+    acad_mus_5: { icon: '💎', name: '跨時代音樂史博學者', tier: 't5', pts: 120, title: '💎 皇家音樂院院士' },
+    acad_mus_6: { icon: '👑', name: '愛樂殿堂傳說大音樂家', tier: 't6', pts: 220, title: '👑 愛樂殿堂傳說宗師' },
     acad_cook_1: { icon: '🍳', name: '廚房初試啼聲', tier: 't1', pts: 8, title: '🍳 見習小當家' },
     acad_cook_2: { icon: '👨‍🍳', name: '世界料理主廚', tier: 't2', pts: 20, title: '👨‍🍳 特級行政主廚' },
-    acad_cook_3: { icon: '🍾', name: '米其林三星行政主廚', tier: 't4', pts: 35, title: '🍾 米其林三星主廚' },
+    acad_cook_3: { icon: '🍾', name: '米其林三星行政主廚', tier: 't3', pts: 40, title: '🍾 米其林三星主廚' },
+    acad_cook_4: { icon: '🔪', name: '刀工火候科學料理家', tier: 't4', pts: 65, title: '🔪 料理科學主廚' },
+    acad_cook_5: { icon: '💎', name: '三十一國風味美食博學家', tier: 't5', pts: 120, title: '💎 環球美食評論宗師' },
+    acad_cook_6: { icon: '👑', name: '食神殿堂傳說總料理長', tier: 't6', pts: 220, title: '👑 傳說御膳總料理長' },
     acad_trv_1: { icon: '💡', name: '冷知識好奇寶寶', tier: 't1', pts: 8, title: '💡 冷知識蒐集家' },
     acad_trv_2: { icon: '🎰', name: '冷知識轉蛋王', tier: 't2', pts: 20, title: '🧠 行走百科全書' },
-    acad_trv_3: { icon: '🦉', name: '跨領域百科博學者', tier: 't4', pts: 35, title: '🦉 皇家百科博學者' },
-    acad_trv_sub: { icon: '📮', name: '冷知識專欄作家', tier: 't3', pts: 35, title: '📮 冷知識專欄作家' },
+    acad_trv_3: { icon: '🦉', name: '跨領域百科博學者', tier: 't3', pts: 40, title: '🦉 皇家百科博學者' },
+    acad_trv_4: { icon: '🔎', name: '流言終結考據達人', tier: 't4', pts: 65, title: '🔎 真相考據偵探' },
+    acad_trv_5: { icon: '💎', name: '十八領域萬事通博士', tier: 't5', pts: 120, title: '💎 萬事通博物博士' },
+    acad_trv_6: { icon: '👑', name: '全知圖書館傳說大賢者', tier: 't6', pts: 220, title: '👑 全知圖書館大賢者' },
     acad_hr_1: { icon: '🔧', name: '水電修繕學徒', tier: 't1', pts: 8, title: '🔧 居家水電學徒' },
     acad_hr_2: { icon: '⚡', name: '全能修繕達人', tier: 't2', pts: 20, title: '⚡ 居家修繕達人' },
-    acad_hr_3: { icon: '🧰', name: '甲種水電與全屋修繕顧問', tier: 't4', pts: 35, title: '🧰 全屋修繕首席技師' },
+    acad_hr_3: { icon: '🧰', name: '甲種水電與全屋修繕顧問', tier: 't3', pts: 40, title: '🧰 全屋修繕首席技師' },
+    acad_hr_4: { icon: '🔌', name: '驗電防漏安全總工程師', tier: 't4', pts: 65, title: '🔌 驗電安全主任技師' },
+    acad_hr_5: { icon: '💎', name: '台灣居家修繕百科宗師', tier: 't5', pts: 120, title: '💎 全屋修繕技術總監' },
+    acad_hr_6: { icon: '👑', name: '匠人殿堂傳說國寶技師', tier: 't6', pts: 220, title: '👑 傳說國寶級總技師' },
     acad_re_1: { icon: '🏘️', name: '房產看屋入門', tier: 't1', pts: 8, title: '🏘️ 房產看屋學員' },
     acad_re_2: { icon: '📑', name: '產權契約達人', tier: 't2', pts: 20, title: '📑 產權排雷法商' },
-    acad_re_3: { icon: '🏛️', name: '購屋稅貸大師', tier: 't4', pts: 35, title: '🏛️ 不動產智囊團' },
+    acad_re_3: { icon: '🏛️', name: '購屋稅貸大師', tier: 't3', pts: 40, title: '🏛️ 不動產智囊團' },
+    acad_re_4: { icon: '🏠', name: '驗屋避雷與謄本精算師', tier: 't4', pts: 65, title: '🏠 驗屋排雷首席顧問' },
+    acad_re_5: { icon: '💎', name: '不動產法規稅務博學家', tier: 't5', pts: 120, title: '💎 不動產法稅首席專家' },
+    acad_re_6: { icon: '👑', name: '安居置產傳說總顧問', tier: 't6', pts: 220, title: '👑 不動產傳說總顧問' },
     acad_fit_1: { icon: '💪', name: '鐵館初登場', tier: 't1', pts: 8, title: '💪 健身房新秀' },
     acad_fit_2: { icon: '🏋️', name: '肌力解剖達人', tier: 't2', pts: 20, title: '🏋️ 鋼鐵肌力王' },
-    acad_fit_3: { icon: '🏆', name: '運動科學首席教練', tier: 't4', pts: 35, title: '🏆 運動科學總教練' },
+    acad_fit_3: { icon: '🏆', name: '運動科學首席教練', tier: 't3', pts: 40, title: '🏆 運動科學總教練' },
+    acad_fit_4: { icon: '🔥', name: '1RM 與營養熱量精算師', tier: 't4', pts: 65, title: '🔥 體能週期化教練' },
+    acad_fit_5: { icon: '💎', name: '生物力學與肌肥大專家', tier: 't5', pts: 120, title: '💎 運動生物力學博士' },
+    acad_fit_6: { icon: '👑', name: '奧林匹亞傳說體能宗師', tier: 't6', pts: 220, title: '👑 傳說級運動科學宗師' },
     acad_py_1: { icon: '🐍', name: 'Python 初探', tier: 't1', pts: 8, title: '🐍 Python 見習工程師' },
     acad_py_2: { icon: '🤖', name: 'Python 自動化大師', tier: 't2', pts: 20, title: '🤖 Python 自動化架構師' },
-    acad_py_3: { icon: '🚀', name: '首席測試與全端架構師', tier: 't4', pts: 40, title: '🚀 首席測試架構師' },
+    acad_py_3: { icon: '🚀', name: '首席測試與全端架構師', tier: 't3', pts: 40, title: '🚀 首席測試架構師' },
+    acad_py_4: { icon: '💻', name: '四翼語言跨界工程師', tier: 't4', pts: 65, title: '💻 四語言全端工程師' },
+    acad_py_5: { icon: '💎', name: '系統底層與高併發專家', tier: 't5', pts: 120, title: '💎 核心系統首席工程師' },
+    acad_py_6: { icon: '👑', name: '圖靈殿堂傳說軟體宗師', tier: 't6', pts: 220, title: '👑 圖靈殿堂傳說架構師' },
     acad_iot_1: { icon: '🏡', name: '智慧家庭初探', tier: 't1', pts: 8, title: '🏡 智慧家庭設計師' },
     acad_iot_2: { icon: '📡', name: 'Matter 物聯網達人', tier: 't2', pts: 20, title: '📡 全屋自動化架構師' },
-    acad_iot_3: { icon: '🌐', name: 'Matter 跨生態系宗師', tier: 't4', pts: 35, title: '🌐 智慧家庭首席架構師' },
+    acad_iot_3: { icon: '🌐', name: 'Matter 跨生態系宗師', tier: 't3', pts: 40, title: '🌐 智慧家庭首席架構師' },
+    acad_iot_4: { icon: '🔧', name: 'Thread 網狀網路調校師', tier: 't4', pts: 65, title: '🔧 物聯網協定調校師' },
+    acad_iot_5: { icon: '💎', name: '全屋感測與邊緣運算專家', tier: 't5', pts: 120, title: '💎 智慧建築首席設計師' },
+    acad_iot_6: { icon: '👑', name: '萬物互聯傳說總工程師', tier: 't6', pts: 220, title: '👑 萬物互聯傳說宗師' },
     acad_ai_1: { icon: '🤖', name: 'Agent 工程初探', tier: 't1', pts: 8, title: '🤖 Prompt 見習工程師' },
     acad_ai_2: { icon: '🧠', name: 'Context 工程達人', tier: 't2', pts: 20, title: '🧠 Context 工程師' },
-    acad_ai_3: { icon: '🐝', name: '自主代理架構宗師', tier: 't4', pts: 35, title: '🐝 多代理系統首席架構師' },
+    acad_ai_3: { icon: '🐝', name: '自主代理架構宗師', tier: 't3', pts: 40, title: '🐝 多代理系統首席架構師' },
+    acad_ai_4: { icon: '🛠️', name: 'MCP 與工具編排實戰家', tier: 't4', pts: 65, title: '🛠️ Agent 工具鏈設計師' },
+    acad_ai_5: { icon: '💎', name: '長文本與評估防線專家', tier: 't5', pts: 120, title: '💎 AI 系統評估首席專家' },
+    acad_ai_6: { icon: '👑', name: '智慧代理傳說總架構師', tier: 't6', pts: 220, title: '👑 傳說級 AI 總架構師' },
     acad_cld_1: { icon: '☁️', name: '雙雲見習報到', tier: 't1', pts: 8, title: '☁️ 雙雲見習工程師' },
     acad_cld_2: { icon: '🔐', name: '零信任網管達人', tier: 't2', pts: 20, title: '🔐 雙雲維運工程師' },
-    acad_cld_3: { icon: '🏛️', name: '雙雲首席架構師', tier: 't4', pts: 35, title: '🏛️ AWS/GCP 雲端架構師' },
+    acad_cld_3: { icon: '🏛️', name: '雙雲首席架構師', tier: 't3', pts: 40, title: '🏛️ AWS/GCP 雲端架構師' },
+    acad_cld_4: { icon: '🐳', name: 'Linux 容器與 K8s 艦長', tier: 't4', pts: 65, title: '🐳 雲原生容器艦長' },
+    acad_cld_5: { icon: '💎', name: 'SRE 高可用災難復原專家', tier: 't5', pts: 120, title: '💎 首席 SRE 可靠度工程師' },
+    acad_cld_6: { icon: '👑', name: '雲端原生傳說總指揮官', tier: 't6', pts: 220, title: '👑 雲端原生傳說總指揮' },
     acad_xq_1: { icon: '🐘', name: '楚河漢界初登場', tier: 't1', pts: 8, title: '🐘 象棋見習棋士' },
     acad_xq_2: { icon: '♟️', name: '當頭炮開局', tier: 't2', pts: 20, title: '♟️ 象棋業餘棋士' },
-    acad_xq_3: { icon: '🏆', name: '運籌帷幄', tier: 't4', pts: 35, title: '🏆 楚河漢界棋王' },
+    acad_xq_3: { icon: '🏆', name: '運籌帷幄', tier: 't3', pts: 40, title: '🏆 楚河漢界棋王' },
+    acad_xq_4: { icon: '📜', name: '古譜殘局破陣高手', tier: 't4', pts: 65, title: '📜 橘中秘殘局高手' },
+    acad_xq_5: { icon: '💎', name: '車馬炮聯攻特級大師', tier: 't5', pts: 120, title: '💎 象棋特級大師' },
+    acad_xq_6: { icon: '👑', name: '楚河漢界傳說九段國手', tier: 't6', pts: 220, title: '👑 楚河傳說九段國手' },
     acad_ch_1: { icon: '♟️', name: '六十四格初登場', tier: 't1', pts: 8, title: '♟️ 西洋棋見習棋士' },
     acad_ch_2: { icon: '⚔️', name: '騎士捉雙', tier: 't2', pts: 20, title: '⚔️ 西洋棋戰術手' },
-    acad_ch_3: { icon: '👑', name: '逆轉大師', tier: 't4', pts: 35, title: '👑 六十四格逆轉大師' },
+    acad_ch_3: { icon: '👑', name: '逆轉大師', tier: 't3', pts: 40, title: '👑 六十四格逆轉大師' },
+    acad_ch_4: { icon: '🏰', name: '開局定式與棄子專家', tier: 't4', pts: 65, title: '🏰 皇家開局戰術師' },
+    acad_ch_5: { icon: '💎', name: '國際棋聯特級宗師', tier: 't5', pts: 120, title: '💎 西洋棋特級宗師' },
+    acad_ch_6: { icon: '🌌', name: '六十四格傳說世界棋王', tier: 't6', pts: 220, title: '🌌 六十四格傳說棋王' },
     acad_cry_1: { icon: '🪙', name: '創世區塊', tier: 't1', pts: 8, title: '🪙 鏈上新鮮人' },
     acad_cry_2: { icon: '⛓️', name: '鏈上學徒', tier: 't2', pts: 20, title: '⛓️ 區塊鏈學徒' },
-    acad_cry_3: { icon: '🛡️', name: '私鑰守護者', tier: 't4', pts: 35, title: '🛡️ 私鑰守護者' },
+    acad_cry_3: { icon: '🛡️', name: '私鑰守護者', tier: 't3', pts: 40, title: '🛡️ 私鑰守護者' },
+    acad_cry_4: { icon: '🔐', name: '共識機制與錢包資安師', tier: 't4', pts: 65, title: '🔐 鏈上資安審計師' },
+    acad_cry_5: { icon: '💎', name: '密碼學與分散帳本專家', tier: 't5', pts: 120, title: '💎 分散式帳本首席學者' },
+    acad_cry_6: { icon: '👑', name: '中本聰殿堂傳說架構師', tier: 't6', pts: 220, title: '👑 鏈上生態傳說宗師' },
     acad_fut_1: { icon: '🛢️', name: '合約入門', tier: 't1', pts: 8, title: '🛢️ 原物料學徒' },
     acad_fut_2: { icon: '🛡️', name: '期現避險', tier: 't2', pts: 25, title: '🛡️ 避險策略家' },
-    acad_fut_3: { icon: '🏆', name: '期貨大師', tier: 't4', pts: 45, title: '🏆 期貨風控大師' },
+    acad_fut_3: { icon: '🏆', name: '期貨大師', tier: 't3', pts: 45, title: '🏆 期貨風控大師' },
+    acad_fut_4: { icon: '⚖️', name: '保證金風控與轉倉達人', tier: 't4', pts: 65, title: '⚖️ 跨期價差精算師' },
+    acad_fut_5: { icon: '💎', name: '全球大宗商品宏觀專家', tier: 't5', pts: 120, title: '💎 原物料宏觀風控長' },
+    acad_fut_6: { icon: '👑', name: '芝加哥殿堂傳說風控總監', tier: 't6', pts: 220, title: '👑 全球期貨傳說風控長' },
     acad_ser_1: { icon: '📺', name: '追劇新手報到', tier: 't1', pts: 8, title: '📺 追劇見習生' },
     acad_ser_2: { icon: '🍿', name: '分季導讀達人', tier: 't2', pts: 20, title: '🍿 無雷選片達人' },
-    acad_ser_3: { icon: '🏆', name: '完食護照收藏家', tier: 't4', pts: 35, title: '🏆 追劇護照收藏家' },
-    acad_tama_1: { icon: '🥚', name: '塔麻可吉博物館初訪', tier: 't1', pts: 8, title: '🥚 電子雞見習飼育員' },
-    acad_tama_2: { icon: '🐣', name: '電子雞育成達人', tier: 't2', pts: 20, title: '🐣 電子雞育成達人' },
-    acad_tama_3: { icon: '👑', name: '塔麻可吉名譽館長', tier: 't4', pts: 35, title: '👑 塔麻可吉名譽館長' },
+    acad_ser_3: { icon: '🏆', name: '完食護照收藏家', tier: 't3', pts: 40, title: '🏆 追劇護照收藏家' },
+    acad_ser_4: { icon: '🎬', name: '三幕劇與敘事結構達人', tier: 't4', pts: 65, title: '🎬 影集敘事解構師' },
+    acad_ser_5: { icon: '💎', name: '七大平台跨年代選片專家', tier: 't5', pts: 120, title: '💎 國際影集策展總監' },
+    acad_ser_6: { icon: '👑', name: '艾美獎殿堂傳說劇評宗師', tier: 't6', pts: 220, title: '👑 串流影史傳說總評審' },
     acad_pkr_1: { icon: '♠️', name: '賽局理論入門', tier: 't1', pts: 8, title: '♠️ 賽局策略研修生' },
     acad_pkr_2: { icon: '👑', name: 'GTO 決策大師', tier: 't2', pts: 20, title: '👑 GTO 決策大師' },
-    acad_pkr_3: { icon: '🃏', name: 'GTO 混合策略傳奇', tier: 't4', pts: 35, title: '🃏 高額桌 GTO 傳奇' },
+    acad_pkr_3: { icon: '🃏', name: 'GTO 混合策略傳奇', tier: 't3', pts: 40, title: '🃏 高額桌 GTO 傳奇' },
+    acad_pkr_4: { icon: '🧮', name: '底池權益與範圍精算師', tier: 't4', pts: 65, title: '🧮 賽局均衡精算師' },
+    acad_pkr_5: { icon: '💎', name: '納許均衡不剝削博學家', tier: 't5', pts: 120, title: '💎 納許賽局理論博士' },
+    acad_pkr_6: { icon: '🌌', name: '賽局聖殿傳說策略宗師', tier: 't6', pts: 220, title: '🌌 賽局理論傳說大宗師' },
     acad_nba_1: { icon: '🏀', name: 'NBA 數據球探', tier: 't1', pts: 8, title: '🏀 NBA 數據球探' },
     acad_nba_2: { icon: '🔥', name: '籃球數據分析師', tier: 't2', pts: 20, title: '🔥 籃壇數據精算師' },
-    acad_nba_3: { icon: '🏀', name: 'NBA 冠軍球隊數據總管', tier: 't4', pts: 35, title: '🏀 冠軍球隊數據總管' },
-    acad_epl_1: { icon: '⚽', name: '英超戰術觀察員', tier: 't1', pts: 8, title: '⚽ 英超觀察員' },
-    acad_epl_2: { icon: '🦁', name: '英超戰術分析師', tier: 't2', pts: 20, title: '🦁 英超戰術大師' },
-    acad_epl_3: { icon: '⚽', name: '英超豪門戰術總教練', tier: 't4', pts: 35, title: '⚽ 英超戰術分析總監' },
-    acad_f1_1: { icon: '🏎️', name: 'F1 維修區工程師', tier: 't1', pts: 8, title: '🏎️ 賽道策略師' },
-    acad_f1_2: { icon: '🏁', name: '桿位策略總監', tier: 't2', pts: 20, title: '🏁 桿位策略總監' },
-    acad_f1_3: { icon: '🏎️', name: 'F1 圍場首席策略長', tier: 't4', pts: 35, title: '🏎️ 圍場首席賽事策略長' },
-    acad_bb_1: { icon: '⚾', name: 'MLB 數據紀錄員', tier: 't1', pts: 8, title: '⚾ MLB 數據觀察員' },
-    acad_bb_2: { icon: '⚾', name: 'MLB 球探分析師', tier: 't2', pts: 20, title: '⚾ 大聯盟球探分析師' },
-    acad_bb_3: { icon: '⚾', name: 'MLB 大聯盟魔球總管', tier: 't4', pts: 35, title: '⚾ 大聯盟魔球數據總管' },
+    acad_nba_3: { icon: '🏀', name: 'NBA 冠軍球隊數據總管', tier: 't3', pts: 40, title: '🏀 冠軍球隊數據總管' },
+    acad_nba_4: { icon: '📊', name: '百回合攻防效率解碼師', tier: 't4', pts: 65, title: '📊 NBA 進階數據主任' },
+    acad_nba_5: { icon: '💎', name: '北美職籃量化模型專家', tier: 't5', pts: 120, title: '💎 職籃量化科學專家' },
+    acad_nba_6: { icon: '👑', name: '籃球名人堂傳說總經理', tier: 't6', pts: 220, title: '👑 籃壇名人堂傳說總管' },
     acad_twb_1: { icon: '⛹️', name: '台籃球探報到', tier: 't1', pts: 8, title: '⛹️ 台籃觀察員' },
     acad_twb_2: { icon: '🏀', name: '台籃數據分析師', tier: 't2', pts: 20, title: '🏀 台籃數據精算師' },
-    acad_twb_3: { icon: '🏆', name: '台灣職籃戰術總管', tier: 't4', pts: 35, title: '🏆 台灣職籃冠軍總管' },
+    acad_twb_3: { icon: '🏆', name: '台灣職籃戰術總管', tier: 't3', pts: 40, title: '🏆 台灣職籃冠軍總管' },
+    acad_twb_4: { icon: '📋', name: '雙聯盟洋將本土配置師', tier: 't4', pts: 65, title: '📋 台籃雙聯盟首席球探' },
+    acad_twb_5: { icon: '💎', name: '台灣籃壇走勢回測專家', tier: 't5', pts: 120, title: '💎 台籃數據模型總監' },
+    acad_twb_6: { icon: '👑', name: '台灣職籃傳說總決策長', tier: 't6', pts: 220, title: '👑 台籃傳說首席總管' },
+    acad_epl_1: { icon: '⚽', name: '英超戰術觀察員', tier: 't1', pts: 8, title: '⚽ 英超觀察員' },
+    acad_epl_2: { icon: '🦁', name: '英超戰術分析師', tier: 't2', pts: 20, title: '🦁 英超戰術大師' },
+    acad_epl_3: { icon: '⚽', name: '英超豪門戰術總教練', tier: 't3', pts: 40, title: '⚽ 英超戰術分析總監' },
+    acad_epl_4: { icon: '🛡️', name: '預期進球與逼搶結構師', tier: 't4', pts: 65, title: '🛡️ 英倫足球數據主任' },
+    acad_epl_5: { icon: '💎', name: '英格蘭頂級聯賽精算家', tier: 't5', pts: 120, title: '💎 歐洲足壇量化專家' },
+    acad_epl_6: { icon: '👑', name: '溫布利殿堂傳說戰術宗師', tier: 't6', pts: 220, title: '👑 英超傳說榮譽領隊' },
+    acad_f1_1: { icon: '🏎️', name: 'F1 維修區工程師', tier: 't1', pts: 8, title: '🏎️ 賽道策略師' },
+    acad_f1_2: { icon: '🏁', name: '桿位策略總監', tier: 't2', pts: 20, title: '🏁 桿位策略總監' },
+    acad_f1_3: { icon: '🏎️', name: 'F1 圍場首席策略長', tier: 't3', pts: 40, title: '🏎️ 圍場首席賽事策略長' },
+    acad_f1_4: { icon: '⏱️', name: '排位圈速與空氣力學師', tier: 't4', pts: 65, title: '⏱️ 賽道遙測首席工程師' },
+    acad_f1_5: { icon: '💎', name: '大獎賽全賽季模擬專家', tier: 't5', pts: 120, title: '💎 世界冠軍車隊策略長' },
+    acad_f1_6: { icon: '👑', name: '銀石殿堂傳說車隊領隊', tier: 't6', pts: 220, title: '👑 圍場傳說榮譽總領隊' },
+    acad_tama_1: { icon: '🥚', name: '塔麻可吉博物館初訪', tier: 't1', pts: 8, title: '🥚 電子雞見習飼育員' },
+    acad_tama_2: { icon: '🐣', name: '電子雞育成達人', tier: 't2', pts: 20, title: '🐣 電子雞育成達人' },
+    acad_tama_3: { icon: '👑', name: '塔麻可吉名譽館長', tier: 't3', pts: 40, title: '👑 塔麻可吉名譽館長' },
+    acad_tama_4: { icon: '🕰️', name: '掌上像素年代考古家', tier: 't4', pts: 65, title: '🕰️ 平成電子寵考古家' },
+    acad_tama_5: { icon: '💎', name: '全世代機型圖鑑博學者', tier: 't5', pts: 120, title: '💎 掌機文化首席研究員' },
+    acad_tama_6: { icon: '🌌', name: '像素次元傳說創世館長', tier: 't6', pts: 220, title: '🌌 塔麻可吉傳說總館長' },
     acad_cin_1: { icon: '🎬', name: '影癡首映入場', tier: 't1', pts: 8, title: '🎬 校園影評新秀' },
     acad_cin_2: { icon: '🍿', name: '跨年代選片達人', tier: 't2', pts: 20, title: '🍿 世界影展策展人' },
-    acad_cin_3: { icon: '🏆', name: '金棕櫚影史宗師', tier: 't4', pts: 35, title: '🏆 金棕櫚首席影評人' },
+    acad_cin_3: { icon: '🏆', name: '金棕櫚影史宗師', tier: 't3', pts: 40, title: '🏆 金棕櫚首席影評人' },
+    acad_cin_4: { icon: '🎞️', name: '蒙太奇與鏡頭美學家', tier: 't4', pts: 65, title: '🎞️ 電影美學研究員' },
+    acad_cin_5: { icon: '💎', name: '跨世紀世界影史博學者', tier: 't5', pts: 120, title: '💎 世界影展終身評審' },
+    acad_cin_6: { icon: '👑', name: '坎城殿堂傳說電影大師', tier: 't6', pts: 220, title: '👑 影史殿堂傳說大宗師' },
     acad_cin_watchlist5: { icon: '📋', name: '私人片單策展師（5 部）', tier: 't2', pts: 18, title: '📋 週末片單策展師' },
     acad_cin_watched10: { icon: '🎟️', name: '十部閱片影迷護照（10 部）', tier: 't3', pts: 30, title: '🎟️ 黃金貴賓廳常客' },
     acad_cin_critic: { icon: '🖋️', name: '金馬影評專欄作家', tier: 't3', pts: 30, title: '🖋️ 金馬特約影評人' },
     acad_cin_quiz: { icon: '🎥', name: '場面調度美學優等生', tier: 't3', pts: 35, title: '🎥 鏡頭語言解碼師' },
     acad_cin_world6: { icon: '🌍', name: '六大影壇環球評審', tier: 't4', pts: 55, title: '🌍 世界六大影壇評審長' },
     acad_cin_watched30: { icon: '📽️', name: '三十片級傳奇影癡（30 部）', tier: 't5', pts: 90, title: '📽️ 傳奇膠卷收藏家' },
-    wacky_midnight_movie: { icon: '🌙', name: '午夜場包場影癡', tier: 't3', pts: 25, title: '🌙 午夜場包場VIP' },
+    acad_trv_sub: { icon: '📮', name: '冷知識專欄作家', tier: 't3', pts: 35, title: '📮 冷知識專欄作家' },
     acad_deep20: { icon: '🎓', name: '單科精修筆記王', tier: 't4', pts: 55, title: '🎓 首席模範生' },
     acad_acts50: { icon: '📚', name: '百煉成鋼大學霸', tier: 't5', pts: 100, title: '📚 百煉成鋼大學霸' },
     acad_acts100: { icon: '🔥', name: '千錘百鍊實作王（100 次）', tier: 't5', pts: 130, title: '🔥 千錘百鍊實作王' },
+    acad_acts250: { icon: '⚡', name: '學海無涯實作宗師（250 次）', tier: 't6', pts: 210, title: '⚡ 學海無涯實作宗師' },
+    acad_acts500: { icon: '🌟', name: '萬卷實作神話學霸（500 次）', tier: 't7', pts: 360, title: '🌟 萬卷實作神話大學霸' },
     time_3m: { icon: '🌱', name: '初來乍到（3 分鐘）', tier: 't1', pts: 8, title: '🌱 初心學員' },
     time_5m: { icon: '⏱️', name: '專注五分鐘（5 分鐘）', tier: 't1', pts: 10, title: '⏱️ 五分鐘專注達人' },
     time_10m: { icon: '⏳', name: '專注一刻（10 分鐘）', tier: 't2', pts: 15, title: '⏳ 專注學習者' },
@@ -941,46 +1029,53 @@ textarea.ser-input { resize: vertical; }
     time_600m: { icon: '🌌', name: '十小時神話大學士（10 小時）', tier: 't7', pts: 320, title: '🌌 開心學園十小時傳奇大學士' },
     time_acad10m: { icon: '🔬', name: '單科深造（同院 10 分鐘）', tier: 't2', pts: 18, title: '🔬 專科研究員' },
     time_acad30m: { icon: '🪑', name: '把學院板凳坐穿（同院 30 分鐘）', tier: 't4', pts: 50, title: '🪑 院長室特聘助教' },
-    night_owl: { icon: '🦉', name: '深夜暗光鳥', tier: 't3', pts: 25, title: '🦉 深夜暗光鳥' },
-    early_bird: { icon: '🌅', name: '晨光早鳥王', tier: 't3', pts: 25, title: '🌅 晨光早鳥王' },
-    wacky_lunch: { icon: '🍱', name: '便當配K線', tier: 't1', pts: 10, title: '🍱 午休也在捲' },
     streak_3d: { icon: '📅', name: '三日連學', tier: 't3', pts: 35, title: '📅 持之以恆獎' },
     streak_7d: { icon: '🏅', name: '七日全勤榮譽生', tier: 't5', pts: 100, title: '🏅 七日全勤模範生' },
     streak_14d: { icon: '🔥', name: '雙週連學毅力王', tier: 't5', pts: 130, title: '🔥 雙週不輟學習家' },
     streak_30d: { icon: '👑', name: '三十日終身學習傳奇', tier: 't6', pts: 220, title: '👑 月度全勤榮譽學長' },
+    fountain_wish: { icon: '⛲', name: '許願池初心者', tier: 't1', pts: 8, title: '⛲ 許願池守護者' },
+    wacky_wish3: { icon: '💌', name: '學園許願池榮譽委員', tier: 't3', pts: 30, title: '💌 校園建言榮譽委員' },
+    night_owl: { icon: '🦉', name: '深夜暗光鳥', tier: 't3', pts: 25, title: '🦉 深夜暗光鳥' },
+    wacky_midnight_movie: { icon: '🌙', name: '午夜場包場影癡', tier: 't3', pts: 25, title: '🌙 午夜場包場VIP' },
+    wacky_night_snack: { icon: '🍜', name: '深夜食堂越看越餓', tier: 't2', pts: 18, title: '🍜 宵夜意志力大師' },
+    early_bird: { icon: '🌅', name: '晨光早鳥王', tier: 't3', pts: 25, title: '🌅 晨光早鳥王' },
+    wacky_lunch: { icon: '🍱', name: '便當配K線', tier: 't1', pts: 10, title: '🍱 午休也在捲' },
+    sec_tea_time: { icon: '☕', name: '三點一刻下午茶', tier: 't1', pts: 10, title: '☕ 午後偷閒讀書人' },
+    sec_weekend_vibe: { icon: '🛋️', name: '週末不放假偷偷捲', tier: 't2', pts: 18, title: '🛋️ 週末自習室學霸' },
+    sec_lucky_min: { icon: '🍀', name: '對稱時刻的幸運星', tier: 't2', pts: 20, title: '🍀 雙數時刻幸運星' },
+    sec_one_acad_1h: { icon: '🧘', name: '閉關一小時破壁宗師', tier: 't6', pts: 220, title: '🧘 破壁閉關大宗師' },
   };
   var TOOL_ACH_MAP = {
-    english: ['acad_en_1', 'acad_en_2', 'acad_en_3'],
-    japanese: ['acad_jp_1', 'acad_jp_2', 'acad_jp_3'],
-    korean: ['acad_kr_1', 'acad_kr_2', 'acad_kr_3'],
-    finance: ['acad_fin_1', 'acad_fin_2', 'acad_fin_3'],
-    stock: ['acad_stk_1', 'acad_stk_2', 'acad_stk_3'],
-    'us-stock': ['acad_uss_1', 'acad_uss_2', 'acad_uss_3'],
-    'addiction-cm': ['acad_cm_1', 'acad_cm_2', 'acad_cm_3'],
-    'health-care': ['acad_hc_1', 'acad_hc_2', 'acad_hc_3'],
-    music: ['acad_mus_1', 'acad_mus_2', 'acad_mus_3'],
-    cooking: ['acad_cook_1', 'acad_cook_2', 'acad_cook_3'],
-    trivia: ['acad_trv_1', 'acad_trv_2', 'acad_trv_3'],
-    'home-repair': ['acad_hr_1', 'acad_hr_2', 'acad_hr_3'],
-    'real-estate': ['acad_re_1', 'acad_re_2', 'acad_re_3'],
-    fitness: ['acad_fit_1', 'acad_fit_2', 'acad_fit_3'],
-    coding: ['acad_py_1', 'acad_py_2', 'acad_py_3'],
-    'smart-iot': ['acad_iot_1', 'acad_iot_2', 'acad_iot_3'],
-    'ai-agent': ['acad_ai_1', 'acad_ai_2', 'acad_ai_3'],
-    'cloud-devops': ['acad_cld_1', 'acad_cld_2', 'acad_cld_3'],
-    xiangqi: ['acad_xq_1', 'acad_xq_2', 'acad_xq_3'],
-    chess: ['acad_ch_1', 'acad_ch_2', 'acad_ch_3'],
-    crypto: ['acad_cry_1', 'acad_cry_2', 'acad_cry_3'],
-    futures: ['acad_fut_1', 'acad_fut_2', 'acad_fut_3'],
-    series: ['acad_ser_1', 'acad_ser_2', 'acad_ser_3'],
-    poker: ['acad_pkr_1', 'acad_pkr_2', 'acad_pkr_3'],
-    nba: ['acad_nba_1', 'acad_nba_2', 'acad_nba_3'],
-    epl: ['acad_epl_1', 'acad_epl_2', 'acad_epl_3'],
-    f1: ['acad_f1_1', 'acad_f1_2', 'acad_f1_3'],
-    baseball: ['acad_bb_1', 'acad_bb_2', 'acad_bb_3'],
-    twbasket: ['acad_twb_1', 'acad_twb_2', 'acad_twb_3'],
-    cinema: ['acad_cin_1', 'acad_cin_2', 'acad_cin_3'],
-    tamagotchi: ['acad_tama_1', 'acad_tama_2', 'acad_tama_3'],
+    english: ['acad_en_1', 'acad_en_2', 'acad_en_3', 'acad_en_4', 'acad_en_5', 'acad_en_6'],
+    japanese: ['acad_jp_1', 'acad_jp_2', 'acad_jp_3', 'acad_jp_4', 'acad_jp_5', 'acad_jp_6'],
+    korean: ['acad_kr_1', 'acad_kr_2', 'acad_kr_3', 'acad_kr_4', 'acad_kr_5', 'acad_kr_6'],
+    finance: ['acad_fin_1', 'acad_fin_2', 'acad_fin_3', 'acad_fin_4', 'acad_fin_5', 'acad_fin_6'],
+    stock: ['acad_stk_1', 'acad_stk_2', 'acad_stk_3', 'acad_stk_4', 'acad_stk_5', 'acad_stk_6'],
+    'us-stock': ['acad_uss_1', 'acad_uss_2', 'acad_uss_3', 'acad_uss_4', 'acad_uss_5', 'acad_uss_6'],
+    'addiction-cm': ['acad_cm_1', 'acad_cm_2', 'acad_cm_3', 'acad_cm_4', 'acad_cm_5', 'acad_cm_6'],
+    'health-care': ['acad_hc_1', 'acad_hc_2', 'acad_hc_3', 'acad_hc_4', 'acad_hc_5', 'acad_hc_6'],
+    music: ['acad_mus_1', 'acad_mus_2', 'acad_mus_3', 'acad_mus_4', 'acad_mus_5', 'acad_mus_6'],
+    cooking: ['acad_cook_1', 'acad_cook_2', 'acad_cook_3', 'acad_cook_4', 'acad_cook_5', 'acad_cook_6'],
+    trivia: ['acad_trv_1', 'acad_trv_2', 'acad_trv_3', 'acad_trv_4', 'acad_trv_5', 'acad_trv_6'],
+    'home-repair': ['acad_hr_1', 'acad_hr_2', 'acad_hr_3', 'acad_hr_4', 'acad_hr_5', 'acad_hr_6'],
+    'real-estate': ['acad_re_1', 'acad_re_2', 'acad_re_3', 'acad_re_4', 'acad_re_5', 'acad_re_6'],
+    fitness: ['acad_fit_1', 'acad_fit_2', 'acad_fit_3', 'acad_fit_4', 'acad_fit_5', 'acad_fit_6'],
+    coding: ['acad_py_1', 'acad_py_2', 'acad_py_3', 'acad_py_4', 'acad_py_5', 'acad_py_6'],
+    'smart-iot': ['acad_iot_1', 'acad_iot_2', 'acad_iot_3', 'acad_iot_4', 'acad_iot_5', 'acad_iot_6'],
+    'ai-agent': ['acad_ai_1', 'acad_ai_2', 'acad_ai_3', 'acad_ai_4', 'acad_ai_5', 'acad_ai_6'],
+    'cloud-devops': ['acad_cld_1', 'acad_cld_2', 'acad_cld_3', 'acad_cld_4', 'acad_cld_5', 'acad_cld_6'],
+    xiangqi: ['acad_xq_1', 'acad_xq_2', 'acad_xq_3', 'acad_xq_4', 'acad_xq_5', 'acad_xq_6'],
+    chess: ['acad_ch_1', 'acad_ch_2', 'acad_ch_3', 'acad_ch_4', 'acad_ch_5', 'acad_ch_6'],
+    crypto: ['acad_cry_1', 'acad_cry_2', 'acad_cry_3', 'acad_cry_4', 'acad_cry_5', 'acad_cry_6'],
+    futures: ['acad_fut_1', 'acad_fut_2', 'acad_fut_3', 'acad_fut_4', 'acad_fut_5', 'acad_fut_6'],
+    series: ['acad_ser_1', 'acad_ser_2', 'acad_ser_3', 'acad_ser_4', 'acad_ser_5', 'acad_ser_6'],
+    poker: ['acad_pkr_1', 'acad_pkr_2', 'acad_pkr_3', 'acad_pkr_4', 'acad_pkr_5', 'acad_pkr_6'],
+    nba: ['acad_nba_1', 'acad_nba_2', 'acad_nba_3', 'acad_nba_4', 'acad_nba_5', 'acad_nba_6'],
+    twbasket: ['acad_twb_1', 'acad_twb_2', 'acad_twb_3', 'acad_twb_4', 'acad_twb_5', 'acad_twb_6'],
+    epl: ['acad_epl_1', 'acad_epl_2', 'acad_epl_3', 'acad_epl_4', 'acad_epl_5', 'acad_epl_6'],
+    f1: ['acad_f1_1', 'acad_f1_2', 'acad_f1_3', 'acad_f1_4', 'acad_f1_5', 'acad_f1_6'],
+    tamagotchi: ['acad_tama_1', 'acad_tama_2', 'acad_tama_3', 'acad_tama_4', 'acad_tama_5', 'acad_tama_6'],
+    cinema: ['acad_cin_1', 'acad_cin_2', 'acad_cin_3', 'acad_cin_4', 'acad_cin_5', 'acad_cin_6'],
   };
 
   function setCookieBoth(name, val) {
@@ -1021,24 +1116,51 @@ textarea.ser-input { resize: vertical; }
 
   function isPlainObj(v) { return !!(v && typeof v === 'object' && !Array.isArray(v)); }
 
+  var ALL_FB_KEYS = [
+    'okayell.campus.feedback.v1', 'okayell.campus.fbqueue.v1',
+    'es.feedback.v1', 'ja.feedback.v1', 'ko.feedback.v1', 'fin.feedback.v1',
+    'acm.feedback.v1', 'hc.feedback.v1', 'trv.feedback.v1', 'gto.feedback.v1',
+    'nba.feedback.v1', 'epl.feedback.v1', 'f1.feedback.v1', 'twb.feedback.v1',
+    'twstock.feedback.v1', 'us.feedback.v1'
+  ];
+
+  function scanSavedFeedbackCount() {
+    var total = 0;
+    for (var i = 0; i < ALL_FB_KEYS.length; i++) {
+      try {
+        var raw = window.localStorage.getItem(ALL_FB_KEYS[i]);
+        if (!raw) continue;
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) total += parsed.length;
+        else if (parsed && typeof parsed === 'object' && Array.isArray(parsed.items)) total += parsed.items.length;
+      } catch (e) { /* ignore */ }
+    }
+    return total;
+  }
+
   function mergeDailyRecord(a, b, tDay) {
     var da = isPlainObj(a) && (a.date === tDay || a.day === tDay) ? a : null;
     var db = isPlainObj(b) && (b.date === tDay || b.day === tDay) ? b : null;
     if (!da && !db) {
       return {
-        date: tDay, day: tDay, checkin: 0, visit: 0, study: 0, studySec: 0, sport: 0, eco: 0,
-        claimed: {}, bonusClaimed: false, fullClaimed: false
+        date: tDay, day: tDay, checkin: 0, visit: 0, acts: 0, visitedIds: {},
+        study: 0, studySec: 0, sport: 0, eco: 0,
+        claimed: {}, bonusClaimed: false, fullClaimed: false, allClearClaimed: false
       };
     }
     var srcA = da || {}, srcB = db || {};
     var claimed = Object.assign({}, isPlainObj(srcA.claimed) ? srcA.claimed : {}, isPlainObj(srcB.claimed) ? srcB.claimed : {});
+    var visitedIds = Object.assign({}, isPlainObj(srcA.visitedIds) ? srcA.visitedIds : {}, isPlainObj(srcB.visitedIds) ? srcB.visitedIds : {});
     var studyVal = Math.max(+srcA.study || 0, +srcA.studySec || 0, +srcB.study || 0, +srcB.studySec || 0);
     var bonus = !!(srcA.bonusClaimed || srcA.fullClaimed || srcB.bonusClaimed || srcB.fullClaimed);
-    var out = Object.assign({}, srcA, srcB, {
+    var allClear = !!(srcA.allClearClaimed || srcB.allClearClaimed);
+    return Object.assign({}, srcA, srcB, {
       date: tDay,
       day: tDay,
       checkin: Math.max(+srcA.checkin || 0, +srcB.checkin || 0),
-      visit: Math.max(+srcA.visit || 0, +srcB.visit || 0),
+      visit: Math.max(+srcA.visit || 0, +srcB.visit || 0, Object.keys(visitedIds).length),
+      acts: Math.max(+srcA.acts || 0, +srcB.acts || 0),
+      visitedIds: visitedIds,
       study: studyVal,
       studySec: studyVal,
       sport: Math.max(+srcA.sport || 0, +srcB.sport || 0),
@@ -1046,8 +1168,8 @@ textarea.ser-input { resize: vertical; }
       claimed: claimed,
       bonusClaimed: bonus,
       fullClaimed: bonus,
+      allClearClaimed: allClear,
     });
-    return out;
   }
 
   function loadFunState() {
@@ -1085,6 +1207,9 @@ textarea.ser-input { resize: vertical; }
       studySec: Math.max(+ls.studySec || 0, +ck.sec || 0),
       dailyPts: Math.max(+ls.dailyPts || 0, +ck.dpts || 0),
       dailyFullDays: Math.max(+ls.dailyFullDays || 0, +ck.dfull || 0),
+      dailyAllClearDays: +ls.dailyAllClearDays || 0,
+      feedbackCount: Math.max(+ls.feedbackCount || 0, +ck.fbc || 0, scanSavedFeedbackCount()),
+      fountainCoins: +ls.fountainCoins || 0,
       triviaSubmitted: !!(ls.triviaSubmitted || badges.acad_trv_sub),
       daily: daily,
     };
@@ -1114,6 +1239,8 @@ textarea.ser-input { resize: vertical; }
       st.studySec = Math.max(+latest.studySec || 0, +st.studySec || 0);
       st.dailyPts = Math.max(+latest.dailyPts || 0, +st.dailyPts || 0);
       st.dailyFullDays = Math.max(+latest.dailyFullDays || 0, +st.dailyFullDays || 0);
+      st.dailyAllClearDays = Math.max(+latest.dailyAllClearDays || 0, +st.dailyAllClearDays || 0);
+      st.feedbackCount = Math.max(+latest.feedbackCount || 0, +st.feedbackCount || 0);
 
       var merged = Object.assign({}, st.raw || {}, latest, {
         ach: mergedAch,
@@ -1123,6 +1250,8 @@ textarea.ser-input { resize: vertical; }
         studySec: st.studySec,
         dailyPts: st.dailyPts,
         dailyFullDays: st.dailyFullDays,
+        dailyAllClearDays: st.dailyAllClearDays,
+        feedbackCount: st.feedbackCount,
         triviaSubmitted: !!(latest.triviaSubmitted || st.triviaSubmitted),
         daily: mergedDaily,
       });
@@ -1139,12 +1268,19 @@ textarea.ser-input { resize: vertical; }
         days: dayKeys,
         dpts: +st.dailyPts || 0,
         dfull: +st.dailyFullDays || 0,
+        fbc: +st.feedbackCount || 0,
         dl: st.daily || null,
       });
       var enc = encodeURIComponent(JSON.stringify(min));
-      if (enc.length > 3600) {
+      if (enc.length > 3500) {
         delete min.pkmn;
         delete min.cars;
+        enc = encodeURIComponent(JSON.stringify(min));
+      }
+      if (enc.length > 3700) {
+        min.ach = (min.ach || []).slice(-80);
+        delete min.asec;
+        delete min.aact;
         enc = encodeURIComponent(JSON.stringify(min));
       }
       if (enc.length <= 3900) {
@@ -1179,34 +1315,67 @@ textarea.ser-input { resize: vertical; }
     return true;
   }
 
+  var NAV_DAILY_SPECS = [
+    { id: 'checkin', goal: 1, pts: 5, icon: '📅', name: '每日校園簽到' },
+    { id: 'visit', goal: 1, pts: 5, icon: '📚', name: '每日初探學院' },
+    { id: 'eco', goal: 1, pts: 5, icon: '🌿', name: '每日校園散步互動' },
+    { id: 'sport', goal: 1, pts: 5, icon: '🎣', name: '每日池畔垂釣紓壓' },
+    { id: 'study', goal: 300, pts: 10, icon: '⏱️', name: '每日專注學習 5 分鐘' },
+    { id: 'acts10', goal: 10, pts: 10, icon: '✍️', name: '每日課堂練習 10 次' },
+    { id: 'visit3', goal: 3, pts: 12, icon: '🧭', name: '每日跨領域三院巡禮' },
+    { id: 'study15', goal: 900, pts: 13, icon: '📖', name: '每日沉浸進修 15 分鐘' },
+    { id: 'acts30', goal: 30, pts: 20, icon: '🧠', name: '每日實戰特訓 30 次' },
+    { id: 'study30', goal: 1800, pts: 22, icon: '🔥', name: '每日黃金半小時學霸' },
+    { id: 'visit5', goal: 5, pts: 23, icon: '🌐', name: '每日博學五院通才' },
+    { id: 'study45', goal: 2700, pts: 30, icon: '👑', name: '每日大師苦讀 45 分鐘' }
+  ];
+
   function evaluateDailyInAcademy(st) {
-    if (!st || !st.daily) return;
+    if (!st) return;
+    var tDay = todayStr();
+    st.daily = mergeDailyRecord(null, st.daily, tDay);
     var d = st.daily;
     d.claimed = isPlainObj(d.claimed) ? d.claimed : {};
-    var changed = false;
-    var toastItem = null;
-    if ((+d.visit || 0) >= 1 && !d.claimed.visit) {
-      d.claimed.visit = Date.now();
-      st.dailyPts = (+st.dailyPts || 0) + 5;
-      changed = true;
-    }
+    d.visitedIds = isPlainObj(d.visitedIds) ? d.visitedIds : {};
     var sSec = Math.max(+d.study || 0, +d.studySec || 0);
     d.study = sSec;
     d.studySec = sSec;
-    if (sSec >= 300 && !d.claimed.study) {
-      d.claimed.study = Date.now();
-      st.dailyPts = (+st.dailyPts || 0) + 6;
-      changed = true;
-      toastItem = { icon: '⏱️', name: '每日任務達成：每日專注 5 分鐘', pts: 6, title: '' };
-    }
-    var allFive = !!(d.claimed.checkin && d.claimed.visit && d.claimed.study && d.claimed.sport && d.claimed.eco);
-    if (allFive && !d.bonusClaimed) {
+    var vCnt = Math.max(+d.visit || 0, Object.keys(d.visitedIds).length);
+    d.visit = vCnt;
+    var aCnt = Math.max(+d.acts || 0, 0);
+
+    var changed = false;
+    var toastItem = null;
+    NAV_DAILY_SPECS.forEach(function (sp) {
+      var val = 0;
+      if (sp.id === 'study' || sp.id === 'study15' || sp.id === 'study30' || sp.id === 'study45') val = sSec;
+      else if (sp.id === 'visit' || sp.id === 'visit3' || sp.id === 'visit5') val = vCnt;
+      else if (sp.id === 'acts10' || sp.id === 'acts30') val = aCnt;
+      else val = +d[sp.id] || 0;
+      if (val >= sp.goal && !d.claimed[sp.id]) {
+        d.claimed[sp.id] = Date.now();
+        st.dailyPts = (+st.dailyPts || 0) + sp.pts;
+        changed = true;
+        if (sp.id !== 'visit') {
+          toastItem = { icon: sp.icon, name: '每日任務達成：' + sp.name, pts: sp.pts, title: '' };
+        }
+      }
+    });
+    var doneCnt = NAV_DAILY_SPECS.filter(function (sp) { return !!d.claimed[sp.id]; }).length;
+    if (doneCnt >= 5 && !d.bonusClaimed) {
       d.bonusClaimed = true;
       d.fullClaimed = true;
-      st.dailyPts = (+st.dailyPts || 0) + 5;
+      st.dailyPts = (+st.dailyPts || 0) + 10;
       st.dailyFullDays = (+st.dailyFullDays || 0) + 1;
       changed = true;
-      toastItem = { icon: '🎁', name: '今日 5 項每日任務全勤達成！', pts: 5, title: '' };
+      toastItem = { icon: '🎁', name: '今日達成 5 項每日任務達標獎！', pts: 10, title: '' };
+    }
+    if (doneCnt >= NAV_DAILY_SPECS.length && !d.allClearClaimed) {
+      d.allClearClaimed = true;
+      st.dailyPts = (+st.dailyPts || 0) + 20;
+      st.dailyAllClearDays = (+st.dailyAllClearDays || 0) + 1;
+      changed = true;
+      toastItem = { icon: '🏆', name: '今日 12 項每日任務全制霸大賞！', pts: 20, title: '' };
     }
     if (changed) {
       saveFunState(st);
@@ -1252,18 +1421,24 @@ textarea.ser-input { resize: vertical; }
 
   function checkAcademyProgress(st, toolId) {
     evaluateDailyInAcademy(st);
-    var trio = TOOL_ACH_MAP[toolId];
+    var stages = TOOL_ACH_MAP[toolId];
     var acts = +(st.academyActs[toolId] || 0);
     var aSec = +(st.academySec[toolId] || 0);
-    if (trio) {
-      if (acts >= 1 || aSec >= 5) unlockInAcademy(st, trio[0]);
-      if (acts >= 5 || aSec >= 300) unlockInAcademy(st, trio[1]);
-      if (trio[2] && (acts >= 15 || aSec >= 900)) unlockInAcademy(st, trio[2]);
+    if (stages) {
+      if (stages[0] && (acts >= 1 || aSec >= 5)) unlockInAcademy(st, stages[0]);
+      if (stages[1] && (acts >= 5 || aSec >= 900)) unlockInAcademy(st, stages[1]);
+      if (stages[2] && (acts >= 15 || aSec >= 1800)) unlockInAcademy(st, stages[2]);
+      if (stages[3] && (acts >= 35 || aSec >= 3600)) unlockInAcademy(st, stages[3]);
+      if (stages[4] && (acts >= 60 && aSec >= 5400)) unlockInAcademy(st, stages[4]);
+      if (stages[5] && (acts >= 120 && aSec >= 7200)) unlockInAcademy(st, stages[5]);
     }
+    if (acts >= 100 && aSec >= 3600) unlockInAcademy(st, 'sec_one_acad_1h');
     if (acts >= 20 || aSec >= 1200) unlockInAcademy(st, 'acad_deep20');
     var totalActs = Object.keys(st.academyActs || {}).reduce(function (s, k) { return s + (+st.academyActs[k] || 0); }, 0);
     if (totalActs >= 50) unlockInAcademy(st, 'acad_acts50');
     if (totalActs >= 100) unlockInAcademy(st, 'acad_acts100');
+    if (totalActs >= 250) unlockInAcademy(st, 'acad_acts250');
+    if (totalActs >= 500) unlockInAcademy(st, 'acad_acts500');
     if (aSec >= 600) unlockInAcademy(st, 'time_acad10m');
     if (aSec >= 1800) unlockInAcademy(st, 'time_acad30m');
     if (st.studySec >= 180) unlockInAcademy(st, 'time_3m');
@@ -1276,19 +1451,40 @@ textarea.ser-input { resize: vertical; }
     if (st.studySec >= 21600) unlockInAcademy(st, 'time_360m');
     if (st.studySec >= 36000) unlockInAcademy(st, 'time_600m');
     if (st.triviaSubmitted) unlockInAcademy(st, 'acad_trv_sub');
-    var now = new Date(), hr = now.getHours(), mn = now.getMinutes();
+    var wishSum = (+st.feedbackCount || 0) + (+st.fountainCoins || 0);
+    if (wishSum >= 1) unlockInAcademy(st, 'fountain_wish');
+    if (wishSum >= 3) unlockInAcademy(st, 'wacky_wish3');
+    var now = new Date(), hr = now.getHours(), mn = now.getMinutes(), dow = now.getDay();
     if (toolId === 'cinema') {
       checkCinemaSpecificProgress(st);
       if (hr >= 22 || hr < 4) unlockInAcademy(st, 'wacky_midnight_movie');
     }
+    if (toolId === 'cooking' && (hr >= 21 || hr < 2)) unlockInAcademy(st, 'wacky_night_snack');
     if (hr >= 0 && hr < 5) unlockInAcademy(st, 'night_owl');
     if (hr >= 5 && hr < 8) unlockInAcademy(st, 'early_bird');
     if ((hr === 11 && mn >= 30) || hr === 12 || (hr === 13 && mn <= 30)) unlockInAcademy(st, 'wacky_lunch');
+    if (hr === 15 || (hr === 16 && mn <= 30)) unlockInAcademy(st, 'sec_tea_time');
+    if (dow === 0 || dow === 6) unlockInAcademy(st, 'sec_weekend_vibe');
+    if (mn === 0 || mn === 11 || mn === 22 || mn === 33 || mn === 44 || mn === 55) unlockInAcademy(st, 'sec_lucky_min');
     var dayCnt = Object.keys(st.days || {}).length;
     if (dayCnt >= 3) unlockInAcademy(st, 'streak_3d');
     if (dayCnt >= 7) unlockInAcademy(st, 'streak_7d');
     if (dayCnt >= 14) unlockInAcademy(st, 'streak_14d');
     if (dayCnt >= 30) unlockInAcademy(st, 'streak_30d');
+  }
+
+  function recordFeedbackInAcademy() {
+    try {
+      var st = loadFunState();
+      st.feedbackCount = Math.max(+st.feedbackCount || 0, scanSavedFeedbackCount()) + 1;
+      if (st.daily) st.daily.eco = (+st.daily.eco || 0) + 1;
+      saveFunState(st);
+      unlockInAcademy(st, 'fountain_wish');
+      if ((+st.feedbackCount || 0) + (+st.fountainCoins || 0) >= 3) {
+        unlockInAcademy(st, 'wacky_wish3');
+      }
+      evaluateDailyInAcademy(st);
+    } catch (e) { /* ignore */ }
   }
 
   function localOrigin(loc, port) {
@@ -1603,7 +1799,7 @@ textarea.ser-input { resize: vertical; }
         (Array.isArray(stu.badges) ? stu.badges : []).forEach(function (b) { if (b) mergedBadges[b] = 1; });
         (Array.isArray(ckStu.badges) ? ckStu.badges : []).forEach(function (b) { if (b) mergedBadges[b] = 1; });
         Object.keys(funSt.badges || {}).forEach(function (b) { if (b) mergedBadges[b] = 1; });
-        stu.badges = Object.keys(mergedBadges).slice(0, 200);
+        stu.badges = Object.keys(mergedBadges).slice(0, 1000);
       } catch (e) { /* ignore */ }
       var minBadgeScore = 0;
       (stu.badges || []).forEach(function (bid) {
@@ -2106,11 +2302,7 @@ textarea.ser-input { resize: vertical; }
   function formatAvatarLabel(av) {
     if (!av) return '';
     var s = String(av);
-    if (s.indexOf('pkmn:') === 0) {
-      var pid = parseInt(s.slice(5), 10);
-      var pk = pid && window.CAMPUS_POKEDEX_GEN1 && window.CAMPUS_POKEDEX_GEN1.BY_ID && window.CAMPUS_POKEDEX_GEN1.BY_ID[pid];
-      return pk && pk.name ? ('🦋 ' + pk.name) : ('🦋#' + (pid || ''));
-    }
+    if (s.indexOf('pkmn:') === 0) return '🌿';
     return s;
   }
 
@@ -2161,6 +2353,7 @@ textarea.ser-input { resize: vertical; }
         var urlStr = typeof input === 'string' ? input : (input && input.url ? String(input.url) : '');
         var method = (init && init.method ? String(init.method) : (input && input.method ? String(input.method) : 'GET')).toUpperCase();
         if (method === 'POST' && /(^|\/)api\/feedback(\?|$)/i.test(urlStr) && init && typeof init.body === 'string') {
+          recordFeedbackInAcademy();
           var parsed = JSON.parse(init.body);
           if (parsed && typeof parsed === 'object' && !parsed.reporter) {
             var rep = getReporterInfo();
@@ -2331,6 +2524,7 @@ textarea.ser-input { resize: vertical; }
   function fbKey(o) { return [o.tool, o.kindLabel, o.title, o.description].join('\u0001'); }
 
   function sendStaticFeedback(opts, extra) {
+    recordFeedbackInAcademy();
     var o = normalizeFeedback(opts, extra);
     var rep = getReporterInfo();
     o._rep = rep;
@@ -2424,17 +2618,25 @@ textarea.ser-input { resize: vertical; }
     if (!toolId || !TOOL_MAP[toolId]) return;
     var st = loadFunState();
     st.academyActs[toolId] = (st.academyActs[toolId] || 0) + 1;
-    if (st.daily) st.daily.visit = (+st.daily.visit || 0) + 1;
+    if (st.daily) {
+      st.daily.visitedIds = isPlainObj(st.daily.visitedIds) ? st.daily.visitedIds : {};
+      st.daily.visitedIds[toolId] = 1;
+      st.daily.visit = Math.max(+st.daily.visit || 0, Object.keys(st.daily.visitedIds).length);
+      st.daily.acts = (+st.daily.acts || 0) + 1;
+    }
     saveFunState(st);
     setTimeout(function () { checkAcademyProgress(st, toolId); }, 600);
 
-    // 每 5 秒累計該學院與全校學習時數（含今日學習任務秒數，同步寫入 study 與 studySec）
+    // 每 5 秒累計該學院與全校學習時數（含今日學習任務秒數與跨午夜自動重置）
     setInterval(function () {
       if (document.hidden) return;
       var cur = loadFunState();
       cur.studySec = (cur.studySec || 0) + 5;
       cur.academySec[toolId] = (cur.academySec[toolId] || 0) + 5;
       if (cur.daily) {
+        cur.daily.visitedIds = isPlainObj(cur.daily.visitedIds) ? cur.daily.visitedIds : {};
+        cur.daily.visitedIds[toolId] = 1;
+        cur.daily.visit = Math.max(+cur.daily.visit || 0, Object.keys(cur.daily.visitedIds).length);
         var nextDailySec = Math.max(+cur.daily.study || 0, +cur.daily.studySec || 0) + 5;
         cur.daily.studySec = nextDailySec;
         cur.daily.study = nextDailySec;
@@ -2452,6 +2654,7 @@ textarea.ser-input { resize: vertical; }
       if (!pendingActs && !pendingTrivia) return;
       var cur = loadFunState();
       cur.academyActs[toolId] = (cur.academyActs[toolId] || 0) + pendingActs;
+      if (cur.daily) cur.daily.acts = (+cur.daily.acts || 0) + pendingActs;
       if (pendingTrivia) cur.triviaSubmitted = true;
       pendingActs = 0;
       pendingTrivia = false;
@@ -2701,8 +2904,16 @@ textarea.ser-input { resize: vertical; }
     if (!target || !TOOL_MAP[target]) return;
     var st = loadFunState();
     st.academyActs[target] = (+st.academyActs[target] || 0) + 1;
+    if (st.daily) st.daily.acts = (+st.daily.acts || 0) + 1;
     saveFunState(st);
     checkAcademyProgress(st, target);
+  }
+
+  function openFeedbackPublic(tool, payload) {
+    if (typeof payload === 'string') {
+      return sendStaticFeedback(tool, { title: '意見回饋', description: payload });
+    }
+    return sendStaticFeedback(tool, payload || {});
   }
 
   function unlockAchPublic(achId) {
@@ -2727,6 +2938,8 @@ textarea.ser-input { resize: vertical; }
     detectDeviceInfo: detectDeviceInfo,
     deliveryLinks: deliveryLinks,
     sendStaticFeedback: sendStaticFeedback,
+    openFeedback: openFeedbackPublic,
+    recordFeedback: recordFeedbackInAcademy,
     flushFeedbackQueue: flushFeedbackQueue,
     fallbackHtml: fallbackHtml
   };
@@ -2738,9 +2951,19 @@ textarea.ser-input { resize: vertical; }
   <script>
 // Auto-generated by tools/release_mgr.py
 window.SER_RELEASES = {
-  "current_version": "1.1.0",
-  "last_fingerprint": "1426a0ff1ae8db95",
+  "current_version": "1.2.0",
+  "last_fingerprint": "3852a7ef25e21cb3",
   "releases": [
+    {
+      "version": "1.2.0",
+      "date": "2026-11-19 15:23",
+      "title": "串流與影集學院 v1.2.0 七大平台熱播與陸劇片庫更新",
+      "changes": [
+        "🔥 新增「七大平台熱播」獨立分頁：每週自動同步 Netflix、HBO／Max、Disney+、myVideo、愛奇藝、騰訊視頻與優酷線上熱播真人影集",
+        "🏮 新增「陸劇」分類與 16 部經典陸劇無雷分季導讀，原片庫升級為「跨年代經典片庫」（共 158 部）",
+        "🔄 接入校園排程與 GitHub Actions 每週自動抓取同步，本機版支援手動「立即同步」"
+      ]
+    },
     {
       "version": "1.1.0",
       "date": "2026-11-17 23:22",
@@ -13662,10 +13885,13 @@ window.SER_SERIES.push({
             else { btn.disabled = false; btn.textContent = '📮 送出'; SER.toast((res && res.error) || '送出失敗，請稍後再試'); }
           })
           .catch(function () { btn.disabled = false; btn.textContent = '📮 送出'; SER.toast('送出失敗，請稍後再試'); });
+      } else if (window.CampusNav && typeof window.CampusNav.sendStaticFeedback === 'function') {
+        window.CampusNav.sendStaticFeedback('series', { kindLabel: cat, title: title || '意見回饋', description: msg })
+          .then(function () { done('🎉 已收到你的回饋，系統將自動轉寄給站長！'); })
+          .catch(function () { done('🎉 已收到你的回饋，恢復連線時將自動補寄！'); });
       } else if (window.CampusNav && typeof window.CampusNav.openFeedback === 'function') {
         window.CampusNav.openFeedback('series', '[' + cat + '] ' + (title ? title + '：' : '') + msg);
-        btn.disabled = false;
-        btn.textContent = '📮 送出';
+        done('🎉 已收到你的回饋！');
       } else {
         btn.disabled = false;
         btn.textContent = '📮 送出';
