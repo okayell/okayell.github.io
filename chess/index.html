@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>♟️ 西洋棋學院 · 線上對弈、AI 對弈、戰術題庫與逆轉技巧課程</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url%28%23g%29'/%3E%3Ccircle cx='32' cy='19' r='8.5' fill='%23fff'/%3E%3Cpath d='M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z' fill='%23fff'/%3E%3Crect x='13' y='46' width='38' height='8' rx='3' fill='%23fff'/%3E%3C/svg%3E" /><link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url%28%23g%29'/%3E%3Ccircle cx='32' cy='19' r='8.5' fill='%23fff'/%3E%3Cpath d='M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z' fill='%23fff'/%3E%3Crect x='13' y='46' width='38' height='8' rx='3' fill='%23fff'/%3E%3C/svg%3E" /><meta name="description" content="西洋棋學院（Chess Academy）：免安裝的西洋棋棋盤，內建完整規則引擎（王車易位、吃過路兵、升變），支援免註冊的線上對弈（計時、悔棋請求、觀戰）、四種難度的 AI 對弈與提示、戰術與逆轉題庫、戰術與逆轉技巧課程、同機雙人對弈、代數記譜、PGN 棋譜回放與匯入，以及六種棋子的走法速查。" /><style>
+<html lang="zh-Hant"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>♟️ 西洋棋學院 · 線上對弈、AI 對弈、戰術題庫與逆轉技巧課程</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url%28%23g%29'/%3E%3Ccircle cx='32' cy='19' r='8.5' fill='%23fff'/%3E%3Cpath d='M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z' fill='%23fff'/%3E%3Crect x='13' y='46' width='38' height='8' rx='3' fill='%23fff'/%3E%3C/svg%3E" /><link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url%28%23g%29'/%3E%3Ccircle cx='32' cy='19' r='8.5' fill='%23fff'/%3E%3Cpath d='M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z' fill='%23fff'/%3E%3Crect x='13' y='46' width='38' height='8' rx='3' fill='%23fff'/%3E%3C/svg%3E" /><meta name="description" content="西洋棋學院（Chess Academy）：免安裝的西洋棋棋盤，內建完整規則引擎（王車易位、吃過路兵、升變），支援免註冊的線上對弈（計時、悔棋請求、觀戰）、十位不同等級的 AI 對手與棋力等級賽、戰術與逆轉題庫、戰術與逆轉技巧課程、同機雙人對弈、代數記譜、PGN 棋譜回放與匯入，以及六種棋子的走法速查。" /><style>
 /* ♟️ 西洋棋學院 — 淺色、乾淨、以棋盤為主角的版面 */
 :root {
   --bg: #f8f6f1;
@@ -412,6 +412,88 @@ body[data-view='online'] .ch-board-wrap { width: min(100%, calc(100vh - 190px), 
 .ls-list { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 4px; color: #374151; }
 .ls-tip { margin-top: 10px; padding: 8px 12px; border-radius: 10px; background: var(--accent-soft); color: #4c1d95; font-size: 14px; }
 
+/* ---------- 棋力段位 ---------- */
+.rank-pill {
+  border: 1px solid #e5c76b; background: #fffbeb; color: #92400e; border-radius: 999px;
+  padding: 1px 10px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap;
+}
+.rank-pill:hover, .rank-pill.active { background: #fef3c7; border-color: #d97706; }
+.rk-badge {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  padding: 1px 9px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap;
+  border: 1px solid transparent;
+}
+.rk-badge.is-none { background: #f3f4f6; color: var(--muted); border-color: var(--line); }
+.rk-badge.is-kyu { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.rk-badge.is-dan { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.rk-badge.is-pro { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; border-color: #f59e0b; }
+.rk-badge-lg { font-size: 20px; padding: 8px 18px; border-width: 2px; }
+.rk-bar { display: block; height: 6px; border-radius: 999px; background: #eee9dd; overflow: hidden; }
+.rk-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #f59e0b, #d97706); }
+.rk-mini {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 8px 10px; border-radius: 10px;
+  background: #fffbeb; border: 1px solid #f3e3b3; text-decoration: none; color: var(--text); font-size: 13px;
+}
+.rk-mini:hover { border-color: #d97706; }
+.rk-mini-txt { flex: 1; min-width: 0; }
+.rk-mini .rk-bar { flex: 1 0 100%; }
+.st-rank { margin: 0 0 6px; }
+.opp-card label.opp-wide, .opp-card #oppSel { min-width: 0; }
+.opp-card > label:first-child { grid-column: 1 / -1; }
+.opp-card select { max-width: 100%; }
+.rk-result { margin: 4px 0; padding: 6px 10px; border-radius: 10px; background: #f3f4f6; font-size: 14px; }
+.rk-result.is-promo { background: linear-gradient(135deg, #fef3c7, #fde68a); animation: rk-pop .6s ease-out; }
+.rk-result.is-demo { background: #fee2e2; }
+.rk-warn { margin: 8px 0 0; padding: 6px 10px; border-radius: 10px; background: #fee2e2; color: #991b1b; font-size: 13.5px; }
+.rk-result .is-up, .rk-log-d.is-up { color: #15803d; }
+.rk-result .is-down, .rk-log-d.is-down { color: #b91c1c; }
+@keyframes rk-pop { 0% { transform: scale(.92); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .rk-result.is-promo { animation: none; } }
+
+.rank-wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 14px; }
+.rk-hero-main { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.rk-hero h1 { margin: 0; font-size: 20px; }
+.rk-hero p { margin: 2px 0; }
+.rk-num { font-size: 20px; font-variant-numeric: tabular-nums; }
+.rk-prog { margin-top: 10px; display: grid; gap: 4px; }
+.rk-prog small { color: var(--muted); }
+.rk-prov { margin: 8px 0 0; padding: 6px 10px; border-radius: 10px; background: var(--accent-soft); font-size: 13.5px; }
+.rk-max { margin: 8px 0 0; font-weight: 700; }
+.rk-ai, .rk-ladder, .rk-log { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rk-ai li {
+  display: grid; grid-template-columns: minmax(0, 1.3fr) 64px minmax(0, 1.4fr) minmax(0, 1.1fr) auto;
+  align-items: center; gap: 4px 10px; padding: 6px 10px; border-radius: 10px; background: #faf8f3; font-size: 13.5px;
+}
+.rk-ai li.is-rec { background: #fffbeb; box-shadow: inset 0 0 0 1px #f59e0b; }
+.rk-ai-name { min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rk-ai-name em { font-style: normal; font-size: 11.5px; font-weight: 700; color: #92400e; background: #fde68a; border-radius: 999px; padding: 0 7px; }
+.rk-ai-rt, .rk-min, .rk-log-r, .rk-log-d { font-variant-numeric: tabular-nums; }
+.rk-ai-rt { color: var(--muted); text-align: right; }
+.rk-ai-pv.is-nogain { color: var(--muted); }
+.rk-ai small { color: var(--muted); font-size: 12px; }
+.rk-go { padding: 4px 12px; font-size: 13px; }
+.rk-group { font-size: 14px; margin: 14px 0 6px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.rk-group small { font-weight: 400; font-size: 12.5px; color: var(--muted); }
+.rk-ladder li { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; padding: 4px 10px; border-radius: 10px; font-size: 13.5px; }
+.rk-ladder li.is-done { opacity: .62; }
+.rk-ladder li.is-me { background: #fffbeb; box-shadow: inset 0 0 0 1px #f59e0b; }
+.rk-ladder .rk-badge { min-width: 86px; }
+.rk-min { color: var(--muted); min-width: 58px; }
+.rk-at { color: var(--muted); font-size: 12.5px; }
+.rk-me { margin-left: auto; font-weight: 700; color: #92400e; font-size: 12.5px; }
+.rk-log li { display: flex; align-items: baseline; gap: 8px; font-size: 13.5px; }
+.rk-log-opp { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-log-d { width: 44px; text-align: right; font-weight: 700; }
+.rk-log-r { width: 44px; text-align: right; }
+.rk-log small { color: var(--muted); font-size: 12px; width: 84px; text-align: right; }
+@media (max-width: 880px) {
+  .rk-ai li { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .rk-ai-pv { grid-column: 1 / 3; }
+  .rk-ai small { grid-column: 1 / 3; }
+  .rk-go { grid-column: 3; grid-row: 1 / 4; align-self: center; }
+  .rk-log small { width: auto; }
+}
+
 </style></head>
 
 <body>
@@ -423,6 +505,7 @@ body[data-view='online'] .ch-board-wrap { width: min(100%, calc(100vh - 190px), 
         <span class="brand-name">西洋棋學院</span>
       </a>
       <button id="versionBadgeBtn" class="ver-pill" type="button" title="查看版本更新紀錄"><span id="verText">v1.0.0</span></button>
+      <a id="rankPill" class="rank-pill" data-nav="rank" href="#/rank" title="我的等級與升級規則">🏅 等級</a>
       <nav class="main-nav" aria-label="主導覽列">
         <a href="#/play" data-nav="play" class="nav-tab active">♟️ 對弈</a>
         <a href="#/online" data-nav="online" class="nav-tab">🌐 線上</a>
@@ -713,16 +796,16 @@ window.__STATIC_SINGLE_FILE__ = true;
     acad_cld_5: { icon: '💎', name: 'SRE 高可用災難復原專家', tier: 't5', pts: 120, title: '💎 首席 SRE 可靠度工程師' },
     acad_cld_6: { icon: '👑', name: '雲端原生傳說總指揮官', tier: 't6', pts: 220, title: '👑 雲端原生傳說總指揮' },
     acad_xq_1: { icon: '🐘', name: '楚河漢界初登場', tier: 't1', pts: 8, title: '🐘 象棋見習棋士' },
-    acad_xq_2: { icon: '♟️', name: '當頭炮開局', tier: 't2', pts: 20, title: '♟️ 象棋業餘棋士' },
+    acad_xq_2: { icon: '♟️', name: '當頭炮開局', tier: 't2', pts: 20, title: '♟️ 當頭炮棋友' },
     acad_xq_3: { icon: '🏆', name: '運籌帷幄', tier: 't3', pts: 40, title: '🏆 楚河漢界棋王' },
     acad_xq_4: { icon: '📜', name: '古譜殘局破陣高手', tier: 't4', pts: 65, title: '📜 橘中秘殘局高手' },
-    acad_xq_5: { icon: '💎', name: '車馬炮聯攻特級大師', tier: 't5', pts: 120, title: '💎 象棋特級大師' },
-    acad_xq_6: { icon: '👑', name: '楚河漢界傳說九段國手', tier: 't6', pts: 220, title: '👑 楚河傳說九段國手' },
+    acad_xq_5: { icon: '💎', name: '車馬炮聯攻研究家', tier: 't5', pts: 120, title: '💎 車馬炮聯攻研究家' },
+    acad_xq_6: { icon: '👑', name: '楚河漢界傳說棋痴', tier: 't6', pts: 220, title: '👑 楚河漢界傳說棋痴' },
     acad_ch_1: { icon: '♟️', name: '六十四格初登場', tier: 't1', pts: 8, title: '♟️ 西洋棋見習棋士' },
     acad_ch_2: { icon: '⚔️', name: '騎士捉雙', tier: 't2', pts: 20, title: '⚔️ 西洋棋戰術手' },
-    acad_ch_3: { icon: '👑', name: '逆轉大師', tier: 't3', pts: 40, title: '👑 六十四格逆轉大師' },
+    acad_ch_3: { icon: '👑', name: '逆轉達人', tier: 't3', pts: 40, title: '👑 六十四格逆轉達人' },
     acad_ch_4: { icon: '🏰', name: '開局定式與棄子專家', tier: 't4', pts: 65, title: '🏰 皇家開局戰術師' },
-    acad_ch_5: { icon: '💎', name: '國際棋聯特級宗師', tier: 't5', pts: 120, title: '💎 西洋棋特級宗師' },
+    acad_ch_5: { icon: '💎', name: '六十四格戰術研究家', tier: 't5', pts: 120, title: '💎 六十四格戰術研究家' },
     acad_ch_6: { icon: '🌌', name: '六十四格傳說世界棋王', tier: 't6', pts: 220, title: '🌌 六十四格傳說棋王' },
     acad_cry_1: { icon: '🪙', name: '創世區塊', tier: 't1', pts: 8, title: '🪙 鏈上新鮮人' },
     acad_cry_2: { icon: '⛓️', name: '鏈上學徒', tier: 't2', pts: 20, title: '⛓️ 區塊鏈學徒' },
@@ -2729,8 +2812,16 @@ window.__STATIC_SINGLE_FILE__ = true;
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.CHESS_RELEASES = {
-  "current_version": "1.2.0",
+  "current_version": "1.3.0",
   "releases": [
+    {
+      "version": "1.3.0",
+      "date": "2026-11-23 16:51",
+      "title": "西洋棋學院 v1.3.0 更新",
+      "changes": [
+        "棋盤、規則引擎與棋譜功能更新"
+      ]
+    },
     {
       "version": "1.2.0",
       "date": "2026-11-19 15:22",
@@ -2765,7 +2856,7 @@ window.CHESS_RELEASES = {
       ]
     }
   ],
-  "last_fingerprint": "5e31193d374ffb66"
+  "last_fingerprint": "db93cdf71be99c5a"
 };
 
 
@@ -3635,33 +3726,382 @@ window.CHESS_RELEASES = {
 })();
 
 
-// === js/stats.js ===
+// === js/rank.js ===
 // ============================================================================
-// ♟️ 西洋棋學院 — 我的戰績（純運算＋產生 HTML 字串，無 DOM、無網路、不直接碰 localStorage）
+// ♟️ 西洋棋學院 — 棋力等級（純運算＋產生 HTML 字串，無 DOM、無網路、不直接碰 localStorage）
 //
-// 戰績存在瀏覽器 localStorage 的 ch.stats.v1（由 app.js 讀寫），結構：
-// st = {
-//   v: 1,
-//   ai:  { 1: { w, l, d }, …, 4: { w, l, d } },          // 對 AI，依難度分開
-//   opp: { <對手 uid>: { name, w, l, d, last, games: [ { rid, at, r, s, why, n } ] } },
-//                                                          // 線上對弈，依對手分開；games 只留最近幾局
-//   rids: [ 已經記過的線上房號 ],                           // 同一局只記一次
-//   pending: { <房號>: 入座時間 },                          // 我有入座、還沒記到結果的線上對局
+// 參考現實的分級方式：業餘級位（數字越小越強）→ 專家 → 大師稱號（CM、FM、IM、GM）。
+// 這是學院內部的棋力認證，不等同於 FIDE 或任何協會核發的正式等級分與稱號。
+//
+// 升級方式：和 AI 下「等級賽」。每盤依勝負與對手強弱增減「棋力分」（Elo 算法），
+// 棋力分跨過門檻就升級；棋力分掉到目前等級的門檻以下 DEMOTE_GAP 分就降級（有緩衝，不會在門檻邊緣反覆升降）。
+//
+// 等級資料跟戰績放在一起（localStorage 的 ch.stats.v1 → rank），結構：
+// rk = {
+//   r: 目前棋力分, n: 下過幾盤等級賽, peak: 最高棋力分,
+//   top: 目前的等級（RANKS 的索引；-1 = 還沒定級）, best: 到過的最高等級,
+//   log: [ { at, lv: AI 難度, ai: AI 棋力分, res: 'w' | 'l' | 'd', d: 這盤增減, r: 這盤之後的棋力分 } ]  // 最近幾盤，新的在前
 // }
-// r：'w' 勝、'l' 負、'd' 和（一律以「我」的角度）；s：我執 'white' 或 'black'。
-// 瀏覽器（app.js、online.js）與 Node 測試（tools/check_engine.js）共用同一份程式。
+// 瀏覽器（app.js）與 Node 測試（tools/check_engine.js）共用同一份程式。
+// 象棋學院的 rank.js 是同一份邏輯，只有最上面的「等級表」區塊與用語（段位／等級）不同。
 // ============================================================================
 
 (function (root, factory) {
   'use strict';
   var api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
-  else root.CHStats = api;
+  else root.CHRank = api;
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
+  // ------------------------------------------------------------------ 等級表（各學院不同）
+  // min：升上這個等級需要的棋力分；group：所屬的大分類。由低到高排列。
+  // 四級以上的門檻比照現實：四級～一級相當於 USCF 的 D～A 級（1200／1400／1600／1800），
+  // 專家 2000，候補大師、棋聯大師、國際大師、特級大師則是 FIDE 稱號的等級分門檻（2200／2300／2400／2500）。
+  var G_KYU = '業餘級位', G_DAN = '業餘高手', G_PRO = '專業大師稱號';
+  var RANKS = [
+    { name: '八級棋士', group: G_KYU, min: 0 },
+    { name: '七級棋士', group: G_KYU, min: 800 },
+    { name: '六級棋士', group: G_KYU, min: 900 },
+    { name: '五級棋士', group: G_KYU, min: 1000 },
+    { name: '四級棋士', group: G_KYU, min: 1200 },
+    { name: '三級棋士', group: G_KYU, min: 1400 },
+    { name: '二級棋士', group: G_KYU, min: 1600 },
+    { name: '一級棋士', group: G_KYU, min: 1800 },
+    { name: '專家', group: G_DAN, min: 2000 },
+    { name: '候補大師 CM', group: G_PRO, min: 2200 },
+    { name: '棋聯大師 FM', group: G_PRO, min: 2300 },
+    { name: '國際大師 IM', group: G_PRO, min: 2400 },
+    { name: '特級大師 GM', group: G_PRO, min: 2500 },
+  ];
+  var GROUP_NOTES = {};
+  GROUP_NOTES[G_KYU] = '剛學會走法到俱樂部好手；數字越小越強。';
+  GROUP_NOTES[G_DAN] = '業餘棋手的頂點，再上去就是大師稱號。';
+  GROUP_NOTES[G_PRO] = '學院的最高榮譽，要能穩定贏過最強的 AI。';
+  var REAL_WORLD = '現實中的西洋棋用「等級分」衡量棋力：業餘棋手依分數分級，2000 分以上稱為專家；' +
+    '再往上是國際棋聯（FIDE）的稱號：候補大師 CM（2200）、棋聯大師 FM（2300）、國際大師 IM（2400）、特級大師 GM（2500）。' +
+    '本院參考這套制度，分成 ' + RANKS.length + ' 個等級。';
+  var START = 800;          // 新棋友的起始棋力分
+
+  // ------------------------------------------------------------------ 升級規則（兩個學院相同）
+  var FLOOR = 400;          // 棋力分下限
+  var PROV_GAMES = 10;      // 前幾盤是「定級期」，棋力分變動比較大，能很快到達該有的位置
+  var K_PROV = 80;
+  var K = 32;
+  var DEMOTE_GAP = 100;     // 棋力分比目前等級的門檻低這麼多（含）以上就降級
+  var NO_GAIN_GAP = 150;    // AI 的棋力分比你低這麼多以上時，贏了不加分（輸了、和了照扣）
+  var FORFEIT_PLIES = 6;    // 等級賽雙方合計走滿這麼多步之後，中途離開算一敗
+  var MAX_LOG = 30;
+  var MAX_RATING = 4000;
+
+  function int(x, dflt) {
+    x = Math.round(+x);
+    return isFinite(x) ? x : dflt;
+  }
+  function clampRating(x) { return Math.max(FLOOR, Math.min(MAX_RATING, x)); }
+  function isResult(r) { return r === 'w' || r === 'l' || r === 'd'; }
+
+  /** 棋力分對應的等級索引。 */
+  function indexOf(rating) {
+    var i = 0;
+    for (var k = 1; k < RANKS.length; k++) if (rating >= RANKS[k].min) i = k;
+    return i;
+  }
+
+  /**
+   * 依棋力分調整等級：到了門檻就升；比目前等級的門檻低 DEMOTE_GAP 分以上就往下降，降到站得住的那一級為止。
+   * top 是調整前的等級索引，回傳調整後的。
+   */
+  function settle(top, rating) {
+    top = Math.max(0, Math.min(RANKS.length - 1, Math.max(top, indexOf(rating))));
+    while (top > 0 && rating <= RANKS[top].min - DEMOTE_GAP) top--;
+    return top;
+  }
+
+  /** 把存檔讀出來的東西整理成完整、可信的結構。 */
+  function normalize(raw) {
+    raw = raw && typeof raw === 'object' ? raw : {};
+    var n = Math.max(0, int(raw.n, 0));
+    var rk = { r: n ? clampRating(int(raw.r, START)) : START, n: n, peak: START, top: -1, best: -1, log: [] };
+    if (n) {
+      rk.peak = Math.max(rk.r, clampRating(int(raw.peak, rk.r)));
+      rk.top = settle(int(raw.top, 0), rk.r);
+      rk.best = Math.min(RANKS.length - 1, Math.max(rk.top, indexOf(rk.peak), int(raw.best, 0)));
+      rk.log = (Array.isArray(raw.log) ? raw.log : []).map(function (g) {
+        if (!g || typeof g !== 'object' || !isResult(g.res)) return null;
+        return {
+          at: Math.max(0, int(g.at, 0)), lv: Math.max(0, int(g.lv, 0)), ai: clampRating(int(g.ai, START)),
+          res: g.res, d: int(g.d, 0), r: clampRating(int(g.r, START)),
+        };
+      }).filter(Boolean).slice(0, MAX_LOG);
+    }
+    return rk;
+  }
+
+  /** 目前的等級（還沒下過等級賽時回傳 null）。 */
+  function title(rk) { return rk.n && rk.top >= 0 ? RANKS[rk.top] : null; }
+  function titleName(rk) { var t = title(rk); return t ? t.name : '未定級'; }
+  /** 是否還在定級期。 */
+  function provisional(rk) { return rk.n < PROV_GAMES; }
+
+  /** Elo 預期得分：棋力分 r 的人對上 opp 平均能拿幾成。 */
+  function expected(r, opp) { return 1 / (1 + Math.pow(10, (opp - r) / 400)); }
+
+  /** 這一盤如果是 res 的結果，棋力分會增減多少（整數）。 */
+  function delta(rk, aiRating, res) {
+    var k = provisional(rk) ? K_PROV : K;
+    var score = res === 'w' ? 1 : (res === 'd' ? 0.5 : 0);
+    var d = Math.round(k * (score - expected(rk.r, aiRating)));
+    if (res === 'w') d = rk.r - aiRating >= NO_GAIN_GAP ? 0 : Math.max(1, d);
+    if (res === 'l') d = Math.min(0, d);
+    if (res === 'd' && rk.r - aiRating >= NO_GAIN_GAP) d = Math.min(0, d);
+    return clampRating(rk.r + d) - rk.r;
+  }
+  /** 開局前給玩家看的「勝／和／負各會增減多少」。 */
+  function preview(rk, aiRating) {
+    return { w: delta(rk, aiRating, 'w'), d: delta(rk, aiRating, 'd'), l: delta(rk, aiRating, 'l'), noGain: rk.r - aiRating >= NO_GAIN_GAP };
+  }
+
+  /**
+   * 記一盤等級賽。o：{ lv: AI 難度, ai: AI 棋力分, res, at }。
+   * 直接改寫 rk，回傳 { d, before, after, from: 原等級名稱, to: 新等級名稱, promoted, demoted, placed: 是否剛定級 }；
+   * 參數不合法時回傳 null。
+   */
+  function apply(rk, o) {
+    if (!o || !isResult(o.res) || !(o.ai > 0)) return null;
+    var before = rk.r;
+    var topBefore = rk.n ? rk.top : -1;
+    var d = delta(rk, o.ai, o.res);
+    rk.r = before + d;
+    rk.n++;
+    rk.peak = rk.n === 1 ? rk.r : Math.max(rk.peak, rk.r);
+    rk.top = settle(topBefore, rk.r);
+    rk.best = Math.max(rk.n === 1 ? -1 : rk.best, rk.top);
+    rk.log.unshift({ at: Math.max(0, int(o.at, 0)), lv: Math.max(0, int(o.lv, 0)), ai: int(o.ai, START), res: o.res, d: d, r: rk.r });
+    rk.log = rk.log.slice(0, MAX_LOG);
+    return {
+      d: d, before: before, after: rk.r,
+      from: topBefore >= 0 ? RANKS[topBefore].name : '', to: RANKS[rk.top].name,
+      promoted: topBefore >= 0 && rk.top > topBefore, demoted: topBefore >= 0 && rk.top < topBefore, placed: topBefore < 0,
+    };
+  }
+
+  /** 距離下一個等級還差多少：{ next: 等級 | null, need: 還差幾分, pct: 這一段走了幾成 }。 */
+  function progress(rk) {
+    var i = rk.n ? rk.top : indexOf(rk.r);
+    if (i >= RANKS.length - 1) return { next: null, need: 0, pct: 100 };
+    var lo = Math.max(RANKS[i].min, FLOOR), hi = RANKS[i + 1].min;
+    var pct = Math.round((rk.r - lo) * 100 / (hi - lo));
+    return { next: RANKS[i + 1], need: Math.max(0, hi - rk.r), pct: Math.max(0, Math.min(100, pct)) };
+  }
+
+  /** 保級線：棋力分掉到這個分數（含）以下就會降級；已經是最低等級時回傳 null。 */
+  function keepLine(rk) {
+    return rk.n && rk.top > 0 ? { at: RANKS[rk.top].min - DEMOTE_GAP, to: RANKS[rk.top - 1] } : null;
+  }
+
+  /** 挑一個最適合現在挑戰的 AI：棋力分最接近、而且贏了有分的。levels：[{ lv, rating }]。 */
+  function suggest(rk, levels) {
+    var best = null;
+    levels.forEach(function (x) {
+      if (rk.r - x.rating >= NO_GAIN_GAP) return;
+      if (!best || Math.abs(x.rating - rk.r) < Math.abs(best.rating - rk.r)) best = x;
+    });
+    return best ? best.lv : (levels.length ? levels[levels.length - 1].lv : 0);
+  }
+
+  // ------------------------------------------------------------------ 顯示
+  function signed(n) { return (n > 0 ? '+' : (n < 0 ? '−' : '±')) + Math.abs(n); }
+  function previewText(p) {
+    return '勝 ' + signed(p.w) + '／和 ' + signed(p.d) + '／負 ' + signed(p.l);
+  }
+  function groupClass(group) { return group === G_PRO ? 'is-pro' : (group === G_DAN ? 'is-dan' : 'is-kyu'); }
+  function fmtDate(ms) {
+    if (!ms) return '';
+    var d = new Date(ms);
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  var R_TEXT = { w: '勝', l: '負', d: '和' };
+
+  /** 頁首的小徽章文字。 */
+  function badgeText(rk) { return rk.n ? titleName(rk) : '等級'; }
+
+  /** 對弈頁側欄的等級摘要。 */
+  function miniHtml(rk, esc) {
+    var t = title(rk);
+    var pg = progress(rk);
+    return '<a class="rk-mini" href="#/rank" title="查看等級表與升級規則">' +
+      '<span class="rk-badge ' + (t ? groupClass(t.group) : 'is-none') + '">' + esc(t ? t.name : '未定級') + '</span>' +
+      '<span class="rk-mini-txt">' + (rk.n
+        ? '棋力分 <strong>' + rk.r + '</strong>' + (pg.next ? '・再 ' + pg.need + ' 分升' + esc(pg.next.name) : '・已是最高等級')
+        : '下完第一盤等級賽就會定級') + '</span>' +
+      (rk.n && pg.next ? '<span class="rk-bar"><i style="width:' + pg.pct + '%"></i></span>' : '') +
+      '</a>';
+  }
+
+  /**
+   * 「我的等級」整頁。opts：
+   *   levels：[{ lv, name, rating, rec: { w, l, d } }]（AI 對手，由弱到強）
+   *   wldText(rec)：把勝負和排成文字
+   */
+  function pageHtml(rk, esc, opts) {
+    opts = opts || {};
+    var levels = opts.levels || [];
+    var wldText = opts.wldText || function (r) { return r.w + ' 勝 ' + r.l + ' 負 ' + r.d + ' 和'; };
+    var t = title(rk);
+    var pg = progress(rk);
+    var cur = rk.n ? rk.top : -1;
+    var rec = suggest(rk, levels);
+    var html = '<div class="rank-wrap">';
+
+    // 我的等級
+    html += '<section class="card rk-hero">' +
+      '<div class="rk-hero-main">' +
+        '<span class="rk-badge rk-badge-lg ' + (t ? groupClass(t.group) : 'is-none') + '">' + esc(t ? t.name : '未定級') + '</span>' +
+        '<div><h1>我的等級</h1>' +
+        (rk.n
+          ? '<p>棋力分 <strong class="rk-num">' + rk.r + '</strong>・最高 ' + rk.peak +
+            (rk.best > rk.top ? '（' + esc(RANKS[rk.best].name) + '）' : '') + '・等級賽 ' + rk.n + ' 盤</p>'
+          : '<p>還沒下過等級賽。到「對弈」頁選一位 AI、把模式設成「等級賽」，下完第一盤就會定級。</p>') +
+        '</div></div>';
+    if (rk.n) {
+      html += pg.next
+        ? '<div class="rk-prog"><span class="rk-bar"><i style="width:' + pg.pct + '%"></i></span>' +
+          '<small>距離 <strong>' + esc(pg.next.name) + '</strong>（' + pg.next.min + ' 分）還差 ' + pg.need + ' 分</small></div>'
+        : '<p class="rk-max">🏆 已經是本院最高等級。</p>';
+      var kl = keepLine(rk);
+      if (kl) {
+        html += '<p class="' + (rk.r < RANKS[rk.top].min ? 'rk-warn' : 'muted') + '">' +
+          (rk.r < RANKS[rk.top].min ? '⚠️ 棋力分已經低於' + esc(t.name) + '的門檻（' + t.min + ' 分）。' : '') +
+          '保級線 ' + kl.at + ' 分：掉到這個分數就會降為' + esc(kl.to.name) + '。</p>';
+      }
+      if (provisional(rk)) {
+        html += '<p class="rk-prov">⚡ 定級期：前 ' + PROV_GAMES + ' 盤的棋力分變動是平常的 ' + (K_PROV / K) + ' 倍，還剩 ' + (PROV_GAMES - rk.n) + ' 盤。</p>';
+      }
+    }
+    html += '</section>';
+
+    // AI 對手
+    html += '<section class="card"><div class="card-head"><h2>AI 對手</h2><span class="count-pill">' + levels.length + ' 位</span></div>' +
+      '<p class="muted">每位 AI 都有自己的等級與棋力分。挑戰和自己差不多或更強的對手，升級最快。</p>' +
+      '<ul class="rk-ai">' + levels.map(function (x) {
+        var p = preview(rk, x.rating);
+        var r = RANKS[indexOf(x.rating)];
+        return '<li' + (x.lv === rec ? ' class="is-rec"' : '') + '>' +
+          '<span class="rk-ai-name">🤖<span class="rk-badge ' + groupClass(r.group) + '">' + esc(x.name) + '</span>' +
+          (x.lv === rec ? '<em>建議挑戰</em>' : '') + '</span>' +
+          '<span class="rk-ai-rt">' + x.rating + ' 分</span>' +
+          '<span class="rk-ai-pv' + (p.noGain ? ' is-nogain' : '') + '">' + esc(p.noGain ? '太弱，贏了不加分' : previewText(p)) + '</span>' +
+          '<small>' + esc(x.rec && (x.rec.w + x.rec.l + x.rec.d) ? wldText(x.rec) : '尚未對局') + '</small>' +
+          '<button type="button" class="btn btn-primary rk-go" data-rank-go="' + x.lv + '">挑戰</button>' +
+          '</li>';
+      }).join('') + '</ul></section>';
+
+    // 等級表
+    html += '<section class="card"><div class="card-head"><h2>等級表</h2><span class="count-pill">' + RANKS.length + ' 個等級</span></div>' +
+      '<p class="muted">' + esc(REAL_WORLD) + '</p>';
+    var groups = [];
+    RANKS.forEach(function (r, i) {
+      if (!groups.length || groups[groups.length - 1].name !== r.group) groups.push({ name: r.group, items: [] });
+      groups[groups.length - 1].items.push({ r: r, i: i });
+    });
+    html += groups.map(function (g) {
+      return '<h3 class="rk-group">' + esc(g.name) + '<small>' + esc(GROUP_NOTES[g.name] || '') + '</small></h3>' +
+        '<ol class="rk-ladder">' + g.items.map(function (x) {
+          var hasAi = levels.some(function (l) { return indexOf(l.rating) === x.i; });
+          var cls = (x.i === cur ? 'is-me' : (x.i < cur ? 'is-done' : ''));
+          return '<li class="' + cls + '">' +
+            '<span class="rk-badge ' + groupClass(x.r.group) + '">' + esc(x.r.name) + '</span>' +
+            '<span class="rk-min">' + (x.i ? x.r.min + ' 分' : '起點') + '</span>' +
+            (hasAi ? '<span class="rk-at">🤖 有這個級別的 AI 對手</span>' : '') +
+            (x.i === cur ? '<span class="rk-me">← 你在這裡</span>' : '') +
+            '</li>';
+        }).join('') + '</ol>';
+    }).join('');
+    html += '</section>';
+
+    // 規則
+    html += '<section class="card"><h2>怎麼升級</h2><ul class="plain-list">' +
+      '<li><strong>下等級賽</strong>：在「對弈」頁選一位 AI，模式選「🏅 等級賽」。等級賽從開局下起，不能悔棋、不能看提示。</li>' +
+      '<li><strong>棋力分</strong>：每盤結束後依勝負與對手強弱增減。贏比自己強的 AI 加得多，輸給比自己弱的 AI 扣得多；和棋則看對手強弱小幅增減。開局前就會顯示這盤的勝／和／負各是多少分。</li>' +
+      '<li><strong>升級</strong>：棋力分到達下一個等級的門檻就立刻升級。</li>' +
+      '<li><strong>降級</strong>：棋力分比目前等級的門檻低 ' + DEMOTE_GAP + ' 分以上就會降一級。有這段緩衝，剛升級時輸一兩盤不會馬上掉下來。</li>' +
+      '<li><strong>定級期</strong>：前 ' + PROV_GAMES + ' 盤的變動是平常的 ' + (K_PROV / K) + ' 倍，有基礎的棋友直接挑戰強的 AI，很快就能到達該有的等級。</li>' +
+      '<li><strong>不能刷分</strong>：AI 的棋力分比你低 ' + NO_GAIN_GAP + ' 分以上時，贏了不加分。</li>' +
+      '<li><strong>中途離開</strong>：雙方合計走滿 ' + FORFEIT_PLIES + ' 步之後，開新對局、換對手或改成練習都算這盤輸；關掉網頁不算，下次回來可以接著下。</li>' +
+      '<li><strong>練習模式</strong>：可以悔棋、看提示、從任何局面接著下，不影響棋力分。同機雙人與線上對弈也不列入。</li>' +
+      '</ul>' +
+      '<p class="muted">等級是本院依 AI 對弈成績給的棋力認證，參考現實的分級方式設計，不等同於 FIDE 或任何協會核發的正式等級分與稱號。' +
+      'AI 的棋力分是讓各個難度的 AI 互相對弈、依勝率換算出來的。等級資料只存在這台裝置的瀏覽器。</p></section>';
+
+    // 最近的等級賽
+    html += '<section class="card"><div class="card-head"><h2>最近的等級賽</h2><span class="count-pill">' + rk.n + ' 盤</span></div>';
+    if (rk.log.length) {
+      var names = {};
+      levels.forEach(function (l) { names[l.lv] = l.name; });
+      html += '<ul class="rk-log">' + rk.log.map(function (g) {
+        return '<li><span class="st-r is-' + g.res + '">' + R_TEXT[g.res] + '</span>' +
+          '<span class="rk-log-opp">🤖 ' + esc(names[g.lv] || 'AI') + '（' + g.ai + '）</span>' +
+          '<span class="rk-log-d ' + (g.d > 0 ? 'is-up' : (g.d < 0 ? 'is-down' : '')) + '">' + signed(g.d) + '</span>' +
+          '<span class="rk-log-r">' + g.r + '</span>' +
+          '<small>' + esc(fmtDate(g.at)) + '</small></li>';
+      }).join('') + '</ul>' +
+      (rk.n > rk.log.length ? '<p class="muted">只列出最近 ' + MAX_LOG + ' 盤。</p>' : '') +
+      '<p class="muted st-note"><button type="button" class="link-btn" data-rank-reset>重新定級（清除等級與棋力分）</button></p>';
+    } else {
+      html += '<p class="muted">還沒有等級賽紀錄。</p>';
+    }
+    html += '</section></div>';
+    return html;
+  }
+
+  return {
+    RANKS: RANKS, START: START, FLOOR: FLOOR, PROV_GAMES: PROV_GAMES, K_PROV: K_PROV, K: K,
+    DEMOTE_GAP: DEMOTE_GAP, settle: settle, keepLine: keepLine,
+    NO_GAIN_GAP: NO_GAIN_GAP, FORFEIT_PLIES: FORFEIT_PLIES, MAX_LOG: MAX_LOG,
+    normalize: normalize, indexOf: indexOf, title: title, titleName: titleName, provisional: provisional,
+    expected: expected, delta: delta, preview: preview, apply: apply, progress: progress, suggest: suggest,
+    reset: function () { return normalize(null); },
+    signed: signed, previewText: previewText, groupClass: groupClass, badgeText: badgeText,
+    miniHtml: miniHtml, pageHtml: pageHtml,
+  };
+});
+
+
+// === js/stats.js ===
+// ============================================================================
+// ♟️ 西洋棋學院 — 我的戰績（純運算＋產生 HTML 字串，無 DOM、無網路、不直接碰 localStorage）
+//
+// 戰績存在瀏覽器 localStorage 的 ch.stats.v1（由 app.js 讀寫），結構：
+// st = {
+//   v: 2,
+//   ai:  { 1: { w, l, d }, …, 10: { w, l, d } },          // 對 AI，依難度分開（等級賽與練習都算）
+//   rank: { r, n, peak, top, log },                        // 棋力等級，結構見 rank.js
+//   opp: { <對手 uid>: { name, w, l, d, last, games: [ { rid, at, r, s, why, n } ] } },
+//                                                          // 線上對弈，依對手分開；games 只留最近幾局
+//   rids: [ 已經記過的線上房號 ],                           // 同一局只記一次
+//   pending: { <房號>: 入座時間 },                          // 我有入座、還沒記到結果的線上對局
+// }
+// r：'w' 勝、'l' 負、'd' 和（一律以「我」的角度）；s：我執 'white' 或 'black'。
+// v1（AI 只有四個難度的年代）的存檔會在 normalize 時自動換成 v2：舊難度的戰績搬到參數相同的新難度。
+// 瀏覽器（app.js、online.js）與 Node 測試（tools/check_engine.js）共用同一份程式。
+// ============================================================================
+
+(function (root, factory) {
+  'use strict';
+  var isNode = typeof module === 'object' && module.exports;
+  var api = factory(isNode ? require('./rank.js') : root.CHRank);
+  if (isNode) module.exports = api;
+  else root.CHStats = api;
+})(typeof self !== 'undefined' ? self : this, function (Rank) {
+  'use strict';
+
   var KEY = 'ch.stats.v1';
-  var AI_LEVELS = [1, 2, 3, 4];
+  var VERSION = 2;
+  var AI_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  // v1 的四個難度（入門、初級、中級、高級）對應到現在的哪一個難度（搜尋參數相同）。
+  var LEGACY_LEVELS = { 1: 1, 2: 4, 3: 8, 4: 10 };
   var MAX_OPP = 200;        // 最多記這麼多位對手，超過時丟掉最久沒交手的
   var MAX_OPP_GAMES = 20;   // 每位對手保留最近幾局的明細（勝負總數不受影響）
   var MAX_RIDS = 600;
@@ -3696,8 +4136,13 @@ window.CHESS_RELEASES = {
   /** 把 localStorage 讀出來的東西整理成完整、可信的結構（壞掉或缺漏的欄位一律補成空的）。 */
   function normalize(raw) {
     raw = raw && typeof raw === 'object' ? raw : {};
-    var st = { v: 1, ai: {}, opp: {}, rids: [], pending: {} };
-    AI_LEVELS.forEach(function (lv) { st.ai[lv] = wld(raw.ai && raw.ai[lv]); });
+    var st = { v: VERSION, ai: {}, opp: {}, rids: [], pending: {} };
+    var legacy = raw.v !== VERSION;
+    AI_LEVELS.forEach(function (lv) { st.ai[lv] = wld(!legacy && raw.ai && raw.ai[lv]); });
+    if (legacy && raw.ai && typeof raw.ai === 'object') {
+      Object.keys(LEGACY_LEVELS).forEach(function (old) { st.ai[LEGACY_LEVELS[old]] = wld(raw.ai[old]); });
+    }
+    st.rank = Rank.normalize(raw.rank);
     if (raw.opp && typeof raw.opp === 'object') {
       Object.keys(raw.opp).forEach(function (uid) {
         var o = raw.opp[uid];
@@ -3812,9 +4257,16 @@ window.CHESS_RELEASES = {
     return Object.keys(st.pending);
   }
 
-  /** 清掉勝負紀錄；已記過的房號與追蹤中的對局保留，避免舊的對局之後又被記一次。 */
+  /** v1 存檔裡的 AI 難度換成現在的難度（對局存檔、已記戰績的 { lv, r } 用）；不認得的回傳 0。 */
+  function legacyLevel(lv) { return LEGACY_LEVELS[lv] || 0; }
+
+  /**
+   * 清掉勝負紀錄；已記過的房號與追蹤中的對局保留，避免舊的對局之後又被記一次。
+   * 等級與棋力分不會跟著清掉（要重新定級請到「等級」頁）。
+   */
   function reset(st) {
     var out = normalize(null);
+    out.rank = Rank.normalize(st.rank);
     out.rids = st.rids.slice();
     Object.keys(st.pending).forEach(function (rid) { out.pending[rid] = st.pending[rid]; });
     return out;
@@ -3880,6 +4332,7 @@ window.CHESS_RELEASES = {
     }
 
     html += '<h3 class="st-title">🤖 對 AI<small>' + esc(summary(ai)) + '</small></h3>' +
+      '<p class="st-rank">' + Rank.miniHtml(st.rank, esc) + '</p>' +
       '<ul class="st-ai">' + AI_LEVELS.map(function (lv) {
         var rec = st.ai[lv];
         var r = rate(rec);
@@ -3889,12 +4342,13 @@ window.CHESS_RELEASES = {
 
     html += '<p class="muted st-note">戰績存在這台裝置的瀏覽器裡。線上對手是以對方的連線身分區分，' +
       '對方換裝置、換瀏覽器或清除瀏覽資料後會被當成另一位對手；同機雙人對弈不列入戰績。' +
+      '清除戰績不會影響等級與棋力分。' +
       (games ? ' <button type="button" class="link-btn" data-stats-reset>清除戰績</button>' : '') + '</p>';
     return html + '</section>';
   }
 
   return {
-    KEY: KEY, AI_LEVELS: AI_LEVELS, MAX_OPP_GAMES: MAX_OPP_GAMES,
+    KEY: KEY, VERSION: VERSION, AI_LEVELS: AI_LEVELS, MAX_OPP_GAMES: MAX_OPP_GAMES, legacyLevel: legacyLevel,
     normalize: normalize, total: total, rate: rate, aiTotal: aiTotal, onlineTotal: onlineTotal, oppList: oppList,
     resultFor: resultFor, recordAi: recordAi, hasRoom: hasRoom, recordOnline: recordOnline,
     addPending: addPending, dropPending: dropPending, pendingList: pendingList, reset: reset,
@@ -3905,7 +4359,7 @@ window.CHESS_RELEASES = {
 
 // === js/ai.js ===
 // ============================================================================
-// ♟️ 西洋棋學院 — AI 引擎（四個難度）與提示
+// ♟️ 西洋棋學院 — AI 引擎（十位不同等級的對手）與提示
 //
 // 搜尋核心是純運算（Node 測試、Web Worker、主執行緒共用）：
 //   迭代加深 + alpha-beta + 靜態搜尋（只看吃子與升變）+ 置換表 + 殺手／歷史啟發排序
@@ -3998,20 +4452,31 @@ window.CHESS_RELEASES = {
   var MATE_BOUND = MATE - 300; // 分數超過這個值代表已經算到將死
 
   /**
-   * 難度設定。
+   * AI 對手：由弱到強十位，名稱就是它的等級（等級表在 rank.js）。
+   *   rating     棋力分。讓各難度互相對弈、依勝率換算出相對差距（tools/calibrate_ai.js），
+   *              再等比例縮放到 700–2450；改了下面的搜尋參數要重新校準。
    *   depth      最大搜尋深度
    *   timeMs     思考時間上限
    *   margin     與最佳分數差距在此範圍內的走法都可能被選中（製造變化與失誤）
    *   bookPlies  只在開局前幾步套用 margin；0 表示整局都套用
-   *   randomProb 直接隨機走一步的機率（入門專用）
+   *   randomProb 直接隨機走一步的機率（最弱的幾位專用）
+   *   lapse      「看漏」的機率：這一步少看一層
+   * 1、4、8、10 的搜尋參數就是早期版本的入門、初級、中級、高級（stats.js 的 LEGACY_LEVELS）。
    */
   var LEVELS = {
-    1: { name: '入門', depth: 1, timeMs: 400, margin: 160, bookPlies: 0, randomProb: 0.25 },
-    2: { name: '初級', depth: 2, timeMs: 800, margin: 50, bookPlies: 0, randomProb: 0 },
-    3: { name: '中級', depth: 4, timeMs: 1500, margin: 12, bookPlies: 10, randomProb: 0 },
-    4: { name: '高級', depth: 20, timeMs: 2500, margin: 8, bookPlies: 8, randomProb: 0 },
+    1: { name: '八級棋士', rating: 700, depth: 1, timeMs: 400, margin: 160, bookPlies: 0, randomProb: 0.25 },
+    2: { name: '七級棋士', rating: 820, depth: 2, timeMs: 800, margin: 130, bookPlies: 0, randomProb: 0.18, lapse: 0.6 },
+    3: { name: '五級棋士', rating: 1040, depth: 2, timeMs: 800, margin: 100, bookPlies: 0, randomProb: 0.1 },
+    4: { name: '四級棋士', rating: 1360, depth: 2, timeMs: 800, margin: 50, bookPlies: 0, randomProb: 0 },
+    5: { name: '三級棋士', rating: 1520, depth: 3, timeMs: 1000, margin: 40, bookPlies: 0, randomProb: 0, lapse: 0.5 },
+    6: { name: '二級棋士', rating: 1640, depth: 3, timeMs: 1000, margin: 30, bookPlies: 0, randomProb: 0 },
+    7: { name: '一級棋士', rating: 1840, depth: 4, timeMs: 1500, margin: 20, bookPlies: 0, randomProb: 0, lapse: 0.5 },
+    8: { name: '專家', rating: 2050, depth: 4, timeMs: 1500, margin: 12, bookPlies: 10, randomProb: 0 },
+    9: { name: '候補大師 CM', rating: 2210, depth: 5, timeMs: 1500, margin: 10, bookPlies: 10, randomProb: 0 },
+    10: { name: '國際大師 IM', rating: 2450, depth: 20, timeMs: 2500, margin: 8, bookPlies: 8, randomProb: 0 },
   };
-  // 提示：固定用中級以上的深度，永遠給最佳走法。
+  var TOP_LEVEL = 10;
+  // 提示：固定看六層，永遠給最佳走法。
   var HINT = { name: '提示', depth: 6, timeMs: 1500, margin: 0, bookPlies: 0, randomProb: 0 };
 
   // ------------------------------------------------------------------ 評估
@@ -4373,7 +4838,7 @@ window.CHESS_RELEASES = {
   }
 
   // ------------------------------------------------------------------ 選步
-  // 第一步的常見走法；初級以上從這裡隨機挑，開局才不會每盤都一樣。
+  // 第一步的常見走法；不會隨機亂走的對手從這裡隨機挑，開局才不會每盤都一樣。
   var FIRST_MOVES = ['e2e4', 'e2e4', 'd2d4', 'd2d4', 'g1f3', 'c2c4'];
 
   /**
@@ -4411,7 +4876,11 @@ window.CHESS_RELEASES = {
     var order = legal.slice();
     var done = null; // 最後一個完整搜完的深度結果
 
-    for (var d = 1; d <= cfg.depth; d++) {
+    // 看漏：這一步有 lapse 的機率少看一層，像人偶爾會漏算一樣。
+    var maxDepth = cfg.depth;
+    if (cfg.lapse && maxDepth > 1 && rng() < cfg.lapse) maxDepth--;
+
+    for (var d = 1; d <= maxDepth; d++) {
       var scores = {};
       var best = -INF;
       for (i = 0; i < order.length; i++) {
@@ -4487,7 +4956,7 @@ window.CHESS_RELEASES = {
   /** Worker 入口：由起始局面＋座標走法重建對局後選步。 */
   function thinkFromMoves(fen, moves, level, hint) {
     var game = E.Game.fromMoves(fen, moves || []);
-    return think(game, hint ? HINT : (LEVELS[level] || LEVELS[2]));
+    return think(game, hint ? HINT : (LEVELS[level] || LEVELS[4]));
   }
 
   /** Worker 與主執行緒共用的請求分派。 */
@@ -4496,7 +4965,7 @@ window.CHESS_RELEASES = {
   }
 
   return {
-    LEVELS: LEVELS, HINT: HINT, MATE: MATE, MATE_BOUND: MATE_BOUND, VAL: VAL,
+    LEVELS: LEVELS, TOP_LEVEL: TOP_LEVEL, HINT: HINT, MATE: MATE, MATE_BOUND: MATE_BOUND, VAL: VAL,
     evaluate: evaluate, material: material, think: think, analyze: analyze,
     thinkFromMoves: thinkFromMoves, handle: handle, Searcher: Searcher, searcherFor: searcherFor,
   };
@@ -7186,6 +7655,7 @@ window.CH_FIREBASE = {
   var E = window.CHEngine;
   var NT = window.CHNotation;
   var Stats = window.CHStats;
+  var Rank = window.CHRank;
   var main = document.getElementById('appMain');
 
   var KEY_PLAY = 'ch.play.v1';
@@ -7248,7 +7718,8 @@ window.CH_FIREBASE = {
   }
 
   var prefs = load(KEY_PREFS, {}) || {};
-  function savePrefs() { save(KEY_PREFS, { flipped: !!prefs.flipped, face: !!prefs.face }); }
+  // rated：對 AI 時預設下等級賽（false = 玩家選了練習模式）。
+  function savePrefs() { save(KEY_PREFS, { flipped: !!prefs.flipped, face: !!prefs.face, rated: prefs.rated !== false }); }
 
   // ------------------------------------------------------------------ 兵升變選單
   var promoCb = null;
@@ -7355,6 +7826,20 @@ window.CH_FIREBASE = {
     });
   }
 
+  // ------------------------------------------------------------------ 棋力等級
+  /** AI 對手清單（由弱到強），附上各自的棋力分；AI 的名稱就是它的等級。 */
+  function aiLevels() {
+    return Stats.AI_LEVELS.map(function (lv) {
+      var cfg = window.CHAI.LEVELS[lv];
+      return { lv: lv, name: 'AI ' + cfg.name, rating: cfg.rating };
+    });
+  }
+  /** 頁首的等級徽章。 */
+  function refreshRankPill() {
+    var el = document.getElementById('rankPill');
+    if (el) el.textContent = '🏅 ' + Rank.badgeText(statsLoad().rank);
+  }
+
   // ------------------------------------------------------------------ 共用版面
   function moveListHtml(game, activeIdx, clickable) {
     var moves = game.sanList();
@@ -7415,15 +7900,27 @@ window.CH_FIREBASE = {
     game: null, selected: -1, board: null, savedId: null, animate: true,
     ai: 0, human: E.WHITE, thinking: false, hinting: false, hint: -1,
     counted: null, // 這一局已經記進戰績的 { lv, r }；下完後悔棋再下完會改寫，不會重複計算
+    rated: false,     // 這一盤是不是等級賽（從開局下起、不能悔棋與提示，結果會增減棋力分）
+    ratedDone: null,  // 等級賽結束後記下的 { d, before, after, to, promoted, demoted, placed }；有值代表已經算過分
   };
   var aiClient = window.CHAI.createClient();
   var AI_MIN_DELAY = 350; // AI 太快回應會像瞬移，至少停一下
 
   function aiName() { return play.ai ? window.CHAI.LEVELS[play.ai].name : ''; }
+  function aiRating() { return play.ai ? window.CHAI.LEVELS[play.ai].rating : 0; }
+  /** 等級賽進行中（還沒分出勝負）。 */
+  function ratedLive() { return !!(play.rated && play.game && !play.game.result()); }
+  /** 還沒走任何一步的標準開局：這盤是不是等級賽，跟著目前的對手與模式設定走。 */
+  function syncRated() {
+    var g = play.game;
+    if (g.history.length || g.result() || g.startFen !== E.START_FEN) return;
+    play.rated = !!play.ai && prefs.rated !== false;
+    play.ratedDone = null;
+  }
   function humanTurn() { return !play.ai || play.game.turn() === play.human; }
   function defaultTitle() {
     if (play.savedTitle) return play.savedTitle;
-    return (play.ai ? '對 AI（' + aiName() + '）' + (play.human === E.WHITE ? '執白' : '執黑') : '同機對弈') + ' ' + nowStr();
+    return (play.ai ? (play.rated ? '等級賽・' : '') + '對 AI（' + aiName() + '）' + (play.human === E.WHITE ? '執白' : '執黑') : '同機對弈') + ' ' + nowStr();
   }
   function stopThinking() {
     aiClient.cancel();
@@ -7438,13 +7935,20 @@ window.CH_FIREBASE = {
     try {
       play.game = snap ? restoreGame(snap) : new E.Game();
       if (snap && snap.savedId) play.savedId = snap.savedId;
-      if (snap && snap.ai >= 1 && snap.ai <= 4) play.ai = snap.ai;
+      // v 不是 2 的是 AI 只有四個難度時留下的存檔：難度換成參數相同的新難度。
+      var old = !!snap && snap.v !== 2;
+      var lv = snap ? (old ? Stats.legacyLevel(snap.ai) : +snap.ai) : 0;
+      if (window.CHAI.LEVELS[lv]) play.ai = lv;
       if (snap && snap.human === E.BLACK) play.human = E.BLACK;
       play.counted = snap && snap.counted && typeof snap.counted === 'object' ? snap.counted : null;
+      if (play.counted && old) play.counted = { lv: Stats.legacyLevel(play.counted.lv), r: play.counted.r };
+      play.rated = !!snap && !old && !!snap.rated && !!play.ai;
+      play.ratedDone = snap && !old && snap.ratedDone && typeof snap.ratedDone === 'object' ? snap.ratedDone : null;
     } catch (_) {
       play.game = new E.Game();
     }
     play.selected = -1;
+    syncRated();
   }
   function persistPlay() {
     var snap = gameSnapshot(play.game);
@@ -7452,6 +7956,9 @@ window.CH_FIREBASE = {
     snap.ai = play.ai;
     snap.human = play.human;
     snap.counted = play.counted;
+    snap.v = 2;
+    snap.rated = !!play.rated;
+    snap.ratedDone = play.ratedDone;
     save(KEY_PLAY, snap);
   }
 
@@ -7465,14 +7972,18 @@ window.CH_FIREBASE = {
           '<section class="card opp-card">' +
             '<label>對手<select id="oppSel">' +
               '<option value="0">👥 同機雙人</option>' +
-              [1, 2, 3, 4].map(function (lv) {
-                return '<option value="' + lv + '">🤖 AI ' + window.CHAI.LEVELS[lv].name + '</option>';
+              Stats.AI_LEVELS.map(function (lv) {
+                return '<option value="' + lv + '">🤖 AI ' + esc(window.CHAI.LEVELS[lv].name) + '（' + window.CHAI.LEVELS[lv].rating + ' 分）</option>';
               }).join('') +
             '</select></label>' +
             '<label id="sideWrap">我方<select id="sideSel">' +
               '<option value="0">執白（先走）</option><option value="8">執黑（後走）</option>' +
             '</select></label>' +
+            '<label id="modeWrap" title="等級賽：從開局下起、不能悔棋與提示，結果會增減棋力分。練習：可以悔棋、看提示，不影響棋力分。">模式<select id="modeSel">' +
+              '<option value="1">🏅 等級賽</option><option value="0">🎓 練習</option>' +
+            '</select></label>' +
             '<p class="muted opp-stat" id="aiStat" hidden></p>' +
+            '<div class="opp-stat" id="rankMini"></div>' +
           '</section>' +
           '<section class="card">' +
             '<div class="btn-grid">' +
@@ -7522,15 +8033,21 @@ window.CH_FIREBASE = {
     if (res) {
       var verdict = '';
       if (play.ai && res.winner !== null) verdict = res.winner === play.human ? ' · 你贏了！' : ' · AI 獲勝';
-      html = '<div class="status-result">' + esc(NT.resultText(res) + verdict) + '</div>' +
-        '<p class="muted">共 ' + g.history.length + ' 步。可以按「悔棋」回到上一步，或開始新對局。</p>';
+      html = '<div class="status-result">' + esc(NT.resultText(res) + verdict) + '</div>';
+      var rd = play.ratedDone;
+      if (rd) {
+        html += '<p class="rk-result' + (rd.promoted || rd.placed ? ' is-promo' : (rd.demoted ? ' is-demo' : '')) + '">' +
+          (rd.promoted ? '🎉 升上 <strong>' + esc(rd.to) + '</strong>！' : rd.demoted ? '⬇️ 降為 <strong>' + esc(rd.to) + '</strong>。' : (rd.placed ? '🏅 定級為 <strong>' + esc(rd.to) + '</strong>。' : '🏅 等級賽：')) +
+          '棋力分 <strong class="' + (rd.d > 0 ? 'is-up' : (rd.d < 0 ? 'is-down' : '')) + '">' + esc(Rank.signed(rd.d)) + '</strong>（' + rd.before + ' → ' + rd.after + '）</p>';
+      }
+      html += '<p class="muted">共 ' + g.history.length + ' 步。可以按「悔棋」回到上一步' + (rd && play.rated ? '研究這盤棋（不影響棋力分）' : '') + '，或開始新對局。</p>';
     } else {
       html = '<div class="status-turn ' + (side === E.WHITE ? 'is-white' : 'is-black') + '">' +
         '<span class="turn-dot"></span>' +
         (play.ai ? (humanTurn() ? '輪到你走（' + sideName(side) + '）' : 'AI 思考中…') : '輪到' + sideName(side) + '走') +
         (g.inCheck() ? '<span class="badge-check">將軍！</span>' : '') + '</div>' +
         '<p class="muted">第 ' + g.pos.full + ' 回合 · ' +
-        (play.hinting ? '正在計算提示…' : (play.ai ? '對手：AI ' + aiName() : '同機雙人對弈') + '：點棋子，再點要走到的格子。') + '</p>';
+        (play.hinting ? '正在計算提示…' : (play.ai ? (play.rated ? '🏅 等級賽・' : '') + '對手：AI ' + aiName() : '同機雙人對弈') + '：點棋子，再點要走到的格子。') + '</p>';
     }
     status.innerHTML = html;
 
@@ -7540,36 +8057,82 @@ window.CH_FIREBASE = {
     document.getElementById('playCaptured').innerHTML = capturedHtml(g);
 
     var q = function (act) { return main.querySelector('[data-act="' + act + '"]'); };
-    q('undo').disabled = !g.history.length && !res;
+    var live = ratedLive();
+    q('undo').disabled = (!g.history.length && !res) || live;
+    q('undo').title = live ? '等級賽不能悔棋；想悔棋請把模式改成「練習」' : '';
     q('draw').disabled = !!res || !g.history.length || !!play.ai;
     q('resign').disabled = !!res;
-    q('hint').disabled = !!res || play.thinking || play.hinting || !humanTurn();
+    q('hint').disabled = !!res || play.thinking || play.hinting || !humanTurn() || live;
+    q('hint').title = live ? '等級賽不能看提示；想看提示請把模式改成「練習」' : '請 AI 建議這一步怎麼走';
     document.getElementById('sideWrap').hidden = !play.ai;
+    document.getElementById('modeWrap').hidden = !play.ai;
+    // 模式選單顯示的是「這一盤」的模式；已經下完的對局則顯示下一盤會用的模式。
+    document.getElementById('modeSel').value = (res ? prefs.rated !== false : play.rated) ? '1' : '0';
+    var st = statsLoad();
     var statEl = document.getElementById('aiStat');
     statEl.hidden = !play.ai;
-    if (play.ai) statEl.textContent = '對 AI ' + aiName() + '的戰績：' + Stats.wldText(statsLoad().ai[play.ai]);
+    if (play.ai) {
+      var pv = Rank.preview(st.rank, aiRating());
+      var ratedNext = res ? prefs.rated !== false : play.rated;
+      statEl.textContent = (ratedNext
+        ? '這盤的棋力分：' + Rank.previewText(pv) + (pv.noGain ? '（這位 AI 對你來說太弱，贏了不加分）' : '') + '。'
+        : '練習模式不影響棋力分。') +
+        '對 AI ' + aiName() + '（' + aiRating() + ' 分）的戰績：' + Stats.wldText(st.ai[play.ai]);
+    }
+    document.getElementById('rankMini').innerHTML = Rank.miniHtml(st.rank, esc);
+    refreshRankPill();
     q('save').disabled = !g.history.length;
     q('copy').disabled = !g.history.length;
     q('face').classList.toggle('is-on', !!prefs.face);
     q('flip').classList.toggle('is-on', !!prefs.flipped);
   }
 
-  function afterPlayChange() {
+  /** 對局結束時：存進我的棋譜（同一局只存一筆）、記戰績；等級賽再結算棋力分（一盤只算一次）。 */
+  function recordFinished() {
     var g = play.game;
     var res = g.result();
-    // 對局結束時自動存進我的棋譜（同一局只存一筆）。
-    if (res && g.history.length) {
-      play.savedId = upsertSaved(play.savedId, defaultTitle(), g);
-      if (play.ai) {
-        // 對 AI 的勝負記進戰績；同機雙人兩邊都是自己人，不列入。
-        var st = statsLoad();
-        play.counted = Stats.recordAi(st, {
-          lv: play.ai, r: res.winner === null ? 'd' : (res.winner === play.human ? 'w' : 'l'), prev: play.counted,
-        });
-        statsSave(st);
+    if (!res || !g.history.length) return;
+    play.savedId = upsertSaved(play.savedId, defaultTitle(), g);
+    var msg = NT.resultText(res) + '，已存入我的棋譜';
+    if (play.ai) {
+      // 對 AI 的勝負記進戰績；同機雙人兩邊都是自己人，不列入。
+      var r = res.winner === null ? 'd' : (res.winner === play.human ? 'w' : 'l');
+      var st = statsLoad();
+      play.counted = Stats.recordAi(st, { lv: play.ai, r: r, prev: play.counted });
+      if (play.rated && !play.ratedDone) {
+        var info = Rank.apply(st.rank, { lv: play.ai, ai: aiRating(), res: r, at: Date.now() });
+        if (info) {
+          play.ratedDone = info;
+          msg = info.promoted ? '🎉 升上' + info.to + '！棋力分 ' + Rank.signed(info.d)
+            : info.demoted ? '⬇️ 降為' + info.to + '，棋力分 ' + Rank.signed(info.d)
+            : (info.placed ? '🏅 定級為' + info.to : '🏅 等級賽：棋力分 ' + Rank.signed(info.d));
+        }
       }
-      toast(NT.resultText(res) + '，已存入我的棋譜');
+      statsSave(st);
     }
+    toast(msg);
+  }
+
+  /**
+   * 要丟掉目前這盤之前先問這裡：等級賽下到一半（雙方合計走滿 Rank.FORFEIT_PLIES 步）離開算一敗。
+   * what：玩家正要做的事（用在確認訊息）。回傳 false 代表玩家反悔，呼叫端什麼都不要做。
+   */
+  function leaveRated(what) {
+    var g = play.game;
+    if (!g || !ratedLive() || g.history.length < Rank.FORFEIT_PLIES) return true;
+    var pv = Rank.preview(statsLoad().rank, aiRating());
+    if (!window.confirm('這盤等級賽還沒下完，現在' + what + '會算這盤輸（棋力分 ' + Rank.signed(pv.l) + '）。確定嗎？')) return false;
+    stopThinking();
+    g.resign(play.human);
+    recordFinished();
+    persistPlay();
+    return true;
+  }
+  /** 等級賽下到一半、而且離開要算輸。 */
+  function ratedLocked() { return ratedLive() && play.game.history.length >= Rank.FORFEIT_PLIES; }
+
+  function afterPlayChange() {
+    recordFinished();
     persistPlay();
     refreshPlay();
     maybeAiMove();
@@ -7590,6 +8153,7 @@ window.CH_FIREBASE = {
         play.thinking = false;
         if (r.move < 0 || !g.play(r.move)) {
           toast('AI 沒有走出合法的一步，請按悔棋或開新對局');
+          play.rated = false; // 不是玩家的問題：這盤改成練習，可以悔棋
           refreshPlay();
           return;
         }
@@ -7600,13 +8164,13 @@ window.CH_FIREBASE = {
 
   function requestHint() {
     var g = play.game;
-    if (g.result() || play.thinking || play.hinting || !humanTurn()) return;
+    if (g.result() || play.thinking || play.hinting || !humanTurn() || ratedLive()) return;
     play.hinting = true;
     play.selected = -1;
     play.animate = false;
     refreshPlay();
     var plies = g.history.length;
-    aiClient.request({ fen: g.startFen, moves: g.moveStrings(), level: 3, hint: true }, function (r) {
+    aiClient.request({ fen: g.startFen, moves: g.moveStrings(), level: 8, hint: true }, function (r) {
       if (!play.hinting || play.game !== g || g.history.length !== plies) return;
       play.hinting = false;
       play.animate = false;
@@ -7646,16 +8210,21 @@ window.CH_FIREBASE = {
     play.selected = -1;
     play.savedId = null;
     play.counted = null;
+    play.rated = false; // 只有從標準開局下起的才可能是等級賽（syncRated 判斷）
+    play.ratedDone = null;
     play.savedTitle = title || '';
     play.animate = false;
+    syncRated();
     persistPlay();
   }
 
   function onPlayAction(act) {
     var g = play.game;
     if (act === 'undo') {
+      if (ratedLive()) return;
       stopThinking();
       if (!g.undo()) return;
+      play.rated = false; // 等級賽下完後悔棋 = 改成練習研究這盤棋，棋力分不再變動
       // 對 AI 時一次退兩步，回到玩家自己上一次走棋之前。
       if (play.ai && !g.result() && g.turn() !== play.human && g.history.length) g.undo();
       play.selected = -1;
@@ -7666,7 +8235,9 @@ window.CH_FIREBASE = {
     } else if (act === 'hint') {
       requestHint();
     } else if (act === 'new') {
-      if (g.history.length && !g.result() && !window.confirm('目前的對局還沒結束，確定要開始新對局嗎？')) return;
+      if (ratedLocked()) {
+        if (!leaveRated('開新對局')) return;
+      } else if (g.history.length && !g.result() && !window.confirm('目前的對局還沒結束，確定要開始新對局嗎？')) return;
       startGame(new E.Game());
       refreshPlay();
       maybeAiMove();
@@ -7889,7 +8460,9 @@ window.CH_FIREBASE = {
       copyText(NT.exportText(g, replay.rec.title));
     } else if (act === 'continue') {
       if (!play.game) loadPlay();
-      if (play.game.history.length && !play.game.result() &&
+      if (ratedLocked()) {
+        if (!leaveRated('改下別的局面')) return;
+      } else if (play.game.history.length && !play.game.result() &&
           !window.confirm('「對弈」頁還有一局沒下完，要改從這個局面接著下嗎？')) return;
       var ng = E.Game.fromMoves(g.startFen, g.moveStrings().slice(0, replay.idx));
       startGame(ng, replay.rec.title + '（接續對弈）');
@@ -7993,6 +8566,32 @@ window.CH_FIREBASE = {
     drawGuides(SPECIAL, 'special');
   }
 
+  // ------------------------------------------------------------------ 等級頁
+  function renderRank() {
+    var st = statsLoad();
+    main.innerHTML = Rank.pageHtml(st.rank, esc, {
+      levels: aiLevels().map(function (x) { x.rec = st.ai[x.lv]; return x; }),
+      wldText: Stats.wldText,
+    });
+    refreshRankPill();
+  }
+  /** 等級頁的「挑戰」：用這位 AI 開一盤新的等級賽。 */
+  function challengeAi(lv) {
+    if (!window.CHAI.LEVELS[lv]) return;
+    if (!play.game) loadPlay();
+    var g = play.game;
+    if (ratedLocked()) {
+      if (!leaveRated('挑戰別的對手')) return;
+    } else if (g.history.length && !g.result() &&
+        !window.confirm('「對弈」頁還有一局沒下完，要放棄它、開始新的等級賽嗎？')) return;
+    stopThinking();
+    play.ai = lv;
+    prefs.rated = true;
+    savePrefs();
+    startGame(new E.Game());
+    location.hash = '#/play';
+  }
+
   // ------------------------------------------------------------------ 路由
   function route() {
     stopAuto();
@@ -8005,6 +8604,7 @@ window.CH_FIREBASE = {
     var view = parts[0] || 'play';
     if (view === 'replay') renderReplay(parts[1] ? decodeURIComponent(parts[1]) : '');
     else if (view === 'rules') renderRules();
+    else if (view === 'rank') renderRank();
     else if (window.CHStudy && window.CHStudy.handles(view)) window.CHStudy.render(view, parts.slice(1).map(decodeURIComponent));
     else if (window.CHOnline && window.CHOnline.handles(view)) window.CHOnline.render(parts.slice(1).map(decodeURIComponent));
     else { view = 'play'; renderPlay(); }
@@ -8015,8 +8615,18 @@ window.CH_FIREBASE = {
   }
 
   main.addEventListener('click', function (ev) {
-    var t = ev.target.closest('[data-act],[data-ract],[data-goto],[data-del],[data-stats-reset]');
+    var t = ev.target.closest('[data-act],[data-ract],[data-goto],[data-del],[data-stats-reset],[data-rank-go],[data-rank-reset]');
     if (!t || t.disabled) return;
+    if (t.hasAttribute('data-rank-go')) { challengeAi(+t.getAttribute('data-rank-go')); return; }
+    if (t.hasAttribute('data-rank-reset')) {
+      if (!window.confirm('確定要重新定級嗎？等級、棋力分與等級賽紀錄都會清掉，無法復原（勝負戰績與棋譜不受影響）。')) return;
+      var cur = statsLoad();
+      cur.rank = Rank.reset();
+      statsSave(cur);
+      toast('已清除等級，下一盤等級賽重新定級');
+      route();
+      return;
+    }
     if (t.hasAttribute('data-stats-reset')) {
       if (!window.confirm('確定要清除所有戰績嗎？棋譜不會被刪除，但勝負紀錄清掉後無法復原。')) return;
       statsSave(Stats.reset(statsLoad()));
@@ -8040,18 +8650,38 @@ window.CH_FIREBASE = {
   });
   main.addEventListener('change', function (ev) {
     var id = ev.target.id;
-    if (id !== 'oppSel' && id !== 'sideSel') return;
+    if (id !== 'oppSel' && id !== 'sideSel' && id !== 'modeSel') return;
+    var g = play.game;
+    var val = +ev.target.value;
+    function revert() {
+      document.getElementById('oppSel').value = String(play.ai);
+      document.getElementById('sideSel').value = String(play.human);
+      refreshPlay();
+    }
+    // 等級賽下到一半不能換設定：要換就等於放棄這一盤（走滿幾步之後算輸），然後用新設定開新的一盤。
+    var restart = ratedLive() && g.history.length > 0;
+    if (restart && !leaveRated('更改設定')) { revert(); return; }
+    if (id === 'modeSel' && val === 1 && !restart && g.history.length && !g.result()) {
+      // 練習下到一半想改成等級賽：等級賽一定要從開局下起。
+      if (!window.confirm('等級賽要從新的一盤開始。要放棄目前這盤練習嗎？')) { revert(); return; }
+      restart = true;
+    }
     stopThinking();
     if (id === 'oppSel') {
-      play.ai = +ev.target.value;
-    } else {
-      play.human = +ev.target.value === E.BLACK ? E.BLACK : E.WHITE;
+      play.ai = val;
+    } else if (id === 'sideSel') {
+      play.human = val === E.BLACK ? E.BLACK : E.WHITE;
       prefs.flipped = play.human === E.BLACK; // 自己的棋子放在畫面下方
       savePrefs();
+    } else {
+      prefs.rated = val === 1;
+      savePrefs();
+      if (!prefs.rated) play.rated = false;
     }
     play.selected = -1;
     play.animate = false;
-    persistPlay();
+    if (restart) startGame(new E.Game());
+    else { syncRated(); persistPlay(); }
     refreshPlay();
     maybeAiMove();
   });
@@ -8097,6 +8727,7 @@ window.CH_FIREBASE = {
 
   function init() {
     initReleaseModal();
+    refreshRankPill();
     initPromotion();
     window.addEventListener('hashchange', route);
     route();
