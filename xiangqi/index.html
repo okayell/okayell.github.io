@@ -1,136 +1,263 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>🐘 象棋學院 · 線上對弈、AI 對弈、殘局題庫與象棋課程</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><meta name="description" content="象棋學院（Xiangqi Academy）：免安裝的象棋棋盤，內建完整規則引擎，支援免註冊的線上對弈（計時、悔棋請求、觀戰）、十位不同段位的 AI 對手與棋力段位賽、100 題殘局題庫（含古譜）、象棋知識課程、同機雙人對弈、悔棋、中文棋譜記錄、棋譜回放與匯入，以及七種棋子的走法速查。" /><style>
-/* ♟️ 象棋學院 — 淺色、乾淨、以棋盤為主角的版面 */
+<html lang="zh-Hant"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>🐘 象棋學院 · 線上對弈、AI 對弈、殘局題庫與象棋課程</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236e2c14'/%3E%3Cstop offset='100%25' stop-color='%233d1608'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='4.5' y='4.5' width='55' height='55' rx='11.5' fill='none' stroke='%23d4a34a' stroke-width='1.6' opacity='.75'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fbf0d4' stroke='%23854d1e' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%23a61b1b' stroke-width='2.2'/%3E%3Cpath d='M32 20v24M23.5 25.5h17M23.5 32h17M25 38.5h14' stroke='%23a61b1b' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236e2c14'/%3E%3Cstop offset='100%25' stop-color='%233d1608'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='4.5' y='4.5' width='55' height='55' rx='11.5' fill='none' stroke='%23d4a34a' stroke-width='1.6' opacity='.75'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fbf0d4' stroke='%23854d1e' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%23a61b1b' stroke-width='2.2'/%3E%3Cpath d='M32 20v24M23.5 25.5h17M23.5 32h17M25 38.5h14' stroke='%23a61b1b' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" /><meta name="description" content="象棋學院（Xiangqi Academy）：免安裝的象棋棋盤，內建完整規則引擎，支援免註冊的線上對弈（計時、悔棋請求、觀戰）、十位不同段位的 AI 對手與棋力段位賽、100 題殘局題庫（含古譜）、象棋知識課程、同機雙人對弈、悔棋、中文棋譜記錄、棋譜回放與匯入，以及七種棋子的走法速查。" /><style>
+/* ==========================================================================
+   🏮 象棋學院 — 東方國粹書院・宣紙朱印 × 花梨紅木棋苑
+   ========================================================================== */
 :root {
-  --bg: #f8f6f1;
-  --card: #ffffff;
-  --line: #e7e2d8;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --accent: #b45309;
-  --accent-soft: #fef3c7;
-  --red: #b91c1c;
-  --black: #111827;
-  --radius: 14px;
+  --bg: #f3eadb;
+  --card: #fffcf5;
+  --surface-soft: #f8f0e0;
+  --surface-paper: #faf3e4;
+  --line: #d6c2a3;
+  --line-strong: #bca078;
+  --text: #26170c;
+  --text-2: #4a3525;
+  --muted: #6f5742;
+  --accent: #9e1b1b;
+  --accent-hover: #7f1414;
+  --accent-soft: #fbede9;
+  --gold: #a6711e;
+  --gold-soft: #fcf3db;
+  --gold-border: #d9b166;
+  --red: #ad1717;
+  --black: #1c1815;
+  --radius: 10px;
+  --font-serif: 'Noto Serif TC', 'Noto Serif CJK TC', 'Songti TC', 'STSong', 'PMingLiU', 'DFKai-SB', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; }
+html, body { margin: 0; min-height: 100%; }
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 50% 0%, #fbf6eb 0%, #f3eadb 58%, #e9dbc3 100%);
+  background-attachment: fixed;
   color: var(--text);
-  font: 15px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  font: 15px/1.62 var(--font-sans);
   -webkit-text-size-adjust: 100%;
 }
 [hidden] { display: none !important; }
 h1, h2, h3, p { margin: 0; }
+h1, h2 {
+  font-family: var(--font-serif);
+  letter-spacing: .05em;
+  color: #2b1508;
+}
 button { font: inherit; color: inherit; }
 .muted { color: var(--muted); font-size: 13px; }
 
-/* ---------- 標題列 ---------- */
+/* ---------- 書卷綾邊頁首 ---------- */
 .top-header {
   position: sticky; top: 0; z-index: 30;
-  background: rgba(255, 255, 255, .96);
-  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #fdf9f0 0%, #f7efe0 100%);
+  border-top: 3px solid var(--accent);
+  border-bottom: 1px solid var(--line-strong);
+  box-shadow: 0 1px 0 #fffdf9, 0 4px 16px rgba(66, 32, 10, .07);
 }
 .header-inner {
-  max-width: 1120px; margin: 0 auto; padding: 8px 16px;
+  max-width: 1140px; margin: 0 auto; padding: 8px 16px;
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
-.brand-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text); }
+/* 讓校園返回鈕融入東方宣紙銅紋色調 */
+.top-header .campus-home {
+  background: #fbf2df;
+  border-color: #d4b78c;
+  color: #5c2c12;
+}
+.top-header .campus-home:hover {
+  background: #f5e5c6;
+  box-shadow: 0 2px 8px rgba(92, 44, 18, .15);
+}
+.brand-link {
+  display: inline-flex; align-items: center; gap: 9px;
+  text-decoration: none; color: var(--text);
+}
 .brand-icon { font-size: 22px; line-height: 1; }
-.brand-name { font-size: 18px; font-weight: 700; letter-spacing: .04em; }
+.brand-title-group { display: inline-flex; align-items: center; gap: 7px; }
+.brand-name {
+  font: 900 20px/1.1 var(--font-serif);
+  letter-spacing: .1em;
+  color: #2c1407;
+}
+.brand-seal {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: #a61b1b;
+  color: #fff9ee;
+  font: 700 10.5px/1.1 var(--font-serif);
+  letter-spacing: .08em;
+  box-shadow: inset 0 0 0 1px rgba(255, 244, 224, .55), 0 1px 3px rgba(127, 20, 20, .28);
+}
 .ver-pill {
-  border: 1px solid var(--line); background: #fff; border-radius: 999px;
-  padding: 1px 9px; font-size: 12px; color: var(--muted); cursor: pointer;
+  border: 1px solid var(--line); background: #fffdf8; border-radius: 6px;
+  padding: 1px 8px; font-size: 12px; color: var(--muted); cursor: pointer;
+  transition: border-color .15s, color .15s;
 }
 .ver-pill:hover { border-color: var(--accent); color: var(--accent); }
-.main-nav { display: flex; gap: 4px; margin-left: auto; }
+.main-nav { display: flex; gap: 5px; margin-left: auto; }
 .nav-tab {
-  padding: 6px 12px; border-radius: 999px; text-decoration: none;
-  color: var(--muted); font-weight: 600; font-size: 14px; white-space: nowrap;
+  padding: 6px 12px; border-radius: 7px; text-decoration: none;
+  color: #5c432d; font-weight: 700; font-size: 14px; white-space: nowrap;
+  border: 1px solid transparent;
+  transition: background .15s, color .15s, border-color .15s;
 }
-.nav-tab:hover { background: #f3f0e8; color: var(--text); }
-.nav-tab.active { background: var(--accent-soft); color: var(--accent); }
+.nav-tab:hover { background: #efe3cc; color: var(--text); border-color: #d9c3a0; }
+.nav-tab.active {
+  background: linear-gradient(180deg, #ab2020 0%, #891616 100%);
+  color: #fff8eb;
+  border-color: #741111;
+  box-shadow: inset 0 1px 0 rgba(255, 236, 196, .35), 0 2px 6px rgba(137, 22, 22, .22);
+}
 
-.main-container { max-width: 1120px; margin: 0 auto; padding: 16px; outline: none; }
-.loading-state { padding: 60px 0; text-align: center; color: var(--muted); }
+.main-container { max-width: 1140px; margin: 0 auto; padding: 18px 16px 28px; outline: none; }
+.loading-state { padding: 60px 0; text-align: center; color: var(--muted); font-family: var(--font-serif); }
 
 /* ---------- 對弈／回放共用版面 ---------- */
-.xq-stage { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
+.xq-stage { display: grid; grid-template-columns: minmax(0, 1fr) 348px; gap: 20px; align-items: start; }
 .xq-board-col { display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; }
 .xq-board-wrap {
   /* 棋盤長寬比 592:652；高度不超過視窗，手機則佔滿寬度。 */
-  width: min(100%, calc((100vh - 96px) * 0.908), 640px);
+  width: min(100%, calc((100vh - 102px) * 0.908), 640px);
 }
-body[data-view='replay'] .xq-board-wrap { width: min(100%, calc((100vh - 176px) * 0.908), 640px); }
+body[data-view='replay'] .xq-board-wrap { width: min(100%, calc((100vh - 180px) * 0.908), 640px); }
 .xq-side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+/* 古籍雙線冊頁卡片 */
 .card {
-  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   padding: 14px 16px;
+  box-shadow:
+    inset 0 0 0 3px var(--card),
+    inset 0 0 0 4px rgba(182, 140, 82, .24),
+    0 3px 12px rgba(62, 31, 10, .06);
 }
-.card h2 { font-size: 16px; }
-.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.card h2 { font-size: 16.5px; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+.card-head h2 {
+  display: inline-flex; align-items: center; gap: 7px;
+  line-height: 1.25;
+}
+.card-head h2::before {
+  content: '❖';
+  font-size: 12px;
+  color: var(--accent);
+  line-height: 1;
+}
 .card-tools { display: flex; gap: 12px; flex-wrap: wrap; }
-.link-btn { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; font-size: 13px; font-weight: 600; }
+.link-btn { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; font-size: 13px; font-weight: 700; }
 .link-btn:hover { text-decoration: underline; }
-.link-btn:disabled { color: #c4c0b6; cursor: default; text-decoration: none; }
-.icon-btn { border: 0; background: none; cursor: pointer; padding: 4px 6px; border-radius: 8px; color: var(--muted); }
-.icon-btn:hover { background: #f3f0e8; color: var(--text); }
+.link-btn:disabled { color: #bfb29e; cursor: default; text-decoration: none; }
+.icon-btn { border: 0; background: none; cursor: pointer; padding: 4px 6px; border-radius: 6px; color: var(--muted); }
+.icon-btn:hover { background: #efe4cf; color: var(--text); }
 .count-pill, .tag-pill {
-  font-size: 12px; padding: 1px 9px; border-radius: 999px; white-space: nowrap;
-  background: #f3f0e8; color: var(--muted);
+  font-size: 12px; padding: 1px 9px; border-radius: 5px; white-space: nowrap;
+  background: #f1e6d2; color: #5c432d; border: 1px solid #dfd0b5; font-weight: 600;
 }
-.tag-pill { background: var(--accent-soft); color: var(--accent); }
+.tag-pill {
+  background: var(--accent-soft); color: var(--accent); border-color: #ecc8c0;
+  font-family: var(--font-serif); font-weight: 700;
+}
 
 .btn {
-  border: 1px solid var(--line); background: #fff; border-radius: 10px;
-  padding: 8px 10px; cursor: pointer; font-weight: 600; font-size: 14px; white-space: nowrap;
+  border: 1px solid #cbb391;
+  background: linear-gradient(180deg, #fffdf8 0%, #f5ebd9 100%);
+  border-radius: 8px;
+  padding: 8px 10px; cursor: pointer; font-weight: 700; font-size: 14px;
+  color: #38200f; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(62, 31, 10, .06);
+  transition: border-color .15s, background .15s, transform .1s;
 }
-.btn:hover { border-color: var(--accent); }
-.btn:disabled { opacity: .45; cursor: default; border-color: var(--line); }
-.btn.is-on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn-primary:hover { background: #92400e; }
-.btn-danger:hover { border-color: var(--red); color: var(--red); }
+.btn:hover:not(:disabled) { border-color: var(--accent); background: #fffcf5; }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: .45; cursor: default; box-shadow: none; }
+.btn.is-on {
+  background: var(--accent-soft); border-color: var(--accent); color: var(--accent);
+}
+.btn-primary {
+  background: linear-gradient(180deg, #b3221c 0%, #8c1612 100%);
+  border-color: #74100d; color: #fff9ee;
+  box-shadow: inset 0 1px 0 rgba(255, 236, 198, .30), 0 2px 6px rgba(140, 22, 18, .22);
+}
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #9e1b16 0%, #78110e 100%);
+  border-color: #5e0c0a;
+}
+.btn-danger:hover:not(:disabled) { border-color: var(--red); color: var(--red); background: #fff5f5; }
 .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .btn-grid .btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .opp-card { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.opp-card label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+.opp-card label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); font-weight: 600; }
 .opp-card select {
   font: inherit; font-size: 14px; font-weight: 600; color: var(--text); padding: 7px 8px;
-  border: 1px solid var(--line); border-radius: 10px; background: #fff; width: 100%;
+  border: 1px solid #cbb391; border-radius: 8px; background: #fffdf9; width: 100%;
 }
 
-.status-turn { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; }
-.turn-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--black); flex: none; }
-.status-turn.is-red .turn-dot { background: var(--red); }
+.status-turn {
+  display: flex; align-items: center; gap: 8px;
+  font: 800 18.5px/1.35 var(--font-serif); letter-spacing: .04em;
+}
+.turn-dot {
+  width: 14px; height: 14px; border-radius: 50%; background: var(--black); flex: none;
+  box-shadow: inset 0 0 0 2px #fdf3db, 0 0 0 1.5px var(--black);
+}
+.status-turn.is-red .turn-dot {
+  background: var(--red);
+  box-shadow: inset 0 0 0 2px #fdf3db, 0 0 0 1.5px var(--red);
+}
 .status-turn.is-red { color: var(--red); }
 .badge-check {
-  margin-left: auto; background: var(--red); color: #fff; border-radius: 999px;
-  padding: 1px 10px; font-size: 13px;
+  margin-left: auto; background: var(--red); color: #fff9ee; border-radius: 4px;
+  padding: 1px 9px; font: 700 13px/1.4 var(--font-serif); letter-spacing: .08em;
+  box-shadow: inset 0 0 0 1px rgba(255, 240, 210, .45);
 }
-.status-result { font-size: 20px; font-weight: 800; color: var(--accent); }
-#playStatus .muted { margin-top: 4px; }
+.status-result {
+  font: 900 20px/1.35 var(--font-serif); color: var(--accent); letter-spacing: .04em;
+}
+#playStatus .muted { margin-top: 5px; }
 
-/* ---------- 棋譜列表 ---------- */
-.mv-scroll { max-height: 236px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; background: #fcfbf8; }
+/* ---------- 線裝古譜棋譜列表 ---------- */
+.mv-scroll {
+  max-height: 236px; overflow-y: auto;
+  border: 1px solid #d1ba96; border-radius: 7px;
+  background: var(--surface-paper);
+}
 .mv-list { list-style: none; margin: 0; padding: 4px 0; }
-.mv-list li { display: grid; grid-template-columns: 38px 1fr 1fr; align-items: center; padding: 1px 8px; }
-.mv-list li:nth-child(even) { background: #f6f3ec; }
-.mv-no { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-.mv { border: 0; background: none; text-align: left; padding: 3px 6px; border-radius: 6px; font-size: 15px; letter-spacing: .05em; }
+.mv-list li {
+  display: grid; grid-template-columns: 40px 1fr 1fr; align-items: center;
+  padding: 2px 8px; border-bottom: 1px dashed rgba(180, 145, 96, .28);
+}
+.mv-list li:last-child { border-bottom: 0; }
+.mv-list li:nth-child(even) { background: rgba(226, 205, 170, .24); }
+.mv-no {
+  color: #84684b; font-size: 12px; font-variant-numeric: tabular-nums;
+  border-right: 1px solid rgba(180, 145, 96, .35); margin-right: 6px;
+}
+.mv {
+  border: 0; background: none; text-align: left; padding: 3px 6px; border-radius: 5px;
+  font: 700 15px/1.35 var(--font-serif); letter-spacing: .08em;
+}
 .mv-red { color: var(--red); }
 .mv-black { color: var(--black); }
 button.mv { cursor: pointer; }
-button.mv:hover { background: #ece7db; }
-.mv.is-active { background: var(--accent-soft); font-weight: 700; box-shadow: inset 0 0 0 1px #f59e0b; }
-.mv-none { padding: 14px; text-align: center; }
-.cap-box { margin-top: 10px; display: grid; gap: 4px; }
+button.mv:hover { background: #ebdDC3; }
+.mv.is-active {
+  background: #fde8c8; font-weight: 900;
+  box-shadow: inset 0 0 0 1px #c97a1e;
+}
+.mv-none { padding: 14px; text-align: center; font-family: var(--font-serif); }
+.cap-box { margin-top: 10px; display: grid; gap: 5px; padding-top: 8px; border-top: 1px dashed var(--line); }
 .cap-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; min-height: 26px; }
-.cap-label { font-size: 12px; color: var(--muted); margin-right: 4px; }
+.cap-label { font-size: 12px; color: var(--muted); margin-right: 4px; font-weight: 600; }
 .cap-pc {
-  width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid currentColor; background: #fdf6e3;
-  display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; line-height: 1;
+  width: 23px; height: 23px; border-radius: 50%;
+  border: 1.5px solid currentColor;
+  background: radial-gradient(circle at 35% 30%, #fffdf6, #f4dfb3);
+  box-shadow: 0 1px 2px rgba(60, 30, 5, .18);
+  display: inline-flex; align-items: center; justify-content: center;
+  font: 700 13px/1 var(--font-serif);
 }
 .cap-pc.is-red { color: var(--red); }
 .cap-pc.is-black { color: var(--black); }
@@ -139,219 +266,251 @@ button.mv:hover { background: #ece7db; }
 .rp-controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .rp-controls .btn { min-width: 46px; }
 .rp-slider { width: min(100%, 520px); accent-color: var(--accent); }
-.rp-pos { font-size: 13px; color: var(--muted); margin: 8px 0 6px; }
-.rec-desc { font-size: 14px; color: #4b5563; }
+.rp-pos { font-size: 13px; color: var(--muted); margin: 8px 0 6px; font-weight: 600; }
+.rec-desc { font-size: 14px; color: var(--text-2); }
 .rp-tools { margin-top: 10px; }
 .rec-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.rec-item { display: flex; align-items: center; border-radius: 10px; }
-.rec-item a { flex: 1; min-width: 0; display: grid; padding: 6px 10px; text-decoration: none; color: var(--text); border-radius: 10px; }
-.rec-item a:hover { background: #f6f3ec; }
-.rec-item.is-active a { background: var(--accent-soft); }
+.rec-item { display: flex; align-items: center; border-radius: 8px; }
+.rec-item a {
+  flex: 1; min-width: 0; display: grid; padding: 6px 10px;
+  text-decoration: none; color: var(--text); border-radius: 8px;
+}
+.rec-item a:hover { background: #f3e8d4; }
+.rec-item.is-active a { background: var(--accent-soft); box-shadow: inset 0 0 0 1px #e5b8b0; }
 .rec-item strong { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rec-item small { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .import-box { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 8px; }
-.import-box summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--accent); }
+.import-box summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var(--accent); }
 .import-box textarea {
-  width: 100%; margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px;
-  font: inherit; font-size: 14px; resize: vertical; background: #fcfbf8;
+  width: 100%; margin-top: 8px; border: 1px solid #cbb391; border-radius: 8px; padding: 8px 10px;
+  font: inherit; font-size: 14px; resize: vertical; background: var(--surface-paper); color: var(--text);
 }
 .import-actions { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
 
 /* ---------- 走法速查 ---------- */
 .rules-wrap { display: grid; gap: 14px; }
-.rules-intro h1 { font-size: 20px; margin-bottom: 4px; }
-.guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 14px; }
+.rules-intro h1 { font-size: 21px; margin-bottom: 4px; }
+.guide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr)); gap: 14px; }
 .guide-card { display: grid; grid-template-columns: 210px 1fr; gap: 14px; align-items: start; }
-.guide-card h2 { margin-bottom: 4px; }
-.guide-card p { font-size: 14px; color: #4b5563; }
-.plain-list { margin: 8px 0; padding-left: 20px; display: grid; gap: 4px; }
+.guide-card h2 { margin-bottom: 4px; color: var(--accent); }
+.guide-card p { font-size: 14px; color: var(--text-2); }
+.plain-list { margin: 8px 0; padding-left: 20px; display: grid; gap: 5px; color: var(--text-2); }
 
-/* ---------- 棋盤 SVG ---------- */
-.xq-board { display: block; width: 100%; height: auto; user-select: none; -webkit-user-select: none; touch-action: manipulation; cursor: pointer; }
-.guide-board .xq-board, #replayBoard .xq-board { cursor: default; }
-.xq-bd-frame { fill: #e9c98f; stroke: #a8743a; stroke-width: 3; }
-.xq-bd-border { fill: #f3dcae; stroke: #6b4423; stroke-width: 3; }
-.xq-bd-grid { fill: none; stroke: #6b4423; stroke-width: 1.6; stroke-linecap: square; }
-.xq-bd-river text {
-  font: 700 30px 'Noto Serif TC', 'Noto Serif CJK TC', 'Songti TC', 'PMingLiU', 'DFKai-SB', serif;
-  fill: #8a5a2b; opacity: .55; text-anchor: middle; dominant-baseline: central; letter-spacing: .5em;
+/* ---------- 花梨紅木 × 黃楊木雕棋盤 SVG ---------- */
+.xq-board {
+  display: block; width: 100%; height: auto;
+  border-radius: 13px;
+  box-shadow: 0 10px 26px rgba(58, 26, 8, .20);
+  user-select: none; -webkit-user-select: none; touch-action: manipulation; cursor: pointer;
 }
-.xq-bd-labels text { font-size: 15px; fill: #6b4423; text-anchor: middle; dominant-baseline: central; font-weight: 600; }
+.guide-board .xq-board, #replayBoard .xq-board { cursor: default; }
+.xq-bd-frame { fill: #52240f; stroke: #2b1105; stroke-width: 2.5; }
+.xq-bd-brass { fill: none; stroke: #d4a44c; stroke-width: 2; stroke-linecap: square; opacity: .78; pointer-events: none; }
+.xq-bd-border { fill: #efd4a2; stroke: #3d1c0a; stroke-width: 2.2; }
+.xq-bd-outerline { fill: none; stroke: #4e2710; stroke-width: 3; }
+.xq-bd-grid { fill: none; stroke: #572e14; stroke-width: 1.55; stroke-linecap: square; }
+.xq-bd-river-orn { fill: rgba(122, 62, 22, .12); stroke: #7a441e; stroke-width: 1.3; opacity: .55; }
+.xq-bd-river text {
+  font: 700 29px var(--font-serif);
+  fill: #6b3917; opacity: .78; text-anchor: middle; dominant-baseline: central; letter-spacing: .52em;
+}
+.xq-bd-labels text {
+  font: 700 14.5px var(--font-serif);
+  fill: #f3deb2; text-anchor: middle; dominant-baseline: central;
+}
 .xq-pc.is-sliding { transition: transform .18s ease-out; }
-.xq-pc-shadow { fill: rgba(60, 30, 5, .35); }
-.xq-pc-body { fill: #fdf3d7; stroke: #8a5a2b; stroke-width: 2; }
-.xq-pc-ring { fill: none; stroke-width: 1.6; }
+.xq-pc-shadow { fill: rgba(42, 18, 4, .40); }
+.xq-pc-rim { fill: #7c491e; stroke: #4d290c; stroke-width: 1.2; }
+.xq-pc-body { fill: #fbf0d3; }
+.xq-pc-ring { fill: none; stroke-width: 1.8; }
+.xq-pc-ring-inner { fill: none; stroke-width: .75; opacity: .55; }
 .xq-pc-text {
-  font: 700 30px 'Noto Serif TC', 'Noto Serif CJK TC', 'Songti TC', 'PMingLiU', 'DFKai-SB', 'Microsoft JhengHei', serif;
+  font: 900 29px var(--font-serif);
   text-anchor: middle; dominant-baseline: central;
 }
-.xq-pc.is-red .xq-pc-ring { stroke: var(--red); }
+.xq-pc.is-red .xq-pc-ring, .xq-pc.is-red .xq-pc-ring-inner { stroke: var(--red); }
 .xq-pc.is-red .xq-pc-text { fill: var(--red); }
-.xq-pc.is-black .xq-pc-ring { stroke: var(--black); }
+.xq-pc.is-black .xq-pc-ring, .xq-pc.is-black .xq-pc-ring-inner { stroke: var(--black); }
 .xq-pc.is-black .xq-pc-text { fill: var(--black); }
-.xq-pc.is-selected .xq-pc-body { fill: #fde68a; stroke: #d97706; stroke-width: 3.5; }
-.xq-mk-last { fill: rgba(245, 158, 11, .30); stroke: #d97706; stroke-width: 1.5; stroke-dasharray: 5 4; }
-.xq-mk-check { fill: rgba(220, 38, 38, .30); stroke: #dc2626; stroke-width: 2; }
-.xq-mk-target { fill: #16a34a; opacity: .85; pointer-events: none; }
-.xq-mk-hint { fill: none; stroke: #2563eb; stroke-width: 3.5; pointer-events: none; }
-.xq-mk-hint.is-to { fill: rgba(37, 99, 235, .22); }
-.xq-mk-hint-line { stroke: #2563eb; stroke-width: 5; stroke-linecap: round; opacity: .55; pointer-events: none; }
-.xq-mk-capture { fill: none; stroke: #dc2626; stroke-width: 3.5; stroke-dasharray: 9 6; pointer-events: none; }
+.xq-pc.is-selected .xq-pc-rim { fill: #b45309; stroke: #78350f; stroke-width: 2; }
+.xq-mk-last { fill: rgba(194, 110, 18, .22); stroke: #b45309; stroke-width: 1.8; stroke-dasharray: 5 4; }
+.xq-mk-check { fill: rgba(185, 28, 28, .28); stroke: #b91c1c; stroke-width: 2.4; }
+.xq-mk-target { fill: #1f6f4a; opacity: .88; pointer-events: none; }
+.xq-mk-hint { fill: none; stroke: #1d4ed8; stroke-width: 3.5; pointer-events: none; }
+.xq-mk-hint.is-to { fill: rgba(29, 78, 216, .20); }
+.xq-mk-hint-line { stroke: #1d4ed8; stroke-width: 5; stroke-linecap: round; opacity: .55; pointer-events: none; }
+.xq-mk-capture { fill: none; stroke: #b91c1c; stroke-width: 3.5; stroke-dasharray: 9 5; pointer-events: none; }
 
 /* ---------- 視窗與提示 ---------- */
 .modal-backdrop {
-  position: fixed; inset: 0; z-index: 60; background: rgba(17, 24, 39, .45);
+  position: fixed; inset: 0; z-index: 60; background: rgba(34, 18, 8, .52);
   display: flex; align-items: center; justify-content: center; padding: 16px;
 }
-.modal-card { background: #fff; border-radius: var(--radius); width: min(620px, 100%); max-height: 84vh; display: flex; flex-direction: column; }
+.modal-card {
+  background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--radius);
+  width: min(620px, 100%); max-height: 84vh; display: flex; flex-direction: column;
+  box-shadow: 0 18px 42px rgba(42, 18, 6, .28);
+}
 .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line); }
 .modal-head h2 { font-size: 17px; }
 .modal-body { padding: 14px 16px; overflow-y: auto; }
 .rel-item + .rel-item { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
 .rel-head { display: flex; gap: 10px; align-items: baseline; }
-.rel-ver { font-weight: 800; color: var(--accent); }
+.rel-ver { font-weight: 800; color: var(--accent); font-family: var(--font-serif); }
 .rel-date { color: var(--muted); font-size: 12px; }
-.rel-item h3 { font-size: 15px; margin: 2px 0 4px; }
+.rel-item h3 { font-size: 15px; margin: 2px 0 4px; font-family: var(--font-serif); }
 .rel-item ul { margin: 0; padding-left: 20px; font-size: 14px; }
 .xq-toast {
   position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 70;
-  background: rgba(17, 24, 39, .92); color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 14px;
+  background: #2c1608; color: #fff8eb; border: 1px solid #b88736;
+  padding: 8px 18px; border-radius: 8px; font-size: 14px;
+  box-shadow: 0 6px 20px rgba(42, 18, 6, .32);
   max-width: calc(100vw - 32px); text-align: center;
 }
 
 /* ---------- 殘局題庫與課程 ---------- */
 .study-wrap { display: grid; gap: 14px; }
-.study-wrap h1 { font-size: 20px; margin-bottom: 4px; }
+.study-wrap h1 { font-size: 21px; margin-bottom: 4px; }
 .pz-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .pz-score { display: grid; justify-items: end; flex: none; }
-.pz-score-main { font-size: 26px; font-weight: 800; color: var(--accent); line-height: 1.2; white-space: nowrap; }
-.pz-score-main small { font-size: 14px; color: var(--muted); font-weight: 600; }
+.pz-score-main { font: 900 26px/1.2 var(--font-serif); color: var(--accent); white-space: nowrap; }
+.pz-score-main small { font-size: 14px; color: var(--muted); font-weight: 600; font-family: var(--font-sans); }
 .pz-filters { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.seg { display: inline-flex; border: 1px solid #cbb391; border-radius: 8px; overflow: hidden; background: #faf2e2; }
 .seg-btn {
-  border: 0; border-right: 1px solid var(--line); background: #fff; padding: 6px 14px; cursor: pointer;
-  font-weight: 600; font-size: 14px; display: grid; justify-items: center; line-height: 1.25;
+  border: 0; border-right: 1px solid #d6c2a3; background: transparent; padding: 6px 14px; cursor: pointer;
+  font-weight: 700; font-size: 14px; display: grid; justify-items: center; line-height: 1.25; color: #543b26;
 }
 .seg-btn:last-child { border-right: 0; }
 .seg-btn small { font-size: 11px; color: var(--muted); font-weight: 500; }
-.seg-btn.is-on { background: var(--accent-soft); color: var(--accent); }
-.pz-select { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
-.pz-select select { font: inherit; font-size: 14px; color: var(--text); padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.seg-btn.is-on { background: var(--accent); color: #fff8ec; }
+.seg-btn.is-on small { color: #fde2dc; }
+.pz-select { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.pz-select select { font: inherit; font-size: 14px; color: var(--text); padding: 6px 8px; border: 1px solid #cbb391; border-radius: 8px; background: #fffdf8; }
 .pz-check { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; }
-.pz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.pz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(154px, 1fr)); gap: 9px; }
 .pz-card {
-  display: grid; gap: 2px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px;
-  text-decoration: none; color: var(--text); background: #fcfbf8;
+  display: grid; gap: 3px; padding: 10px 12px; border: 1px solid #d8c4a4; border-radius: 8px;
+  text-decoration: none; color: var(--text); background: var(--surface-paper);
+  transition: border-color .15s, background .15s, transform .12s;
 }
-.pz-card:hover { border-color: var(--accent); background: #fff; }
-.pz-card.is-done { background: #f3faf3; border-color: #cfe8cf; }
+.pz-card:hover { border-color: var(--accent); background: #fffdf8; transform: translateY(-1px); }
+.pz-card.is-done { background: #eff7ee; border-color: #b7d7b5; }
 .pz-card-top { display: flex; justify-content: space-between; align-items: center; min-height: 20px; }
-.pz-n { font-size: 12px; color: var(--accent); font-weight: 700; }
-.pz-card strong { font-size: 15px; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pz-n { font-size: 12px; color: var(--accent); font-weight: 800; }
+.pz-card strong { font: 700 15.5px/1.35 var(--font-serif); letter-spacing: .05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pz-card small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pz-card small.pz-src-ancient { color: #92400e; }
+.pz-card small.pz-src-ancient { color: #8c3d0c; font-weight: 600; }
 .pz-status { margin-top: 10px; }
 .pz-status .muted { margin-top: 4px; }
 .status-result.is-fail { color: var(--red); }
 .pz-rule { margin-top: 10px; }
 .pz-nav { display: flex; justify-content: space-between; gap: 10px; }
-.pz-nav .btn { text-decoration: none; color: var(--text); text-align: center; white-space: normal; }
-.pz-nav .btn-primary { color: #fff; }
+.pz-nav .btn { text-decoration: none; color: #38200f; text-align: center; white-space: normal; }
+.pz-nav .btn-primary { color: #fff9ee; }
 
-.ls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 8px; margin-top: 10px; }
+.ls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 9px; margin-top: 10px; }
 .ls-card {
-  display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 1px solid var(--line);
-  border-radius: 10px; text-decoration: none; color: var(--text); background: #fcfbf8;
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #d8c4a4;
+  border-radius: 8px; text-decoration: none; color: var(--text); background: var(--surface-paper);
+  transition: border-color .15s, background .15s;
 }
-.ls-card:hover { border-color: var(--accent); background: #fff; }
-.ls-card.is-done { background: #f3faf3; border-color: #cfe8cf; }
+.ls-card:hover { border-color: var(--accent); background: #fffdf8; }
+.ls-card.is-done { background: #eff7ee; border-color: #b7d7b5; }
 .ls-no {
-  flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
-  display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;
+  flex: none; width: 28px; height: 28px; border-radius: 6px;
+  background: var(--accent-soft); color: var(--accent); border: 1px solid #e8bfb7;
+  display: inline-flex; align-items: center; justify-content: center;
+  font: 800 13.5px/1 var(--font-serif);
 }
 .ls-text { display: grid; min-width: 0; flex: 1; }
-.ls-text strong { font-size: 15px; }
+.ls-text strong { font: 700 15px/1.35 var(--font-serif); }
 .ls-text small { font-size: 12px; color: var(--muted); }
-.ls-st { color: #16a34a; font-weight: 800; flex: none; width: 14px; }
+.ls-st { color: #15803d; font-weight: 800; flex: none; width: 14px; }
 .lesson { max-width: 860px; margin: 0 auto; }
 .crumb { font-size: 13px; color: var(--muted); }
-.crumb a { color: var(--accent); text-decoration: none; }
-.ls-summary { color: var(--accent); font-weight: 600; margin-bottom: 8px; }
-.ls-p { margin-top: 8px; color: #374151; }
+.crumb a { color: var(--accent); text-decoration: none; font-weight: 700; }
+.ls-summary { color: var(--accent); font-weight: 700; margin-bottom: 8px; font-family: var(--font-serif); }
+.ls-p { margin-top: 8px; color: var(--text-2); }
 .demo-card { display: grid; grid-template-columns: minmax(0, 340px) 1fr; gap: 18px; align-items: start; }
 .demo-side h2 { margin-bottom: 2px; }
 .demo-controls { justify-content: flex-start; margin-top: 12px; }
 .demo-info { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.demo-mv { padding: 2px 8px; border-radius: 6px; background: #f6f3ec; font-size: 15px; letter-spacing: .05em; }
-.demo-mv.is-active { background: var(--accent-soft); box-shadow: inset 0 0 0 1px #f59e0b; font-weight: 700; }
-.demo-end { font-size: 13px; color: #fff; background: var(--red); border-radius: 999px; padding: 1px 10px; }
+.demo-mv {
+  padding: 2px 8px; border-radius: 5px; background: #f2e7d3;
+  font: 700 15px/1.4 var(--font-serif); letter-spacing: .06em;
+}
+.demo-mv.is-active { background: #fde8c8; box-shadow: inset 0 0 0 1px #c97a1e; font-weight: 900; }
+.demo-end { font: 700 13px/1.4 var(--font-serif); color: #fff9ee; background: var(--red); border-radius: 5px; padding: 1px 10px; }
 .ls-links { display: flex; flex-wrap: wrap; gap: 8px; }
-.ls-links .btn { text-decoration: none; color: var(--text); white-space: normal; }
-.ls-links .btn-primary { color: #fff; }
+.ls-links .btn { text-decoration: none; color: #38200f; white-space: normal; }
+.ls-links .btn-primary { color: #fff9ee; }
 .term-list { margin: 10px 0 0; display: grid; gap: 0; }
-.term-list > div { display: grid; grid-template-columns: 84px 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
-.term-list dt { font-weight: 700; color: var(--accent); }
-.term-list dd { margin: 0; color: #374151; }
+.term-list > div { display: grid; grid-template-columns: 88px 1fr; gap: 12px; padding: 8px 0; border-top: 1px dashed var(--line); }
+.term-list dt { font: 800 15px/1.5 var(--font-serif); color: var(--accent); }
+.term-list dd { margin: 0; color: var(--text-2); }
 .demo-board .xq-board { cursor: default; }
 
 /* ---------- 線上對弈 ---------- */
-body[data-view='online'] .xq-board-wrap { width: min(100%, calc((100vh - 190px) * 0.908), 640px); }
-.on-name { display: grid; gap: 3px; font-size: 12px; color: var(--muted); flex: none; }
+body[data-view='online'] .xq-board-wrap { width: min(100%, calc((100vh - 196px) * 0.908), 640px); }
+.on-name { display: grid; gap: 3px; font-size: 12px; color: var(--muted); flex: none; font-weight: 600; }
 .on-name input, .on-form input[type='text'], .on-form select, .on-invite input {
-  font: inherit; font-size: 15px; color: var(--text); padding: 7px 10px; border: 1px solid var(--line);
-  border-radius: 10px; background: #fff; min-width: 0;
+  font: inherit; font-size: 15px; color: var(--text); padding: 7px 10px; border: 1px solid #cbb391;
+  border-radius: 8px; background: #fffdf9; min-width: 0;
 }
-.on-name input { width: 150px; font-weight: 600; }
+.on-name input { width: 150px; font-weight: 700; }
 .on-two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .on-two h2 { margin-bottom: 10px; }
 .on-form { display: grid; gap: 10px; }
-.on-form > label:not(.pz-check) { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+.on-form > label:not(.pz-check) { display: grid; gap: 3px; font-size: 12px; color: var(--muted); font-weight: 600; }
 #onCode { text-transform: uppercase; letter-spacing: .2em; font-weight: 700; }
 .on-room-row { gap: 8px; }
-.on-room-row .btn { text-decoration: none; color: var(--text); flex: none; }
-.on-room-row .btn-primary { color: #fff; }
+.on-room-row .btn { text-decoration: none; color: #38200f; flex: none; }
+.on-room-row .btn-primary { color: #fff9ee; }
 .on-bar {
   width: min(100%, 640px); display: flex; align-items: center; gap: 8px; padding: 6px 12px;
-  background: var(--card); border: 1px solid var(--line); border-radius: 12px; min-height: 42px;
+  background: var(--card); border: 1px solid var(--line-strong); border-radius: 9px; min-height: 42px;
+  box-shadow: 0 2px 8px rgba(62, 31, 10, .06);
 }
 .on-dot { width: 14px; height: 14px; border-radius: 50%; flex: none; background: var(--black); }
 .on-dot.is-red { background: var(--red); }
-.on-who { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.on-who { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-serif); }
 .on-who.is-turn { color: var(--accent); }
-.on-conn { font-size: 12px; padding: 0 8px; border-radius: 999px; flex: none; }
+.on-conn { font-size: 12px; padding: 0 8px; border-radius: 5px; flex: none; font-weight: 600; }
 .on-conn.is-on { background: #dcfce7; color: #166534; }
 .on-conn.is-off { background: #fee2e2; color: #991b1b; }
 .on-clock {
   margin-left: auto; font: 700 20px/1.2 ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-variant-numeric: tabular-nums; padding: 2px 10px; border-radius: 8px; background: #f3f0e8; color: var(--muted);
+  font-variant-numeric: tabular-nums; padding: 2px 10px; border-radius: 6px;
+  background: #f0e5d0; color: #5c432d;
 }
-.on-clock.is-run { background: #1f2937; color: #fff; }
+.on-clock.is-run { background: #3b1c0a; color: #fff8eb; }
 .on-clock.is-run.is-low { background: var(--red); }
 .on-invite { display: flex; gap: 8px; margin-top: 6px; }
 .on-invite input { flex: 1; font-size: 13px; }
 .on-offer {
-  margin-top: 10px; padding: 8px 10px; border-radius: 10px; background: #f6f3ec; font-size: 14px;
+  margin-top: 10px; padding: 8px 10px; border-radius: 8px; background: #f5ebd9; font-size: 14px;
   display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
 }
-.on-offer.is-ask { background: var(--accent-soft); box-shadow: inset 0 0 0 1px #f59e0b; }
+.on-offer.is-ask { background: var(--gold-soft); box-shadow: inset 0 0 0 1px var(--gold-border); }
 .on-offer-btns { display: inline-flex; gap: 6px; }
 .on-next { text-decoration: none; display: inline-block; margin-top: 8px; white-space: normal; }
 #onStatus .muted { margin-top: 4px; }
 
-.on-privacy summary { cursor: pointer; font-weight: 700; font-size: 15px; }
-.on-privacy .plain-list { font-size: 14px; color: #374151; margin-bottom: 4px; }
+.on-privacy summary { cursor: pointer; font-weight: 700; font-size: 15px; font-family: var(--font-serif); }
+.on-privacy .plain-list { font-size: 14px; color: var(--text-2); margin-bottom: 4px; }
 .on-privacy[open] summary { margin-bottom: 6px; }
 
 /* ---------- 我的戰績 ---------- */
 #rpLists { display: grid; gap: 12px; }
 .opp-stat { grid-column: 1 / -1; }
-.st-title { font-size: 14px; margin: 12px 0 6px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
-.st-title small { font-weight: 400; font-size: 12.5px; color: var(--muted); }
+.st-title { font-size: 14.5px; margin: 12px 0 6px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; font-family: var(--font-serif); }
+.st-title small { font-weight: 400; font-size: 12.5px; color: var(--muted); font-family: var(--font-sans); }
 .st-card .card-head + .st-title { margin-top: 0; }
-.st-unfinished { display: grid; gap: 4px; margin-bottom: 10px; padding: 8px 10px; border-radius: 10px; background: var(--accent-soft); }
+.st-unfinished { display: grid; gap: 4px; margin-bottom: 10px; padding: 8px 10px; border-radius: 8px; background: var(--gold-soft); border: 1px solid var(--gold-border); }
 .st-unfinished .link-btn { text-decoration: none; text-align: left; }
 .st-opps { display: grid; gap: 4px; }
-.st-opp { border: 1px solid var(--line); border-radius: 10px; }
+.st-opp { border: 1px solid var(--line); border-radius: 8px; background: var(--surface-paper); }
 .st-opp summary, .st-ai li {
   display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 10px; padding: 6px 10px; font-size: 14px;
 }
@@ -364,21 +523,105 @@ body[data-view='online'] .xq-board-wrap { width: min(100%, calc((100vh - 190px) 
 .st-games li { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
 .st-meta { flex: 1; min-width: 0; color: var(--muted); }
 .st-games .link-btn { text-decoration: none; flex: none; }
-.st-r { flex: none; width: 22px; text-align: center; border-radius: 6px; font-size: 12px; font-weight: 700; background: #f3f0e8; color: var(--muted); }
+.st-r { flex: none; width: 22px; text-align: center; border-radius: 5px; font-size: 12px; font-weight: 700; background: #ede2cc; color: var(--muted); }
 .st-r.is-w { background: #dcfce7; color: #166534; }
 .st-r.is-l { background: #fee2e2; color: #991b1b; }
-.st-ai { display: grid; gap: 2px; }
-.st-ai li { border-radius: 10px; background: #faf8f3; }
+.st-ai { display: grid; gap: 3px; }
+.st-ai li { border-radius: 7px; background: var(--surface-paper); border: 1px solid rgba(214, 194, 163, .55); }
 .st-note { margin-top: 10px; }
+
+/* ---------- 棋力段位（東方段級腰牌） ---------- */
+.rank-pill {
+  border: 1px solid var(--gold-border);
+  background: linear-gradient(180deg, #fffdf4 0%, #f9ebc4 100%);
+  color: #7c3509;
+  border-radius: 6px;
+  padding: 2px 10px; font: 700 12.5px/1.35 var(--font-serif);
+  text-decoration: none; white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(124, 53, 9, .10);
+}
+.rank-pill:hover, .rank-pill.active { background: #fde6ad; border-color: #b46914; }
+.rk-badge {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  padding: 1px 9px; border-radius: 5px; font: 700 12.5px/1.4 var(--font-serif); white-space: nowrap;
+  border: 1px solid transparent;
+}
+.rk-badge.is-none { background: #efe8da; color: var(--muted); border-color: var(--line); }
+.rk-badge.is-kyu { background: #e8f5ef; color: #0f5c43; border-color: #a3d8c5; }
+.rk-badge.is-dan { background: #fcece8; color: #9e1b1b; border-color: #e6b4aa; }
+.rk-badge.is-pro {
+  background: linear-gradient(135deg, #fef3c7, #f8d477);
+  color: #782907; border-color: #c98a24;
+}
+.rk-badge-lg { font-size: 20px; padding: 8px 18px; border-width: 2px; }
+.rk-bar { display: block; height: 6px; border-radius: 999px; background: #e6d9c2; overflow: hidden; }
+.rk-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #c2781a, #9e1b1b); }
+.rk-mini {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 8px 10px; border-radius: 8px;
+  background: var(--gold-soft); border: 1px solid #e4c785; text-decoration: none; color: var(--text); font-size: 13px;
+}
+.rk-mini:hover { border-color: var(--accent); }
+.rk-mini-txt { flex: 1; min-width: 0; }
+.rk-mini .rk-bar { flex: 1 0 100%; }
+.st-rank { margin: 0 0 6px; }
+.opp-card label.opp-wide, .opp-card #oppSel { min-width: 0; }
+.opp-card > label:first-child { grid-column: 1 / -1; }
+.opp-card select { max-width: 100%; }
+.rk-result { margin: 4px 0; padding: 6px 10px; border-radius: 8px; background: #f3eadb; font-size: 14px; }
+.rk-result.is-promo { background: linear-gradient(135deg, #fef3c7, #fde68a); animation: rk-pop .6s ease-out; }
+.rk-result.is-demo { background: #fee2e2; }
+.rk-warn { margin: 8px 0 0; padding: 6px 10px; border-radius: 8px; background: #fee2e2; color: #991b1b; font-size: 13.5px; }
+.rk-result .is-up, .rk-log-d.is-up { color: #15803d; }
+.rk-result .is-down, .rk-log-d.is-down { color: #b91c1c; }
+@keyframes rk-pop { 0% { transform: scale(.92); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .rk-result.is-promo { animation: none; } }
+
+.rank-wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 14px; }
+.rk-hero-main { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.rk-hero h1 { margin: 0; font-size: 21px; }
+.rk-hero p { margin: 2px 0; }
+.rk-num { font-size: 20px; font-variant-numeric: tabular-nums; color: var(--accent); }
+.rk-prog { margin-top: 10px; display: grid; gap: 4px; }
+.rk-prog small { color: var(--muted); }
+.rk-prov { margin: 8px 0 0; padding: 6px 10px; border-radius: 8px; background: var(--accent-soft); font-size: 13.5px; }
+.rk-max { margin: 8px 0 0; font-weight: 700; }
+.rk-ai, .rk-ladder, .rk-log { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rk-ai li {
+  display: grid; grid-template-columns: minmax(0, 1.3fr) 64px minmax(0, 1.4fr) minmax(0, 1.1fr) auto;
+  align-items: center; gap: 4px 10px; padding: 6px 10px; border-radius: 8px;
+  background: var(--surface-paper); border: 1px solid rgba(214, 194, 163, .55); font-size: 13.5px;
+}
+.rk-ai li.is-rec { background: var(--gold-soft); border-color: #d99b38; }
+.rk-ai-name { min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rk-ai-name em { font-style: normal; font-size: 11.5px; font-weight: 700; color: #7c2d12; background: #fde68a; border-radius: 4px; padding: 0 7px; }
+.rk-ai-rt, .rk-min, .rk-log-r, .rk-log-d { font-variant-numeric: tabular-nums; }
+.rk-ai-rt { color: var(--muted); text-align: right; }
+.rk-ai-pv.is-nogain { color: var(--muted); }
+.rk-ai small { color: var(--muted); font-size: 12px; }
+.rk-go { padding: 4px 12px; font-size: 13px; }
+.rk-group { font-size: 14.5px; margin: 14px 0 6px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; font-family: var(--font-serif); }
+.rk-group small { font-weight: 400; font-size: 12.5px; color: var(--muted); font-family: var(--font-sans); }
+.rk-ladder li { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; padding: 4px 10px; border-radius: 8px; font-size: 13.5px; }
+.rk-ladder li.is-done { opacity: .62; }
+.rk-ladder li.is-me { background: var(--gold-soft); box-shadow: inset 0 0 0 1px #d99b38; }
+.rk-ladder .rk-badge { min-width: 86px; }
+.rk-min { color: var(--muted); min-width: 58px; }
+.rk-at { color: var(--muted); font-size: 12.5px; }
+.rk-me { margin-left: auto; font-weight: 700; color: var(--accent); font-size: 12.5px; }
+.rk-log li { display: flex; align-items: baseline; gap: 8px; font-size: 13.5px; }
+.rk-log-opp { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-log-d { width: 44px; text-align: right; font-weight: 700; }
+.rk-log-r { width: 44px; text-align: right; }
+.rk-log small { color: var(--muted); font-size: 12px; width: 84px; text-align: right; }
 
 @media (max-width: 880px) {
   .xq-stage { grid-template-columns: minmax(0, 1fr); }
   .xq-board-wrap, body[data-view='replay'] .xq-board-wrap { width: min(100%, 560px); }
   .main-container { padding: 10px; }
   .header-inner { padding: 6px 10px; gap: 6px; }
+  .brand-name { font-size: 18px; }
   .main-nav { margin-left: 0; width: 100%; }
-  .nav-tab { flex: 1; text-align: center; padding: 6px 4px; }
-  .nav-tab { font-size: 12.5px; white-space: nowrap; }
+  .nav-tab { flex: 1; text-align: center; padding: 6px 4px; font-size: 12.5px; white-space: nowrap; }
   .on-two { grid-template-columns: minmax(0, 1fr); }
   body[data-view='online'] .xq-board-wrap { width: min(100%, 560px); }
   .on-bar { width: min(100%, 560px); }
@@ -391,83 +634,6 @@ body[data-view='online'] .xq-board-wrap { width: min(100%, calc((100vh - 190px) 
   .btn-grid .btn:last-child:nth-child(odd) { grid-column: auto; }
   .guide-grid { grid-template-columns: minmax(0, 1fr); }
   .guide-card { grid-template-columns: 150px 1fr; }
-}
-
-/* ---------- 棋力段位 ---------- */
-.rank-pill {
-  border: 1px solid #e5c76b; background: #fffbeb; color: #92400e; border-radius: 999px;
-  padding: 1px 10px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap;
-}
-.rank-pill:hover, .rank-pill.active { background: #fef3c7; border-color: #d97706; }
-.rk-badge {
-  display: inline-flex; align-items: center; justify-content: center; flex: none;
-  padding: 1px 9px; border-radius: 999px; font-size: 12.5px; font-weight: 700; white-space: nowrap;
-  border: 1px solid transparent;
-}
-.rk-badge.is-none { background: #f3f4f6; color: var(--muted); border-color: var(--line); }
-.rk-badge.is-kyu { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
-.rk-badge.is-dan { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
-.rk-badge.is-pro { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; border-color: #f59e0b; }
-.rk-badge-lg { font-size: 20px; padding: 8px 18px; border-width: 2px; }
-.rk-bar { display: block; height: 6px; border-radius: 999px; background: #eee9dd; overflow: hidden; }
-.rk-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #f59e0b, #d97706); }
-.rk-mini {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 8px 10px; border-radius: 10px;
-  background: #fffbeb; border: 1px solid #f3e3b3; text-decoration: none; color: var(--text); font-size: 13px;
-}
-.rk-mini:hover { border-color: #d97706; }
-.rk-mini-txt { flex: 1; min-width: 0; }
-.rk-mini .rk-bar { flex: 1 0 100%; }
-.st-rank { margin: 0 0 6px; }
-.opp-card label.opp-wide, .opp-card #oppSel { min-width: 0; }
-.opp-card > label:first-child { grid-column: 1 / -1; }
-.opp-card select { max-width: 100%; }
-.rk-result { margin: 4px 0; padding: 6px 10px; border-radius: 10px; background: #f3f4f6; font-size: 14px; }
-.rk-result.is-promo { background: linear-gradient(135deg, #fef3c7, #fde68a); animation: rk-pop .6s ease-out; }
-.rk-result.is-demo { background: #fee2e2; }
-.rk-warn { margin: 8px 0 0; padding: 6px 10px; border-radius: 10px; background: #fee2e2; color: #991b1b; font-size: 13.5px; }
-.rk-result .is-up, .rk-log-d.is-up { color: #15803d; }
-.rk-result .is-down, .rk-log-d.is-down { color: #b91c1c; }
-@keyframes rk-pop { 0% { transform: scale(.92); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .rk-result.is-promo { animation: none; } }
-
-.rank-wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 14px; }
-.rk-hero-main { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.rk-hero h1 { margin: 0; font-size: 20px; }
-.rk-hero p { margin: 2px 0; }
-.rk-num { font-size: 20px; font-variant-numeric: tabular-nums; }
-.rk-prog { margin-top: 10px; display: grid; gap: 4px; }
-.rk-prog small { color: var(--muted); }
-.rk-prov { margin: 8px 0 0; padding: 6px 10px; border-radius: 10px; background: var(--accent-soft); font-size: 13.5px; }
-.rk-max { margin: 8px 0 0; font-weight: 700; }
-.rk-ai, .rk-ladder, .rk-log { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.rk-ai li {
-  display: grid; grid-template-columns: minmax(0, 1.3fr) 64px minmax(0, 1.4fr) minmax(0, 1.1fr) auto;
-  align-items: center; gap: 4px 10px; padding: 6px 10px; border-radius: 10px; background: #faf8f3; font-size: 13.5px;
-}
-.rk-ai li.is-rec { background: #fffbeb; box-shadow: inset 0 0 0 1px #f59e0b; }
-.rk-ai-name { min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.rk-ai-name em { font-style: normal; font-size: 11.5px; font-weight: 700; color: #92400e; background: #fde68a; border-radius: 999px; padding: 0 7px; }
-.rk-ai-rt, .rk-min, .rk-log-r, .rk-log-d { font-variant-numeric: tabular-nums; }
-.rk-ai-rt { color: var(--muted); text-align: right; }
-.rk-ai-pv.is-nogain { color: var(--muted); }
-.rk-ai small { color: var(--muted); font-size: 12px; }
-.rk-go { padding: 4px 12px; font-size: 13px; }
-.rk-group { font-size: 14px; margin: 14px 0 6px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
-.rk-group small { font-weight: 400; font-size: 12.5px; color: var(--muted); }
-.rk-ladder li { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; padding: 4px 10px; border-radius: 10px; font-size: 13.5px; }
-.rk-ladder li.is-done { opacity: .62; }
-.rk-ladder li.is-me { background: #fffbeb; box-shadow: inset 0 0 0 1px #f59e0b; }
-.rk-ladder .rk-badge { min-width: 86px; }
-.rk-min { color: var(--muted); min-width: 58px; }
-.rk-at { color: var(--muted); font-size: 12.5px; }
-.rk-me { margin-left: auto; font-weight: 700; color: #92400e; font-size: 12.5px; }
-.rk-log li { display: flex; align-items: baseline; gap: 8px; font-size: 13.5px; }
-.rk-log-opp { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rk-log-d { width: 44px; text-align: right; font-weight: 700; }
-.rk-log-r { width: 44px; text-align: right; }
-.rk-log small { color: var(--muted); font-size: 12px; width: 84px; text-align: right; }
-@media (max-width: 880px) {
   .rk-ai li { grid-template-columns: minmax(0, 1fr) auto auto; }
   .rk-ai-pv { grid-column: 1 / 3; }
   .rk-ai small { grid-column: 1 / 3; }
@@ -481,8 +647,31 @@ body[data-view='online'] .xq-board-wrap { width: min(100%, calc((100vh - 190px) 
     <div class="header-inner">
       <a class="campus-home" data-campus-home="xiangqi" href="https://okayell.github.io/">🏫 校園</a>
       <a href="#/play" class="brand-link" aria-label="回到象棋學院對弈頁">
-        <span class="brand-icon" aria-hidden="true">🐘</span>
-        <span class="brand-name">象棋學院</span>
+        <span class="brand-icon campus-crest-host" data-campus-crest="xiangqi" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <defs>
+              <linearGradient id="xq-hdr-wood" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#702d15"/>
+                <stop offset="100%" stop-color="#3c1508"/>
+              </linearGradient>
+              <radialGradient id="xq-hdr-pc" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#fffdf5"/>
+                <stop offset="70%" stop-color="#f6e3b8"/>
+                <stop offset="100%" stop-color="#dfb978"/>
+              </radialGradient>
+            </defs>
+            <rect width="64" height="64" rx="14" fill="url(#xq-hdr-wood)"/>
+            <rect x="4" y="4" width="56" height="56" rx="10.5" fill="none" stroke="#d4a34a" stroke-width="1.5" opacity=".78"/>
+            <circle cx="32" cy="33.5" r="21" fill="rgba(25,8,2,.42)"/>
+            <circle cx="32" cy="32" r="21" fill="url(#xq-hdr-pc)" stroke="#7c471e" stroke-width="1.8"/>
+            <circle cx="32" cy="32" r="17.2" fill="none" stroke="#a61b1b" stroke-width="2"/>
+            <text x="32" y="33.5" text-anchor="middle" dominant-baseline="central" fill="#a61b1b" font-family="'Noto Serif TC','Songti TC','DFKai-SB',serif" font-weight="900" font-size="24">帥</text>
+          </svg>
+        </span>
+        <span class="brand-title-group">
+          <span class="brand-name">象棋學院</span>
+          <span class="brand-seal" aria-hidden="true">楚漢</span>
+        </span>
       </a>
       <button id="versionBadgeBtn" class="ver-pill" type="button" title="查看版本更新紀錄"><span id="verText">v1.0.0</span></button>
       <a id="rankPill" class="rank-pill" data-nav="rank" href="#/rank" title="我的段位與升段規則">🏅 段位</a>
@@ -542,7 +731,7 @@ window.__STATIC_SINGLE_FILE__ = true;
   var PUBLIC_CAMPUS = 'https://okayell.github.io/';
   var LOCAL_CAMPUS_PORT = '8919';
   var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8929', '8928', '8931', '8930', '8933', '8932', '8935', '8934', '8937', '8936', '8939', '8938', '8941', '8940', '8899', '8898',
-    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954', '8962', '8964', '8966'];
+    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954', '8956', '8958', '8960', '8962', '8964', '8966', '8968', '8970'];
   var TOOL_MAP = {
     english: { port: '8919', mount: true, path: 'english-speak-listen/', name: '英語學院', icon: '🇬🇧' },
     japanese: { port: '8919', mount: true, path: 'japanese/', name: '日語學院', icon: '🇯🇵' },
@@ -571,10 +760,13 @@ window.__STATIC_SINGLE_FILE__ = true;
     tamagotchi: { port: '8919', mount: true, path: 'tamagotchi/', name: '塔麻可吉博物館', icon: '🥚' },
     'cloud-devops': { port: '8919', mount: true, path: 'cloud-devops/', name: '雲端與系統維運學院', icon: '☁️' },
     xiangqi: { port: '8919', mount: true, path: 'xiangqi/', name: '象棋學院', icon: '🐘' },
+    weiqi: { port: '8919', mount: true, path: 'weiqi/', name: '圍棋學院', icon: '⚫' },
     chess: { port: '8919', mount: true, path: 'chess/', name: '西洋棋學院', icon: '♟️' },
+    'board-games': { port: '8919', mount: true, path: 'board-games/', name: '經典棋藝學院', icon: '🎲' },
     crypto: { port: '8919', mount: true, path: 'crypto/', name: '區塊鏈學院', icon: '🪙' },
     futures: { port: '8919', mount: true, path: 'futures/', name: '期貨學院', icon: '🛢️' },
-    series: { port: '8919', mount: true, path: 'series/', name: '串流與影集學院', icon: '📺' }
+    series: { port: '8919', mount: true, path: 'series/', name: '串流與影集學院', icon: '📺' },
+    'hot-topics': { port: '8919', mount: true, path: 'hot-topics/', name: '發燒話題', icon: '🔥' }
   };
   var ACADEMY_CRESTS = {"english": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-english\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e3a8a\"/><stop offset=\"100%\" stop-color=\"#1d4ed8\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-english)\"/><path d=\"M8 8 L56 56 M56 8 L8 56\" stroke=\"#ffffff\" stroke-width=\"5\" opacity=\".22\"/><path d=\"M32 6 V58 M6 32 H58\" stroke=\"#ef4444\" stroke-width=\"4\" opacity=\".32\"/><rect x=\"11\" y=\"13\" width=\"42\" height=\"31\" rx=\"9\" fill=\"#ffffff\" stroke=\"#bfdbfe\" stroke-width=\"1.5\"/><path d=\"M22 43 L18 52 L30 43 Z\" fill=\"#ffffff\"/><text x=\"32\" y=\"35\" text-anchor=\"middle\" font-family=\"Arial,Helvetica,sans-serif\" font-size=\"19\" font-weight=\"900\" fill=\"#1e3a8a\" letter-spacing=\".5\">EN</text><rect x=\"39\" y=\"10\" width=\"16\" height=\"10\" rx=\"5\" fill=\"#ef4444\"/><circle cx=\"44\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"47\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"50\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%231d4ed8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M8 8 L56 56 M56 8 L8 56' stroke='%23ffffff' stroke-width='5' opacity='.22'/%3E%3Cpath d='M32 6 V58 M6 32 H58' stroke='%23ef4444' stroke-width='4' opacity='.32'/%3E%3Crect x='11' y='13' width='42' height='31' rx='9' fill='%23ffffff' stroke='%23bfdbfe' stroke-width='1.5'/%3E%3Cpath d='M22 43 L18 52 L30 43 Z' fill='%23ffffff'/%3E%3Ctext x='32' y='35' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='19' font-weight='900' fill='%231e3a8a' letter-spacing='.5'%3EEN%3C/text%3E%3Crect x='39' y='10' width='16' height='10' rx='5' fill='%23ef4444'/%3E%3Ccircle cx='44' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='47' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='50' cy='15' r='1.4' fill='%23fff'/%3E%3C/svg%3E"}, "japanese": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-japanese\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#fff1f2\"/><stop offset=\"100%\" stop-color=\"#ffe4e6\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-japanese)\" stroke=\"#fda4af\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"31\" r=\"15\" fill=\"#e11d48\" opacity=\".18\"/><path d=\"M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z\" fill=\"#dc2626\"/><rect x=\"15\" y=\"29\" width=\"34\" height=\"4.5\" rx=\"2\" fill=\"#dc2626\"/><rect x=\"29.5\" y=\"22\" width=\"5\" height=\"11\" fill=\"#b91c1c\"/><path d=\"M20 24 L18 52 M44 24 L46 52\" stroke=\"#dc2626\" stroke-width=\"5.2\" stroke-linecap=\"round\"/><circle cx=\"49\" cy=\"14\" r=\"4\" fill=\"#fb7185\"/><circle cx=\"49\" cy=\"14\" r=\"1.5\" fill=\"#fef08a\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fff1f2'/%3E%3Cstop offset='100%25' stop-color='%23ffe4e6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)' stroke='%23fda4af' stroke-width='2'/%3E%3Ccircle cx='32' cy='31' r='15' fill='%23e11d48' opacity='.18'/%3E%3Cpath d='M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z' fill='%23dc2626'/%3E%3Crect x='15' y='29' width='34' height='4.5' rx='2' fill='%23dc2626'/%3E%3Crect x='29.5' y='22' width='5' height='11' fill='%23b91c1c'/%3E%3Cpath d='M20 24 L18 52 M44 24 L46 52' stroke='%23dc2626' stroke-width='5.2' stroke-linecap='round'/%3E%3Ccircle cx='49' cy='14' r='4' fill='%23fb7185'/%3E%3Ccircle cx='49' cy='14' r='1.5' fill='%23fef08a'/%3E%3C/svg%3E"}, "korean": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-korean\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e1b4b\"/><stop offset=\"100%\" stop-color=\"#312e81\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-korean)\"/><circle cx=\"32\" cy=\"32\" r=\"19\" fill=\"#ffffff\" opacity=\".12\"/><circle cx=\"32\" cy=\"32\" r=\"16\" fill=\"#2563eb\"/><path d=\"M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z\" fill=\"#e11d48\"/><circle cx=\"24\" cy=\"32\" r=\"8\" fill=\"#e11d48\"/><circle cx=\"40\" cy=\"32\" r=\"8\" fill=\"#2563eb\"/><rect x=\"11\" y=\"11\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 16 12)\"/><rect x=\"42\" y=\"49\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 47 50)\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e1b4b'/%3E%3Cstop offset='100%25' stop-color='%23312e81'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23ffffff' opacity='.12'/%3E%3Ccircle cx='32' cy='32' r='16' fill='%232563eb'/%3E%3Cpath d='M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z' fill='%23e11d48'/%3E%3Ccircle cx='24' cy='32' r='8' fill='%23e11d48'/%3E%3Ccircle cx='40' cy='32' r='8' fill='%232563eb'/%3E%3Crect x='11' y='11' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 16 12)'/%3E%3Crect x='42' y='49' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 47 50)'/%3E%3C/svg%3E"}, "finance": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-finance\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#022c22\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-finance)\"/><path d=\"M12 24 L32 11 L52 24 Z\" fill=\"#fbbf24\"/><rect x=\"14\" y=\"24\" width=\"36\" height=\"3.5\" rx=\"1.5\" fill=\"#fde68a\"/><rect x=\"17\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"26.5\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"36\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"45\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"12\" y=\"48\" width=\"40\" height=\"5\" rx=\"2\" fill=\"#fbbf24\"/><path d=\"M15 44 L27 35 L35 39 L50 23\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M42 23 H50 V31\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%23022c22'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 24 L32 11 L52 24 Z' fill='%23fbbf24'/%3E%3Crect x='14' y='24' width='36' height='3.5' rx='1.5' fill='%23fde68a'/%3E%3Crect x='17' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='26.5' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='36' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='45' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='12' y='48' width='40' height='5' rx='2' fill='%23fbbf24'/%3E%3Cpath d='M15 44 L27 35 L35 39 L50 23' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M42 23 H50 V31' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "addiction-cm": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-addictioncm\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#10b981\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-addictioncm)\"/><path d=\"M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z\" fill=\"#ffffff\"/><rect x=\"29\" y=\"21\" width=\"6\" height=\"18\" rx=\"2\" fill=\"#059669\"/><rect x=\"23\" y=\"27\" width=\"18\" height=\"6\" rx=\"2\" fill=\"#059669\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2310b981'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z' fill='%23ffffff'/%3E%3Crect x='29' y='21' width='6' height='18' rx='2' fill='%23059669'/%3E%3Crect x='23' y='27' width='18' height='6' rx='2' fill='%23059669'/%3E%3C/svg%3E"}, "health-care": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-healthcare\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0d9488\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-healthcare)\"/><circle cx=\"32\" cy=\"28\" r=\"17\" fill=\"#ffffff\"/><rect x=\"28.5\" y=\"17\" width=\"7\" height=\"22\" rx=\"2\" fill=\"#e11d48\"/><rect x=\"21\" y=\"24.5\" width=\"22\" height=\"7\" rx=\"2\" fill=\"#e11d48\"/><path d=\"M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53\" fill=\"none\" stroke=\"#99f6e4\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230d9488'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='28' r='17' fill='%23ffffff'/%3E%3Crect x='28.5' y='17' width='7' height='22' rx='2' fill='%23e11d48'/%3E%3Crect x='21' y='24.5' width='22' height='7' rx='2' fill='%23e11d48'/%3E%3Cpath d='M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53' fill='none' stroke='%2399f6e4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "coding": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-coding\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e3a8a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-coding)\"/><rect x=\"8\" y=\"11\" width=\"48\" height=\"42\" rx=\"9\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"15\" cy=\"17.5\" r=\"2.2\" fill=\"#fb7185\"/><circle cx=\"22\" cy=\"17.5\" r=\"2.2\" fill=\"#fbbf24\"/><circle cx=\"29\" cy=\"17.5\" r=\"2.2\" fill=\"#34d399\"/><path d=\"M16 29 L26 36 L16 43\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"4.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><line x1=\"31\" y1=\"43\" x2=\"47\" y2=\"43\" stroke=\"#fbbf24\" stroke-width=\"4.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e3a8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='8' y='11' width='48' height='42' rx='9' fill='%231e293b' stroke='%2338bdf8' stroke-width='2'/%3E%3Ccircle cx='15' cy='17.5' r='2.2' fill='%23fb7185'/%3E%3Ccircle cx='22' cy='17.5' r='2.2' fill='%23fbbf24'/%3E%3Ccircle cx='29' cy='17.5' r='2.2' fill='%2334d399'/%3E%3Cpath d='M16 29 L26 36 L16 43' fill='none' stroke='%2338bdf8' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='31' y1='43' x2='47' y2='43' stroke='%23fbbf24' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "smart-iot": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-smartiot\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0891b2\"/><stop offset=\"100%\" stop-color=\"#0f766e\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-smartiot)\"/><path d=\"M12 33 L32 16 L52 33\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"4.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M18 30 V50 H46 V30\" fill=\"#ecfeff\" opacity=\".95\"/><path d=\"M23 36 A13 13 0 0 1 41 36\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M26.5 41 A7.5 7.5 0 0 1 37.5 41\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><circle cx=\"32\" cy=\"45.5\" r=\"3\" fill=\"#f59e0b\"/><circle cx=\"32\" cy=\"11\" r=\"2.5\" fill=\"#fde047\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230891b2'/%3E%3Cstop offset='100%25' stop-color='%230f766e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 33 L32 16 L52 33' fill='none' stroke='%23ffffff' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 30 V50 H46 V30' fill='%23ecfeff' opacity='.95'/%3E%3Cpath d='M23 36 A13 13 0 0 1 41 36' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Cpath d='M26.5 41 A7.5 7.5 0 0 1 37.5 41' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='45.5' r='3' fill='%23f59e0b'/%3E%3Ccircle cx='32' cy='11' r='2.5' fill='%23fde047'/%3E%3C/svg%3E"}, "music": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-music\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#6d28d9\"/><stop offset=\"100%\" stop-color=\"#be185d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-music)\"/><path d=\"M25 43 V18 L47 13 V39\" fill=\"none\" stroke=\"#fde68a\" stroke-width=\"4.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M25 25 L47 20\" stroke=\"#fbbf24\" stroke-width=\"4.2\"/><ellipse cx=\"20\" cy=\"45\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 20 45)\" fill=\"#fef3c7\"/><ellipse cx=\"42\" cy=\"41\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 42 41)\" fill=\"#fef3c7\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236d28d9'/%3E%3Cstop offset='100%25' stop-color='%23be185d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M25 43 V18 L47 13 V39' fill='none' stroke='%23fde68a' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M25 25 L47 20' stroke='%23fbbf24' stroke-width='4.2'/%3E%3Cellipse cx='20' cy='45' rx='7.5' ry='5.5' transform='rotate(-18 20 45)' fill='%23fef3c7'/%3E%3Cellipse cx='42' cy='41' rx='7.5' ry='5.5' transform='rotate(-18 42 41)' fill='%23fef3c7'/%3E%3C/svg%3E"}, "trivia": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-trivia\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#f59e0b\"/><stop offset=\"100%\" stop-color=\"#d97706\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-trivia)\"/><path d=\"M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16\" stroke=\"#fef9c3\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z\" fill=\"#ffffff\"/><path d=\"M28 33 L32 26 L36 33\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"26\" y=\"46\" width=\"12\" height=\"4\" rx=\"2\" fill=\"#1e293b\"/><rect x=\"28\" y=\"51.5\" width=\"8\" height=\"3.5\" rx=\"1.7\" fill=\"#334155\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16' stroke='%23fef9c3' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z' fill='%23ffffff'/%3E%3Cpath d='M28 33 L32 26 L36 33' fill='none' stroke='%23f59e0b' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='26' y='46' width='12' height='4' rx='2' fill='%231e293b'/%3E%3Crect x='28' y='51.5' width='8' height='3.5' rx='1.7' fill='%23334155'/%3E%3C/svg%3E"}, "fitness": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-fitness\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ea580c\"/><stop offset=\"100%\" stop-color=\"#991b1b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-fitness)\"/><g transform=\"rotate(-28 32 32)\"><rect x=\"16\" y=\"29\" width=\"32\" height=\"6\" rx=\"2.5\" fill=\"#e2e8f0\"/><rect x=\"11\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"6\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/><rect x=\"46\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"53\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ea580c'/%3E%3Cstop offset='100%25' stop-color='%23991b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-28 32 32)'%3E%3Crect x='16' y='29' width='32' height='6' rx='2.5' fill='%23e2e8f0'/%3E%3Crect x='11' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='6' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3Crect x='46' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='53' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3C/g%3E%3C/svg%3E"}, "poker": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-poker\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-poker)\"/><circle cx=\"32\" cy=\"32\" r=\"23\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3\" stroke-dasharray=\"6 4\"/><path d=\"M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z\" fill=\"#ffffff\"/><path d=\"M30 41 L26 51 H38 L34 41 Z\" fill=\"#ffffff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%230f172a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%23fbbf24' stroke-width='3' stroke-dasharray='6 4'/%3E%3Cpath d='M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z' fill='%23ffffff'/%3E%3Cpath d='M30 41 L26 51 H38 L34 41 Z' fill='%23ffffff'/%3E%3C/svg%3E"}, "stock": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-stock\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e293b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-stock)\"/><line x1=\"16\" y1=\"24\" x2=\"16\" y2=\"50\" stroke=\"#22c55e\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"12\" y=\"30\" width=\"8\" height=\"14\" rx=\"2\" fill=\"#22c55e\"/><line x1=\"32\" y1=\"18\" x2=\"32\" y2=\"46\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"28\" y=\"23\" width=\"8\" height=\"16\" rx=\"2\" fill=\"#ef4444\"/><line x1=\"48\" y1=\"11\" x2=\"48\" y2=\"39\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"44\" y=\"15\" width=\"8\" height=\"18\" rx=\"2\" fill=\"#ef4444\"/><path d=\"M11 47 Q28 42 53 16\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e293b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cline x1='16' y1='24' x2='16' y2='50' stroke='%2322c55e' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='12' y='30' width='8' height='14' rx='2' fill='%2322c55e'/%3E%3Cline x1='32' y1='18' x2='32' y2='46' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='28' y='23' width='8' height='16' rx='2' fill='%23ef4444'/%3E%3Cline x1='48' y1='11' x2='48' y2='39' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='44' y='15' width='8' height='18' rx='2' fill='%23ef4444'/%3E%3Cpath d='M11 47 Q28 42 53 16' fill='none' stroke='%23fbbf24' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "nba": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><radialGradient id=\"cn-g-nba\" cx=\"35%\" cy=\"30%\" r=\"70%\"><stop offset=\"0%\" stop-color=\"#fb923c\"/><stop offset=\"100%\" stop-color=\"#c2410c\"/></radialGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#1e293b\"/><circle cx=\"32\" cy=\"32\" r=\"22\" fill=\"url(#cn-g-nba)\" stroke=\"#fed7aa\" stroke-width=\"1.6\"/><path d=\"M10 32 H54 M32 10 V54\" stroke=\"#1e293b\" stroke-width=\"2.8\"/><path d=\"M16 16 Q30 32 16 48 M48 16 Q34 32 48 48\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2.8\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='35%25' cy='30%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%23fb923c'/%3E%3Cstop offset='100%25' stop-color='%23c2410c'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='%231e293b'/%3E%3Ccircle cx='32' cy='32' r='22' fill='url(%23g)' stroke='%23fed7aa' stroke-width='1.6'/%3E%3Cpath d='M10 32 H54 M32 10 V54' stroke='%231e293b' stroke-width='2.8'/%3E%3Cpath d='M16 16 Q30 32 16 48 M48 16 Q34 32 48 48' fill='none' stroke='%231e293b' stroke-width='2.8'/%3E%3C/svg%3E"}, "epl": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-epl\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#3b0764\"/><stop offset=\"100%\" stop-color=\"#6d28d9\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-epl)\"/><circle cx=\"32\" cy=\"34\" r=\"19\" fill=\"#ffffff\"/><polygon points=\"32,25 40,31 37,40 27,40 24,31\" fill=\"#1e1b4b\"/><path d=\"M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28\" stroke=\"#1e1b4b\" stroke-width=\"2.5\"/><path d=\"M23 12 L27 7 L32 11 L37 7 L41 12 Z\" fill=\"#fbbf24\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233b0764'/%3E%3Cstop offset='100%25' stop-color='%236d28d9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='34' r='19' fill='%23ffffff'/%3E%3Cpolygon points='32,25 40,31 37,40 27,40 24,31' fill='%231e1b4b'/%3E%3Cpath d='M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28' stroke='%231e1b4b' stroke-width='2.5'/%3E%3Cpath d='M23 12 L27 7 L32 11 L37 7 L41 12 Z' fill='%23fbbf24'/%3E%3C/svg%3E"}, "f1": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-f1\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#dc2626\"/><stop offset=\"100%\" stop-color=\"#7f1d1d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-f1)\"/><g transform=\"rotate(-24 32 33)\"><rect x=\"11\" y=\"21\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"11\" y=\"38\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"43\" y=\"22\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><rect x=\"43\" y=\"37.5\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><path d=\"M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z\" fill=\"#ffffff\"/><ellipse cx=\"31\" cy=\"32\" rx=\"6\" ry=\"3.4\" fill=\"#0f172a\"/><circle cx=\"32\" cy=\"32\" r=\"2.2\" fill=\"#fde047\"/><rect x=\"7\" y=\"24\" width=\"3.5\" height=\"16\" rx=\"1\" fill=\"#fde047\"/><rect x=\"52\" y=\"25\" width=\"3\" height=\"14\" rx=\"1\" fill=\"#ffffff\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23dc2626'/%3E%3Cstop offset='100%25' stop-color='%237f1d1d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-24 32 33)'%3E%3Crect x='11' y='21' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='11' y='38' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='43' y='22' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Crect x='43' y='37.5' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Cpath d='M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z' fill='%23ffffff'/%3E%3Cellipse cx='31' cy='32' rx='6' ry='3.4' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='2.2' fill='%23fde047'/%3E%3Crect x='7' y='24' width='3.5' height='16' rx='1' fill='%23fde047'/%3E%3Crect x='52' y='25' width='3' height='14' rx='1' fill='%23ffffff'/%3E%3C/g%3E%3C/svg%3E"}};
   ACADEMY_CRESTS.twbasket = {
@@ -625,9 +817,17 @@ window.__STATIC_SINGLE_FILE__ = true;
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-xiangqi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b45309"/><stop offset="100%" stop-color="#7c2d12"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-xiangqi)"/><circle cx="32" cy="32" r="21" fill="#fef3c7"/><circle cx="32" cy="32" r="16.5" fill="none" stroke="#b91c1c" stroke-width="2.5"/><path d="M32 21v22M24 26h16M24 32h16M25 38h14" stroke="#b91c1c" stroke-width="3" stroke-linecap="round"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"
   };
+  ACADEMY_CRESTS.weiqi = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-weiqi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1f5c48"/><stop offset="100%" stop-color="#0f2920"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-weiqi)"/><rect x="11" y="11" width="42" height="42" rx="6" fill="#dbb060" stroke="#a67c33" stroke-width="1.6"/><path d="M22 15v34M32 15v34M42 15v34M15 22h34M15 32h34M15 42h34" stroke="#3c2a14" stroke-width="1.4" opacity=".68"/><circle cx="24" cy="24" r="8.2" fill="#171b1a"/><circle cx="21.5" cy="21.5" r="2.2" fill="#ffffff" opacity=".28"/><circle cx="40" cy="40" r="8.2" fill="#f7f5ee" stroke="#9aa09a" stroke-width="1"/><circle cx="40" cy="24" r="7.4" fill="#f7f5ee" stroke="#9aa09a" stroke-width="1"/><circle cx="24" cy="40" r="7.4" fill="#171b1a"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231f5c48'/%3E%3Cstop offset='100%25' stop-color='%230f2920'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='11' y='11' width='42' height='42' rx='6' fill='%23dbb060' stroke='%23a67c33' stroke-width='1.6'/%3E%3Cpath d='M22 15v34M32 15v34M42 15v34M15 22h34M15 32h34M15 42h34' stroke='%233c2a14' stroke-width='1.4' opacity='.68'/%3E%3Ccircle cx='24' cy='24' r='8.2' fill='%23171b1a'/%3E%3Ccircle cx='21.5' cy='21.5' r='2.2' fill='%23ffffff' opacity='.28'/%3E%3Ccircle cx='40' cy='40' r='8.2' fill='%23f7f5ee' stroke='%239aa09a' stroke-width='1'/%3E%3Ccircle cx='40' cy='24' r='7.4' fill='%23f7f5ee' stroke='%239aa09a' stroke-width='1'/%3E%3Ccircle cx='24' cy='40' r='7.4' fill='%23171b1a'/%3E%3C/svg%3E"
+  };
   ACADEMY_CRESTS.chess = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-chess" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-chess)"/><circle cx="32" cy="19" r="8.5" fill="#ffffff"/><path d="M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z" fill="#ffffff"/><rect x="13" y="46" width="38" height="8" rx="3" fill="#ffffff"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='19' r='8.5' fill='%23ffffff'/%3E%3Cpath d='M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z' fill='%23ffffff'/%3E%3Crect x='13' y='46' width='38' height='8' rx='3' fill='%23ffffff'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS['board-games'] = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-board-games" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d48"/><stop offset="100%" stop-color="#9f1239"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-board-games)"/><circle cx="32" cy="32" r="21" fill="none" stroke="#ffe4e6" stroke-width="2.4" opacity=".88"/><path d="M11 32h42M32 11v42" stroke="#ffe4e6" stroke-width="2" opacity=".72"/><circle cx="23" cy="23" r="6" fill="#0f172a" stroke="#ffffff" stroke-width="1.5"/><circle cx="41" cy="23" r="6" fill="#ffffff"/><circle cx="32" cy="41" r="6" fill="#34d399" stroke="#ffffff" stroke-width="1.5"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23e11d48'/%3E%3Cstop offset='100%25' stop-color='%239f1239'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23ffe4e6' stroke-width='2.4' opacity='.88'/%3E%3Cpath d='M11 32h42M32 11v42' stroke='%23ffe4e6' stroke-width='2' opacity='.72'/%3E%3Ccircle cx='23' cy='23' r='6' fill='%230f172a' stroke='%23ffffff' stroke-width='1.5'/%3E%3Ccircle cx='41' cy='23' r='6' fill='%23ffffff'/%3E%3Ccircle cx='32' cy='41' r='6' fill='%2334d399' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E"
   };
   ACADEMY_CRESTS.crypto = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-crypto" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-crypto)"/><circle cx="32" cy="32" r="22" fill="#fffbeb" opacity=".16"/><circle cx="32" cy="32" r="18.5" fill="none" stroke="#fffbeb" stroke-width="2.4"/><rect x="16.5" y="26" width="19" height="12" rx="6" fill="none" stroke="#ffffff" stroke-width="4.2"/><rect x="28.5" y="26" width="19" height="12" rx="6" fill="none" stroke="#fde68a" stroke-width="4.2"/></svg>',
@@ -636,6 +836,10 @@ window.__STATIC_SINGLE_FILE__ = true;
   ACADEMY_CRESTS['us-stock'] = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-uss" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-uss)"/><line x1="16" y1="26" x2="16" y2="50" stroke="#ef4444" stroke-width="2.4" stroke-linecap="round"/><rect x="12.5" y="32" width="7" height="12" rx="1.8" fill="#ef4444"/><line x1="30" y1="19" x2="30" y2="45" stroke="#22c55e" stroke-width="2.4" stroke-linecap="round"/><rect x="26.5" y="24" width="7" height="15" rx="1.8" fill="#22c55e"/><line x1="45" y1="11" x2="45" y2="39" stroke="#22c55e" stroke-width="2.4" stroke-linecap="round"/><rect x="41.5" y="15" width="7" height="17" rx="1.8" fill="#22c55e"/><path d="M11 48 Q28 42 53 16" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/><circle cx="51" cy="14" r="3" fill="#fde047"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%230f172a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cline x1='16' y1='26' x2='16' y2='50' stroke='%23ef4444' stroke-width='2.4' stroke-linecap='round'/%3E%3Crect x='12.5' y='32' width='7' height='12' rx='1.8' fill='%23ef4444'/%3E%3Cline x1='30' y1='19' x2='30' y2='45' stroke='%2322c55e' stroke-width='2.4' stroke-linecap='round'/%3E%3Crect x='26.5' y='24' width='7' height='15' rx='1.8' fill='%2322c55e'/%3E%3Cline x1='45' y1='11' x2='45' y2='39' stroke='%2322c55e' stroke-width='2.4' stroke-linecap='round'/%3E%3Crect x='41.5' y='15' width='7' height='17' rx='1.8' fill='%2322c55e'/%3E%3Cpath d='M11 48 Q28 42 53 16' fill='none' stroke='%23fbbf24' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='51' cy='14' r='3' fill='%23fde047'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS['hot-topics'] = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-hottopics" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c86d4b"/><stop offset="100%" stop-color="#8e3d25"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-hottopics)"/><rect x="7" y="7" width="50" height="50" rx="10" fill="#231f1b" stroke="#e6ca9a" stroke-opacity=".28" stroke-width="1.2"/><path d="M34 13c1.2 7.5-3.4 12-3.4 12s6.6-1.4 10.6 4.4c3.4 5 4.4 13-1.4 19.4A15.5 15.5 0 0 1 19 47c-4.5-5.6-3-15 4-22 4.6-4.5 9-7.4 11-12Z" fill="#e6ca9a"/><path d="M32 33c2 3.8 5 6 5 10a6 6 0 0 1-12 0c0-3.5 2.7-6.2 7-10Z" fill="#ae4f33"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23c86d4b'/%3E%3Cstop offset='100%25' stop-color='%238e3d25'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='7' y='7' width='50' height='50' rx='10' fill='%23231f1b' stroke='%23e6ca9a' stroke-opacity='.28' stroke-width='1.2'/%3E%3Cpath d='M34 13c1.2 7.5-3.4 12-3.4 12s6.6-1.4 10.6 4.4c3.4 5 4.4 13-1.4 19.4A15.5 15.5 0 0 1 19 47c-4.5-5.6-3-15 4-22 4.6-4.5 9-7.4 11-12Z' fill='%23e6ca9a'/%3E%3Cpath d='M32 33c2 3.8 5 6 5 10a6 6 0 0 1-12 0c0-3.5 2.7-6.2 7-10Z' fill='%23ae4f33'/%3E%3C/svg%3E"
   };
   var VISITS_KEY = 'okayell.campus.visits.v1';
   var STU_KEY = 'okayell.campus.student.v1';
@@ -774,12 +978,24 @@ window.__STATIC_SINGLE_FILE__ = true;
     acad_xq_4: { icon: '📜', name: '古譜殘局破陣高手', tier: 't4', pts: 65, title: '📜 橘中秘殘局高手' },
     acad_xq_5: { icon: '💎', name: '車馬炮聯攻研究家', tier: 't5', pts: 120, title: '💎 車馬炮聯攻研究家' },
     acad_xq_6: { icon: '👑', name: '楚河漢界傳說棋痴', tier: 't6', pts: 220, title: '👑 楚河漢界傳說棋痴' },
+    acad_wq_1: { icon: '⚫', name: '十九路初登場', tier: 't1', pts: 8, title: '⚫ 圍棋見習棋士' },
+    acad_wq_2: { icon: '🎋', name: '金角銀邊草肚皮', tier: 't2', pts: 20, title: '🎋 星小目手談棋友' },
+    acad_wq_3: { icon: '🏆', name: '兩眼活棋妙手', tier: 't3', pts: 40, title: '🏆 十九路死活快手' },
+    acad_wq_4: { icon: '📐', name: '定石與手筋達人', tier: 't4', pts: 65, title: '📐 定石手筋戰術師' },
+    acad_wq_5: { icon: '💎', name: '幽玄手談研究家', tier: 't5', pts: 120, title: '💎 十九路手談研究家' },
+    acad_wq_6: { icon: '🌌', name: '爛柯十九路傳說棋痴', tier: 't6', pts: 220, title: '🌌 爛柯十九路傳說棋痴' },
     acad_ch_1: { icon: '♟️', name: '六十四格初登場', tier: 't1', pts: 8, title: '♟️ 西洋棋見習棋士' },
     acad_ch_2: { icon: '⚔️', name: '騎士捉雙', tier: 't2', pts: 20, title: '⚔️ 西洋棋戰術手' },
     acad_ch_3: { icon: '👑', name: '逆轉達人', tier: 't3', pts: 40, title: '👑 六十四格逆轉達人' },
     acad_ch_4: { icon: '🏰', name: '開局定式與棄子專家', tier: 't4', pts: 65, title: '🏰 皇家開局戰術師' },
     acad_ch_5: { icon: '💎', name: '六十四格戰術研究家', tier: 't5', pts: 120, title: '💎 六十四格戰術研究家' },
     acad_ch_6: { icon: '🌌', name: '六十四格傳說世界棋王', tier: 't6', pts: 220, title: '🌌 六十四格傳說棋王' },
+    acad_bg_1: { icon: '🎲', name: '三棋同堂初登場', tier: 't1', pts: 8, title: '🎲 經典棋藝見習生' },
+    acad_bg_2: { icon: '🍉', name: '連珠跳躍與圍捕', tier: 't2', pts: 22, title: '🍉 圓盤星陣棋友' },
+    acad_bg_3: { icon: '🌟', name: '四三連跳破陣手', tier: 't3', pts: 42, title: '🌟 搭橋連跳快手' },
+    acad_bg_4: { icon: '⚫', name: '三棋戰術通才', tier: 't4', pts: 65, title: '⚫ 五子連珠戰術家' },
+    acad_bg_5: { icon: '💎', name: '棋壇三絕研究家', tier: 't5', pts: 120, title: '💎 經典三棋研究家' },
+    acad_bg_6: { icon: '👑', name: '國民棋藝傳說棋痴', tier: 't6', pts: 220, title: '👑 經典棋藝傳說大玩家' },
     acad_cry_1: { icon: '🪙', name: '創世區塊', tier: 't1', pts: 8, title: '🪙 鏈上新鮮人' },
     acad_cry_2: { icon: '⛓️', name: '鏈上學徒', tier: 't2', pts: 20, title: '⛓️ 區塊鏈學徒' },
     acad_cry_3: { icon: '🛡️', name: '私鑰守護者', tier: 't3', pts: 40, title: '🛡️ 私鑰守護者' },
@@ -878,6 +1094,13 @@ window.__STATIC_SINGLE_FILE__ = true;
     sec_weekend_vibe: { icon: '🛋️', name: '週末不放假偷偷捲', tier: 't2', pts: 18, title: '🛋️ 週末自習室學霸' },
     sec_lucky_min: { icon: '🍀', name: '對稱時刻的幸運星', tier: 't2', pts: 20, title: '🍀 雙數時刻幸運星' },
     sec_one_acad_1h: { icon: '🧘', name: '閉關一小時破壁宗師', tier: 't6', pts: 220, title: '🧘 破壁閉關大宗師' },
+    ht_omni_6: { icon: '📰', name: '七域全覽特派員', tier: 't4', pts: 50, title: '📰 七域全覽特派員' },
+    ht_source_hunter: { icon: '🔍', name: '多方查證考據派', tier: 't4', pts: 65, title: '🔍 多方脈絡查證家' },
+    sec_ht_breaking: { icon: '⚡', name: '頭版出刊搶先讀', tier: 't5', pts: 120, title: '⚡ 油墨未乾搶先讀' },
+    ht_ampm_7: { icon: '🌗', name: '晨昏雙報守望者（7 日雙報）', tier: 't5', pts: 125, title: '🌗 晨昏雙報總主筆' },
+    ht_editions_30: { icon: '📡', name: '時代脈搏總編輯（30 期早晚報）', tier: 't6', pts: 230, title: '👑 時代脈搏總編輯' },
+    ht_chronicle_100: { icon: '🌌', name: '百期編年史觀測官（100 期 · 500 則）', tier: 't7', pts: 400, title: '🌌 天下大勢編年史官' },
+    sup_ht_zeitgeist: { icon: '⚜️', name: '萬象洞見至高守望者（200 期 · 1,200 則 · 20 小時）', tier: 't8', pts: 700, title: '⚜️ 洞悉萬象至高守望者' },
   };
   var TOOL_ACH_MAP = {
     english: ['acad_en_1', 'acad_en_2', 'acad_en_3', 'acad_en_4', 'acad_en_5', 'acad_en_6'],
@@ -899,7 +1122,9 @@ window.__STATIC_SINGLE_FILE__ = true;
     'ai-agent': ['acad_ai_1', 'acad_ai_2', 'acad_ai_3', 'acad_ai_4', 'acad_ai_5', 'acad_ai_6'],
     'cloud-devops': ['acad_cld_1', 'acad_cld_2', 'acad_cld_3', 'acad_cld_4', 'acad_cld_5', 'acad_cld_6'],
     xiangqi: ['acad_xq_1', 'acad_xq_2', 'acad_xq_3', 'acad_xq_4', 'acad_xq_5', 'acad_xq_6'],
+    weiqi: ['acad_wq_1', 'acad_wq_2', 'acad_wq_3', 'acad_wq_4', 'acad_wq_5', 'acad_wq_6'],
     chess: ['acad_ch_1', 'acad_ch_2', 'acad_ch_3', 'acad_ch_4', 'acad_ch_5', 'acad_ch_6'],
+    'board-games': ['acad_bg_1', 'acad_bg_2', 'acad_bg_3', 'acad_bg_4', 'acad_bg_5', 'acad_bg_6'],
     crypto: ['acad_cry_1', 'acad_cry_2', 'acad_cry_3', 'acad_cry_4', 'acad_cry_5', 'acad_cry_6'],
     futures: ['acad_fut_1', 'acad_fut_2', 'acad_fut_3', 'acad_fut_4', 'acad_fut_5', 'acad_fut_6'],
     series: ['acad_ser_1', 'acad_ser_2', 'acad_ser_3', 'acad_ser_4', 'acad_ser_5', 'acad_ser_6'],
@@ -1123,17 +1348,23 @@ window.__STATIC_SINGLE_FILE__ = true;
     } catch (e) { /* ignore */ }
   }
 
+  var NAV_TIER_LABELS = {
+    t1: 'Lv.1 入門', t2: 'Lv.2 銅牌', t3: 'Lv.3 銀牌', t4: 'Lv.4 金牌',
+    t5: 'Lv.5 鑽石', t6: 'Lv.6 傳說', t7: 'Lv.7 神話', t8: 'Lv.8 至高無上'
+  };
+
   function showAchToast(a) {
     if (!a || !document.body) return;
     var el = document.getElementById('campusAchToast');
     if (!el) {
       el = document.createElement('div');
       el.id = 'campusAchToast';
-      el.className = 'campus-ach-toast';
       document.body.appendChild(el);
     }
+    el.className = 'campus-ach-toast' + (a.tier ? ' tier-' + a.tier : '');
+    var tierLabel = a.tier && NAV_TIER_LABELS[a.tier] ? '【' + NAV_TIER_LABELS[a.tier] + '】' : '';
     el.innerHTML = '<span class="cat-ic">' + fbEsc(a.icon) + '</span>' +
-      '<div class="cat-body"><b>🏅 解鎖學園成就：' + fbEsc(a.name) + '（+' + a.pts + ' 點）</b>' +
+      '<div class="cat-body"><b>🏅 解鎖學園成就' + fbEsc(tierLabel) + '：' + fbEsc(a.name) + '（+' + a.pts + ' 點）</b>' +
       (a.title ? '<span>👑 獲得榮譽稱號「' + fbEsc(a.title) + '」— 可回校園學生證穿戴！</span>' : '') + '</div>';
     el.classList.add('show');
     clearTimeout(el._t);
@@ -1253,6 +1484,71 @@ window.__STATIC_SINGLE_FILE__ = true;
     } catch (e) { /* ignore */ }
   }
 
+  function checkHotTopicsSpecificProgress(st) {
+    try {
+      var raw = window.localStorage.getItem('ht.progress.v1');
+      if (!raw) return;
+      var p = JSON.parse(raw);
+      if (!isPlainObj(p)) return;
+      var htSec = Math.max(0, +(st && st.academySec && st.academySec['hot-topics'] || 0));
+      var topicKeys = isPlainObj(p.topicKeys) ? p.topicKeys : {};
+      var topicsCount = Math.max(+p.topicsCount || 0, Object.keys(topicKeys).length);
+      var watchCnt = isPlainObj(p.watchIds) ? Object.keys(p.watchIds).length : 0;
+      var clickedUrls = isPlainObj(p.clickedUrls) ? p.clickedUrls : {};
+      var sourcesClicked = Math.max(+p.sourcesClicked || 0, Object.keys(clickedUrls).length);
+      var activeDaysCnt = isPlainObj(p.activeDays) ? Object.keys(p.activeDays).length : 0;
+
+      var edDoneMap = {};
+      if (isPlainObj(p.editionsDone)) {
+        Object.keys(p.editionsDone).forEach(function (k) {
+          if (p.editionsDone[k]) edDoneMap[k] = 1;
+        });
+      }
+      if (isPlainObj(p.edTopicCounts)) {
+        Object.keys(p.edTopicCounts).forEach(function (k) {
+          if ((+p.edTopicCounts[k] || 0) >= 5) edDoneMap[k] = 1;
+        });
+      }
+      var edDoneCnt = Object.keys(edDoneMap).length;
+
+      var htCats = ['tech', 'gaming', 'taiwan', 'finance', 'entertainment', 'sports', 'life'];
+      var omniEdDone = !!p.omni7EdDone;
+      if (!omniEdDone && isPlainObj(p.edCats)) {
+        Object.keys(p.edCats).forEach(function (ed) {
+          var cm = p.edCats[ed];
+          if (isPlainObj(cm) && htCats.every(function (c) { return (+cm[c] || 0) >= 2; })) {
+            omniEdDone = true;
+          }
+        });
+      }
+
+      var breakingDone = !!p.breakingTop3Done;
+      if (!breakingDone && isPlainObj(p.breakingTop3ByEd)) {
+        Object.keys(p.breakingTop3ByEd).forEach(function (ed) {
+          var bm = p.breakingTop3ByEd[ed];
+          if (isPlainObj(bm) && bm['1'] && bm['2'] && bm['3']) breakingDone = true;
+        });
+      }
+
+      var ampmDates = {};
+      Object.keys(edDoneMap).forEach(function (k) {
+        if (k.length > 3 && k.slice(-3) === '-AM') {
+          var d = k.slice(0, -3);
+          if (edDoneMap[d + '-PM']) ampmDates[d] = 1;
+        }
+      });
+      var ampmDatesCnt = Object.keys(ampmDates).length;
+
+      if (omniEdDone) unlockInAcademy(st, 'ht_omni_6');
+      if (topicsCount >= 35 && watchCnt >= 9 && sourcesClicked >= 10) unlockInAcademy(st, 'ht_source_hunter');
+      if (breakingDone) unlockInAcademy(st, 'sec_ht_breaking');
+      if (ampmDatesCnt >= 7) unlockInAcademy(st, 'ht_ampm_7');
+      if (edDoneCnt >= 30 && topicsCount >= 180 && htSec >= 5400) unlockInAcademy(st, 'ht_editions_30');
+      if (edDoneCnt >= 100 && topicsCount >= 500 && sourcesClicked >= 50 && htSec >= 18000) unlockInAcademy(st, 'ht_chronicle_100');
+      if (edDoneCnt >= 200 && topicsCount >= 1200 && activeDaysCnt >= 90 && htSec >= 72000) unlockInAcademy(st, 'sup_ht_zeitgeist');
+    } catch (e) { /* ignore */ }
+  }
+
   function checkAcademyProgress(st, toolId) {
     evaluateDailyInAcademy(st);
     var stages = TOOL_ACH_MAP[toolId];
@@ -1292,6 +1588,9 @@ window.__STATIC_SINGLE_FILE__ = true;
     if (toolId === 'cinema') {
       checkCinemaSpecificProgress(st);
       if (hr >= 22 || hr < 4) unlockInAcademy(st, 'wacky_midnight_movie');
+    }
+    if (toolId === 'hot-topics') {
+      checkHotTopicsSpecificProgress(st);
     }
     if (toolId === 'cooking' && (hr >= 21 || hr < 2)) unlockInAcademy(st, 'wacky_night_snack');
     if (hr >= 0 && hr < 5) unlockInAcademy(st, 'night_owl');
@@ -2028,6 +2327,9 @@ window.__STATIC_SINGLE_FILE__ = true;
     'font:600 13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;',
     'opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .25s,transform .25s}',
     '.campus-ach-toast.show{opacity:1;transform:translateY(0)}',
+    '.campus-ach-toast.tier-t7{border-color:#a78bfa;background:linear-gradient(135deg,#1e1638,#2e1065);box-shadow:0 12px 32px rgba(139,92,246,.35)}',
+    '.campus-ach-toast.tier-t8{border-color:#f59e0b;background:linear-gradient(135deg,#131126,#271d06);box-shadow:0 12px 34px rgba(245,158,11,.38)}',
+    '.campus-ach-toast.tier-t8 .cat-body b{color:#fde68a}',
     '.campus-ach-toast .cat-ic{font-size:26px;line-height:1}',
     '.campus-ach-toast .cat-body{display:flex;flex-direction:column;gap:2px}',
     '.campus-ach-toast .cat-body b{color:#fde68a;font-size:13.5px}',
@@ -2729,6 +3031,17 @@ window.__STATIC_SINGLE_FILE__ = true;
     window.addEventListener('online', function () { flushFeedbackQueue(); });
   }
 
+  function checkProgressPublic(tid) {
+    var target = tid || window.CAMPUS_TOOL_ID || '';
+    if (!target) {
+      var n = document.querySelector && document.querySelector('[data-campus-home]');
+      if (n) target = n.getAttribute('data-campus-home') || '';
+    }
+    if (!target || !TOOL_MAP[target]) return;
+    var st = loadFunState();
+    checkAcademyProgress(st, target);
+  }
+
   function recordActPublic(tid) {
     var target = tid || window.CAMPUS_TOOL_ID || '';
     if (!target) {
@@ -2765,6 +3078,7 @@ window.__STATIC_SINGLE_FILE__ = true;
     init: init,
     recordAct: recordActPublic,
     bumpAct: recordActPublic,
+    checkProgress: checkProgressPublic,
     unlockAch: unlockAchPublic,
     markInternalNav: markInternalNav,
     visitsKey: VISITS_KEY,
@@ -2785,8 +3099,16 @@ window.__STATIC_SINGLE_FILE__ = true;
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.XIANGQI_RELEASES = {
-  "current_version": "1.8.0",
+  "current_version": "1.9.0",
   "releases": [
+    {
+      "version": "1.9.0",
+      "date": "2026-11-26 11:17",
+      "title": "象棋學院 v1.9.0 更新",
+      "changes": [
+        "棋盤、規則引擎與棋譜功能更新"
+      ]
+    },
     {
       "version": "1.8.0",
       "date": "2026-11-23 16:51",
@@ -2882,7 +3204,7 @@ window.XIANGQI_RELEASES = {
       ]
     }
   ],
-  "last_fingerprint": "ce26c5bf9e0630e3"
+  "last_fingerprint": "1f22e8b5f9368b5f"
 };
 
 
@@ -5404,7 +5726,7 @@ window.XQ_PUZZLES = [
 
 // === js/board.js ===
 // ============================================================================
-// ♟️ 象棋學院 — SVG 棋盤元件
+// ♟️ 象棋學院 — SVG 棋盤元件（花梨紅木鑲銅框 × 黃楊木雕棋子）
 //
 // XQBoard.create(host, { onSquare }) 回傳 { render(state), destroy() }。
 // state：{ board(Int8Array 90), flipped, faceToFace, selected, targets[], last, check, hint(走法或 -1) }
@@ -5423,6 +5745,7 @@ window.XQ_PUZZLES = [
   var PR = 26; // 棋子半徑
   var NS = 'http://www.w3.org/2000/svg';
   var CN = ['一', '二', '三', '四', '五', '六', '七', '八', '九'];
+  var seq = 0;
 
   function el(name, attrs, text) {
     var n = document.createElementNS(NS, name);
@@ -5460,14 +5783,71 @@ window.XQ_PUZZLES = [
     return d;
   }
 
+  /** 四角古銅包角飾線路徑。 */
+  function cornerBrassPath() {
+    var pad = 9, arm = 24, step = 5;
+    var corners = [
+      [pad, pad, 1, 1],
+      [W - pad, pad, -1, 1],
+      [pad, H - pad, 1, -1],
+      [W - pad, H - pad, -1, -1],
+    ];
+    return corners.map(function (c) {
+      var x = c[0], y = c[1], sx = c[2], sy = c[3];
+      return 'M' + (x + sx * arm) + ',' + y + 'H' + x + 'V' + (y + sy * arm) +
+        'M' + (x + sx * (arm - 7)) + ',' + (y + sy * step) +
+        'H' + (x + sx * step) + 'V' + (y + sy * (arm - 7));
+    }).join('');
+  }
+
+  function buildDefs(uid) {
+    var defs = el('defs', {});
+    defs.innerHTML =
+      '<linearGradient id="' + uid + '-frame" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="#6c3419"/>' +
+        '<stop offset="52%" stop-color="#4e220e"/>' +
+        '<stop offset="100%" stop-color="#351507"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="' + uid + '-surface" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#f5e2ba"/>' +
+        '<stop offset="50%" stop-color="#eed4a1"/>' +
+        '<stop offset="100%" stop-color="#e3c083"/>' +
+      '</linearGradient>' +
+      '<radialGradient id="' + uid + '-pc" cx="35%" cy="30%" r="68%">' +
+        '<stop offset="0%" stop-color="#fffdf6"/>' +
+        '<stop offset="62%" stop-color="#f7e5bc"/>' +
+        '<stop offset="100%" stop-color="#dbb474"/>' +
+      '</radialGradient>' +
+      '<radialGradient id="' + uid + '-pcsel" cx="35%" cy="30%" r="68%">' +
+        '<stop offset="0%" stop-color="#fffef7"/>' +
+        '<stop offset="58%" stop-color="#fde68a"/>' +
+        '<stop offset="100%" stop-color="#eab308"/>' +
+      '</radialGradient>';
+    return defs;
+  }
+
   function create(host, opts) {
     opts = opts || {};
+    var uid = 'xqbd' + (++seq);
     var svg = el('svg', {
       viewBox: '0 0 ' + W + ' ' + H, class: 'xq-board', role: 'img', 'aria-label': '象棋棋盤',
     });
-    svg.appendChild(el('rect', { x: 4, y: 4, width: W - 8, height: H - 8, rx: 14, class: 'xq-bd-frame' }));
+    svg.appendChild(buildDefs(uid));
+    // 花梨紅木外框與古銅包角
     svg.appendChild(el('rect', {
-      x: M - 7, y: M - 7, width: 8 * S + 14, height: 9 * S + 14, class: 'xq-bd-border',
+      x: 3, y: 3, width: W - 6, height: H - 6, rx: 12,
+      class: 'xq-bd-frame', style: 'fill:url(#' + uid + '-frame)',
+    }));
+    svg.appendChild(el('path', { d: cornerBrassPath(), class: 'xq-bd-brass' }));
+    // 樟木／楠木內盤面（y=26..626 完整包覆棋子範圍 30..622，上下紅木橫樑刻路數）
+    svg.appendChild(el('rect', {
+      x: 24, y: 26, width: W - 48, height: H - 52, rx: 5,
+      class: 'xq-bd-border', style: 'fill:url(#' + uid + '-surface)',
+    }));
+    // 傳統象棋盤雙線外框（粗外線＋內格線）
+    svg.appendChild(el('rect', {
+      x: M - 6, y: M - 6, width: 8 * S + 12, height: 9 * S + 12,
+      class: 'xq-bd-outerline',
     }));
     svg.appendChild(el('path', { d: gridSvg(), class: 'xq-bd-grid' }));
     var river = el('g', { class: 'xq-bd-river' });
@@ -5498,30 +5878,44 @@ window.XQ_PUZZLES = [
       labels.innerHTML = '';
       var flipped = state.flipped;
       var y = M + 4.5 * S + 1;
+      var cx = M + 4 * S, cy = M + 4.5 * S;
+      // 河界中央菱印飾紋
+      river.appendChild(el('path', {
+        d: 'M' + (cx - 26) + ',' + cy + 'H' + (cx - 11) +
+           'M' + (cx + 11) + ',' + cy + 'H' + (cx + 26) +
+           'M' + cx + ',' + (cy - 9) + 'L' + (cx + 9) + ',' + cy +
+           'L' + cx + ',' + (cy + 9) + 'L' + (cx - 9) + ',' + cy + 'Z',
+        class: 'xq-bd-river-orn',
+      }));
       // 楚河在黑方一側、漢界在紅方一側；翻轉時左右對調。
       var left = flipped ? '漢界' : '楚河';
       var right = flipped ? '楚河' : '漢界';
-      river.appendChild(el('text', { x: M + 2 * S, y: y }, left));
-      river.appendChild(el('text', { x: M + 6 * S, y: y }, right));
+      river.appendChild(el('text', { x: M + 2 * S + 4, y: y }, left));
+      river.appendChild(el('text', { x: M + 6 * S + 4, y: y }, right));
       for (var c = 0; c < 9; c++) {
         var x = M + c * S;
         var boardCol = flipped ? 8 - c : c;
         var blackLabel = String(boardCol + 1);
         var redLabel = CN[8 - boardCol];
-        labels.appendChild(el('text', { x: x, y: flipped ? H - 15 : 16 }, blackLabel));
-        labels.appendChild(el('text', { x: x, y: flipped ? 16 : H - 15 }, redLabel));
+        labels.appendChild(el('text', { x: x, y: flipped ? H - 14 : 15 }, blackLabel));
+        labels.appendChild(el('text', { x: x, y: flipped ? 15 : H - 14 }, redLabel));
       }
     }
 
-    function pieceNode(p, sq, rotate) {
+    function pieceNode(p, sq, rotate, isSel) {
       var pt = xy(sq);
       var red = E.sideOf(p) === E.RED;
-      var g = el('g', { class: 'xq-pc ' + (red ? 'is-red' : 'is-black'), 'data-sq': sq });
+      var g = el('g', { class: 'xq-pc ' + (red ? 'is-red' : 'is-black') + (isSel ? ' is-selected' : ''), 'data-sq': sq });
       g.style.transform = 'translate(' + pt[0] + 'px,' + pt[1] + 'px)';
       var inner = el('g', rotate ? { transform: 'rotate(180)' } : {});
-      inner.appendChild(el('circle', { r: PR, cy: 2.5, class: 'xq-pc-shadow' }));
-      inner.appendChild(el('circle', { r: PR, class: 'xq-pc-body' }));
-      inner.appendChild(el('circle', { r: PR - 5, class: 'xq-pc-ring' }));
+      inner.appendChild(el('circle', { r: PR, cx: 1, cy: isSel ? 4.2 : 2.8, class: 'xq-pc-shadow' }));
+      inner.appendChild(el('circle', { r: PR, class: 'xq-pc-rim' }));
+      inner.appendChild(el('circle', {
+        r: PR - 1.5, class: 'xq-pc-body',
+        style: 'fill:url(#' + uid + (isSel ? '-pcsel)' : '-pc)'),
+      }));
+      inner.appendChild(el('circle', { r: PR - 5.2, class: 'xq-pc-ring' }));
+      inner.appendChild(el('circle', { r: PR - 7.4, class: 'xq-pc-ring-inner' }));
       inner.appendChild(el('text', { y: 1, class: 'xq-pc-text' }, NT.pieceName(p)));
       g.appendChild(inner);
       return g;
@@ -5540,7 +5934,7 @@ window.XQ_PUZZLES = [
         [(state.last / 100) | 0, state.last % 100].forEach(function (sq) {
           pt = xy(sq);
           markLayer.appendChild(el('rect', {
-            x: pt[0] - PR - 2, y: pt[1] - PR - 2, width: PR * 2 + 4, height: PR * 2 + 4, rx: 8, class: 'xq-mk-last',
+            x: pt[0] - PR - 2, y: pt[1] - PR - 2, width: PR * 2 + 4, height: PR * 2 + 4, rx: 6, class: 'xq-mk-last',
           }));
         });
       }
@@ -5560,8 +5954,7 @@ window.XQ_PUZZLES = [
         var side = E.sideOf(b[sq]);
         // 對坐模式：畫面上方那一側的棋子倒過來，讓坐在對面的人看得懂。
         var topSide = state.flipped ? E.RED : E.BLACK;
-        var node = pieceNode(b[sq], sq, !!state.faceToFace && side === topSide);
-        if (state.selected === sq) node.classList.add('is-selected');
+        var node = pieceNode(b[sq], sq, !!state.faceToFace && side === topSide, state.selected === sq);
         if (slide && slide.to === sq) {
           var o = xy(slide.from);
           var dst = node.style.transform;
@@ -5581,16 +5974,16 @@ window.XQ_PUZZLES = [
       (state.targets || []).forEach(function (sq) {
         pt = xy(sq);
         topLayer.appendChild(el('circle', {
-          cx: pt[0], cy: pt[1], r: b[sq] ? PR + 3 : 9, class: b[sq] ? 'xq-mk-capture' : 'xq-mk-target',
+          cx: pt[0], cy: pt[1], r: b[sq] ? PR + 3 : 8.5, class: b[sq] ? 'xq-mk-capture' : 'xq-mk-target',
         }));
       });
-    if (state.hint >= 0) {
-      var hf = xy((state.hint / 100) | 0), ht = xy(state.hint % 100);
-      topLayer.appendChild(el('line', { x1: hf[0], y1: hf[1], x2: ht[0], y2: ht[1], class: 'xq-mk-hint-line' }));
-      topLayer.appendChild(el('circle', { cx: hf[0], cy: hf[1], r: PR + 3, class: 'xq-mk-hint' }));
-      topLayer.appendChild(el('circle', { cx: ht[0], cy: ht[1], r: PR + 3, class: 'xq-mk-hint is-to' }));
-    }
-    prevBoard = new Int8Array(b);
+      if (state.hint >= 0) {
+        var hf = xy((state.hint / 100) | 0), ht = xy(state.hint % 100);
+        topLayer.appendChild(el('line', { x1: hf[0], y1: hf[1], x2: ht[0], y2: ht[1], class: 'xq-mk-hint-line' }));
+        topLayer.appendChild(el('circle', { cx: hf[0], cy: hf[1], r: PR + 3, class: 'xq-mk-hint' }));
+        topLayer.appendChild(el('circle', { cx: ht[0], cy: ht[1], r: PR + 3, class: 'xq-mk-hint is-to' }));
+      }
+      prevBoard = new Int8Array(b);
     }
 
     function onClick(ev) {

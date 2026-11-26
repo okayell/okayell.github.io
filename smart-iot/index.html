@@ -1424,7 +1424,7 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
   var PUBLIC_CAMPUS = 'https://okayell.github.io/';
   var LOCAL_CAMPUS_PORT = '8919';
   var LOCAL_PORTS = ['8919', '8918', '8911', '8910', '8923', '8922', '8925', '8924', '8927', '8926', '8929', '8928', '8931', '8930', '8933', '8932', '8935', '8934', '8937', '8936', '8939', '8938', '8941', '8940', '8899', '8898',
-    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954', '8962', '8964', '8966'];
+    '8905', '8904', '8913', '8912', '8915', '8914', '8917', '8916', '8943', '8942', '8955', '8954', '8956', '8958', '8960', '8962', '8964', '8966', '8968', '8970'];
   var TOOL_MAP = {
     english: { port: '8919', mount: true, path: 'english-speak-listen/', name: '英語學院', icon: '🇬🇧' },
     japanese: { port: '8919', mount: true, path: 'japanese/', name: '日語學院', icon: '🇯🇵' },
@@ -1453,10 +1453,13 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     tamagotchi: { port: '8919', mount: true, path: 'tamagotchi/', name: '塔麻可吉博物館', icon: '🥚' },
     'cloud-devops': { port: '8919', mount: true, path: 'cloud-devops/', name: '雲端與系統維運學院', icon: '☁️' },
     xiangqi: { port: '8919', mount: true, path: 'xiangqi/', name: '象棋學院', icon: '🐘' },
+    weiqi: { port: '8919', mount: true, path: 'weiqi/', name: '圍棋學院', icon: '⚫' },
     chess: { port: '8919', mount: true, path: 'chess/', name: '西洋棋學院', icon: '♟️' },
+    'board-games': { port: '8919', mount: true, path: 'board-games/', name: '經典棋藝學院', icon: '🎲' },
     crypto: { port: '8919', mount: true, path: 'crypto/', name: '區塊鏈學院', icon: '🪙' },
     futures: { port: '8919', mount: true, path: 'futures/', name: '期貨學院', icon: '🛢️' },
-    series: { port: '8919', mount: true, path: 'series/', name: '串流與影集學院', icon: '📺' }
+    series: { port: '8919', mount: true, path: 'series/', name: '串流與影集學院', icon: '📺' },
+    'hot-topics': { port: '8919', mount: true, path: 'hot-topics/', name: '發燒話題', icon: '🔥' }
   };
   var ACADEMY_CRESTS = {"english": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-english\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e3a8a\"/><stop offset=\"100%\" stop-color=\"#1d4ed8\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-english)\"/><path d=\"M8 8 L56 56 M56 8 L8 56\" stroke=\"#ffffff\" stroke-width=\"5\" opacity=\".22\"/><path d=\"M32 6 V58 M6 32 H58\" stroke=\"#ef4444\" stroke-width=\"4\" opacity=\".32\"/><rect x=\"11\" y=\"13\" width=\"42\" height=\"31\" rx=\"9\" fill=\"#ffffff\" stroke=\"#bfdbfe\" stroke-width=\"1.5\"/><path d=\"M22 43 L18 52 L30 43 Z\" fill=\"#ffffff\"/><text x=\"32\" y=\"35\" text-anchor=\"middle\" font-family=\"Arial,Helvetica,sans-serif\" font-size=\"19\" font-weight=\"900\" fill=\"#1e3a8a\" letter-spacing=\".5\">EN</text><rect x=\"39\" y=\"10\" width=\"16\" height=\"10\" rx=\"5\" fill=\"#ef4444\"/><circle cx=\"44\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"47\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/><circle cx=\"50\" cy=\"15\" r=\"1.4\" fill=\"#fff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%231d4ed8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M8 8 L56 56 M56 8 L8 56' stroke='%23ffffff' stroke-width='5' opacity='.22'/%3E%3Cpath d='M32 6 V58 M6 32 H58' stroke='%23ef4444' stroke-width='4' opacity='.32'/%3E%3Crect x='11' y='13' width='42' height='31' rx='9' fill='%23ffffff' stroke='%23bfdbfe' stroke-width='1.5'/%3E%3Cpath d='M22 43 L18 52 L30 43 Z' fill='%23ffffff'/%3E%3Ctext x='32' y='35' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='19' font-weight='900' fill='%231e3a8a' letter-spacing='.5'%3EEN%3C/text%3E%3Crect x='39' y='10' width='16' height='10' rx='5' fill='%23ef4444'/%3E%3Ccircle cx='44' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='47' cy='15' r='1.4' fill='%23fff'/%3E%3Ccircle cx='50' cy='15' r='1.4' fill='%23fff'/%3E%3C/svg%3E"}, "japanese": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-japanese\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#fff1f2\"/><stop offset=\"100%\" stop-color=\"#ffe4e6\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-japanese)\" stroke=\"#fda4af\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"31\" r=\"15\" fill=\"#e11d48\" opacity=\".18\"/><path d=\"M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z\" fill=\"#dc2626\"/><rect x=\"15\" y=\"29\" width=\"34\" height=\"4.5\" rx=\"2\" fill=\"#dc2626\"/><rect x=\"29.5\" y=\"22\" width=\"5\" height=\"11\" fill=\"#b91c1c\"/><path d=\"M20 24 L18 52 M44 24 L46 52\" stroke=\"#dc2626\" stroke-width=\"5.2\" stroke-linecap=\"round\"/><circle cx=\"49\" cy=\"14\" r=\"4\" fill=\"#fb7185\"/><circle cx=\"49\" cy=\"14\" r=\"1.5\" fill=\"#fef08a\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fff1f2'/%3E%3Cstop offset='100%25' stop-color='%23ffe4e6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)' stroke='%23fda4af' stroke-width='2'/%3E%3Ccircle cx='32' cy='31' r='15' fill='%23e11d48' opacity='.18'/%3E%3Cpath d='M11 21 Q32 15 53 21 L51 26 Q32 21 13 26 Z' fill='%23dc2626'/%3E%3Crect x='15' y='29' width='34' height='4.5' rx='2' fill='%23dc2626'/%3E%3Crect x='29.5' y='22' width='5' height='11' fill='%23b91c1c'/%3E%3Cpath d='M20 24 L18 52 M44 24 L46 52' stroke='%23dc2626' stroke-width='5.2' stroke-linecap='round'/%3E%3Ccircle cx='49' cy='14' r='4' fill='%23fb7185'/%3E%3Ccircle cx='49' cy='14' r='1.5' fill='%23fef08a'/%3E%3C/svg%3E"}, "korean": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-korean\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#1e1b4b\"/><stop offset=\"100%\" stop-color=\"#312e81\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-korean)\"/><circle cx=\"32\" cy=\"32\" r=\"19\" fill=\"#ffffff\" opacity=\".12\"/><circle cx=\"32\" cy=\"32\" r=\"16\" fill=\"#2563eb\"/><path d=\"M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z\" fill=\"#e11d48\"/><circle cx=\"24\" cy=\"32\" r=\"8\" fill=\"#e11d48\"/><circle cx=\"40\" cy=\"32\" r=\"8\" fill=\"#2563eb\"/><rect x=\"11\" y=\"11\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 16 12)\"/><rect x=\"42\" y=\"49\" width=\"11\" height=\"3\" rx=\"1.5\" fill=\"#e0e7ff\" transform=\"rotate(-38 47 50)\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e1b4b'/%3E%3Cstop offset='100%25' stop-color='%23312e81'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23ffffff' opacity='.12'/%3E%3Ccircle cx='32' cy='32' r='16' fill='%232563eb'/%3E%3Cpath d='M16 32 A16 16 0 0 1 48 32 A8 8 0 0 1 32 32 A8 8 0 0 0 16 32 Z' fill='%23e11d48'/%3E%3Ccircle cx='24' cy='32' r='8' fill='%23e11d48'/%3E%3Ccircle cx='40' cy='32' r='8' fill='%232563eb'/%3E%3Crect x='11' y='11' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 16 12)'/%3E%3Crect x='42' y='49' width='11' height='3' rx='1.5' fill='%23e0e7ff' transform='rotate(-38 47 50)'/%3E%3C/svg%3E"}, "finance": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-finance\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#022c22\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-finance)\"/><path d=\"M12 24 L32 11 L52 24 Z\" fill=\"#fbbf24\"/><rect x=\"14\" y=\"24\" width=\"36\" height=\"3.5\" rx=\"1.5\" fill=\"#fde68a\"/><rect x=\"17\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"26.5\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"36\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"45\" y=\"28\" width=\"4.5\" height=\"19\" rx=\"1.5\" fill=\"#fef3c7\"/><rect x=\"12\" y=\"48\" width=\"40\" height=\"5\" rx=\"2\" fill=\"#fbbf24\"/><path d=\"M15 44 L27 35 L35 39 L50 23\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M42 23 H50 V31\" fill=\"none\" stroke=\"#34d399\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%23022c22'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 24 L32 11 L52 24 Z' fill='%23fbbf24'/%3E%3Crect x='14' y='24' width='36' height='3.5' rx='1.5' fill='%23fde68a'/%3E%3Crect x='17' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='26.5' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='36' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='45' y='28' width='4.5' height='19' rx='1.5' fill='%23fef3c7'/%3E%3Crect x='12' y='48' width='40' height='5' rx='2' fill='%23fbbf24'/%3E%3Cpath d='M15 44 L27 35 L35 39 L50 23' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M42 23 H50 V31' fill='none' stroke='%2334d399' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "addiction-cm": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-addictioncm\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#10b981\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-addictioncm)\"/><path d=\"M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z\" fill=\"#ffffff\"/><rect x=\"29\" y=\"21\" width=\"6\" height=\"18\" rx=\"2\" fill=\"#059669\"/><rect x=\"23\" y=\"27\" width=\"18\" height=\"6\" rx=\"2\" fill=\"#059669\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2310b981'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 51 C32 51 12 38 12 24 C12 16.5 18 12 24.5 12 C28.5 12 31 14.5 32 17 C33 14.5 35.5 12 39.5 12 C46 12 52 16.5 52 24 C52 38 32 51 32 51 Z' fill='%23ffffff'/%3E%3Crect x='29' y='21' width='6' height='18' rx='2' fill='%23059669'/%3E%3Crect x='23' y='27' width='18' height='6' rx='2' fill='%23059669'/%3E%3C/svg%3E"}, "health-care": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-healthcare\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0d9488\"/><stop offset=\"100%\" stop-color=\"#047857\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-healthcare)\"/><circle cx=\"32\" cy=\"28\" r=\"17\" fill=\"#ffffff\"/><rect x=\"28.5\" y=\"17\" width=\"7\" height=\"22\" rx=\"2\" fill=\"#e11d48\"/><rect x=\"21\" y=\"24.5\" width=\"22\" height=\"7\" rx=\"2\" fill=\"#e11d48\"/><path d=\"M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53\" fill=\"none\" stroke=\"#99f6e4\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230d9488'/%3E%3Cstop offset='100%25' stop-color='%23047857'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='28' r='17' fill='%23ffffff'/%3E%3Crect x='28.5' y='17' width='7' height='22' rx='2' fill='%23e11d48'/%3E%3Crect x='21' y='24.5' width='22' height='7' rx='2' fill='%23e11d48'/%3E%3Cpath d='M11 52 H23 L27 45 L32 57 L36 49 L39 52 H53' fill='none' stroke='%2399f6e4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"}, "coding": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-coding\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e3a8a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-coding)\"/><rect x=\"8\" y=\"11\" width=\"48\" height=\"42\" rx=\"9\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"2\"/><circle cx=\"15\" cy=\"17.5\" r=\"2.2\" fill=\"#fb7185\"/><circle cx=\"22\" cy=\"17.5\" r=\"2.2\" fill=\"#fbbf24\"/><circle cx=\"29\" cy=\"17.5\" r=\"2.2\" fill=\"#34d399\"/><path d=\"M16 29 L26 36 L16 43\" fill=\"none\" stroke=\"#38bdf8\" stroke-width=\"4.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><line x1=\"31\" y1=\"43\" x2=\"47\" y2=\"43\" stroke=\"#fbbf24\" stroke-width=\"4.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e3a8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='8' y='11' width='48' height='42' rx='9' fill='%231e293b' stroke='%2338bdf8' stroke-width='2'/%3E%3Ccircle cx='15' cy='17.5' r='2.2' fill='%23fb7185'/%3E%3Ccircle cx='22' cy='17.5' r='2.2' fill='%23fbbf24'/%3E%3Ccircle cx='29' cy='17.5' r='2.2' fill='%2334d399'/%3E%3Cpath d='M16 29 L26 36 L16 43' fill='none' stroke='%2338bdf8' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='31' y1='43' x2='47' y2='43' stroke='%23fbbf24' stroke-width='4.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "smart-iot": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-smartiot\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0891b2\"/><stop offset=\"100%\" stop-color=\"#0f766e\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-smartiot)\"/><path d=\"M12 33 L32 16 L52 33\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"4.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M18 30 V50 H46 V30\" fill=\"#ecfeff\" opacity=\".95\"/><path d=\"M23 36 A13 13 0 0 1 41 36\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M26.5 41 A7.5 7.5 0 0 1 37.5 41\" fill=\"none\" stroke=\"#0891b2\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><circle cx=\"32\" cy=\"45.5\" r=\"3\" fill=\"#f59e0b\"/><circle cx=\"32\" cy=\"11\" r=\"2.5\" fill=\"#fde047\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230891b2'/%3E%3Cstop offset='100%25' stop-color='%230f766e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M12 33 L32 16 L52 33' fill='none' stroke='%23ffffff' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18 30 V50 H46 V30' fill='%23ecfeff' opacity='.95'/%3E%3Cpath d='M23 36 A13 13 0 0 1 41 36' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Cpath d='M26.5 41 A7.5 7.5 0 0 1 37.5 41' fill='none' stroke='%230891b2' stroke-width='3.2' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='45.5' r='3' fill='%23f59e0b'/%3E%3Ccircle cx='32' cy='11' r='2.5' fill='%23fde047'/%3E%3C/svg%3E"}, "music": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-music\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#6d28d9\"/><stop offset=\"100%\" stop-color=\"#be185d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-music)\"/><path d=\"M25 43 V18 L47 13 V39\" fill=\"none\" stroke=\"#fde68a\" stroke-width=\"4.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M25 25 L47 20\" stroke=\"#fbbf24\" stroke-width=\"4.2\"/><ellipse cx=\"20\" cy=\"45\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 20 45)\" fill=\"#fef3c7\"/><ellipse cx=\"42\" cy=\"41\" rx=\"7.5\" ry=\"5.5\" transform=\"rotate(-18 42 41)\" fill=\"#fef3c7\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%236d28d9'/%3E%3Cstop offset='100%25' stop-color='%23be185d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M25 43 V18 L47 13 V39' fill='none' stroke='%23fde68a' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M25 25 L47 20' stroke='%23fbbf24' stroke-width='4.2'/%3E%3Cellipse cx='20' cy='45' rx='7.5' ry='5.5' transform='rotate(-18 20 45)' fill='%23fef3c7'/%3E%3Cellipse cx='42' cy='41' rx='7.5' ry='5.5' transform='rotate(-18 42 41)' fill='%23fef3c7'/%3E%3C/svg%3E"}, "trivia": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-trivia\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#f59e0b\"/><stop offset=\"100%\" stop-color=\"#d97706\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-trivia)\"/><path d=\"M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16\" stroke=\"#fef9c3\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z\" fill=\"#ffffff\"/><path d=\"M28 33 L32 26 L36 33\" fill=\"none\" stroke=\"#f59e0b\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><rect x=\"26\" y=\"46\" width=\"12\" height=\"4\" rx=\"2\" fill=\"#1e293b\"/><rect x=\"28\" y=\"51.5\" width=\"8\" height=\"3.5\" rx=\"1.7\" fill=\"#334155\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23d97706'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M32 7 V11 M12 27 H8 M56 27 H52 M17 13 L20 16 M47 13 L44 16' stroke='%23fef9c3' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M22 36 C18 32 17 24 22 18.5 C27 13 37 13 42 18.5 C47 24 46 32 42 36 C39.5 38.5 38.5 41 38.5 44 H25.5 C25.5 41 24.5 38.5 22 36 Z' fill='%23ffffff'/%3E%3Cpath d='M28 33 L32 26 L36 33' fill='none' stroke='%23f59e0b' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='26' y='46' width='12' height='4' rx='2' fill='%231e293b'/%3E%3Crect x='28' y='51.5' width='8' height='3.5' rx='1.7' fill='%23334155'/%3E%3C/svg%3E"}, "fitness": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-fitness\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#ea580c\"/><stop offset=\"100%\" stop-color=\"#991b1b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-fitness)\"/><g transform=\"rotate(-28 32 32)\"><rect x=\"16\" y=\"29\" width=\"32\" height=\"6\" rx=\"2.5\" fill=\"#e2e8f0\"/><rect x=\"11\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"6\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/><rect x=\"46\" y=\"18\" width=\"7\" height=\"28\" rx=\"3\" fill=\"#ffffff\"/><rect x=\"53\" y=\"22\" width=\"5\" height=\"20\" rx=\"2.2\" fill=\"#fde047\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ea580c'/%3E%3Cstop offset='100%25' stop-color='%23991b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-28 32 32)'%3E%3Crect x='16' y='29' width='32' height='6' rx='2.5' fill='%23e2e8f0'/%3E%3Crect x='11' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='6' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3Crect x='46' y='18' width='7' height='28' rx='3' fill='%23ffffff'/%3E%3Crect x='53' y='22' width='5' height='20' rx='2.2' fill='%23fde047'/%3E%3C/g%3E%3C/svg%3E"}, "poker": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-poker\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#065f46\"/><stop offset=\"100%\" stop-color=\"#0f172a\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-poker)\"/><circle cx=\"32\" cy=\"32\" r=\"23\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3\" stroke-dasharray=\"6 4\"/><path d=\"M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z\" fill=\"#ffffff\"/><path d=\"M30 41 L26 51 H38 L34 41 Z\" fill=\"#ffffff\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23065f46'/%3E%3Cstop offset='100%25' stop-color='%230f172a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='23' fill='none' stroke='%23fbbf24' stroke-width='3' stroke-dasharray='6 4'/%3E%3Cpath d='M32 13 C23 24 16 29 16 36.5 C16 42 20.5 45.5 25.5 45.5 C28.5 45.5 30.5 44 32 42 C33.5 44 35.5 45.5 38.5 45.5 C43.5 45.5 48 42 48 36.5 C48 29 41 24 32 13 Z' fill='%23ffffff'/%3E%3Cpath d='M30 41 L26 51 H38 L34 41 Z' fill='%23ffffff'/%3E%3C/svg%3E"}, "stock": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-stock\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#0f172a\"/><stop offset=\"100%\" stop-color=\"#1e293b\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-stock)\"/><line x1=\"16\" y1=\"24\" x2=\"16\" y2=\"50\" stroke=\"#22c55e\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"12\" y=\"30\" width=\"8\" height=\"14\" rx=\"2\" fill=\"#22c55e\"/><line x1=\"32\" y1=\"18\" x2=\"32\" y2=\"46\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"28\" y=\"23\" width=\"8\" height=\"16\" rx=\"2\" fill=\"#ef4444\"/><line x1=\"48\" y1=\"11\" x2=\"48\" y2=\"39\" stroke=\"#ef4444\" stroke-width=\"2.5\" stroke-linecap=\"round\"/><rect x=\"44\" y=\"15\" width=\"8\" height=\"18\" rx=\"2\" fill=\"#ef4444\"/><path d=\"M11 47 Q28 42 53 16\" fill=\"none\" stroke=\"#fbbf24\" stroke-width=\"3.2\" stroke-linecap=\"round\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e293b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cline x1='16' y1='24' x2='16' y2='50' stroke='%2322c55e' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='12' y='30' width='8' height='14' rx='2' fill='%2322c55e'/%3E%3Cline x1='32' y1='18' x2='32' y2='46' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='28' y='23' width='8' height='16' rx='2' fill='%23ef4444'/%3E%3Cline x1='48' y1='11' x2='48' y2='39' stroke='%23ef4444' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='44' y='15' width='8' height='18' rx='2' fill='%23ef4444'/%3E%3Cpath d='M11 47 Q28 42 53 16' fill='none' stroke='%23fbbf24' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E"}, "nba": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><radialGradient id=\"cn-g-nba\" cx=\"35%\" cy=\"30%\" r=\"70%\"><stop offset=\"0%\" stop-color=\"#fb923c\"/><stop offset=\"100%\" stop-color=\"#c2410c\"/></radialGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"#1e293b\"/><circle cx=\"32\" cy=\"32\" r=\"22\" fill=\"url(#cn-g-nba)\" stroke=\"#fed7aa\" stroke-width=\"1.6\"/><path d=\"M10 32 H54 M32 10 V54\" stroke=\"#1e293b\" stroke-width=\"2.8\"/><path d=\"M16 16 Q30 32 16 48 M48 16 Q34 32 48 48\" fill=\"none\" stroke=\"#1e293b\" stroke-width=\"2.8\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='35%25' cy='30%25' r='70%25'%3E%3Cstop offset='0%25' stop-color='%23fb923c'/%3E%3Cstop offset='100%25' stop-color='%23c2410c'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='%231e293b'/%3E%3Ccircle cx='32' cy='32' r='22' fill='url(%23g)' stroke='%23fed7aa' stroke-width='1.6'/%3E%3Cpath d='M10 32 H54 M32 10 V54' stroke='%231e293b' stroke-width='2.8'/%3E%3Cpath d='M16 16 Q30 32 16 48 M48 16 Q34 32 48 48' fill='none' stroke='%231e293b' stroke-width='2.8'/%3E%3C/svg%3E"}, "epl": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-epl\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#3b0764\"/><stop offset=\"100%\" stop-color=\"#6d28d9\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-epl)\"/><circle cx=\"32\" cy=\"34\" r=\"19\" fill=\"#ffffff\"/><polygon points=\"32,25 40,31 37,40 27,40 24,31\" fill=\"#1e1b4b\"/><path d=\"M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28\" stroke=\"#1e1b4b\" stroke-width=\"2.5\"/><path d=\"M23 12 L27 7 L32 11 L37 7 L41 12 Z\" fill=\"#fbbf24\"/></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233b0764'/%3E%3Cstop offset='100%25' stop-color='%236d28d9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='34' r='19' fill='%23ffffff'/%3E%3Cpolygon points='32,25 40,31 37,40 27,40 24,31' fill='%231e1b4b'/%3E%3Cpath d='M32 15 V25 M40 31 L49 28 M37 40 L43 48 M27 40 L21 48 M24 31 L15 28' stroke='%231e1b4b' stroke-width='2.5'/%3E%3Cpath d='M23 12 L27 7 L32 11 L37 7 L41 12 Z' fill='%23fbbf24'/%3E%3C/svg%3E"}, "f1": {"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><defs><linearGradient id=\"cn-g-f1\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#dc2626\"/><stop offset=\"100%\" stop-color=\"#7f1d1d\"/></linearGradient></defs><rect width=\"64\" height=\"64\" rx=\"15\" fill=\"url(#cn-g-f1)\"/><g transform=\"rotate(-24 32 33)\"><rect x=\"11\" y=\"21\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"11\" y=\"38\" width=\"9\" height=\"5\" rx=\"2\" fill=\"#0f172a\"/><rect x=\"43\" y=\"22\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><rect x=\"43\" y=\"37.5\" width=\"8\" height=\"4.5\" rx=\"1.8\" fill=\"#0f172a\"/><path d=\"M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z\" fill=\"#ffffff\"/><ellipse cx=\"31\" cy=\"32\" rx=\"6\" ry=\"3.4\" fill=\"#0f172a\"/><circle cx=\"32\" cy=\"32\" r=\"2.2\" fill=\"#fde047\"/><rect x=\"7\" y=\"24\" width=\"3.5\" height=\"16\" rx=\"1\" fill=\"#fde047\"/><rect x=\"52\" y=\"25\" width=\"3\" height=\"14\" rx=\"1\" fill=\"#ffffff\"/></g></svg>", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23dc2626'/%3E%3Cstop offset='100%25' stop-color='%237f1d1d'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cg transform='rotate(-24 32 33)'%3E%3Crect x='11' y='21' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='11' y='38' width='9' height='5' rx='2' fill='%230f172a'/%3E%3Crect x='43' y='22' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Crect x='43' y='37.5' width='8' height='4.5' rx='1.8' fill='%230f172a'/%3E%3Cpath d='M9 26 H16 L24 27 L42 29 L55 31 L55 33 L42 35 L24 37 L16 38 H9 Z' fill='%23ffffff'/%3E%3Cellipse cx='31' cy='32' rx='6' ry='3.4' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='2.2' fill='%23fde047'/%3E%3Crect x='7' y='24' width='3.5' height='16' rx='1' fill='%23fde047'/%3E%3Crect x='52' y='25' width='3' height='14' rx='1' fill='%23ffffff'/%3E%3C/g%3E%3C/svg%3E"}};
   ACADEMY_CRESTS.twbasket = {
@@ -1507,9 +1510,17 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-xiangqi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#b45309"/><stop offset="100%" stop-color="#7c2d12"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-xiangqi)"/><circle cx="32" cy="32" r="21" fill="#fef3c7"/><circle cx="32" cy="32" r="16.5" fill="none" stroke="#b91c1c" stroke-width="2.5"/><path d="M32 21v22M24 26h16M24 32h16M25 38h14" stroke="#b91c1c" stroke-width="3" stroke-linecap="round"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23b45309'/%3E%3Cstop offset='100%25' stop-color='%237c2d12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='%23fef3c7'/%3E%3Ccircle cx='32' cy='32' r='16.5' fill='none' stroke='%23b91c1c' stroke-width='2.5'/%3E%3Cpath d='M32 21v22M24 26h16M24 32h16M25 38h14' stroke='%23b91c1c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E"
   };
+  ACADEMY_CRESTS.weiqi = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-weiqi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1f5c48"/><stop offset="100%" stop-color="#0f2920"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-weiqi)"/><rect x="11" y="11" width="42" height="42" rx="6" fill="#dbb060" stroke="#a67c33" stroke-width="1.6"/><path d="M22 15v34M32 15v34M42 15v34M15 22h34M15 32h34M15 42h34" stroke="#3c2a14" stroke-width="1.4" opacity=".68"/><circle cx="24" cy="24" r="8.2" fill="#171b1a"/><circle cx="21.5" cy="21.5" r="2.2" fill="#ffffff" opacity=".28"/><circle cx="40" cy="40" r="8.2" fill="#f7f5ee" stroke="#9aa09a" stroke-width="1"/><circle cx="40" cy="24" r="7.4" fill="#f7f5ee" stroke="#9aa09a" stroke-width="1"/><circle cx="24" cy="40" r="7.4" fill="#171b1a"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231f5c48'/%3E%3Cstop offset='100%25' stop-color='%230f2920'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='11' y='11' width='42' height='42' rx='6' fill='%23dbb060' stroke='%23a67c33' stroke-width='1.6'/%3E%3Cpath d='M22 15v34M32 15v34M42 15v34M15 22h34M15 32h34M15 42h34' stroke='%233c2a14' stroke-width='1.4' opacity='.68'/%3E%3Ccircle cx='24' cy='24' r='8.2' fill='%23171b1a'/%3E%3Ccircle cx='21.5' cy='21.5' r='2.2' fill='%23ffffff' opacity='.28'/%3E%3Ccircle cx='40' cy='40' r='8.2' fill='%23f7f5ee' stroke='%239aa09a' stroke-width='1'/%3E%3Ccircle cx='40' cy='24' r='7.4' fill='%23f7f5ee' stroke='%239aa09a' stroke-width='1'/%3E%3Ccircle cx='24' cy='40' r='7.4' fill='%23171b1a'/%3E%3C/svg%3E"
+  };
   ACADEMY_CRESTS.chess = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-chess" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-chess)"/><circle cx="32" cy="19" r="8.5" fill="#ffffff"/><path d="M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z" fill="#ffffff"/><rect x="13" y="46" width="38" height="8" rx="3" fill="#ffffff"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%234c1d95'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='19' r='8.5' fill='%23ffffff'/%3E%3Cpath d='M26 26 C19 34 17 42 17 47 L47 47 C47 42 45 34 38 26 Z' fill='%23ffffff'/%3E%3Crect x='13' y='46' width='38' height='8' rx='3' fill='%23ffffff'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS['board-games'] = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-board-games" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e11d48"/><stop offset="100%" stop-color="#9f1239"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-board-games)"/><circle cx="32" cy="32" r="21" fill="none" stroke="#ffe4e6" stroke-width="2.4" opacity=".88"/><path d="M11 32h42M32 11v42" stroke="#ffe4e6" stroke-width="2" opacity=".72"/><circle cx="23" cy="23" r="6" fill="#0f172a" stroke="#ffffff" stroke-width="1.5"/><circle cx="41" cy="23" r="6" fill="#ffffff"/><circle cx="32" cy="41" r="6" fill="#34d399" stroke="#ffffff" stroke-width="1.5"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23e11d48'/%3E%3Cstop offset='100%25' stop-color='%239f1239'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23ffe4e6' stroke-width='2.4' opacity='.88'/%3E%3Cpath d='M11 32h42M32 11v42' stroke='%23ffe4e6' stroke-width='2' opacity='.72'/%3E%3Ccircle cx='23' cy='23' r='6' fill='%230f172a' stroke='%23ffffff' stroke-width='1.5'/%3E%3Ccircle cx='41' cy='23' r='6' fill='%23ffffff'/%3E%3Ccircle cx='32' cy='41' r='6' fill='%2334d399' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E"
   };
   ACADEMY_CRESTS.crypto = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-crypto" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-crypto)"/><circle cx="32" cy="32" r="22" fill="#fffbeb" opacity=".16"/><circle cx="32" cy="32" r="18.5" fill="none" stroke="#fffbeb" stroke-width="2.4"/><rect x="16.5" y="26" width="19" height="12" rx="6" fill="none" stroke="#ffffff" stroke-width="4.2"/><rect x="28.5" y="26" width="19" height="12" rx="6" fill="none" stroke="#fde68a" stroke-width="4.2"/></svg>',
@@ -1518,6 +1529,10 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
   ACADEMY_CRESTS['us-stock'] = {
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-uss" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-uss)"/><line x1="16" y1="26" x2="16" y2="50" stroke="#ef4444" stroke-width="2.4" stroke-linecap="round"/><rect x="12.5" y="32" width="7" height="12" rx="1.8" fill="#ef4444"/><line x1="30" y1="19" x2="30" y2="45" stroke="#22c55e" stroke-width="2.4" stroke-linecap="round"/><rect x="26.5" y="24" width="7" height="15" rx="1.8" fill="#22c55e"/><line x1="45" y1="11" x2="45" y2="39" stroke="#22c55e" stroke-width="2.4" stroke-linecap="round"/><rect x="41.5" y="15" width="7" height="17" rx="1.8" fill="#22c55e"/><path d="M11 48 Q28 42 53 16" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/><circle cx="51" cy="14" r="3" fill="#fde047"/></svg>',
     url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231e3a8a'/%3E%3Cstop offset='100%25' stop-color='%230f172a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cline x1='16' y1='26' x2='16' y2='50' stroke='%23ef4444' stroke-width='2.4' stroke-linecap='round'/%3E%3Crect x='12.5' y='32' width='7' height='12' rx='1.8' fill='%23ef4444'/%3E%3Cline x1='30' y1='19' x2='30' y2='45' stroke='%2322c55e' stroke-width='2.4' stroke-linecap='round'/%3E%3Crect x='26.5' y='24' width='7' height='15' rx='1.8' fill='%2322c55e'/%3E%3Cline x1='45' y1='11' x2='45' y2='39' stroke='%2322c55e' stroke-width='2.4' stroke-linecap='round'/%3E%3Crect x='41.5' y='15' width='7' height='17' rx='1.8' fill='%2322c55e'/%3E%3Cpath d='M11 48 Q28 42 53 16' fill='none' stroke='%23fbbf24' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='51' cy='14' r='3' fill='%23fde047'/%3E%3C/svg%3E"
+  };
+  ACADEMY_CRESTS['hot-topics'] = {
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="cn-g-hottopics" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#c86d4b"/><stop offset="100%" stop-color="#8e3d25"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#cn-g-hottopics)"/><rect x="7" y="7" width="50" height="50" rx="10" fill="#231f1b" stroke="#e6ca9a" stroke-opacity=".28" stroke-width="1.2"/><path d="M34 13c1.2 7.5-3.4 12-3.4 12s6.6-1.4 10.6 4.4c3.4 5 4.4 13-1.4 19.4A15.5 15.5 0 0 1 19 47c-4.5-5.6-3-15 4-22 4.6-4.5 9-7.4 11-12Z" fill="#e6ca9a"/><path d="M32 33c2 3.8 5 6 5 10a6 6 0 0 1-12 0c0-3.5 2.7-6.2 7-10Z" fill="#ae4f33"/></svg>',
+    url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23c86d4b'/%3E%3Cstop offset='100%25' stop-color='%238e3d25'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Crect x='7' y='7' width='50' height='50' rx='10' fill='%23231f1b' stroke='%23e6ca9a' stroke-opacity='.28' stroke-width='1.2'/%3E%3Cpath d='M34 13c1.2 7.5-3.4 12-3.4 12s6.6-1.4 10.6 4.4c3.4 5 4.4 13-1.4 19.4A15.5 15.5 0 0 1 19 47c-4.5-5.6-3-15 4-22 4.6-4.5 9-7.4 11-12Z' fill='%23e6ca9a'/%3E%3Cpath d='M32 33c2 3.8 5 6 5 10a6 6 0 0 1-12 0c0-3.5 2.7-6.2 7-10Z' fill='%23ae4f33'/%3E%3C/svg%3E"
   };
   var VISITS_KEY = 'okayell.campus.visits.v1';
   var STU_KEY = 'okayell.campus.student.v1';
@@ -1651,17 +1666,29 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     acad_cld_5: { icon: '💎', name: 'SRE 高可用災難復原專家', tier: 't5', pts: 120, title: '💎 首席 SRE 可靠度工程師' },
     acad_cld_6: { icon: '👑', name: '雲端原生傳說總指揮官', tier: 't6', pts: 220, title: '👑 雲端原生傳說總指揮' },
     acad_xq_1: { icon: '🐘', name: '楚河漢界初登場', tier: 't1', pts: 8, title: '🐘 象棋見習棋士' },
-    acad_xq_2: { icon: '♟️', name: '當頭炮開局', tier: 't2', pts: 20, title: '♟️ 象棋業餘棋士' },
+    acad_xq_2: { icon: '♟️', name: '當頭炮開局', tier: 't2', pts: 20, title: '♟️ 當頭炮棋友' },
     acad_xq_3: { icon: '🏆', name: '運籌帷幄', tier: 't3', pts: 40, title: '🏆 楚河漢界棋王' },
     acad_xq_4: { icon: '📜', name: '古譜殘局破陣高手', tier: 't4', pts: 65, title: '📜 橘中秘殘局高手' },
-    acad_xq_5: { icon: '💎', name: '車馬炮聯攻特級大師', tier: 't5', pts: 120, title: '💎 象棋特級大師' },
-    acad_xq_6: { icon: '👑', name: '楚河漢界傳說九段國手', tier: 't6', pts: 220, title: '👑 楚河傳說九段國手' },
+    acad_xq_5: { icon: '💎', name: '車馬炮聯攻研究家', tier: 't5', pts: 120, title: '💎 車馬炮聯攻研究家' },
+    acad_xq_6: { icon: '👑', name: '楚河漢界傳說棋痴', tier: 't6', pts: 220, title: '👑 楚河漢界傳說棋痴' },
+    acad_wq_1: { icon: '⚫', name: '十九路初登場', tier: 't1', pts: 8, title: '⚫ 圍棋見習棋士' },
+    acad_wq_2: { icon: '🎋', name: '金角銀邊草肚皮', tier: 't2', pts: 20, title: '🎋 星小目手談棋友' },
+    acad_wq_3: { icon: '🏆', name: '兩眼活棋妙手', tier: 't3', pts: 40, title: '🏆 十九路死活快手' },
+    acad_wq_4: { icon: '📐', name: '定石與手筋達人', tier: 't4', pts: 65, title: '📐 定石手筋戰術師' },
+    acad_wq_5: { icon: '💎', name: '幽玄手談研究家', tier: 't5', pts: 120, title: '💎 十九路手談研究家' },
+    acad_wq_6: { icon: '🌌', name: '爛柯十九路傳說棋痴', tier: 't6', pts: 220, title: '🌌 爛柯十九路傳說棋痴' },
     acad_ch_1: { icon: '♟️', name: '六十四格初登場', tier: 't1', pts: 8, title: '♟️ 西洋棋見習棋士' },
     acad_ch_2: { icon: '⚔️', name: '騎士捉雙', tier: 't2', pts: 20, title: '⚔️ 西洋棋戰術手' },
-    acad_ch_3: { icon: '👑', name: '逆轉大師', tier: 't3', pts: 40, title: '👑 六十四格逆轉大師' },
+    acad_ch_3: { icon: '👑', name: '逆轉達人', tier: 't3', pts: 40, title: '👑 六十四格逆轉達人' },
     acad_ch_4: { icon: '🏰', name: '開局定式與棄子專家', tier: 't4', pts: 65, title: '🏰 皇家開局戰術師' },
-    acad_ch_5: { icon: '💎', name: '國際棋聯特級宗師', tier: 't5', pts: 120, title: '💎 西洋棋特級宗師' },
+    acad_ch_5: { icon: '💎', name: '六十四格戰術研究家', tier: 't5', pts: 120, title: '💎 六十四格戰術研究家' },
     acad_ch_6: { icon: '🌌', name: '六十四格傳說世界棋王', tier: 't6', pts: 220, title: '🌌 六十四格傳說棋王' },
+    acad_bg_1: { icon: '🎲', name: '三棋同堂初登場', tier: 't1', pts: 8, title: '🎲 經典棋藝見習生' },
+    acad_bg_2: { icon: '🍉', name: '連珠跳躍與圍捕', tier: 't2', pts: 22, title: '🍉 圓盤星陣棋友' },
+    acad_bg_3: { icon: '🌟', name: '四三連跳破陣手', tier: 't3', pts: 42, title: '🌟 搭橋連跳快手' },
+    acad_bg_4: { icon: '⚫', name: '三棋戰術通才', tier: 't4', pts: 65, title: '⚫ 五子連珠戰術家' },
+    acad_bg_5: { icon: '💎', name: '棋壇三絕研究家', tier: 't5', pts: 120, title: '💎 經典三棋研究家' },
+    acad_bg_6: { icon: '👑', name: '國民棋藝傳說棋痴', tier: 't6', pts: 220, title: '👑 經典棋藝傳說大玩家' },
     acad_cry_1: { icon: '🪙', name: '創世區塊', tier: 't1', pts: 8, title: '🪙 鏈上新鮮人' },
     acad_cry_2: { icon: '⛓️', name: '鏈上學徒', tier: 't2', pts: 20, title: '⛓️ 區塊鏈學徒' },
     acad_cry_3: { icon: '🛡️', name: '私鑰守護者', tier: 't3', pts: 40, title: '🛡️ 私鑰守護者' },
@@ -1760,6 +1787,13 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     sec_weekend_vibe: { icon: '🛋️', name: '週末不放假偷偷捲', tier: 't2', pts: 18, title: '🛋️ 週末自習室學霸' },
     sec_lucky_min: { icon: '🍀', name: '對稱時刻的幸運星', tier: 't2', pts: 20, title: '🍀 雙數時刻幸運星' },
     sec_one_acad_1h: { icon: '🧘', name: '閉關一小時破壁宗師', tier: 't6', pts: 220, title: '🧘 破壁閉關大宗師' },
+    ht_omni_6: { icon: '📰', name: '七域全覽特派員', tier: 't4', pts: 50, title: '📰 七域全覽特派員' },
+    ht_source_hunter: { icon: '🔍', name: '多方查證考據派', tier: 't4', pts: 65, title: '🔍 多方脈絡查證家' },
+    sec_ht_breaking: { icon: '⚡', name: '頭版出刊搶先讀', tier: 't5', pts: 120, title: '⚡ 油墨未乾搶先讀' },
+    ht_ampm_7: { icon: '🌗', name: '晨昏雙報守望者（7 日雙報）', tier: 't5', pts: 125, title: '🌗 晨昏雙報總主筆' },
+    ht_editions_30: { icon: '📡', name: '時代脈搏總編輯（30 期早晚報）', tier: 't6', pts: 230, title: '👑 時代脈搏總編輯' },
+    ht_chronicle_100: { icon: '🌌', name: '百期編年史觀測官（100 期 · 500 則）', tier: 't7', pts: 400, title: '🌌 天下大勢編年史官' },
+    sup_ht_zeitgeist: { icon: '⚜️', name: '萬象洞見至高守望者（200 期 · 1,200 則 · 20 小時）', tier: 't8', pts: 700, title: '⚜️ 洞悉萬象至高守望者' },
   };
   var TOOL_ACH_MAP = {
     english: ['acad_en_1', 'acad_en_2', 'acad_en_3', 'acad_en_4', 'acad_en_5', 'acad_en_6'],
@@ -1781,7 +1815,9 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     'ai-agent': ['acad_ai_1', 'acad_ai_2', 'acad_ai_3', 'acad_ai_4', 'acad_ai_5', 'acad_ai_6'],
     'cloud-devops': ['acad_cld_1', 'acad_cld_2', 'acad_cld_3', 'acad_cld_4', 'acad_cld_5', 'acad_cld_6'],
     xiangqi: ['acad_xq_1', 'acad_xq_2', 'acad_xq_3', 'acad_xq_4', 'acad_xq_5', 'acad_xq_6'],
+    weiqi: ['acad_wq_1', 'acad_wq_2', 'acad_wq_3', 'acad_wq_4', 'acad_wq_5', 'acad_wq_6'],
     chess: ['acad_ch_1', 'acad_ch_2', 'acad_ch_3', 'acad_ch_4', 'acad_ch_5', 'acad_ch_6'],
+    'board-games': ['acad_bg_1', 'acad_bg_2', 'acad_bg_3', 'acad_bg_4', 'acad_bg_5', 'acad_bg_6'],
     crypto: ['acad_cry_1', 'acad_cry_2', 'acad_cry_3', 'acad_cry_4', 'acad_cry_5', 'acad_cry_6'],
     futures: ['acad_fut_1', 'acad_fut_2', 'acad_fut_3', 'acad_fut_4', 'acad_fut_5', 'acad_fut_6'],
     series: ['acad_ser_1', 'acad_ser_2', 'acad_ser_3', 'acad_ser_4', 'acad_ser_5', 'acad_ser_6'],
@@ -2005,17 +2041,23 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     } catch (e) { /* ignore */ }
   }
 
+  var NAV_TIER_LABELS = {
+    t1: 'Lv.1 入門', t2: 'Lv.2 銅牌', t3: 'Lv.3 銀牌', t4: 'Lv.4 金牌',
+    t5: 'Lv.5 鑽石', t6: 'Lv.6 傳說', t7: 'Lv.7 神話', t8: 'Lv.8 至高無上'
+  };
+
   function showAchToast(a) {
     if (!a || !document.body) return;
     var el = document.getElementById('campusAchToast');
     if (!el) {
       el = document.createElement('div');
       el.id = 'campusAchToast';
-      el.className = 'campus-ach-toast';
       document.body.appendChild(el);
     }
+    el.className = 'campus-ach-toast' + (a.tier ? ' tier-' + a.tier : '');
+    var tierLabel = a.tier && NAV_TIER_LABELS[a.tier] ? '【' + NAV_TIER_LABELS[a.tier] + '】' : '';
     el.innerHTML = '<span class="cat-ic">' + fbEsc(a.icon) + '</span>' +
-      '<div class="cat-body"><b>🏅 解鎖學園成就：' + fbEsc(a.name) + '（+' + a.pts + ' 點）</b>' +
+      '<div class="cat-body"><b>🏅 解鎖學園成就' + fbEsc(tierLabel) + '：' + fbEsc(a.name) + '（+' + a.pts + ' 點）</b>' +
       (a.title ? '<span>👑 獲得榮譽稱號「' + fbEsc(a.title) + '」— 可回校園學生證穿戴！</span>' : '') + '</div>';
     el.classList.add('show');
     clearTimeout(el._t);
@@ -2135,6 +2177,71 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     } catch (e) { /* ignore */ }
   }
 
+  function checkHotTopicsSpecificProgress(st) {
+    try {
+      var raw = window.localStorage.getItem('ht.progress.v1');
+      if (!raw) return;
+      var p = JSON.parse(raw);
+      if (!isPlainObj(p)) return;
+      var htSec = Math.max(0, +(st && st.academySec && st.academySec['hot-topics'] || 0));
+      var topicKeys = isPlainObj(p.topicKeys) ? p.topicKeys : {};
+      var topicsCount = Math.max(+p.topicsCount || 0, Object.keys(topicKeys).length);
+      var watchCnt = isPlainObj(p.watchIds) ? Object.keys(p.watchIds).length : 0;
+      var clickedUrls = isPlainObj(p.clickedUrls) ? p.clickedUrls : {};
+      var sourcesClicked = Math.max(+p.sourcesClicked || 0, Object.keys(clickedUrls).length);
+      var activeDaysCnt = isPlainObj(p.activeDays) ? Object.keys(p.activeDays).length : 0;
+
+      var edDoneMap = {};
+      if (isPlainObj(p.editionsDone)) {
+        Object.keys(p.editionsDone).forEach(function (k) {
+          if (p.editionsDone[k]) edDoneMap[k] = 1;
+        });
+      }
+      if (isPlainObj(p.edTopicCounts)) {
+        Object.keys(p.edTopicCounts).forEach(function (k) {
+          if ((+p.edTopicCounts[k] || 0) >= 5) edDoneMap[k] = 1;
+        });
+      }
+      var edDoneCnt = Object.keys(edDoneMap).length;
+
+      var htCats = ['tech', 'gaming', 'taiwan', 'finance', 'entertainment', 'sports', 'life'];
+      var omniEdDone = !!p.omni7EdDone;
+      if (!omniEdDone && isPlainObj(p.edCats)) {
+        Object.keys(p.edCats).forEach(function (ed) {
+          var cm = p.edCats[ed];
+          if (isPlainObj(cm) && htCats.every(function (c) { return (+cm[c] || 0) >= 2; })) {
+            omniEdDone = true;
+          }
+        });
+      }
+
+      var breakingDone = !!p.breakingTop3Done;
+      if (!breakingDone && isPlainObj(p.breakingTop3ByEd)) {
+        Object.keys(p.breakingTop3ByEd).forEach(function (ed) {
+          var bm = p.breakingTop3ByEd[ed];
+          if (isPlainObj(bm) && bm['1'] && bm['2'] && bm['3']) breakingDone = true;
+        });
+      }
+
+      var ampmDates = {};
+      Object.keys(edDoneMap).forEach(function (k) {
+        if (k.length > 3 && k.slice(-3) === '-AM') {
+          var d = k.slice(0, -3);
+          if (edDoneMap[d + '-PM']) ampmDates[d] = 1;
+        }
+      });
+      var ampmDatesCnt = Object.keys(ampmDates).length;
+
+      if (omniEdDone) unlockInAcademy(st, 'ht_omni_6');
+      if (topicsCount >= 35 && watchCnt >= 9 && sourcesClicked >= 10) unlockInAcademy(st, 'ht_source_hunter');
+      if (breakingDone) unlockInAcademy(st, 'sec_ht_breaking');
+      if (ampmDatesCnt >= 7) unlockInAcademy(st, 'ht_ampm_7');
+      if (edDoneCnt >= 30 && topicsCount >= 180 && htSec >= 5400) unlockInAcademy(st, 'ht_editions_30');
+      if (edDoneCnt >= 100 && topicsCount >= 500 && sourcesClicked >= 50 && htSec >= 18000) unlockInAcademy(st, 'ht_chronicle_100');
+      if (edDoneCnt >= 200 && topicsCount >= 1200 && activeDaysCnt >= 90 && htSec >= 72000) unlockInAcademy(st, 'sup_ht_zeitgeist');
+    } catch (e) { /* ignore */ }
+  }
+
   function checkAcademyProgress(st, toolId) {
     evaluateDailyInAcademy(st);
     var stages = TOOL_ACH_MAP[toolId];
@@ -2174,6 +2281,9 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     if (toolId === 'cinema') {
       checkCinemaSpecificProgress(st);
       if (hr >= 22 || hr < 4) unlockInAcademy(st, 'wacky_midnight_movie');
+    }
+    if (toolId === 'hot-topics') {
+      checkHotTopicsSpecificProgress(st);
     }
     if (toolId === 'cooking' && (hr >= 21 || hr < 2)) unlockInAcademy(st, 'wacky_night_snack');
     if (hr >= 0 && hr < 5) unlockInAcademy(st, 'night_owl');
@@ -2910,6 +3020,9 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     'font:600 13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;',
     'opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .25s,transform .25s}',
     '.campus-ach-toast.show{opacity:1;transform:translateY(0)}',
+    '.campus-ach-toast.tier-t7{border-color:#a78bfa;background:linear-gradient(135deg,#1e1638,#2e1065);box-shadow:0 12px 32px rgba(139,92,246,.35)}',
+    '.campus-ach-toast.tier-t8{border-color:#f59e0b;background:linear-gradient(135deg,#131126,#271d06);box-shadow:0 12px 34px rgba(245,158,11,.38)}',
+    '.campus-ach-toast.tier-t8 .cat-body b{color:#fde68a}',
     '.campus-ach-toast .cat-ic{font-size:26px;line-height:1}',
     '.campus-ach-toast .cat-body{display:flex;flex-direction:column;gap:2px}',
     '.campus-ach-toast .cat-body b{color:#fde68a;font-size:13.5px}',
@@ -3611,6 +3724,17 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     window.addEventListener('online', function () { flushFeedbackQueue(); });
   }
 
+  function checkProgressPublic(tid) {
+    var target = tid || window.CAMPUS_TOOL_ID || '';
+    if (!target) {
+      var n = document.querySelector && document.querySelector('[data-campus-home]');
+      if (n) target = n.getAttribute('data-campus-home') || '';
+    }
+    if (!target || !TOOL_MAP[target]) return;
+    var st = loadFunState();
+    checkAcademyProgress(st, target);
+  }
+
   function recordActPublic(tid) {
     var target = tid || window.CAMPUS_TOOL_ID || '';
     if (!target) {
@@ -3647,6 +3771,7 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
     init: init,
     recordAct: recordActPublic,
     bumpAct: recordActPublic,
+    checkProgress: checkProgressPublic,
     unlockAch: unlockAchPublic,
     markInternalNav: markInternalNav,
     visitsKey: VISITS_KEY,
@@ -3667,9 +3792,17 @@ window.IOT_ASSETS = {"img/iot_cat_climate.webp":"data:image/webp;base64,UklGRkQc
 // === js/releases.js ===
 // Auto-generated by tools/release_mgr.py
 window.IOT_RELEASES = {
-  "current_version": "1.10.0",
-  "last_fingerprint": "503eb88273bb67ad",
+  "current_version": "1.11.0",
+  "last_fingerprint": "b0d55c5999a531ea",
   "releases": [
+    {
+      "version": "1.11.0",
+      "date": "2026-11-26 11:16",
+      "title": "智慧生活與物聯網學院 v1.11.0 內容與體驗更新",
+      "changes": [
+        "優化智慧家電圖鑑、Matter/Thread 協定解析與模擬器體驗"
+      ]
+    },
     {
       "version": "1.10.0",
       "date": "2026-11-19 15:21",
