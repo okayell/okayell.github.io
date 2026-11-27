@@ -41,6 +41,7 @@ ARENAS: dict[str, dict[str, str]] = {
     'tw-basketball': {'db': 'tw_basketball.db', 'kind': 'sports'},
     'cinema': {'db': 'now_playing.json', 'kind': 'cinema'},
     'series': {'db': 'now_streaming.json', 'kind': 'cinema'},
+    'anime': {'db': 'seasonal.json', 'kind': 'cinema'},
     'crypto': {'db': 'prices.json', 'kind': 'cinema'},  # JSON snapshot with `updatedAt`, same flow as cinema
     'futures': {'db': 'prices.json', 'kind': 'cinema'},
 }
@@ -335,6 +336,10 @@ def _due_arenas(now_tw: dt.datetime, cache_dir: str = '') -> list[str]:
   ser_wk = str(_load_json(ser_json).get('weekKey') or '') if ser_json else ''
   if wd == 0 or not ser_wk or ser_wk < cur_wk:
     due.append('series')
+  ani_json = os.path.join(cache_dir, 'anime', 'data', 'seasonal.json') if cache_dir else ''
+  ani_wk = str(_load_json(ani_json).get('weekKey') or '') if ani_json else ''
+  if wd == 0 or not ani_wk or ani_wk < cur_wk:
+    due.append('anime')
   return due
 
 
